@@ -2,7 +2,7 @@ import os
 from ase import Atoms, Atom, units
 import ase.io
 from ase.calculators.emt import EMT
-from ase.lattice.surface import fcc110
+from ase.build import fcc110
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md import VelocityVerlet
 from ase.constraints import FixAtoms
@@ -10,7 +10,6 @@ from ase.constraints import FixAtoms
 from amp import Amp
 from amp.descriptor.gaussian import Gaussian
 from amp.model.neuralnetwork import NeuralNetwork
-from amp.model import LossFunction
 
 def generate_data(count, filename='training.traj'):
     if os.path.exists(filename):
@@ -32,5 +31,4 @@ def generate_data(count, filename='training.traj'):
 generate_data(20)
 
 calc=Amp(descriptor=Gaussian(),model=NeuralNetwork(hiddenlayers=(10,10,10)))
-calc.model.LossFunction=LossFunction(convergence={'energy_rmse':0.02,'force_rmse':0.02})
 calc.train(images='training.traj')
