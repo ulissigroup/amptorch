@@ -11,14 +11,13 @@ from amp import Amp
 from amp.descriptor.gaussian import Gaussian
 from amp.model.neuralnetwork import NeuralNetwork
 
+
 def generate_data(count, filename='training.traj'):
-    if os.path.exists(filename):
-        return
     traj=ase.io.Trajectory(filename,'w')
     atoms=fcc110('Pt',(2,2,2),vacuum=7.)
     atoms.extend(Atoms([Atom('Cu',atoms[7].position + (0.,0.,2.5)),
                         Atom('Cu',atoms[7].position + (0.,0.,5.))]))
-    atoms.set_constraint(FixAtoms(inndices=[0,2]))
+    atoms.set_constraint(FixAtoms(indices=[0,2]))
     atoms.set_calculator(EMT())
     atoms.get_potential_energy()
     traj.write(atoms)
