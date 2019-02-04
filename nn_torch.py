@@ -13,23 +13,24 @@ from amp.descriptor.gaussian import Gaussian
 class AtomsDataset(Dataset):
     """Atoms dataset"""
 
-    def __init__(self,filename='sample_training_data.traj',descriptor=Gaussian):
-        #raw_data=sys.argv[1]
-        raw_data=hash_images(filename)
-        check_images(raw_data,forces=False)
-        self.raw_data=raw_data
-        self.descriptor=Gaussian()
+    def __init__(self,descriptor,filename='sample_training_data.traj'):
+        self.filename=filename
+        self.descriptor=descriptor
+        self.atom_images=hash_images(filename)
+        check_images(self.atom_images,forces=False)
+        self.descriptor.calculate_fingerprints(self.atom_images)
 
     def __len__(self):
-        return len(self.raw_data)
+        return len(self.atom_images)
 
     def __getitem__(self,index):
-        hash_name=self.raw_data.keys()[index]
-        image=self.raw_data.values()[index]
-        self.descriptor.calculate_fingerprints(self.raw_data)
-        return
+        hash_name=self.atom_images.keys()[index]
+        image=self.atom_images.values()[index]
+        self.descriptor.calculate_fingerprints(self.atom_images)
+        image_fingerprint=self.descriptor.fingerprints[hash_name]
+        #total vs potential energy?
+        image_energy=self.atom_images[hash_name].get_total_energy()
+        return image_fingerprint,image_energy
 
-
-test_data=AtomsDataset()
-print(test_data.raw_data.values()[0].get_positions())
-print test_data.__getitem__(0).values()[0].get_positions()
+test_data=AtomsDataset(descriptor=Gaussian())
+fp,E=test_data.__getitem__(19)
