@@ -1,1 +1,1 @@
-Modifying and implementing the current AMP code into PyTorch.
+Refactorization of the AMP code to better implement machine learning models and optimize performance across high-throughput supercomputers.
