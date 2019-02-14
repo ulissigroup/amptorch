@@ -13,8 +13,6 @@ from collections import defaultdict
 
 
 
-
-
 class AtomsDataset(Dataset):
     """
     Atoms dataset
@@ -37,14 +35,69 @@ class AtomsDataset(Dataset):
         hash_name=self.atom_images.keys()[index]
         image_fingerprint=self.descriptor.fingerprints[hash_name]
         image_potential_energy=self.atom_images[hash_name].get_potential_energy()
-        self.hash_name=hash_name
-        self.index=index
-        return {hash_name:(image_fingerprint,image_potential_energy)}
+        return {index:(image_fingerprint,image_potential_energy)}
 
 training_data=AtomsDataset(descriptor=Gaussian())
-sample_batch=[training_data[i] for i in range(2)]
+sample_batch=[training_data[1], training_data[0], training_data[3],
+        training_data[18] ]
+# print(sample_batch)
 
 def data_factorization(training_data):
+    """
+    Reads in dataset and factors it into 3 dictionaries:
+
+    1. unique_atoms = Identifies the unique elements in the dataset
+    2. fingerprint_dict = Extracts the fingerprints for each hashed data sample in the
+    dataset
+    3. energy_dict = Extracts the potential energy for a given hashed data sample in the
+    dataset
+    """
+    unique_atoms=[]
+    fingerprint_set=[]
+    sample_indices=[]
+    energy_set=[]
+    #Create empty dictionary to store indices of data
+    for data_sample in training_data:
+        sample_index=data_sample.keys()[0]
+        sample_indices.append(sample_index)
+        atom_image=data_sample[sample_index]
+        atom_fingerprint=atom_image[0]
+        fingerprint_set.append(atom_fingerprint)
+        image_potential_energy=atom_image[1]
+        energy_set.append(image_potential_energy)
+        for atom in atom_fingerprint:
+            element=atom[0]
+            if element not in unique_atoms:
+                unique_atoms.append(element)
+    return unique_atoms,fingerprint_set,energy_set,sample_indices
+
+x,y,z, i=data_factorization(sample_batch)
+print x
+print ' '
+print y
+print ' '
+print z
+print ' '
+print i
+
+
+
+def collate_amp(training_data):
+
+    unique_atoms,fingerprint_dict,energy_dict=data_factorization(training_data)
+    element_specific_fingerprints={}
+    for element in unique_atoms:
+        element_specific_fingerprints[element]=defaultdict(list)
+    for fingerprint_hash in fingerprint_dict.keys():
+        for fingerprint in fingerprint_dict[fingerprint_hash]:
+            atom_element=fingerprint[0]
+            atom_fingerprint=fingerprint[1]
+            element_specific_fingerprints[atom_element][fingerprint_hash].append(torch.tensor(atom_fingerprint,dtype=torch.float64))
+    for element in unique_atoms:
+        element_specific_fingerprints[element]=dict(element_specific_fingerprints[element])
+    return element_spe
+
+def data_factorization_old(training_data):
     """
     Reads in dataset and factors it into 3 dictionaries:
 
@@ -71,52 +124,27 @@ def data_factorization(training_data):
                 unique_atoms[element]=[]
     return unique_atoms,fingerprint_dict,energy_dict
 
-x,y,z=data_factorization(sample_batch)
-def collate_amp(training_data):
-    """
-    Collate function to be utilized by PyTorch's DataLoader .
+# x,y,z=data_factorization(sample_batch)
 
-    Reads in a dataset and outputs a dictionary of dictionaries indexed for
-    each data sample, with fingerprints factored for each element.
-
-    e.g.
-
-    {0:{'Cu':[[fingerprints]],'Pt':[[fingerprints]]},1:{'Cu':[[fingerprints]],'Pt':[[fingerprints]]}}
-
-    """
-
-
-    unique_atoms,fingerprint_dict,energy_dict=data_factorization(training_data)
-    print(fingerprint_dict.values())
-    element_specific_fingerprints_idxd={}
-    for i in fingerprint_dict.keys():
-        element_specific_fingerprints_idxd[i]=copy.deepcopy(unique_atoms)
-    for index,fingerprint_sample in enumerate(fingerprint_dict.values()):
-        for atom_fingerprint in fingerprint_sample:
-            element=atom_fingerprint[0]
-            element_specific_fingerprints_idxd[index][element].append(torch.tensor(atom_fingerprint[1],dtype=torch.float64))
-    return element_specific_fingerprints_idxd
-
-def collate_amp_2(training_data):
-
+def collate_amp_old(training_data):
     unique_atoms,fingerprint_dict,energy_dict=data_factorization(training_data)
     element_specific_fingerprints={}
-    for i in unique_atoms:
-        element_specific_fingerprints[i]=defaultdict(list)
-    for i in fingerprint_dict.keys():
-        for fp in fingerprint_dict[i]:
-            element_specific_fingerprints[fp[0]][i].append(torch.tensor(fp[1],dtype=torch.float64))
-    for i in unique_atoms:
-        element_specific_fingerprints[i]=dict(element_specific_fingerprints[i])
+    for element in unique_atoms:
+        element_specific_fingerprints[element]=defaultdict(list)
+    for fingerprint_hash in fingerprint_dict.keys():
+        for fingerprint in fingerprint_dict[fingerprint_hash]:
+            atom_element=fingerprint[0]
+            atom_fingerprint=fingerprint[1]
+            element_specific_fingerprints[atom_element][fingerprint_hash].append(torch.tensor(atom_fingerprint,dtype=torch.float64))
+    for element in unique_atoms:
+        element_specific_fingerprints[element]=dict(element_specific_fingerprints[element])
     return element_specific_fingerprints,energy_dict
 
-test,energy=collate_amp_2(sample_batch)
-print(test)
-print(energy)
-
-
-# test=collate_amp(sample_batch)
+# test,energy=collate_amp(sample_batch)
 # print(test)
+# print(energy)
+
+
 
 # dataloader=DataLoader(sample_batch,batch_size=2,collate_fn=collate_amp,shuffle=False)
 # for i in dataloader:
