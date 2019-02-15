@@ -71,7 +71,6 @@ def data_factorization(training_data):
                 unique_atoms.append(element)
     return unique_atoms,fingerprint_dataset,energy_dataset,sample_indices
 
-
 def collate_amp(training_data):
 
     unique_atoms,fingerprint_dataset,energy_dataset,sample_indices=data_factorization(training_data)
