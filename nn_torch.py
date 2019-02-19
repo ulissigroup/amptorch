@@ -143,17 +143,16 @@ class AtomisticNN(nn.Module):
     """
 
 
-    def __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=2,n_hidden_size=1,activation=Tanh()):
+    def __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=2,n_hidden_size=10,activation=Tanh):
         super(AtomisticNN,self).__init__()
-        # if n_hidden_size is None:
+        #if n_hidden_size is None:
             #implement pyramid neuron structure across each layer
         if type(n_hidden_size) is int:
             n_hidden_size=[n_hidden_size] * (n_layers-1)
         self.n_neurons=[n_input_nodes]+n_hidden_size+[n_output_nodes]
 
-        layers=[Dense(self.n_neurons[i],self.n_neurons[i+1],bias=True,activation=activation()) for i in range(n_layers-1)]
+        layers=[Dense(self.n_neurons[i],self.n_neurons[i+1],bias=True,activation=activation) for i in range(n_layers-1)]
         layers.append(Dense(self.n_neurons[-2],self.n_neurons[-1],activation=None))
-
         self.model_net=nn.Sequential(*layers)
 
     def forward(self, inputs):
