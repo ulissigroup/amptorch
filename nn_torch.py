@@ -81,6 +81,9 @@ def collate_amp(training_data):
             element_specific_fingerprints[atom_element][0].append(torch.tensor(atom_fingerprint))
             element_specific_fingerprints[atom_element][1].append(torch.tensor(sample_indices[fp_index]))
             #INSERT SCALING OF INPUT DATA
+    for element in unique_atoms:
+        element_specific_fingerprints[element][0]=torch.stack(element_specific_fingerprints[element][0])
+        element_specific_fingerprints[element][1]=torch.stack(element_specific_fingerprints[element][1])
     return element_specific_fingerprints
 
 class Dense(nn.Linear):
@@ -120,6 +123,9 @@ class AtomisticNN(nn.Module):
         n_layers: Total number of layers in the neural network
         n_hidden_size: Number of neurons within each hidden layer
         activation: Activation function to be utilized. (Default=Tanh())
+
+    (Simplified version of SchNet Pack's implementation')
+
     """
 
     def __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=32,n_hidden_size=10,activation=Tanh):
@@ -149,16 +155,25 @@ sample_batch=[training_data[1], training_data[0], training_data[3],
         training_data[18] ]
 dataset_size=len(sample_batch)
 
-model=AtomisticNN()
-
 atoms_dataloader=DataLoader(sample_batch,batch_size=2,collate_fn=collate_amp,shuffle=False)
-for data_sample in atoms_dataloader:
-    for element in data_sample.keys():
-        fingerprint_input=data_sample[element][0]
-        print fingerprint_input
-        fingerprint_labels=data_sample[element][1]
-        print fingerprint_labels
-        for i in fingerprint_input:
-            output=model(i)
-            print output
-            sys.exit()
+for i in atoms_dataloader:
+    k=i
+
+model_test=Dense(20,1)
+# print model_test(k)
+
+
+
+
+# test(k)
+
+# for data_sample in atoms_dataloader:
+    # for element in data_sample.keys():
+        # fingerprint_input=data_sample[element][0]
+        # print fingerprint_input
+        # fingerprint_labels=data_sample[element][1]
+        # print fingerprint_labels
+        # for i in fingerprint_input:
+            # output=model(i)
+            # print output
+            # sys.exit()
