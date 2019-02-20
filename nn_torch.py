@@ -39,11 +39,6 @@ class AtomsDataset(Dataset):
         image_potential_energy=self.atom_images[hash_name].get_potential_energy()
         return {index:(image_fingerprint,image_potential_energy)}
 
-training_data=AtomsDataset(descriptor=Gaussian())
-sample_batch=[training_data[1], training_data[0], training_data[3],
-        training_data[18] ]
-# print(sample_batch)
-
 def data_factorization(training_data):
     """
     Reads in dataset and factors it into 4 lists:
@@ -75,7 +70,6 @@ def data_factorization(training_data):
     return unique_atoms,fingerprint_dataset,energy_dataset,sample_indices
 
 def collate_amp(training_data):
-
     unique_atoms,fingerprint_dataset,energy_dataset,sample_indices=data_factorization(training_data)
     element_specific_fingerprints={}
     for element in unique_atoms:
@@ -89,21 +83,9 @@ def collate_amp(training_data):
             #INSERT SCALING OF INPUT DATA
     return element_specific_fingerprints
 
-test=collate_amp(sample_batch)
-
-atoms_dataloader=DataLoader(sample_batch,batch_size=1,collate_fn=collate_amp,shuffle=False)
-for i in atoms_dataloader:
-    k=i
-# """TENSOR SIZING? MAY NEED TO MAKE EACH DATA ENTRY AN ARRAY"""
-l=k['Cu'][0][0]
-print(l)
-# x,_=torch.max(l,0)
-# lx=torch.div(l,x)
-
 class Dense(nn.Linear):
     """Constructs and applies a dense layer with an activation function (when
     available) y=activation(Ax+b)
-
 
     Arguments:
         input_size (int): number of input features
@@ -118,7 +100,6 @@ class Dense(nn.Linear):
 
     def __init__(self,input_size,output_size, bias=True, activation=None):
         self.activation=activation
-
         super(Dense,self).__init__(input_size,output_size,bias)
 
     def reset_parameters(self):
@@ -127,8 +108,7 @@ class Dense(nn.Linear):
     def forward(self,inputs):
         neuron_output=super(Dense,self).forward(inputs)
         if self.activation:
-            out=self.activation(out)
-
+            neuron_output=self.activation()(neuron_output)
         return neuron_output
 
 class AtomisticNN(nn.Module):
@@ -142,8 +122,7 @@ class AtomisticNN(nn.Module):
         activation: Activation function to be utilized. (Default=Tanh())
     """
 
-
-    def __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=2,n_hidden_size=10,activation=Tanh):
+    def __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=32,n_hidden_size=10,activation=Tanh):
         super(AtomisticNN,self).__init__()
         #if n_hidden_size is None:
             #implement pyramid neuron structure across each layer
@@ -160,12 +139,26 @@ class AtomisticNN(nn.Module):
 
         Arguments:
             inputs (torch.Tensor): NN inputs
-
         """
 
         return self.model_net(inputs)
 
-AtomisticNN()
 
+training_data=AtomsDataset(descriptor=Gaussian())
+sample_batch=[training_data[1], training_data[0], training_data[3],
+        training_data[18] ]
+dataset_size=len(sample_batch)
 
-#atoms_dataloader=DataLoader(test_data,batch_size=1,shuffle=False,sampler=None,batch_sampler=None,num_workers=0,collate_fn=,pin_memory=False,drop_last=False,timeout=0,worker_init_fn=None)
+model=AtomisticNN()
+
+atoms_dataloader=DataLoader(sample_batch,batch_size=2,collate_fn=collate_amp,shuffle=False)
+for data_sample in atoms_dataloader:
+    for element in data_sample.keys():
+        fingerprint_input=data_sample[element][0]
+        print fingerprint_input
+        fingerprint_labels=data_sample[element][1]
+        print fingerprint_labels
+        for i in fingerprint_input:
+            output=model(i)
+            print output
+            sys.exit()
