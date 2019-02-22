@@ -4,8 +4,11 @@ import numpy as np
 from ase import Atoms
 import torch
 import torch.nn as nn
+from torch.nn import init
 from torch.nn import Tanh
 import copy
+import math
+from collections import OrderedDict
 """Loading Data"""
 from torch.utils.data import Dataset, DataLoader
 from amp.utilities import hash_images
@@ -71,19 +74,20 @@ def data_factorization(training_data):
 
 def collate_amp(training_data):
     unique_atoms,fingerprint_dataset,energy_dataset,sample_indices=data_factorization(training_data)
+    # print energy_dataset
     element_specific_fingerprints={}
     for element in unique_atoms:
-        element_specific_fingerprints[element]=[[],[]]
+        element_specific_fingerprints[element]=[[],[],[]]
     for fp_index, sample_fingerprints in enumerate(fingerprint_dataset):
         for fingerprint in sample_fingerprints:
             atom_element=fingerprint[0]
             atom_fingerprint=fingerprint[1]
             element_specific_fingerprints[atom_element][0].append(torch.tensor(atom_fingerprint))
-            element_specific_fingerprints[atom_element][1].append(torch.tensor(sample_indices[fp_index]))
+            element_specific_fingerprints[atom_element][1].append(sample_indices[fp_index])
             #INSERT SCALING OF INPUT DATA
     for element in unique_atoms:
         element_specific_fingerprints[element][0]=torch.stack(element_specific_fingerprints[element][0])
-        element_specific_fingerprints[element][1]=torch.stack(element_specific_fingerprints[element][1])
+        element_specific_fingerprints[element][2].append(torch.tensor(energy_dataset))
     return element_specific_fingerprints
 
 class Dense(nn.Linear):
@@ -106,7 +110,12 @@ class Dense(nn.Linear):
         super(Dense,self).__init__(input_size,output_size,bias)
 
     def reset_parameters(self):
-        super(Dense,self).reset_parameters()
+        '''For testing purposes let weights initialize to 1 and bias to 0'''
+
+        init.constant_(self.weight,1)
+        init.constant_(self.bias,0)
+
+        # super(Dense,self).reset_parameters()
 
     def forward(self,inputs):
         neuron_output=super(Dense,self).forward(inputs)
@@ -115,7 +124,8 @@ class Dense(nn.Linear):
         return neuron_output
 
 class AtomisticNN(nn.Module):
-    """Constructs a fully connected neural network model
+    """Constructs a fully connected neural network model to be utilized for
+    each element type'''
 
     Arguments:
         n_input_nodes: Number of input nodes (Default=20 using BP SF)
@@ -128,7 +138,7 @@ class AtomisticNN(nn.Module):
 
     """
 
-    def __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=32,n_hidden_size=10,activation=Tanh):
+    def __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=2,n_hidden_size=2,activation=Tanh):
         super(AtomisticNN,self).__init__()
         #if n_hidden_size is None:
             #implement pyramid neuron structure across each layer
@@ -149,6 +159,35 @@ class AtomisticNN(nn.Module):
 
         return self.model_net(inputs)
 
+class FullNN(nn.Module):
+    '''Combines element specific NNs into a model to predict energy of a given
+    structure
+
+    '''
+
+    def __init__(self):
+        super(FullNN,self).__init__()
+
+    def forward(self,data):
+        energy_pred=OrderedDict()
+        elements=data.keys()
+        elementwise_models=nn.ModuleList()
+        for index,element in enumerate(elements):
+            elementwise_models.append(AtomisticNN())
+            model_inputs=data[element][0]
+            contribution_index=data[element][1]
+            labels=data[element][2]
+            atomwise_outputs=elementwise_models[index].forward(model_inputs)
+            for index,atom_output in enumerate(atomwise_outputs):
+                if contribution_index[index] not in energy_pred.keys():
+                    energy_pred[contribution_index[index]]=atom_output
+                else:
+                    energy_pred[contribution_index[index]]+=atom_output
+        output=energy_pred.values()
+        output=torch.stack(output)
+        print(list(elementwise_models.parameters()))
+        return output
+
 
 training_data=AtomsDataset(descriptor=Gaussian())
 sample_batch=[training_data[1], training_data[0], training_data[3],
@@ -158,14 +197,11 @@ dataset_size=len(sample_batch)
 atoms_dataloader=DataLoader(sample_batch,batch_size=2,collate_fn=collate_amp,shuffle=False)
 for i in atoms_dataloader:
     k=i
+# print k
+model=FullNN()
+model(k)
 
-model_test=Dense(20,1)
-# print model_test(k)
-
-
-
-
-# test(k)
+# print list(model.parameters())
 
 # for data_sample in atoms_dataloader:
     # for element in data_sample.keys():
