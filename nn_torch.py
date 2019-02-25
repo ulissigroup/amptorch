@@ -9,13 +9,12 @@ from torch.nn import Tanh
 import copy
 import math
 from collections import OrderedDict
+import time
 """Loading Data"""
 from torch.utils.data import Dataset, DataLoader
 from amp.utilities import hash_images
 from amp.utilities import check_images
 from amp.descriptor.gaussian import Gaussian
-from collections import defaultdict
-
 
 
 class AtomsDataset(Dataset):
@@ -112,10 +111,10 @@ class Dense(nn.Linear):
     def reset_parameters(self):
         '''For testing purposes let weights initialize to 1 and bias to 0'''
 
-        init.constant_(self.weight,1)
-        init.constant_(self.bias,0)
+        # init.constant_(self.weight,1)
+        # init.constant_(self.bias,0)
 
-        # super(Dense,self).reset_parameters()
+        super(Dense,self).reset_parameters()
 
     def forward(self,inputs):
         neuron_output=super(Dense,self).forward(inputs)
@@ -123,7 +122,7 @@ class Dense(nn.Linear):
             neuron_output=self.activation()(neuron_output)
         return neuron_output
 
-class AtomisticNN(nn.Module):
+class MLP(nn.Module):
     """Constructs a fully connected neural network model to be utilized for
     each element type'''
 
@@ -139,7 +138,7 @@ class AtomisticNN(nn.Module):
     """
 
     def __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=2,n_hidden_size=2,activation=Tanh):
-        super(AtomisticNN,self).__init__()
+        super(MLP,self).__init__()
         #if n_hidden_size is None:
             #implement pyramid neuron structure across each layer
         if type(n_hidden_size) is int:
@@ -165,19 +164,22 @@ class FullNN(nn.Module):
 
     '''
 
-    def __init__(self):
+    def __init__(self,unique_atoms):
         super(FullNN,self).__init__()
+        self.unique_atoms=unique_atoms
+        n_unique_atoms=len(unique_atoms)
+        elementwise_models=nn.ModuleList()
+        for n_models in range(n_unique_atoms):
+            elementwise_models.append(MLP())
+        self.elementwise_models=elementwise_models
 
     def forward(self,data):
         energy_pred=OrderedDict()
-        elements=data.keys()
-        elementwise_models=nn.ModuleList()
-        for index,element in enumerate(elements):
-            elementwise_models.append(AtomisticNN())
+        for index,element in enumerate(self.unique_atoms):
             model_inputs=data[element][0]
             contribution_index=data[element][1]
             labels=data[element][2]
-            atomwise_outputs=elementwise_models[index].forward(model_inputs)
+            atomwise_outputs=self.elementwise_models[index].forward(model_inputs)
             for index,atom_output in enumerate(atomwise_outputs):
                 if contribution_index[index] not in energy_pred.keys():
                     energy_pred[contribution_index[index]]=atom_output
@@ -185,31 +187,39 @@ class FullNN(nn.Module):
                     energy_pred[contribution_index[index]]+=atom_output
         output=energy_pred.values()
         output=torch.stack(output)
-        print(list(elementwise_models.parameters()))
         return output
 
+device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 training_data=AtomsDataset(descriptor=Gaussian())
 sample_batch=[training_data[1], training_data[0], training_data[3],
         training_data[18] ]
-dataset_size=len(sample_batch)
+unique_atoms,_,_,_=data_factorization(sample_batch)
+n_unique_atoms=len(unique_atoms)
 
-atoms_dataloader=DataLoader(sample_batch,batch_size=2,collate_fn=collate_amp,shuffle=False)
+atoms_dataloader=DataLoader(sample_batch,batch_size=2,collate_fn=collate_amp,drop_last=True,shuffle=False)
 for i in atoms_dataloader:
     k=i
-# print k
-model=FullNN()
-model(k)
 
+# k=k.values()
+# k_tens=k[0][0]
+k.values()[0][0]=k.values()[0][0].to(device)
+print k.values()[0][0]
+model=FullNN(unique_atoms)
 # print list(model.parameters())
+# print ' '
+# print model(k)
+def train_model(model,criterion,optimizer,scheduler,num_epochs=2):
+    since = time.time()
 
-# for data_sample in atoms_dataloader:
-    # for element in data_sample.keys():
-        # fingerprint_input=data_sample[element][0]
-        # print fingerprint_input
-        # fingerprint_labels=data_sample[element][1]
-        # print fingerprint_labels
-        # for i in fingerprint_input:
-            # output=model(i)
-            # print output
-            # sys.exit()
+    best_model_wts=copy.deepcopy(model.state_dict())
+    best_acc=0.0
+
+    for epoch in range(num_epochs):
+        print ('Epoch {}/{}'.format(epoch+1,num_epochs))
+        print('-'*10)
+
+        scheduler.step()
+        model.train()
+
+        # for data_sample in dataloader:
