@@ -139,7 +139,7 @@ class MLP(nn.Module):
 
     """
 
-    def __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=2,n_hidden_size=2,activation=Tanh):
+    def  __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=5,n_hidden_size=5,activation=Tanh):
         super(MLP,self).__init__()
         #if n_hidden_size is None:
             #implement pyramid neuron structure across each layer
@@ -193,29 +193,6 @@ class FullNN(nn.Module):
         output=torch.stack(output)
         return output,targets
 
-# device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-# training_data=AtomsDataset(descriptor=Gaussian())
-# sample_batch=[training_data[1], training_data[0], training_data[3],
-        # training_data[18] ]
-# unique_atoms,_,_,_=data_factorization(sample_batch)
-# n_unique_atoms=len(unique_atoms)
-
-# atoms_dataloader=DataLoader(sample_batch,batch_size=2,collate_fn=collate_amp,drop_last=True,shuffle=False)
-# for i in atoms_dataloader:
-    # k=i
-
-# print k
-
-# model=FullNN(unique_atoms)
-# output,targets=model(k)
-# print output
-# print targets
-
-# print torch.max(output,1)
-# loss=nn.MSELoss()
-# test=loss(output,targets)
-
 def train_model(model,criterion,optimizer,scheduler,num_epochs):
     since = time.time()
 
@@ -267,12 +244,10 @@ def train_model(model,criterion,optimizer,scheduler,num_epochs):
 
 device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 training_data=AtomsDataset(descriptor=Gaussian())
-# sample_batch=[training_data[1], training_data[0], training_data[3],
-        # training_data[18] ]
 unique_atoms,_,_,_=data_factorization(training_data)
 n_unique_atoms=len(unique_atoms)
 
-atoms_dataloader=DataLoader(training_data,batch_size=2,collate_fn=collate_amp,drop_last=True,shuffle=False)
+atoms_dataloader=DataLoader(training_data,batch_size=3,collate_fn=collate_amp,drop_last=True,shuffle=True)
 
 
 def main():
@@ -282,16 +257,27 @@ def main():
     criterion=nn.MSELoss()
 
     #Optimize all parameters
-    optimizer_ft=optim.SGD(model.parameters(),lr=.001,momentum=0.01)
+    optimizer_ft=optim.SGD(model.parameters(),lr=.001,momentum=0.1)
 
     #Decay LR over time (factor of .1 every 7 seconds)
     exp_lr_scheduler=lr_scheduler.StepLR(optimizer_ft,step_size=7,gamma=0.1)
 
-    model=train_model(model,criterion,optimizer_ft,exp_lr_scheduler,num_epochs=100)
+    model=train_model(model,criterion,optimizer_ft,exp_lr_scheduler,num_epochs=10)
     torch.save(model.state_dict(),'Atomistic_model.pt')
     # loss=nn.MSELoss()
     # test=loss(output,targets)
 
+def test_model():
+    model=FullNN(unique_atoms)
+    model=model.to(device)
+    model.load_state_dict(torch.load('Atomistic_model.pt'))
+
+    for data_sample in atoms_dataloader:
+        outputs,target=model(data_sample)
+        print outputs
+        print target
+        print('')
 
 if __name__ == '__main__':
+    # test_model()
     main()
