@@ -15,7 +15,9 @@ from torch.utils.data import Dataset, DataLoader
 from amp.utilities import hash_images
 from amp.utilities import check_images
 from amp.descriptor.gaussian import Gaussian
-
+'''Trainer'''
+import torch.optim as optim
+from torch.optim import lr_scheduler
 
 class AtomsDataset(Dataset):
     """
@@ -177,8 +179,10 @@ class FullNN(nn.Module):
         energy_pred=OrderedDict()
         for index,element in enumerate(self.unique_atoms):
             model_inputs=data[element][0]
+            model_inputs=model_inputs.to(device)
             contribution_index=data[element][1]
-            labels=data[element][2]
+            targets=data[element][2][0]
+            targets=targets.to(device)
             atomwise_outputs=self.elementwise_models[index].forward(model_inputs)
             for index,atom_output in enumerate(atomwise_outputs):
                 if contribution_index[index] not in energy_pred.keys():
@@ -187,33 +191,36 @@ class FullNN(nn.Module):
                     energy_pred[contribution_index[index]]+=atom_output
         output=energy_pred.values()
         output=torch.stack(output)
-        return output
+        return output,targets
 
-device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-training_data=AtomsDataset(descriptor=Gaussian())
-sample_batch=[training_data[1], training_data[0], training_data[3],
-        training_data[18] ]
-unique_atoms,_,_,_=data_factorization(sample_batch)
-n_unique_atoms=len(unique_atoms)
+# training_data=AtomsDataset(descriptor=Gaussian())
+# sample_batch=[training_data[1], training_data[0], training_data[3],
+        # training_data[18] ]
+# unique_atoms,_,_,_=data_factorization(sample_batch)
+# n_unique_atoms=len(unique_atoms)
 
-atoms_dataloader=DataLoader(sample_batch,batch_size=2,collate_fn=collate_amp,drop_last=True,shuffle=False)
-for i in atoms_dataloader:
-    k=i
+# atoms_dataloader=DataLoader(sample_batch,batch_size=2,collate_fn=collate_amp,drop_last=True,shuffle=False)
+# for i in atoms_dataloader:
+    # k=i
 
-# k=k.values()
-# k_tens=k[0][0]
-k.values()[0][0]=k.values()[0][0].to(device)
-print k.values()[0][0]
-model=FullNN(unique_atoms)
-# print list(model.parameters())
-# print ' '
-# print model(k)
-def train_model(model,criterion,optimizer,scheduler,num_epochs=2):
+# print k
+
+# model=FullNN(unique_atoms)
+# output,targets=model(k)
+# print output
+# print targets
+
+# print torch.max(output,1)
+# loss=nn.MSELoss()
+# test=loss(output,targets)
+
+def train_model(model,criterion,optimizer,scheduler,num_epochs):
     since = time.time()
 
     best_model_wts=copy.deepcopy(model.state_dict())
-    best_acc=0.0
+    best_loss=100000000
 
     for epoch in range(num_epochs):
         print ('Epoch {}/{}'.format(epoch+1,num_epochs))
@@ -222,4 +229,101 @@ def train_model(model,criterion,optimizer,scheduler,num_epochs=2):
         scheduler.step()
         model.train()
 
-        # for data_sample in dataloader:
+        running_loss=0.0
+
+        #Iterate over the dataloader
+        for data_sample in atoms_dataloader:
+            #zero the parameter gradients
+            optimizer.zero_grad()
+            #forward
+            with torch.set_grad_enabled(True):
+                outputs,target=model(data_sample)
+                _,preds = torch.max(outputs,1)
+                loss=criterion(outputs,target)
+
+                #backward + optimize only if in training phase
+                loss.backward()
+                optimizer.step()
+
+            running_loss +=loss.item()
+
+        epoch_loss= running_loss
+
+        print('train Loss: {:.4f}'.format(epoch_loss))
+
+        if epoch_loss<best_loss:
+            best_loss=epoch_loss
+            best_model_wts=copy.deepcopy(model.state_dict())
+        print('')
+
+    time_elapsed=time.time()-since
+    print('Training complete in {:.0f}m {:.0f}s'.format
+            (time_elapsed//60,time_elapsed % 60))
+
+    print('Best train loss: {:4f}'.format(best_loss))
+
+    model.load_state_dict(best_model_wts)
+    return model
+
+device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+training_data=AtomsDataset(descriptor=Gaussian())
+# sample_batch=[training_data[1], training_data[0], training_data[3],
+        # training_data[18] ]
+unique_atoms,_,_,_=data_factorization(training_data)
+n_unique_atoms=len(unique_atoms)
+
+atoms_dataloader=DataLoader(training_data,batch_size=2,collate_fn=collate_amp,drop_last=True,shuffle=False)
+
+
+def main():
+
+    model=FullNN(unique_atoms)
+    model=model.to(device)
+    criterion=nn.MSELoss()
+
+    #Optimize all parameters
+    optimizer_ft=optim.SGD(model.parameters(),lr=.001,momentum=0.01)
+
+    #Decay LR over time (factor of .1 every 7 seconds)
+    exp_lr_scheduler=lr_scheduler.StepLR(optimizer_ft,step_size=7,gamma=0.1)
+
+    model=train_model(model,criterion,optimizer_ft,exp_lr_scheduler,num_epochs=100)
+    torch.save(model.state_dict(),'Atomistic_model.pt')
+    # loss=nn.MSELoss()
+    # test=loss(output,targets)
+
+
+if __name__ == '__main__':
+    main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
