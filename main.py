@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
-from nn_torch import AtomsDataset,DataLoader
+from torch.utils.data import DataLoader
+from data import AtomsDataset,data_factorization,collate_amp
 from amp.descriptor.gaussian import Gaussian
-from nn_torch import data_factorization,FullNN,train_model
-from nn_torch import data_split,collate_amp
+from nn_torch import FullNN,train_model
 import torch.optim as optim
 from torch.optim import lr_scheduler
 
@@ -15,7 +15,7 @@ unique_atoms,_,_,_=data_factorization(training_data)
 n_unique_atoms=len(unique_atoms)
 
 validation_frac=.2
-samplers=data_split(training_data,validation_frac)
+samplers=training_data.data_split(training_data,validation_frac)
 
 atoms_dataloaders={x:DataLoader(training_data,batch_size=3,collate_fn=collate_amp,sampler=samplers[x])
         for x in ['train','val']}
