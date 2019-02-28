@@ -1,4 +1,3 @@
-import os
 import sys
 import numpy as np
 from ase import Atoms
@@ -7,17 +6,19 @@ import torch.nn as nn
 from torch.nn import init
 from torch.nn import Tanh
 import copy
-import math
 from collections import OrderedDict
 import time
 """Loading Data"""
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset, DataLoader, SubsetRandomSampler
 from amp.utilities import hash_images
 from amp.utilities import check_images
 from amp.descriptor.gaussian import Gaussian
 '''Trainer'''
 import torch.optim as optim
 from torch.optim import lr_scheduler
+'''Plotting'''
+import matplotlib.pyplot as plt
+
 
 class AtomsDataset(Dataset):
     """
@@ -42,6 +43,19 @@ class AtomsDataset(Dataset):
         image_fingerprint=self.descriptor.fingerprints[hash_name]
         image_potential_energy=self.atom_images[hash_name].get_potential_energy()
         return {index:(image_fingerprint,image_potential_energy)}
+
+def data_split(training_data,val_frac):
+    dataset_size=len(training_data)
+    indices=np.random.permutation(dataset_size)
+    split=int(np.floor(val_frac*dataset_size))
+    train_idx,val_idx=indices[split:],indices[:split]
+
+    train_sampler=SubsetRandomSampler(train_idx)
+    val_sampler=SubsetRandomSampler(val_idx)
+
+    samplers={'train':train_sampler,'val':val_sampler}
+
+    return samplers
 
 def data_factorization(training_data):
     """
@@ -139,7 +153,7 @@ class MLP(nn.Module):
 
     """
 
-    def  __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=5,n_hidden_size=5,activation=Tanh):
+    def  __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=3,n_hidden_size=10,activation=Tanh):
         super(MLP,self).__init__()
         #if n_hidden_size is None:
             #implement pyramid neuron structure across each layer
@@ -193,91 +207,116 @@ class FullNN(nn.Module):
         output=torch.stack(output)
         return output,targets
 
-def train_model(model,criterion,optimizer,scheduler,num_epochs):
+def train_model(model,criterion,optimizer,scheduler,atoms_dataloaders,num_epochs):
     since = time.time()
 
     best_model_wts=copy.deepcopy(model.state_dict())
     best_loss=100000000
 
+    plot_epoch_x=list(range(1,num_epochs+1))
+    print plot_epoch_x
+    plot_loss_y={'train':[],'val':[]}
     for epoch in range(num_epochs):
         print ('Epoch {}/{}'.format(epoch+1,num_epochs))
         print('-'*10)
 
-        scheduler.step()
-        model.train()
+        for phase in ['train','val']:
 
-        running_loss=0.0
+            if phase == 'train':
+                scheduler.step()
+                model.train()
+            else:
+                model.eval()
 
-        #Iterate over the dataloader
-        for data_sample in atoms_dataloader:
-            #zero the parameter gradients
-            optimizer.zero_grad()
-            #forward
-            with torch.set_grad_enabled(True):
-                outputs,target=model(data_sample)
-                _,preds = torch.max(outputs,1)
-                loss=criterion(outputs,target)
+            MSE=0.0
 
-                #backward + optimize only if in training phase
-                loss.backward()
-                optimizer.step()
+            #Iterate over the dataloader
+            for data_sample in atoms_dataloaders[phase]:
+                #zero the parameter gradients
+                optimizer.zero_grad()
 
-            running_loss +=loss.item()
+                #forward
+                with torch.set_grad_enabled(phase == 'train'):
+                    outputs,target=model(data_sample)
+                    _,preds = torch.max(outputs,1)
+                    loss=criterion(outputs,target)
 
-        epoch_loss= running_loss
+                    #backward + optimize only if in training phase
+                    if phase == 'train':
+                        loss.backward()
+                        optimizer.step()
 
-        print('train Loss: {:.4f}'.format(epoch_loss))
+                MSE += loss.item()
 
-        if epoch_loss<best_loss:
-            best_loss=epoch_loss
-            best_model_wts=copy.deepcopy(model.state_dict())
+            RMSE=np.sqrt(MSE)
+            epoch_loss = RMSE
+            plot_loss_y[phase].append(RMSE)
+
+            print('{} Loss: {:.4f}'.format(phase,epoch_loss))
+
+            if phase == 'val' and epoch_loss<best_loss:
+                best_loss=epoch_loss
+                best_model_wts=copy.deepcopy(model.state_dict())
+
+            # if epoch_loss<best_loss:
+                # best_loss=epoch_loss
+                # best_model_wts=copy.deepcopy(model.state_dict())
+
         print('')
 
     time_elapsed=time.time()-since
     print('Training complete in {:.0f}m {:.0f}s'.format
             (time_elapsed//60,time_elapsed % 60))
 
-    print('Best train loss: {:4f}'.format(best_loss))
+    print('Best validation loss: {:4f}'.format(best_loss))
+
+    plt.title('RMSE vs. Epoch')
+    plt.xlabel('Epoch #')
+    plt.ylabel('RMSE')
+    plt.plot(plot_epoch_x,plot_loss_y['train'],label='train')
+    plt.plot(plot_epoch_x,plot_loss_y['val'],label='val')
+    plt.legend()
+    plt.show()
 
     model.load_state_dict(best_model_wts)
     return model
 
 device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-training_data=AtomsDataset(descriptor=Gaussian())
-unique_atoms,_,_,_=data_factorization(training_data)
-n_unique_atoms=len(unique_atoms)
 
-atoms_dataloader=DataLoader(training_data,batch_size=3,collate_fn=collate_amp,drop_last=True,shuffle=True)
+# training_data=AtomsDataset(descriptor=Gaussian())
+# unique_atoms,_,_,_=data_factorization(training_data)
+# n_unique_atoms=len(unique_atoms)
+
+# validation_frac=.2
+# samplers=data_split(training_data,validation_frac)
 
 
-def main():
+# atoms_dataloaders={x:DataLoader(training_data,batch_size=3,collate_fn=collate_amp,sampler=samplers[x])
+        # for x in ['train','val']}
 
-    model=FullNN(unique_atoms)
-    model=model.to(device)
-    criterion=nn.MSELoss()
+# def main():
+    # model=FullNN(unique_atoms)
+    # model=model.to(device)
+    # criterion=nn.MSELoss()
 
-    #Optimize all parameters
-    optimizer_ft=optim.SGD(model.parameters(),lr=.001,momentum=0.1)
+    # Optimize all parameters
+    # optimizer_ft=optim.SGD(model.parameters(),lr=.001,momentum=0.1)
 
-    #Decay LR over time (factor of .1 every 7 seconds)
-    exp_lr_scheduler=lr_scheduler.StepLR(optimizer_ft,step_size=7,gamma=0.1)
+    # Decay LR over time (factor of .1 every 7 seconds)
+    # exp_lr_scheduler=lr_scheduler.StepLR(optimizer_ft,step_size=7,gamma=0.1)
 
-    model=train_model(model,criterion,optimizer_ft,exp_lr_scheduler,num_epochs=10)
-    torch.save(model.state_dict(),'Atomistic_model.pt')
-    # loss=nn.MSELoss()
-    # test=loss(output,targets)
+    # model=train_model(model,criterion,optimizer_ft,exp_lr_scheduler,num_epochs=100)
+    # torch.save(model.state_dict(),'Atomistic_model.pt')
 
-def test_model():
-    model=FullNN(unique_atoms)
-    model=model.to(device)
-    model.load_state_dict(torch.load('Atomistic_model.pt'))
+# def test_model():
+    # model=FullNN(unique_atoms)
+    # model=model.to(device)
+    # model.load_state_dict(torch.load('Atomistic_model.pt'))
 
-    for data_sample in atoms_dataloader:
-        outputs,target=model(data_sample)
-        print outputs
-        print target
-        print('')
+    # for data_sample in atoms_dataloader:
+        # outputs,target=model(data_sample)
+        # print outputs
+        # print target
+        # print('')
 
-if __name__ == '__main__':
-    # test_model()
-    main()
+# main()
