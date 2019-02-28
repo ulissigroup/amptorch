@@ -1,5 +1,8 @@
+import numpy as np
 import torch
 from torch.utils.data import Dataset,SubsetRandomSampler
+from amp.utilities import check_images,hash_images
+from amp.descriptor.gaussian import Gaussian
 
 class AtomsDataset(Dataset):
     """
@@ -25,19 +28,18 @@ class AtomsDataset(Dataset):
         image_potential_energy=self.atom_images[hash_name].get_potential_energy()
         return {index:(image_fingerprint,image_potential_energy)}
 
+    def data_split(self,training_data,val_frac):
+        dataset_size=len(training_data)
+        indices=np.random.permutation(dataset_size)
+        split=int(np.floor(val_frac*dataset_size))
+        train_idx,val_idx=indices[split:],indices[:split]
 
-def data_split(training_data,val_frac):
-    dataset_size=len(training_data)
-    indices=np.random.permutation(dataset_size)
-    split=int(np.floor(val_frac*dataset_size))
-    train_idx,val_idx=indices[split:],indices[:split]
+        train_sampler=SubsetRandomSampler(train_idx)
+        val_sampler=SubsetRandomSampler(val_idx)
 
-    train_sampler=SubsetRandomSampler(train_idx)
-    val_sampler=SubsetRandomSampler(val_idx)
+        samplers={'train':train_sampler,'val':val_sampler}
 
-    samplers={'train':train_sampler,'val':val_sampler}
-
-    return samplers
+        return samplers
 
 def data_factorization(training_data):
     """

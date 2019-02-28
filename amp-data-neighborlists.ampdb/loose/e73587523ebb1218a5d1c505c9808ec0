@@ -1,5 +1,5 @@
 (lp1
-(cnumpy.core._multiarray_umath
+(cnumpy.core.multiarray
 _reconstruct
 p2
 (cnumpy
