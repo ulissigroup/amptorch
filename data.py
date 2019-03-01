@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 import torch
 from torch.utils.data import Dataset,SubsetRandomSampler
@@ -7,16 +8,17 @@ from amp.descriptor.gaussian import Gaussian
 class AtomsDataset(Dataset):
     """
     Atoms dataset
-    Parameters: Descriptor type and .traj file name
+    Parameters: Descriptor type and input images(list,trajectory file, or a
+    database)
     Output: Returns, for a given index, the image_fingerprint and image_potential
     energy
     """
 
-    def __init__(self,descriptor,filename='sample_training_data.traj'):
-        self.filename=filename
+    def __init__(self,images,descriptor):
+        self.images=images
         self.descriptor=descriptor
-        self.atom_images=hash_images(filename)
-        check_images(self.atom_images,forces=False)
+        self.atom_images=hash_images(images)
+        # check_images(self.atom_images,forces=False)
         self.descriptor.calculate_fingerprints(self.atom_images)
 
     def __len__(self):
@@ -25,7 +27,11 @@ class AtomsDataset(Dataset):
     def __getitem__(self,index):
         hash_name=self.atom_images.keys()[index]
         image_fingerprint=self.descriptor.fingerprints[hash_name]
-        image_potential_energy=self.atom_images[hash_name].get_potential_energy()
+        try:
+            image_potential_energy=self.atom_images[hash_name].get_potential_energy()
+        except:
+            print 'Atoms object has no claculatot set! Modify the input images before trying again.'
+            sys.exit()
         return {index:(image_fingerprint,image_potential_energy)}
 
     def data_split(self,training_data,val_frac):
@@ -71,6 +77,7 @@ def data_factorization(training_data):
                 unique_atoms.append(element)
     return unique_atoms,fingerprint_dataset,energy_dataset,sample_indices
 
+
 def collate_amp(training_data):
     unique_atoms,fingerprint_dataset,energy_dataset,sample_indices=data_factorization(training_data)
     # print energy_dataset
@@ -88,5 +95,4 @@ def collate_amp(training_data):
         element_specific_fingerprints[element][0]=torch.stack(element_specific_fingerprints[element][0])
         element_specific_fingerprints[element][2].append(torch.tensor(energy_dataset))
     return element_specific_fingerprints
-
 

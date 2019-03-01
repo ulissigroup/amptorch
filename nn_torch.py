@@ -29,8 +29,6 @@ class Dense(nn.Linear):
         super(Dense,self).__init__(input_size,output_size,bias)
 
     def reset_parameters(self):
-        '''For testing purposes let weights initialize to 1 and bias to 0'''
-
         # init.constant_(self.weight,1)
         # init.constant_(self.bias,0)
 
@@ -92,15 +90,16 @@ class FullNN(nn.Module):
         for n_models in range(n_unique_atoms):
             elementwise_models.append(MLP())
         self.elementwise_models=elementwise_models
+        self.model_device=next(elementwise_models.parameters()).device
 
     def forward(self,data):
         energy_pred=OrderedDict()
         for index,element in enumerate(self.unique_atoms):
             model_inputs=data[element][0]
-            model_inputs=model_inputs.to(device)
+            model_inputs=model_inputs.to(self.model_device)
             contribution_index=data[element][1]
             targets=data[element][2][0]
-            targets=targets.to(device)
+            targets=targets.to(self.model_device)
             atomwise_outputs=self.elementwise_models[index].forward(model_inputs)
             for index,atom_output in enumerate(atomwise_outputs):
                 if contribution_index[index] not in energy_pred.keys():
@@ -186,3 +185,4 @@ def train_model(model,criterion,optimizer,scheduler,atoms_dataloaders,num_epochs
     return model
 
 device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
