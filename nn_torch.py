@@ -90,16 +90,16 @@ class FullNN(nn.Module):
         for n_models in range(n_unique_atoms):
             elementwise_models.append(MLP())
         self.elementwise_models=elementwise_models
-        self.model_device=next(elementwise_models.parameters()).device
+        # self.model_device=next(elementwise_models.parameters()).device
 
     def forward(self,data):
         energy_pred=OrderedDict()
         for index,element in enumerate(self.unique_atoms):
             model_inputs=data[element][0]
-            model_inputs=model_inputs.to(self.model_device)
+            # model_inputs=model_inputs.to(self.model_device)
             contribution_index=data[element][1]
             targets=data[element][2][0]
-            targets=targets.to(self.model_device)
+            # targets=targets.to(self.model_device)
             atomwise_outputs=self.elementwise_models[index].forward(model_inputs)
             for index,atom_output in enumerate(atomwise_outputs):
                 if contribution_index[index] not in energy_pred.keys():
@@ -110,7 +110,7 @@ class FullNN(nn.Module):
         output=torch.stack(output)
         return output,targets
 
-def train_model(model,criterion,optimizer,scheduler,atoms_dataloaders,num_epochs):
+def train_model(model,unique_atoms,criterion,optimizer,scheduler,atoms_dataloaders,num_epochs):
     since = time.time()
 
     best_model_wts=copy.deepcopy(model.state_dict())
@@ -135,6 +135,12 @@ def train_model(model,criterion,optimizer,scheduler,atoms_dataloaders,num_epochs
 
             #Iterate over the dataloader
             for data_sample in atoms_dataloaders[phase]:
+
+                #Send inputs and labels to the corresponding device (cpu or gpu)
+                for element in unique_atoms:
+                    data_sample[element][0]=data_sample[element][0].to(device)
+                    data_sample[element][2][0]=data_sample[element][2][0].to(device)
+
                 #zero the parameter gradients
                 optimizer.zero_grad()
 
