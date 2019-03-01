@@ -34,7 +34,7 @@ optimizer_ft=optim.SGD(model.parameters(),lr=.001,momentum=0.1)
 #Define scheduler search strategies
 exp_lr_scheduler=lr_scheduler.StepLR(optimizer_ft,step_size=7,gamma=0.1)
 
-model=train_model(model,criterion,optimizer_ft,exp_lr_scheduler,atoms_dataloaders,num_epochs=100)
+model=train_model(model,unique_atoms,criterion,optimizer_ft,exp_lr_scheduler,atoms_dataloaders,num_epochs=100)
 torch.save(model.state_dict(),'Atomistic_model.pt')
 
 def test_model():
