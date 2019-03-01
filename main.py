@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import numpy as np
 from torch.utils.data import DataLoader
 from data import AtomsDataset,data_factorization,collate_amp
 from amp.descriptor.gaussian import Gaussian
@@ -7,10 +8,13 @@ from nn_torch import FullNN,train_model
 import torch.optim as optim
 from torch.optim import lr_scheduler
 
+from ase.build import molecule
+from ase import Atoms
+from ase.calculators.emt import EMT
 
 device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-training_data=AtomsDataset(descriptor=Gaussian())
+training_data=AtomsDataset('sample_training_data.traj',descriptor=Gaussian())
 unique_atoms,_,_,_=data_factorization(training_data)
 n_unique_atoms=len(unique_atoms)
 
