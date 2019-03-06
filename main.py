@@ -1,3 +1,4 @@
+import sys
 import torch
 import torch.nn as nn
 import numpy as np
@@ -12,7 +13,12 @@ from ase.build import molecule
 from ase import Atoms
 from ase.calculators.emt import EMT
 
-device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# print device
+print torch.cuda.is_available()
+cuda=torch.device('cuda')
+print cuda
+sys.exit()
 
 training_data=AtomsDataset('sample_training_data.traj',descriptor=Gaussian())
 unique_atoms,_,_,_=data_factorization(training_data)
