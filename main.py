@@ -16,8 +16,6 @@ from ase.calculators.emt import EMT
 # device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 # print device
 print torch.cuda.is_available()
-cuda=torch.device('cuda')
-print cuda
 sys.exit()
 
 training_data=AtomsDataset('sample_training_data.traj',descriptor=Gaussian())
