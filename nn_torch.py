@@ -191,4 +191,3 @@ def train_model(model,unique_atoms,criterion,optimizer,scheduler,atoms_dataloade
     return model
 
 device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-

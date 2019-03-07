@@ -1,0 +1,316 @@
+
+   oo      o       o   oooooo
+  o  o     oo     oo   o     o
+ o    o    o o   o o   o     o
+o      o   o  o o  o   o     o
+oooooooo   o   o   o   oooooo
+o      o   o       o   o
+o      o   o       o   o
+o      o   o       o   o
+
+Amp: Atomistic Machine-learning Package
+Developed by Andrew Peterson, Alireza Khorshidi, and others,
+Brown University.
+PI Website: http://brown.edu/go/catalyst
+Official repository: http://bitbucket.org/andrewpeterson/amp
+Official documentation: http://amp.readthedocs.org/
+Citation:
+  Alireza Khorshidi & Andrew A. Peterson,
+  Computer Physics Communications 207: 310-324 (2016).
+  http://doi.org/10.1016/j.cpc.2016.05.010
+======================================================================
+User: mshuaibi
+Hostname: ulissigroup-Alienware-Shuaibi
+Date: 2019-03-07T15:04:42 (2019-03-07T20:04:42 UTC)
+Architecture: x86_64
+PID: 8679
+Amp version: 0.6.1
+Amp directory: /home/mshuaibi/.local/lib/python2.7/site-packages/amp
+ Last commit: unknown hash
+ Last commit date: unknown date
+Python: v2.7.15: /usr/bin/python
+ASE v3.17.0: /home/mshuaibi/.local/lib/python2.7/site-packages/ase
+NumPy v1.16.2: /home/mshuaibi/.local/lib/python2.7/site-packages/numpy
+SciPy v1.2.1: /home/mshuaibi/.local/lib/python2.7/site-packages/scipy
+ZMQ/PyZMQ v4.3.1/v18.0.1: /home/mshuaibi/.local/lib/python2.7/site-packages/zmq
+pxssh: Not available from pxssh.
+pxssh (via pexpect v4.6.0): /home/mshuaibi/.local/lib/python2.7/site-packages/pexpect/pxssh.pyc
+======================================================================
+No queuing system detected; single machine assumed.
+Parallel configuration determined from environment for <single machine>:
+  localhost: 12
+
+Amp training started. 2019-03-07T15:04:42
+
+Descriptor: Gaussian
+  (<amp.descriptor.gaussian.Gaussian object at 0x7f977a6c1d90>)
+Model: NeuralNetwork
+  (<amp.model.neuralnetwork.NeuralNetwork object at 0x7f977a6c1dd0>)
+Attempting to read images from file sample_training_data.traj.
+Hashing images...
+ 20 unique images after hashing.
+...hashing completed. 0.0 min.
+
+Descriptor
+==========
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+Finding unique set of elements in training data.
+2 unique elements included: Cu, Pt
+No symmetry functions supplied; creating defaults.
+Number of symmetry functions for each element:
+ Pt: 20
+ Cu: 20
+Pt feature vector functions:
+ 0: G2, Cu, eta = 0.05
+ 1: G2, Pt, eta = 0.05
+ 2: G2, Cu, eta = 4.0
+ 3: G2, Pt, eta = 4.0
+ 4: G2, Cu, eta = 20.0
+ 5: G2, Pt, eta = 20.0
+ 6: G2, Cu, eta = 80.0
+ 7: G2, Pt, eta = 80.0
+ 8: G4, (Cu, Cu), eta=0.005, gamma=1.0, zeta=1.0
+ 9: G4, (Cu, Pt), eta=0.005, gamma=1.0, zeta=1.0
+ 10: G4, (Pt, Pt), eta=0.005, gamma=1.0, zeta=1.0
+ 11: G4, (Cu, Cu), eta=0.005, gamma=-1.0, zeta=1.0
+ 12: G4, (Cu, Pt), eta=0.005, gamma=-1.0, zeta=1.0
+ 13: G4, (Pt, Pt), eta=0.005, gamma=-1.0, zeta=1.0
+ 14: G4, (Cu, Cu), eta=0.005, gamma=1.0, zeta=4.0
+ 15: G4, (Cu, Pt), eta=0.005, gamma=1.0, zeta=4.0
+ 16: G4, (Pt, Pt), eta=0.005, gamma=1.0, zeta=4.0
+ 17: G4, (Cu, Cu), eta=0.005, gamma=-1.0, zeta=4.0
+ 18: G4, (Cu, Pt), eta=0.005, gamma=-1.0, zeta=4.0
+ 19: G4, (Pt, Pt), eta=0.005, gamma=-1.0, zeta=4.0
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.05
+ 1: G2, Pt, eta = 0.05
+ 2: G2, Cu, eta = 4.0
+ 3: G2, Pt, eta = 4.0
+ 4: G2, Cu, eta = 20.0
+ 5: G2, Pt, eta = 20.0
+ 6: G2, Cu, eta = 80.0
+ 7: G2, Pt, eta = 80.0
+ 8: G4, (Cu, Cu), eta=0.005, gamma=1.0, zeta=1.0
+ 9: G4, (Cu, Pt), eta=0.005, gamma=1.0, zeta=1.0
+ 10: G4, (Pt, Pt), eta=0.005, gamma=1.0, zeta=1.0
+ 11: G4, (Cu, Cu), eta=0.005, gamma=-1.0, zeta=1.0
+ 12: G4, (Cu, Pt), eta=0.005, gamma=-1.0, zeta=1.0
+ 13: G4, (Pt, Pt), eta=0.005, gamma=-1.0, zeta=1.0
+ 14: G4, (Cu, Cu), eta=0.005, gamma=1.0, zeta=4.0
+ 15: G4, (Cu, Pt), eta=0.005, gamma=1.0, zeta=4.0
+ 16: G4, (Pt, Pt), eta=0.005, gamma=1.0, zeta=4.0
+ 17: G4, (Cu, Cu), eta=0.005, gamma=-1.0, zeta=4.0
+ 18: G4, (Cu, Pt), eta=0.005, gamma=-1.0, zeta=4.0
+ 19: G4, (Pt, Pt), eta=0.005, gamma=-1.0, zeta=4.0
+Calculating neighborlists...
+ Data stored in file calc-neighborlists.
+ File exists with 0 total images, 0 of which are needed.
+ 20 new calculations needed.
+ Parallel processing.
+ Established server at ulissigroup-Alienware-Shuaibi:41503.
+ Establishing worker sessions.
+ Starting local connections.
+  Session 0 (localhost): Log and error written to /tmp/tmpkC7xRR.stderr
+  Session 1 (localhost): Log and error written to /tmp/tmp2CkmMs.stderr
+  Session 2 (localhost): Log and error written to /tmp/tmpG0zFvx.stderr
+  Session 3 (localhost): Log and error written to /tmp/tmp2A56wZ.stderr
+  Session 4 (localhost): Log and error written to /tmp/tmpDeHuQe.stderr
+  Session 5 (localhost): Log and error written to /tmp/tmpMPvr5M.stderr
+  Session 6 (localhost): Log and error written to /tmp/tmpH9hbbc.stderr
+  Session 7 (localhost): Log and error written to /tmp/tmpgbYK69.stderr
+  Session 8 (localhost): Log and error written to /tmp/tmpTrI51c.stderr
+  Session 9 (localhost): Log and error written to /tmp/tmpugFie6.stderr
+  Session 10 (localhost): Log and error written to /tmp/tmpCbeeSG.stderr
+  Session 11 (localhost): Log and error written to /tmp/tmpNVhikm.stderr
+ Parallel calculations starting...
+  Process 10 returned 1 results.
+  Process 8 returned 1 results.
+  Process 9 returned 1 results.
+  Process 11 returned 1 results.
+  Process 2 returned 2 results.
+  Process 5 returned 2 results.
+  Process 0 returned 2 results.
+  Process 3 returned 2 results.
+  Process 7 returned 2 results.
+  Process 1 returned 2 results.
+  Process 4 returned 2 results.
+  Process 6 returned 2 results.
+  20 new results.
+ ...parallel calculations finished. 0.0 min.
+ Adding new results to database.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file calc-fingerprints.
+ File exists with 0 total images, 0 of which are needed.
+ 20 new calculations needed.
+ Parallel processing.
+ Established server at ulissigroup-Alienware-Shuaibi:41851.
+ Establishing worker sessions.
+ Starting local connections.
+  Session 0 (localhost): Log and error written to /tmp/tmpr8qfoe.stderr
+  Session 1 (localhost): Log and error written to /tmp/tmpgMVuM1.stderr
+  Session 2 (localhost): Log and error written to /tmp/tmpXuDERy.stderr
+  Session 3 (localhost): Log and error written to /tmp/tmpXrUoKx.stderr
+  Session 4 (localhost): Log and error written to /tmp/tmpRZ5PzG.stderr
+  Session 5 (localhost): Log and error written to /tmp/tmpl0tB7a.stderr
+  Session 6 (localhost): Log and error written to /tmp/tmpUXTuLk.stderr
+  Session 7 (localhost): Log and error written to /tmp/tmp_vmvGK.stderr
+  Session 8 (localhost): Log and error written to /tmp/tmpaiDoos.stderr
+  Session 9 (localhost): Log and error written to /tmp/tmpz_vWc9.stderr
+  Session 10 (localhost): Log and error written to /tmp/tmpKejyBf.stderr
+  Session 11 (localhost): Log and error written to /tmp/tmpCcinl8.stderr
+ Parallel calculations starting...
+  Process 9 returned 1 results.
+  Process 10 returned 1 results.
+  Process 8 returned 1 results.
+  Process 4 returned 2 results.
+  Process 5 returned 2 results.
+  Process 7 returned 2 results.
+  Process 6 returned 2 results.
+  Process 0 returned 2 results.
+  Process 11 returned 1 results.
+  Process 3 returned 2 results.
+  Process 1 returned 2 results.
+  Process 2 returned 2 results.
+  20 new results.
+ ...parallel calculations finished. 0.0 min.
+ Adding new results to database.
+...fingerprints calculated. 0.0 min.
+
+Model fitting
+=============
+Regression in atom-centered mode.
+Calculating new fingerprint range; this range is part of the model.
+Hidden-layer structure:
+ Pt: (5, 5)
+ Cu: (5, 5)
+Initializing with random weights.
+Initializing with random scalings.
+Starting parameter optimization.
+ Optimizer: <function fmin_bfgs at 0x7f9798b2bde8>
+ Optimizer kwargs: {'gtol': 1e-15}
+ Parallel processing.
+ Established server at ulissigroup-Alienware-Shuaibi:45749.
+ Establishing worker sessions.
+ Starting local connections.
+  Session 0 (localhost): Log and stderr written to /tmp/tmp3IgYtg.stderr
+  Session 1 (localhost): Log and stderr written to /tmp/tmpmOeVVS.stderr
+  Session 2 (localhost): Log and stderr written to /tmp/tmpRB6eAc.stderr
+  Session 3 (localhost): Log and stderr written to /tmp/tmpryVhgX.stderr
+  Session 4 (localhost): Log and stderr written to /tmp/tmpoHfogN.stderr
+  Session 5 (localhost): Log and stderr written to /tmp/tmpG3j9ag.stderr
+  Session 6 (localhost): Log and stderr written to /tmp/tmpM0bw7d.stderr
+  Session 7 (localhost): Log and stderr written to /tmp/tmpaQEpeE.stderr
+  Session 8 (localhost): Log and stderr written to /tmp/tmpkUKLUd.stderr
+  Session 9 (localhost): Log and stderr written to /tmp/tmpSKB0KX.stderr
+  Session 10 (localhost): Log and stderr written to /tmp/tmp6N8Rnh.stderr
+  Session 11 (localhost): Log and stderr written to /tmp/tmplefph2.stderr
+ Loss function convergence criteria:
+  energy_rmse: 0.001
+  energy_maxresid: None
+  force_rmse: None
+  force_maxresid: None
+ Loss function set-up:
+  energy_coefficient: 1.0
+  force_coefficient: None
+  overfit: 0.0
+
+
+                                                          Energy
+ Step                Time   Loss (SSD)   EnergyRMSE     MaxResid
+===== =================== ============ ============ ============
+Saving checkpoint data.
+    0 2019-03-07T15:04:48   6.4013e-02 5.6574e-02 - 1.3901e-01 C
+    1 2019-03-07T15:04:48   1.8491e+00 3.0407e-01 - 3.6491e-01 C
+    2 2019-03-07T15:04:48   6.1677e-02 5.5532e-02 - 1.2831e-01 C
+    3 2019-03-07T15:04:48   5.7176e-02 5.3468e-02 - 1.2723e-01 C
+    4 2019-03-07T15:04:48   4.3167e-02 4.6458e-02 - 1.2504e-01 C
+    5 2019-03-07T15:04:48   2.5097e-02 3.5424e-02 - 1.2208e-01 C
+    6 2019-03-07T15:04:48   2.3165e-02 3.4033e-02 - 7.4818e-02 C
+    7 2019-03-07T15:04:48   2.0499e-02 3.2015e-02 - 1.0234e-01 C
+    8 2019-03-07T15:04:48   1.8628e-02 3.0518e-02 - 8.7988e-02 C
+    9 2019-03-07T15:04:48   1.6889e-02 2.9059e-02 - 8.4716e-02 C
+   10 2019-03-07T15:04:48   1.5197e-02 2.7565e-02 - 7.5735e-02 C
+   11 2019-03-07T15:04:48   1.4531e-02 2.6954e-02 - 6.5865e-02 C
+   12 2019-03-07T15:04:49   1.4197e-02 2.6643e-02 - 6.1237e-02 C
+   13 2019-03-07T15:04:49   1.3831e-02 2.6297e-02 - 5.7703e-02 C
+   14 2019-03-07T15:04:49   1.3240e-02 2.5730e-02 - 5.7917e-02 C
+   15 2019-03-07T15:04:49   1.2345e-02 2.4845e-02 - 5.8822e-02 C
+   16 2019-03-07T15:04:49   1.2244e-02 2.4743e-02 - 6.1995e-02 C
+   17 2019-03-07T15:04:49   1.2009e-02 2.4504e-02 - 5.9703e-02 C
+   18 2019-03-07T15:04:49   1.1522e-02 2.4003e-02 - 5.7270e-02 C
+   19 2019-03-07T15:04:49   1.0977e-02 2.3428e-02 - 6.0342e-02 C
+   20 2019-03-07T15:04:49   1.0357e-02 2.2757e-02 - 5.6211e-02 C
+   21 2019-03-07T15:04:49   9.3198e-03 2.1587e-02 - 5.7506e-02 C
+   22 2019-03-07T15:04:49   8.6224e-03 2.0763e-02 - 5.6349e-02 C
+   23 2019-03-07T15:04:49   8.1457e-03 2.0181e-02 - 5.4517e-02 C
+   24 2019-03-07T15:04:49   7.8348e-03 1.9792e-02 - 5.2167e-02 C
+   25 2019-03-07T15:04:49   7.2471e-03 1.9036e-02 - 4.8637e-02 C
+   26 2019-03-07T15:04:49   6.2875e-03 1.7731e-02 - 4.1962e-02 C
+   27 2019-03-07T15:04:49   6.0169e-03 1.7345e-02 - 4.0167e-02 C
+   28 2019-03-07T15:04:49   5.7389e-03 1.6939e-02 - 3.8429e-02 C
+   29 2019-03-07T15:04:49   5.7162e-03 1.6906e-02 - 3.7477e-02 C
+   30 2019-03-07T15:04:49   5.6720e-03 1.6840e-02 - 3.6866e-02 C
+   31 2019-03-07T15:04:49   5.5300e-03 1.6628e-02 - 3.6766e-02 C
+   32 2019-03-07T15:04:49   5.3070e-03 1.6290e-02 - 3.6807e-02 C
+   33 2019-03-07T15:04:49   5.1163e-03 1.5994e-02 - 3.5839e-02 C
+   34 2019-03-07T15:04:49   4.8052e-03 1.5500e-02 - 3.3752e-02 C
+   35 2019-03-07T15:04:49   4.5352e-03 1.5058e-02 - 3.8846e-02 C
+   36 2019-03-07T15:04:49   4.4267e-03 1.4877e-02 - 3.7360e-02 C
+   37 2019-03-07T15:04:49   4.2405e-03 1.4561e-02 - 3.5042e-02 C
+   38 2019-03-07T15:04:49   3.9000e-03 1.3964e-02 - 3.3053e-02 C
+   39 2019-03-07T15:04:49   3.3111e-03 1.2867e-02 - 3.0076e-02 C
+   40 2019-03-07T15:04:49   2.5263e-03 1.1239e-02 - 2.4666e-02 C
+   41 2019-03-07T15:04:49   2.0924e-03 1.0228e-02 - 2.3665e-02 C
+   42 2019-03-07T15:04:49   1.7919e-03 9.4653e-03 - 2.3651e-02 C
+   43 2019-03-07T15:04:49   1.6203e-03 9.0010e-03 - 2.2449e-02 C
+   44 2019-03-07T15:04:49   1.4005e-03 8.3680e-03 - 2.1518e-02 C
+   45 2019-03-07T15:04:49   1.4183e-03 8.4210e-03 - 2.3109e-02 C
+   46 2019-03-07T15:04:49   1.2553e-03 7.9224e-03 - 2.2235e-02 C
+   47 2019-03-07T15:04:49   1.0791e-03 7.3453e-03 - 2.0904e-02 C
+   48 2019-03-07T15:04:49   9.8698e-04 7.0249e-03 - 2.0521e-02 C
+   49 2019-03-07T15:04:49   8.6766e-04 6.5866e-03 - 1.9648e-02 C
+   50 2019-03-07T15:04:49   7.5511e-04 6.1446e-03 - 1.7481e-02 C
+   51 2019-03-07T15:04:49   7.0800e-04 5.9498e-03 - 1.5419e-02 C
+   52 2019-03-07T15:04:49   6.7476e-04 5.8084e-03 - 1.4369e-02 C
+   53 2019-03-07T15:04:49   6.2312e-04 5.5817e-03 - 1.2580e-02 C
+   54 2019-03-07T15:04:49   5.6035e-04 5.2932e-03 - 1.0089e-02 C
+   55 2019-03-07T15:04:49   5.1893e-04 5.0937e-03 - 8.4436e-03 C
+   56 2019-03-07T15:04:49   4.7658e-04 4.8815e-03 - 7.6991e-03 C
+   57 2019-03-07T15:04:49   4.3992e-04 4.6900e-03 - 7.7374e-03 C
+   58 2019-03-07T15:04:49   3.9867e-04 4.4647e-03 - 8.2447e-03 C
+   59 2019-03-07T15:04:49   3.5874e-04 4.2352e-03 - 8.2608e-03 C
+   60 2019-03-07T15:04:49   3.3678e-04 4.1036e-03 - 8.0290e-03 C
+   61 2019-03-07T15:04:49   3.0612e-04 3.9123e-03 - 7.6170e-03 C
+   62 2019-03-07T15:04:50   2.8050e-04 3.7450e-03 - 7.0728e-03 C
+   63 2019-03-07T15:04:50   2.5319e-04 3.5580e-03 - 6.9114e-03 C
+   64 2019-03-07T15:04:50   2.4527e-04 3.5019e-03 - 6.0744e-03 C
+   65 2019-03-07T15:04:50   2.3222e-04 3.4075e-03 - 6.1032e-03 C
+   66 2019-03-07T15:04:50   2.1272e-04 3.2613e-03 - 6.2994e-03 C
+   67 2019-03-07T15:04:50   1.9460e-04 3.1193e-03 - 6.1662e-03 C
+   68 2019-03-07T15:04:50   1.7399e-04 2.9495e-03 - 5.7997e-03 C
+   69 2019-03-07T15:04:50   1.5187e-04 2.7556e-03 - 5.4400e-03 C
+   70 2019-03-07T15:04:50   1.4373e-04 2.6807e-03 - 5.4633e-03 C
+   71 2019-03-07T15:04:50   1.3611e-04 2.6088e-03 - 5.3917e-03 C
+   72 2019-03-07T15:04:50   1.2445e-04 2.4945e-03 - 5.0994e-03 C
+   73 2019-03-07T15:04:50   1.1003e-04 2.3455e-03 - 4.6524e-03 C
+   74 2019-03-07T15:04:50   9.1861e-05 2.1431e-03 - 4.2131e-03 C
+   75 2019-03-07T15:04:50   7.4552e-05 1.9307e-03 - 3.9587e-03 C
+   76 2019-03-07T15:04:50   6.3470e-05 1.7814e-03 - 4.2398e-03 C
+   77 2019-03-07T15:04:50   5.6857e-05 1.6861e-03 - 4.3745e-03 C
+   78 2019-03-07T15:04:50   5.4437e-05 1.6498e-03 - 4.3561e-03 C
+   79 2019-03-07T15:04:50   5.2268e-05 1.6166e-03 - 4.0948e-03 C
+   80 2019-03-07T15:04:50   4.8736e-05 1.5610e-03 - 3.8515e-03 C
+   81 2019-03-07T15:04:50   4.2493e-05 1.4576e-03 - 3.4792e-03 C
+   82 2019-03-07T15:04:50   3.2420e-05 1.2732e-03 - 3.0567e-03 C
+   83 2019-03-07T15:04:50   2.3191e-05 1.0768e-03 - 3.2901e-03 C
+   84 2019-03-07T15:04:50   2.1278e-05 1.0315e-03 - 3.1367e-03 C
+   85 2019-03-07T15:04:50   2.0611e-05 1.0152e-03 - 2.9635e-03 C
+   86 2019-03-07T15:04:50   2.0506e-05 1.0126e-03 - 2.9449e-03 C
+   87 2019-03-07T15:04:50   2.0382e-05 1.0095e-03 - 2.9504e-03 C
+   88 2019-03-07T15:04:50   2.0159e-05 1.0040e-03 - 2.9559e-03 C
+   89 2019-03-07T15:04:50   1.9755e-05 9.9386e-04 C 2.9564e-03 C
+...optimization successful. 0.1 min.
+Amp successfully trained. Saving current parameters.
+Parameters saved in file "calc.amp".
+This file can be opened with `calc = Amp.load('calc.amp')`
