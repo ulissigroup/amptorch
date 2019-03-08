@@ -55,7 +55,7 @@ class MLP(nn.Module):
 
     """
 
-    def  __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=3,n_hidden_size=10,activation=Tanh):
+    def  __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=4,n_hidden_size=50,activation=Tanh):
         super(MLP,self).__init__()
         #if n_hidden_size is None:
             #implement pyramid neuron structure across each layer
