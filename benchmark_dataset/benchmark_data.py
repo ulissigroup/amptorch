@@ -10,7 +10,7 @@ k=hash_images(k)
 l=ase.io.read('water.extxyz',':')
 print l[0]
 l=hash_images(l)
-print l
+print l[0]
 
 
 

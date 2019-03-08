@@ -102,3 +102,4 @@ def collate_amp(training_data):
         element_specific_fingerprints[element][0]=torch.stack(element_specific_fingerprints[element][0])
         element_specific_fingerprints[element][2].append(torch.tensor(energy_dataset))
     return element_specific_fingerprints
+
