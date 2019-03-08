@@ -22,7 +22,7 @@ n_unique_atoms=len(unique_atoms)
 validation_frac=.2
 samplers=training_data.data_split(training_data,validation_frac)
 
-atoms_dataloaders={x:DataLoader(training_data,batch_size=200,collate_fn=collate_amp,sampler=samplers[x],pin_memory=True)
+atoms_dataloaders={x:DataLoader(training_data,batch_size=100,collate_fn=collate_amp,sampler=samplers[x],pin_memory=True)
         for x in ['train','val']}
 
 model=FullNN(unique_atoms)
@@ -30,7 +30,7 @@ model=model.to(device)
 criterion=nn.MSELoss()
 
 #Define the optimizer and implement any optimization settings
-optimizer_ft=optim.SGD(model.parameters(),lr=.01,momentum=0.5)
+optimizer_ft=optim.SGD(model.parameters(),lr=.001,momentum=0.1)
 # optimizer_ft=optim.SGD(model.parameters(),lr=.001)
 
 #Define scheduler search strategies
