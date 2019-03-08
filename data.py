@@ -1,9 +1,12 @@
 import sys
+import os
 import numpy as np
 import torch
 from torch.utils.data import Dataset,SubsetRandomSampler
 from amp.utilities import check_images,hash_images
 from amp.descriptor.gaussian import Gaussian
+import ase
+from ase import io
 
 class AtomsDataset(Dataset):
     """
@@ -17,7 +20,11 @@ class AtomsDataset(Dataset):
     def __init__(self,images,descriptor):
         self.images=images
         self.descriptor=descriptor
-        self.atom_images=hash_images(images)
+        if isinstance(images,str):
+            extension=os.path.splitext(images)[1]
+            if extension != ('.traj' or '.db'):
+                self.atom_images=ase.io.read(images,':')
+            self.atom_images=hash_images(self.atom_images)
         # check_images(self.atom_images,forces=False)
         self.descriptor.calculate_fingerprints(self.atom_images)
 
@@ -95,4 +102,3 @@ def collate_amp(training_data):
         element_specific_fingerprints[element][0]=torch.stack(element_specific_fingerprints[element][0])
         element_specific_fingerprints[element][2].append(torch.tensor(energy_dataset))
     return element_specific_fingerprints
-
