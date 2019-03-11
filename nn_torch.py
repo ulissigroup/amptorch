@@ -3,7 +3,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torch.nn import init
-from torch.nn import Tanh
+from torch.nn import Tanh, LeakyReLU
 import copy
 from collections import OrderedDict
 import time
@@ -55,7 +55,7 @@ class MLP(nn.Module):
 
     """
 
-    def  __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=4,n_hidden_size=50,activation=Tanh):
+    def __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=3,n_hidden_size=5,activation=Tanh):
         super(MLP,self).__init__()
         #if n_hidden_size is None:
             #implement pyramid neuron structure across each layer
@@ -110,7 +110,15 @@ class FullNN(nn.Module):
         output=torch.stack(output)
         return output,targets
 
-def train_model(model,unique_atoms,criterion,optimizer,scheduler,atoms_dataloaders,num_epochs):
+def feature_scaling(data):
+    data_mean=np.average(data)
+    data_max=max(data)
+    data_min=min(data)
+    for index,value in enumerate(data):
+        data[index]=(value-data_mean)/(data_max-data_min)
+    return data
+
+def train_model(model,unique_atoms,dataset_sizes,criterion,optimizer,scheduler,atoms_dataloaders,num_epochs):
     since = time.time()
 
     best_model_wts=copy.deepcopy(model.state_dict())
@@ -132,7 +140,6 @@ def train_model(model,unique_atoms,criterion,optimizer,scheduler,atoms_dataloade
                 model.eval()
 
             MSE=0.0
-
             #Iterate over the dataloader
             for data_sample in atoms_dataloaders[phase]:
 
@@ -147,15 +154,15 @@ def train_model(model,unique_atoms,criterion,optimizer,scheduler,atoms_dataloade
                 #forward
                 with torch.set_grad_enabled(phase == 'train'):
                     outputs,target=model(data_sample)
+                    # target=feature_scaling(target)
                     _,preds = torch.max(outputs,1)
                     loss=criterion(outputs,target)
-
                     #backward + optimize only if in training phase
                     if phase == 'train':
                         loss.backward()
                         optimizer.step()
 
-                MSE += loss.item()
+                MSE += loss.item()/dataset_sizes[phase]
 
             RMSE=np.sqrt(MSE)
             epoch_loss = RMSE
