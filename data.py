@@ -46,7 +46,6 @@ class AtomsDataset(Dataset):
         indices=np.random.permutation(dataset_size)
         split=int(np.floor(val_frac*dataset_size))
         train_idx,val_idx=indices[split:],indices[:split]
-
         train_sampler=SubsetRandomSampler(train_idx)
         val_sampler=SubsetRandomSampler(val_idx)
 
@@ -103,3 +102,5 @@ def collate_amp(training_data):
         element_specific_fingerprints[element][2].append(torch.tensor(energy_dataset))
     return element_specific_fingerprints
 
+data=AtomsDataset('water.extxyz',descriptor=Gaussian())
+split=data.data_split(data,.2)
