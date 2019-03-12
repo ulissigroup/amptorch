@@ -1,0 +1,43 @@
+Tue Mar 12 13:54:47 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 36s
+Best validation loss: 0.295623
+
