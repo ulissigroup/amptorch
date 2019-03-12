@@ -8,6 +8,7 @@ import copy
 from collections import OrderedDict
 import time
 import matplotlib.pyplot as plt
+from amp.utilities import Logger
 
 class Dense(nn.Linear):
     """Constructs and applies a dense layer with an activation function (when
@@ -62,7 +63,7 @@ class MLP(nn.Module):
         if type(n_hidden_size) is int:
             n_hidden_size=[n_hidden_size] * (n_layers-1)
         self.n_neurons=[n_input_nodes]+n_hidden_size+[n_output_nodes]
-
+        self.activation=activation
         layers=[Dense(self.n_neurons[i],self.n_neurons[i+1],bias=True,activation=activation) for i in range(n_layers-1)]
         layers.append(Dense(self.n_neurons[-2],self.n_neurons[-1],activation=None))
         self.model_net=nn.Sequential(*layers)
@@ -81,8 +82,9 @@ class FullNN(nn.Module):
     structure
 
     '''
-
     def __init__(self,unique_atoms):
+        log=Logger('benchmark_results/results-log.txt')
+
         super(FullNN,self).__init__()
         self.unique_atoms=unique_atoms
         n_unique_atoms=len(unique_atoms)
@@ -90,6 +92,7 @@ class FullNN(nn.Module):
         for n_models in range(n_unique_atoms):
             elementwise_models.append(MLP())
         self.elementwise_models=elementwise_models
+        log('Activation Function = %s'%elementwise_models[0].activation)
         # self.model_device=next(elementwise_models.parameters()).device
 
     def forward(self,data):
@@ -119,7 +122,14 @@ def feature_scaling(data):
     return data
 
 def train_model(model,unique_atoms,dataset_sizes,criterion,optimizer,scheduler,atoms_dataloaders,num_epochs):
+    log=Logger('benchmark_results/results-log.txt')
+    log_epoch=Logger('benchmark_results/epoch-log.txt')
+    log('Model: %s'%model)
+
     since = time.time()
+    log_epoch('-'*50)
+    log_epoch('%s Training Started!'%time.asctime())
+    log_epoch('')
 
     best_model_wts=copy.deepcopy(model.state_dict())
     best_loss=100000000
@@ -128,8 +138,10 @@ def train_model(model,unique_atoms,dataset_sizes,criterion,optimizer,scheduler,a
     plot_loss_y={'train':[],'val':[]}
 
     for epoch in range(num_epochs):
-        print ('Epoch {}/{}'.format(epoch+1,num_epochs))
-        print('-'*10)
+        log_epoch('{} Epoch {}/{}'.format(time.asctime(),epoch+1,num_epochs))
+        log_epoch('-'*30)
+        # print ('Epoch {}/{}'.format(epoch+1,num_epochs))
+        # print('-'*10)
 
         for phase in ['train','val']:
 
@@ -168,7 +180,8 @@ def train_model(model,unique_atoms,dataset_sizes,criterion,optimizer,scheduler,a
             epoch_loss = RMSE
             plot_loss_y[phase].append(RMSE)
 
-            print('{} Loss: {:.4f}'.format(phase,epoch_loss))
+            log_epoch('{} {} Loss: {:.4f}'.format(time.asctime(),phase,epoch_loss))
+            # print('{} Loss: {:.4f}'.format(phase,epoch_loss))
 
             if phase == 'val' and epoch_loss<best_loss:
                 best_loss=epoch_loss
@@ -178,13 +191,22 @@ def train_model(model,unique_atoms,dataset_sizes,criterion,optimizer,scheduler,a
                 # best_loss=epoch_loss
                 # best_model_wts=copy.deepcopy(model.state_dict())
 
-        print('')
+        log_epoch('')
+        # print('')
 
     time_elapsed=time.time()-since
     print('Training complete in {:.0f}m {:.0f}s'.format
             (time_elapsed//60,time_elapsed % 60))
 
-    print('Best validation loss: {:4f}'.format(best_loss))
+    log('')
+    log('Training complete in {:.0f}m {:.0f}s'.format
+                (time_elapsed//60,time_elapsed % 60))
+
+    log('Best validation loss: {:4f}'.format(best_loss))
+    log('')
+    # print('Training complete in {:.0f}m {:.0f}s'.format
+            # (time_elapsed//60,time_elapsed % 60))
+    # print('Best validation loss: {:4f}'.format(best_loss))
 
     plt.title('RMSE vs. Epoch')
     plt.xlabel('Epoch #')
