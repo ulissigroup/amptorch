@@ -88,8 +88,9 @@ def collate_amp(training_data):
     unique_atoms,fingerprint_dataset,energy_dataset,sample_indices=data_factorization(training_data)
     # print energy_dataset
     element_specific_fingerprints={}
+    model_input_data=[]
     for element in unique_atoms:
-        element_specific_fingerprints[element]=[[],[],[]]
+        element_specific_fingerprints[element]=[[],[]]
     for fp_index, sample_fingerprints in enumerate(fingerprint_dataset):
         for fingerprint in sample_fingerprints:
             atom_element=fingerprint[0]
@@ -99,5 +100,8 @@ def collate_amp(training_data):
             #INSERT SCALING OF INPUT DATA
     for element in unique_atoms:
         element_specific_fingerprints[element][0]=torch.stack(element_specific_fingerprints[element][0])
-        element_specific_fingerprints[element][2].append(torch.tensor(energy_dataset))
-    return element_specific_fingerprints
+        # element_specific_fingerprints[element][2].append(torch.tensor(energy_dataset))
+    model_input_data.append(element_specific_fingerprints)
+    model_input_data.append(torch.tensor(energy_dataset))
+    # return element_specific_fingerprints
+    return model_input_data

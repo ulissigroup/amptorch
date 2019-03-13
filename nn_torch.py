@@ -30,10 +30,10 @@ class Dense(nn.Linear):
         super(Dense,self).__init__(input_size,output_size,bias)
 
     def reset_parameters(self):
-        # init.constant_(self.weight,1)
-        # init.constant_(self.bias,0)
+        init.constant_(self.weight,.5)
+        init.constant_(self.bias,1)
 
-        super(Dense,self).reset_parameters()
+        # super(Dense,self).reset_parameters()
 
     def forward(self,inputs):
         neuron_output=super(Dense,self).forward(inputs)
@@ -56,7 +56,7 @@ class MLP(nn.Module):
 
     """
 
-    def __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=3,n_hidden_size=5,activation=Tanh):
+    def __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=3,n_hidden_size=5,activation=None):
         super(MLP,self).__init__()
         #if n_hidden_size is None:
             #implement pyramid neuron structure across each layer
@@ -99,10 +99,7 @@ class FullNN(nn.Module):
         energy_pred=OrderedDict()
         for index,element in enumerate(self.unique_atoms):
             model_inputs=data[element][0]
-            # model_inputs=model_inputs.to(self.model_device)
             contribution_index=data[element][1]
-            targets=data[element][2][0]
-            # targets=targets.to(self.model_device)
             atomwise_outputs=self.elementwise_models[index].forward(model_inputs)
             for index,atom_output in enumerate(atomwise_outputs):
                 if contribution_index[index] not in energy_pred.keys():
@@ -111,7 +108,7 @@ class FullNN(nn.Module):
                     energy_pred[contribution_index[index]]+=atom_output
         output=energy_pred.values()
         output=torch.stack(output)
-        return output,targets
+        return output
 
 def feature_scaling(data):
     data_mean=np.average(data)
@@ -121,14 +118,103 @@ def feature_scaling(data):
         data[index]=(value-data_mean)/(data_max-data_min)
     return data
 
-def train_model(model,unique_atoms,dataset_sizes,criterion,optimizer,scheduler,atoms_dataloaders,num_epochs):
+def training_scheme(val=True):
+    if val:
+
+        for phase in ['train','val']:
+
+            if phase == 'train':
+                scheduler.step()
+                model.train()
+            else:
+                model.eval()
+
+            MSE=0.0
+
+            #Iterate over the dataloader
+            for data_sample in atoms_dataloaders[phase]:
+                input_data=data_sample[0]
+                target=data_sample[1]
+
+                #Send inputs and labels to the corresponding device (cpu or gpu)
+                for element in unique_atoms:
+                    input_data[element][0]=input_data[element][0].to(device)
+                target=target.to(device)
+
+                #zero the parameter gradients
+                optimizer.zero_grad()
+
+                #forward
+                with torch.set_grad_enabled(phase == 'train'):
+                    output=model(input_data)
+                    _,preds = torch.max(output,1)
+                    loss=criterion(output,target)
+                    #backward + optimize only if in training phase
+                    if phase == 'train':
+                        loss.backward()
+                        optimizer.step()
+
+                MSE += loss.item()/dataset_sizes[phase]
+
+            RMSE=np.sqrt(MSE)
+            epoch_loss = RMSE
+            plot_loss_y[phase].append(np.log10(RMSE))
+
+            log_epoch('{} {} Loss: {:.4f}'.format(time.asctime(),phase,epoch_loss))
+
+            if phase == 'val' and epoch_loss<best_loss:
+                best_loss=epoch_loss
+                best_model_wts=copy.deepcopy(model.state_dict())
+    else:
+
+        scheduler.step()
+        model.train()
+
+        MSE=0.0
+
+        #Iterate over the dataloader
+        for data_sample in atoms_dataloaders:
+            input_data=data_sample[0]
+            target=data_sample[1]
+
+            #Send inputs and labels to the corresponding device (cpu or gpu)
+            for element in unique_atoms:
+                input_data[element][0]=input_data[element][0].to(device)
+            target=target.to(device)
+
+            #zero the parameter gradients
+            optimizer.zero_grad()
+
+            #forward
+            with torch.set_grad_enabled(True):
+                output=model(input_data)
+                _,preds = torch.max(output,1)
+                loss=criterion(output,target)
+                #backward + optimize only if in training phase
+                loss.backward()
+                optimizer.step()
+
+            MSE += loss.item()/dataset_sizes[phase]
+
+        RMSE=np.sqrt(MSE)
+        epoch_loss = RMSE
+        plot_loss_y['Train'].append(np.log10(RMSE))
+
+        log_epoch('{} {} Loss: {:.4f}'.format(time.asctime(),phase,epoch_loss))
+
+        if epoch_loss<best_loss:
+            best_loss=epoch_loss
+            best_model_wts=copy.deepcopy(model.state_dict())
+
+def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,atoms_dataloader,num_epochs):
     log=Logger('benchmark_results/results-log.txt')
     log_epoch=Logger('benchmark_results/epoch-log.txt')
     log('Model: %s'%model)
 
     since = time.time()
     log_epoch('-'*50)
-    log_epoch('%s Training Started!'%time.asctime())
+    print('Training Initiated!')
+    log_epoch('%s Training Initiated!'%time.asctime())
     log_epoch('')
 
     best_model_wts=copy.deepcopy(model.state_dict())
@@ -140,59 +226,97 @@ def train_model(model,unique_atoms,dataset_sizes,criterion,optimizer,scheduler,a
     for epoch in range(num_epochs):
         log_epoch('{} Epoch {}/{}'.format(time.asctime(),epoch+1,num_epochs))
         log_epoch('-'*30)
-        # print ('Epoch {}/{}'.format(epoch+1,num_epochs))
-        # print('-'*10)
 
-        for phase in ['train','val']:
+        if len(atoms_dataloader)==2:
 
-            if phase == 'train':
-                scheduler.step()
-                model.train()
-            else:
-                model.eval()
+                for phase in ['train','val']:
+
+                    if phase == 'train':
+                        scheduler.step()
+                        model.train()
+                    else:
+                        model.eval()
+
+                    MSE=0.0
+
+                    #Iterate over the dataloader
+                    for data_sample in atoms_dataloader[phase]:
+                        input_data=data_sample[0]
+                        target=data_sample[1]
+
+                        #Send inputs and labels to the corresponding device (cpu or gpu)
+                        for element in unique_atoms:
+                            input_data[element][0]=input_data[element][0].to(device)
+                        target=target.to(device)
+
+                        #zero the parameter gradients
+                        optimizer.zero_grad()
+
+                        #forward
+                        with torch.set_grad_enabled(phase == 'train'):
+                            output=model(input_data)
+                            _,preds = torch.max(output,1)
+                            loss=criterion(output,target)
+                            #backward + optimize only if in training phase
+                            if phase == 'train':
+                                loss.backward()
+                                optimizer.step()
+
+                        MSE += loss.item()/dataset_size[phase]
+
+                    RMSE=np.sqrt(MSE)
+                    epoch_loss = RMSE
+                    plot_loss_y[phase].append(np.log10(RMSE))
+
+                    log_epoch('{} {} Loss: {:.4f}'.format(time.asctime(),phase,epoch_loss))
+
+                    if phase == 'val' and epoch_loss<best_loss:
+                        best_loss=epoch_loss
+                        best_model_wts=copy.deepcopy(model.state_dict())
+        else:
+
+            phase='train'
+
+            scheduler.step()
+            model.train()
 
             MSE=0.0
+
             #Iterate over the dataloader
-            for data_sample in atoms_dataloaders[phase]:
+            for data_sample in atoms_dataloader:
+                input_data=data_sample[0]
+                target=data_sample[1]
 
                 #Send inputs and labels to the corresponding device (cpu or gpu)
                 for element in unique_atoms:
-                    data_sample[element][0]=data_sample[element][0].to(device)
-                    data_sample[element][2][0]=data_sample[element][2][0].to(device)
+                    input_data[element][0]=input_data[element][0].to(device)
+                target=target.to(device)
 
                 #zero the parameter gradients
                 optimizer.zero_grad()
 
                 #forward
-                with torch.set_grad_enabled(phase == 'train'):
-                    outputs,target=model(data_sample)
-                    # target=feature_scaling(target)
-                    _,preds = torch.max(outputs,1)
-                    loss=criterion(outputs,target)
+                with torch.set_grad_enabled(True):
+                    output=model(input_data)
+                    _,preds = torch.max(output,1)
+                    loss=criterion(output,target)
                     #backward + optimize only if in training phase
-                    if phase == 'train':
-                        loss.backward()
-                        optimizer.step()
+                    loss.backward()
+                    optimizer.step()
 
-                MSE += loss.item()/dataset_sizes[phase]
+                MSE += loss.item()/dataset_size
 
             RMSE=np.sqrt(MSE)
             epoch_loss = RMSE
-            plot_loss_y[phase].append(RMSE)
+            plot_loss_y[phase].append(np.log10(RMSE))
 
             log_epoch('{} {} Loss: {:.4f}'.format(time.asctime(),phase,epoch_loss))
-            # print('{} Loss: {:.4f}'.format(phase,epoch_loss))
 
-            if phase == 'val' and epoch_loss<best_loss:
+            if epoch_loss<best_loss:
                 best_loss=epoch_loss
                 best_model_wts=copy.deepcopy(model.state_dict())
 
-            # if epoch_loss<best_loss:
-                # best_loss=epoch_loss
-                # best_model_wts=copy.deepcopy(model.state_dict())
-
         log_epoch('')
-        # print('')
 
     time_elapsed=time.time()-since
     print('Training complete in {:.0f}m {:.0f}s'.format
@@ -202,17 +326,19 @@ def train_model(model,unique_atoms,dataset_sizes,criterion,optimizer,scheduler,a
     log('Training complete in {:.0f}m {:.0f}s'.format
                 (time_elapsed//60,time_elapsed % 60))
 
-    log('Best validation loss: {:4f}'.format(best_loss))
+    if phase=='val':
+        log('Best validation loss: {:4f}'.format(best_loss))
+    else:
+        log('Best training loss: {:4f}'.format(best_loss))
+
     log('')
-    # print('Training complete in {:.0f}m {:.0f}s'.format
-            # (time_elapsed//60,time_elapsed % 60))
-    # print('Best validation loss: {:4f}'.format(best_loss))
 
     plt.title('RMSE vs. Epoch')
     plt.xlabel('Epoch #')
-    plt.ylabel('RMSE')
+    plt.ylabel('log(RMSE)')
     plt.plot(plot_epoch_x,plot_loss_y['train'],label='train')
-    plt.plot(plot_epoch_x,plot_loss_y['val'],label='val')
+    if phase=='val':
+        plt.plot(plot_epoch_x,plot_loss_y['val'],label='val')
     plt.legend()
     plt.show()
 
