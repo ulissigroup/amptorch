@@ -1,4 +1,48 @@
-Tue Mar 12 13:54:47 2019
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 36s
+Best validation loss: 0.278247
+
+Tue Mar 12 14:02:33 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    initial_lr: 0.01
+    lr: 1e-06
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Wed Mar 13 09:24:50 2019
 --------------------------------------------------
 Filename: benchmark_dataset/water.extxyz
 Training Data = 360 Validation Data = 40
@@ -38,6 +82,1473 @@ Model: FullNN(
   )
 )
 
-Training complete in 0m 36s
-Best validation loss: 0.295623
+Training complete in 0m 25s
+Best validation loss: 0.248037
 
+Wed Mar 13 12:30:53 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Wed Mar 13 12:32:17 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Wed Mar 13 12:32:27 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Wed Mar 13 12:33:19 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Wed Mar 13 12:33:37 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Wed Mar 13 12:35:47 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Wed Mar 13 12:36:29 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Wed Mar 13 12:39:09 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Wed Mar 13 12:42:43 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Wed Mar 13 12:42:53 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Wed Mar 13 12:45:34 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 19s
+Best validation loss: 0.242311
+
+Wed Mar 13 12:46:10 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 1
+Wed Mar 13 12:46:34 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Wed Mar 13 12:47:12 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Wed Mar 13 12:47:19 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Wed Mar 13 12:47:29 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Wed Mar 13 12:48:40 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Wed Mar 13 12:49:13 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Wed Mar 13 12:50:53 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Wed Mar 13 12:56:09 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Wed Mar 13 13:00:37 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Wed Mar 13 13:00:51 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Wed Mar 13 13:01:24 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Wed Mar 13 13:04:08 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Wed Mar 13 13:04:21 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Wed Mar 13 13:05:37 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Wed Mar 13 13:07:10 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Wed Mar 13 13:08:03 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Wed Mar 13 13:08:24 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Wed Mar 13 13:11:48 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Wed Mar 13 13:12:48 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Wed Mar 13 13:13:55 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Wed Mar 13 13:15:21 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Wed Mar 13 13:17:31 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Wed Mar 13 13:17:50 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Wed Mar 13 13:18:38 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Wed Mar 13 13:19:19 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Wed Mar 13 13:19:30 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Wed Mar 13 13:20:12 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Wed Mar 13 13:20:44 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Wed Mar 13 13:21:41 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Wed Mar 13 13:21:58 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Wed Mar 13 13:22:06 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Wed Mar 13 13:22:33 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Wed Mar 13 13:23:01 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Wed Mar 13 13:25:00 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 2
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 56s
+Best validation loss: 1.173915
+
+Wed Mar 13 13:26:15 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 19s
+Best validation loss: 0.299970
+
+Wed Mar 13 13:30:36 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 17s
+Best validation loss: 0.267959
+
+Wed Mar 13 13:32:38 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 22s
+Best validation loss: 0.255150
+
+Wed Mar 13 13:33:39 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 20s
+Best validation loss: 0.267535
+
+Wed Mar 13 13:59:48 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Training Data = 360 Validation Data = 40
+Batch Size = 100
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 20s
+Best validation loss: 0.279621
+
+Wed Mar 13 14:00:53 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Wed Mar 13 14:01:02 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Wed Mar 13 14:02:22 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Wed Mar 13 14:11:40 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Batch Size = 100
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Wed Mar 13 14:12:01 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Batch Size = 100
+Wed Mar 13 14:12:32 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Batch Size = 100
+Training Data = 360 Validation Data = 40
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Wed Mar 13 14:12:48 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Batch Size = 100
+Training Data = 360 Validation Data = 40
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 19s
+Best validation loss: 0.298865
+
+Wed Mar 13 14:13:20 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Batch Size = 100
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Wed Mar 13 14:14:02 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Batch Size = 100
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Wed Mar 13 14:14:24 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Batch Size = 100
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 19s
+Best validation loss: 0.178940
+
+Wed Mar 13 14:19:45 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Batch Size = 100
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 17s
+Best training/validation loss: 0.178928
+
+Wed Mar 13 14:21:48 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Batch Size = 100
+Training Data = 360 Validation Data = 40
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 21s
+Best training/validation loss: 0.243105
+
+Wed Mar 13 14:24:08 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Batch Size = 100
+Training Data = 360 Validation Data = 40
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 23s
+Best validation loss: 0.294810
+
+Wed Mar 13 14:24:40 2019
+--------------------------------------------------
+Filename: benchmark_dataset/water.extxyz
+Batch Size = 100
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ SGD (
+Parameter Group 0
+    dampening: 0
+    lr: 0.01
+    momentum: 0.9
+    nesterov: False
+    weight_decay: 0
+)
+LR Scheduler Info: 
+ Step Size = 20 
+ Gamma = 0.1
+Number of Epochs = 100
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 23s
+Best training loss: 0.178941
+
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = None
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
+Activation Function = None
