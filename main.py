@@ -30,17 +30,22 @@ training_data=AtomsDataset(filename,descriptor=Gaussian())
 unique_atoms,_,_,_=data_factorization(training_data)
 n_unique_atoms=len(unique_atoms)
 
-validation_frac=.1
-samplers=training_data.data_split(training_data,validation_frac)
-dataset_sizes={'train':(1.-validation_frac)*len(training_data),'val':validation_frac*len(training_data)}
-
-log('Training Data = %d Validation Data = %d'
-        %(dataset_sizes['train'],dataset_sizes['val']))
 
 batch_size=100
-atoms_dataloaders={x:DataLoader(training_data,batch_size,collate_fn=collate_amp,sampler=samplers[x],pin_memory=True)
-        for x in ['train','val']}
 log('Batch Size = %d'%batch_size)
+validation_frac=0
+
+if validation_frac!=0:
+    samplers=training_data.data_split(training_data,validation_frac)
+    dataset_size={'train':(1.-validation_frac)*len(training_data),'val':validation_frac*len(training_data)}
+    log('Training Data = %d Validation Data = %d'
+            %(dataset_size['train'],dataset_size['val']))
+    atoms_dataloader={x:DataLoader(training_data,batch_size,collate_fn=collate_amp,sampler=samplers[x],pin_memory=True) for x in ['train','val']}
+
+else:
+    dataset_size=len(training_data)
+    log('Training Data = %d'%dataset_size)
+    atoms_dataloader=DataLoader(training_data,batch_size,collate_fn=collate_amp,shuffle=False,pin_memory=True)
 
 model=FullNN(unique_atoms)
 model=model.to(device)
@@ -49,8 +54,7 @@ log('Loss Function: %s'%criterion)
 
 #Define the optimizer and implement any optimization settings
 optimizer_ft=optim.SGD(model.parameters(),lr=.01,momentum=0.9)
-# optimizer_ft=optim.Adam(model.parameters(),lr=.1)
-# optimizer_ft=optim.SGD(model.parameters(),lr=.001)
+
 log('Optimizer Info:\n %s'%optimizer_ft)
 
 #Define scheduler search strategies
@@ -60,21 +64,6 @@ log('LR Scheduler Info: \n Step Size = %s \n Gamma = %s'%(exp_lr_scheduler.step_
 num_epochs=100
 log('Number of Epochs = %d'%num_epochs)
 log('')
-model=train_model(model,unique_atoms,dataset_sizes,criterion,optimizer_ft,exp_lr_scheduler,atoms_dataloaders,num_epochs)
+model=train_model(model,unique_atoms,dataset_size,criterion,optimizer_ft,exp_lr_scheduler,atoms_dataloader,num_epochs)
 torch.save(model.state_dict(),'benchmark_results/benchmark_model.pt')
 
-
-
-
-
-
-def test_model():
-    model=FullNN(unique_atoms)
-    model=model.to(device)
-    model.load_state_dict(torch.load('benchmark_model.pt'))
-
-    for data_sample in atoms_dataloader:
-        outputs,target=model(data_sample)
-        print outputs
-        print target
-        print('')
