@@ -30,10 +30,11 @@ class Dense(nn.Linear):
         super(Dense,self).__init__(input_size,output_size,bias)
 
     def reset_parameters(self):
-        init.constant_(self.weight,.5)
-        init.constant_(self.bias,1)
+        # init.constant_(self.weight,.5)
+        # init.constant_(self.bias,1)
 
-        # super(Dense,self).reset_parameters()
+        super(Dense,self).reset_parameters()
+        init.constant_(self.bias,1)
 
     def forward(self,inputs):
         neuron_output=super(Dense,self).forward(inputs)
@@ -56,7 +57,7 @@ class MLP(nn.Module):
 
     """
 
-    def __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=3,n_hidden_size=5,activation=None):
+    def __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=3,n_hidden_size=5,activation=Tanh):
         super(MLP,self).__init__()
         #if n_hidden_size is None:
             #implement pyramid neuron structure across each layer
@@ -117,94 +118,6 @@ def feature_scaling(data):
     for index,value in enumerate(data):
         data[index]=(value-data_mean)/(data_max-data_min)
     return data
-
-def training_scheme(val=True):
-    if val:
-
-        for phase in ['train','val']:
-
-            if phase == 'train':
-                scheduler.step()
-                model.train()
-            else:
-                model.eval()
-
-            MSE=0.0
-
-            #Iterate over the dataloader
-            for data_sample in atoms_dataloaders[phase]:
-                input_data=data_sample[0]
-                target=data_sample[1]
-
-                #Send inputs and labels to the corresponding device (cpu or gpu)
-                for element in unique_atoms:
-                    input_data[element][0]=input_data[element][0].to(device)
-                target=target.to(device)
-
-                #zero the parameter gradients
-                optimizer.zero_grad()
-
-                #forward
-                with torch.set_grad_enabled(phase == 'train'):
-                    output=model(input_data)
-                    _,preds = torch.max(output,1)
-                    loss=criterion(output,target)
-                    #backward + optimize only if in training phase
-                    if phase == 'train':
-                        loss.backward()
-                        optimizer.step()
-
-                MSE += loss.item()/dataset_sizes[phase]
-
-            RMSE=np.sqrt(MSE)
-            epoch_loss = RMSE
-            plot_loss_y[phase].append(np.log10(RMSE))
-
-            log_epoch('{} {} Loss: {:.4f}'.format(time.asctime(),phase,epoch_loss))
-
-            if phase == 'val' and epoch_loss<best_loss:
-                best_loss=epoch_loss
-                best_model_wts=copy.deepcopy(model.state_dict())
-    else:
-
-        scheduler.step()
-        model.train()
-
-        MSE=0.0
-
-        #Iterate over the dataloader
-        for data_sample in atoms_dataloaders:
-            input_data=data_sample[0]
-            target=data_sample[1]
-
-            #Send inputs and labels to the corresponding device (cpu or gpu)
-            for element in unique_atoms:
-                input_data[element][0]=input_data[element][0].to(device)
-            target=target.to(device)
-
-            #zero the parameter gradients
-            optimizer.zero_grad()
-
-            #forward
-            with torch.set_grad_enabled(True):
-                output=model(input_data)
-                _,preds = torch.max(output,1)
-                loss=criterion(output,target)
-                #backward + optimize only if in training phase
-                loss.backward()
-                optimizer.step()
-
-            MSE += loss.item()/dataset_sizes[phase]
-
-        RMSE=np.sqrt(MSE)
-        epoch_loss = RMSE
-        plot_loss_y['Train'].append(np.log10(RMSE))
-
-        log_epoch('{} {} Loss: {:.4f}'.format(time.asctime(),phase,epoch_loss))
-
-        if epoch_loss<best_loss:
-            best_loss=epoch_loss
-            best_model_wts=copy.deepcopy(model.state_dict())
 
 def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,atoms_dataloader,num_epochs):
     log=Logger('benchmark_results/results-log.txt')

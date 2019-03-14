@@ -23,6 +23,10 @@ log(time.asctime())
 device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 filename='benchmark_dataset/water.extxyz'
 
+print torch.cuda.device_count()
+sys.exit()
+
+
 log('-'*50)
 log('Filename: %s'%filename)
 
@@ -45,7 +49,11 @@ if validation_frac!=0:
 else:
     dataset_size=len(training_data)
     log('Training Data = %d'%dataset_size)
-    atoms_dataloader=DataLoader(training_data,batch_size,collate_fn=collate_amp,shuffle=False,pin_memory=True)
+    atoms_dataloader=DataLoader(training_data,batch_size,collate_fn=collate_amp,shuffle=True,pin_memory=True)
+
+#Check SD of targets
+# for i in atoms_dataloader:
+    # print i[1].std(dim=0)
 
 model=FullNN(unique_atoms)
 model=model.to(device)
