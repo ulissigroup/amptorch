@@ -168,6 +168,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,at
                         #forward
                         with torch.set_grad_enabled(phase == 'train'):
                             output=model(input_data)
+                            # print output.size()
                             _,preds = torch.max(output,1)
                             loss=criterion(output,target)
                             #backward + optimize only if in training phase
@@ -211,6 +212,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,at
                 #forward
                 with torch.set_grad_enabled(True):
                     output=model(input_data)
+                    # print output.size()
                     _,preds = torch.max(output,1)
                     loss=criterion(output,target)
                     #backward + optimize only if in training phase
