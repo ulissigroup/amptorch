@@ -24,14 +24,16 @@ unique_atoms,_,_,_=data_factorization(training_data)
 for i in atoms_loader:
     k=i
 
+'''A test to ensure the shuffling step in the model is working properly. The
+test assumes the activation function are all linear - modify the model
+accordingly'''
 
-# print k
-
-# print k[1]
 ox=k[0]['O'][0]
 hy=k[0]['H'][0]
+
 model=FullNN(unique_atoms)
 l=list(model.parameters())
+
 w0=torch.transpose(l[0],0,1)
 b0=l[1]
 ox_con=torch.mm(ox,w0)+b0
@@ -55,17 +57,15 @@ for h in hy:
     bh2=l[11]
     hy_con=torch.matmul(hy_con,wh2)+bh2
     hy_total.append(hy_con)
-hy_indiv=torch.stack(hy_total)
+hy_indiv_total=torch.stack(hy_total)
+
 hy_total=[]
 for i in range(6)[::2]:
-    hy_total.append(hy_indiv[i]+hy_indiv[i+1])
+    hy_total.append(hy_indiv_total[i]+hy_indiv_total[i+1])
 hy_total=torch.stack(hy_total)
-# print ox_total
-# print hy_total
-total=hy_total+ox_total
-print total
-print model(k[0])
-print k[1]
 
+manual_total=hy_total+ox_total
+model_total=model(k[0])
 
-
+print 'Expected Result:\n %s \n'%manual_total
+print 'Model Result: \n %s'%model_total
