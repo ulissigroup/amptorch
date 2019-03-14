@@ -23,10 +23,6 @@ log(time.asctime())
 device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 filename='benchmark_dataset/water.extxyz'
 
-print torch.cuda.device_count()
-sys.exit()
-
-
 log('-'*50)
 log('Filename: %s'%filename)
 
@@ -56,6 +52,9 @@ else:
     # print i[1].std(dim=0)
 
 model=FullNN(unique_atoms)
+# if torch.cuda.device_count()>1:
+    # print('Utilizing',torch.cuda.device_count(),'GPUs!')
+    # model=nn.DataParallel(model)
 model=model.to(device)
 criterion=nn.MSELoss()
 log('Loss Function: %s'%criterion)
