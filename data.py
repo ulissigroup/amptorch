@@ -1,10 +1,12 @@
 import sys
+import copy
 import os
 import numpy as np
 import torch
 from torch.utils.data import Dataset,SubsetRandomSampler
 from amp.utilities import check_images,hash_images
 from amp.descriptor.gaussian import Gaussian
+from amp.model import calculate_fingerprints_range
 import ase
 from ase import io
 
@@ -27,6 +29,8 @@ class AtomsDataset(Dataset):
             self.atom_images=hash_images(self.atom_images)
         # check_images(self.atom_images,forces=False)
         self.descriptor.calculate_fingerprints(self.atom_images)
+        #fprange is the min,max across each fingerprint for the entire dataset
+        self.fprange=calculate_fingerprints_range(self.descriptor,self.atom_images)
 
     def __len__(self):
         return len(self.atom_images)
@@ -34,11 +38,18 @@ class AtomsDataset(Dataset):
     def __getitem__(self,index):
         hash_name=self.atom_images.keys()[index]
         image_fingerprint=self.descriptor.fingerprints[hash_name]
+        # fprange=self.fprange
+        # for i,(symbol,afp) in enumerate(image_fingerprint):
+            # _afp=copy.copy(afp)
+            # fprange_atom=fprange[symbol]
+            # for _ in range(np.shape(_afp)[0]):
+                # if(fprange_atom[_][1]-fprange_atom[_][0])>(10.**(-8.)):
+                    # _afp[_]=-1+2.*((_afp[_]-fprange_atom[_][0])/(fprange_atom[_][1]-fprange_atom[_][0]))
+            # image_fingerprint[i]=(symbol,_afp)
         try:
             image_potential_energy=self.atom_images[hash_name].get_potential_energy()
         except:
             print 'Atoms object has no claculatot set! Modify the input images before trying again.'
-            sys.exit()
         return {index:(image_fingerprint,image_potential_energy)}
 
     def data_split(self,training_data,val_frac):
@@ -105,3 +116,8 @@ def collate_amp(training_data):
     model_input_data.append(torch.tensor(energy_dataset))
     # return element_specific_fingerprints
     return model_input_data
+
+
+# data=AtomsDataset('benchmark_dataset/water.extxyz',Gaussian())
+# for i in range(400):
+    # print data[i]

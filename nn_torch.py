@@ -34,7 +34,7 @@ class Dense(nn.Linear):
         # init.constant_(self.bias,1)
 
         super(Dense,self).reset_parameters()
-        init.constant_(self.bias,1)
+        # init.constant_(self.bias,1)
 
     def forward(self,inputs):
         neuron_output=super(Dense,self).forward(inputs)
