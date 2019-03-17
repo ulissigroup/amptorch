@@ -38,14 +38,14 @@ class AtomsDataset(Dataset):
     def __getitem__(self,index):
         hash_name=self.atom_images.keys()[index]
         image_fingerprint=self.descriptor.fingerprints[hash_name]
-        # fprange=self.fprange
-        # for i,(symbol,afp) in enumerate(image_fingerprint):
-            # _afp=copy.copy(afp)
-            # fprange_atom=fprange[symbol]
-            # for _ in range(np.shape(_afp)[0]):
-                # if(fprange_atom[_][1]-fprange_atom[_][0])>(10.**(-8.)):
-                    # _afp[_]=-1+2.*((_afp[_]-fprange_atom[_][0])/(fprange_atom[_][1]-fprange_atom[_][0]))
-            # image_fingerprint[i]=(symbol,_afp)
+        fprange=self.fprange
+        for i,(symbol,afp) in enumerate(image_fingerprint):
+            _afp=copy.copy(afp)
+            fprange_atom=fprange[symbol]
+            for _ in range(np.shape(_afp)[0]):
+                if(fprange_atom[_][1]-fprange_atom[_][0])>(10.**(-8.)):
+                    _afp[_]=-1+2.*((_afp[_]-fprange_atom[_][0])/(fprange_atom[_][1]-fprange_atom[_][0]))
+            image_fingerprint[i]=(symbol,_afp)
         try:
             image_potential_energy=self.atom_images[hash_name].get_potential_energy()
         except:
