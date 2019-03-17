@@ -112,12 +112,12 @@ class FullNN(nn.Module):
         return output
 
 def feature_scaling(data):
-    data_mean=np.average(data)
     data_max=max(data)
     data_min=min(data)
+    scale=[]
     for index,value in enumerate(data):
-        data[index]=(value-data_mean)/(data_max-data_min)
-    return data
+        scale.append((value-data_min)/(data_max-data_min))
+    return torch.stack(scale)
 
 def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_dataloader,num_epochs):
     log=Logger('benchmark_results/results-log.txt')
@@ -145,6 +145,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
         for data_sample in atoms_dataloader:
             input_data=data_sample[0]
             target=data_sample[1]
+            # target=feature_scaling(target)
 
             #Send inputs and labels to the corresponding device (cpu or gpu)
             for element in unique_atoms:
@@ -161,14 +162,20 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
                 loss.backward()
                 return loss
 
-            optimizer.step(closure)
+            loss=optimizer.step(closure)
+            MSE+=loss.item()
 
-            with torch.no_grad():
-                pred=model(input_data)
-                loss=criterion(pred,target)
-                MSE += loss.item()/dataset_size
-                RMSE=np.sqrt(MSE)
-                epoch_loss = RMSE
+        MSE=MSE/dataset_size
+        RMSE=np.sqrt(MSE)
+        epoch_loss=RMSE
+        print epoch_loss
+
+            # with torch.no_grad():
+                # pred=model(input_data)
+                # loss=criterion(pred,target)
+                # MSE += loss.item()/dataset_size
+                # RMSE=np.sqrt(MSE)
+                # epoch_loss = RMSE
 
         plot_loss_y.append(np.log10(RMSE))
 

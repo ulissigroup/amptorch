@@ -112,12 +112,12 @@ class FullNN(nn.Module):
         return output
 
 def feature_scaling(data):
-    data_mean=np.average(data)
     data_max=max(data)
     data_min=min(data)
+    scale=[]
     for index,value in enumerate(data):
-        data[index]=(value-data_mean)/(data_max-data_min)
-    return data
+        scale.append((value-data_min)/(data_max-data_min))
+    return torch.stack(scale)
 
 def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,atoms_dataloader,num_epochs):
     log=Logger('benchmark_results/results-log.txt')
@@ -176,8 +176,9 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,at
                                 loss.backward()
                                 optimizer.step()
 
-                        MSE += loss.item()/dataset_size[phase]
+                        MSE += loss.item()
 
+                    MSE=MSE/dataset_size[phase]
                     RMSE=np.sqrt(MSE)
                     epoch_loss = RMSE
                     plot_loss_y[phase].append(np.log10(RMSE))
@@ -200,12 +201,13 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,at
             for data_sample in atoms_dataloader:
                 input_data=data_sample[0]
                 target=data_sample[1]
+                # target=feature_scaling(target)
+                # target=target/2000.
 
                 #Send inputs and labels to the corresponding device (cpu or gpu)
                 for element in unique_atoms:
                     input_data[element][0]=input_data[element][0].to(device)
                 target=target.to(device)
-
                 #zero the parameter gradients
                 optimizer.zero_grad()
 
@@ -219,10 +221,12 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,at
                     loss.backward()
                     optimizer.step()
 
-                MSE += loss.item()/dataset_size
+                MSE += loss.item()
 
+            MSE=MSE/dataset_size
             RMSE=np.sqrt(MSE)
             epoch_loss = RMSE
+            print epoch_loss
             plot_loss_y[phase].append(np.log10(RMSE))
 
             log_epoch('{} {} Loss: {:.4f}'.format(time.asctime(),phase,epoch_loss))
