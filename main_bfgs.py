@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 from data import AtomsDataset,data_factorization,collate_amp
 from amp.utilities import Logger
 from amp.descriptor.gaussian import Gaussian
-from nn_torch import FullNN,train_model
+from nn_torch_bfgs import FullNN,train_model
 import torch.optim as optim
 from torch.optim import lr_scheduler
 
@@ -60,18 +60,18 @@ criterion=nn.MSELoss()
 log('Loss Function: %s'%criterion)
 
 #Define the optimizer and implement any optimization settings
-optimizer_ft=optim.SGD(model.parameters(),lr=.01,momentum=0.9)
-# optimizer_ft=optim.LBFGS(model.parameters())
+# optimizer_ft=optim.SGD(model.parameters(),lr=.01,momentum=0.9)
+optimizer_ft=optim.LBFGS(model.parameters(),.01)
 
 log('Optimizer Info:\n %s'%optimizer_ft)
 
 #Define scheduler search strategies
-exp_lr_scheduler=lr_scheduler.StepLR(optimizer_ft,step_size=20,gamma=0.1)
-log('LR Scheduler Info: \n Step Size = %s \n Gamma = %s'%(exp_lr_scheduler.step_size,exp_lr_scheduler.gamma))
+# exp_lr_scheduler=lr_scheduler.StepLR(optimizer_ft,step_size=20,gamma=0.1)
+# log('LR Scheduler Info: \n Step Size = %s \n Gamma = %s'%(exp_lr_scheduler.step_size,exp_lr_scheduler.gamma))
 
 num_epochs=100
 log('Number of Epochs = %d'%num_epochs)
 log('')
-model=train_model(model,unique_atoms,dataset_size,criterion,optimizer_ft,exp_lr_scheduler,atoms_dataloader,num_epochs)
+model=train_model(model,unique_atoms,dataset_size,criterion,optimizer_ft,atoms_dataloader,num_epochs)
 torch.save(model.state_dict(),'benchmark_results/benchmark_model.pt')
 
