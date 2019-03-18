@@ -145,6 +145,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
         for data_sample in atoms_dataloader:
             input_data=data_sample[0]
             target=data_sample[1]
+            batch_size=len(target)
             # target=feature_scaling(target)
 
             #Send inputs and labels to the corresponding device (cpu or gpu)
@@ -163,28 +164,19 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
                 return loss
 
             loss=optimizer.step(closure)
-            MSE+=loss.item()
+            MSE+=loss.item()*batch_size
 
         MSE=MSE/dataset_size
         RMSE=np.sqrt(MSE)
         epoch_loss=RMSE
-        print epoch_loss
-
-            # with torch.no_grad():
-                # pred=model(input_data)
-                # loss=criterion(pred,target)
-                # MSE += loss.item()/dataset_size
-                # RMSE=np.sqrt(MSE)
-                # epoch_loss = RMSE
-
         plot_loss_y.append(np.log10(RMSE))
 
         log_epoch('{} Loss: {:.4f}'.format(time.asctime(),epoch_loss))
 
-        # if epoch_loss<best_loss:
-            # best_loss=epoch_loss
-            # best_model_wts=copy.deepcopy(model.state_dict())
-        # log_epoch('')
+        if epoch_loss<best_loss:
+            best_loss=epoch_loss
+            best_model_wts=copy.deepcopy(model.state_dict())
+        log_epoch('')
 
     time_elapsed=time.time()-since
     print('Training complete in {:.0f}m {:.0f}s'.format
