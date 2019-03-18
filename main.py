@@ -31,7 +31,7 @@ unique_atoms,_,_,_=data_factorization(training_data)
 n_unique_atoms=len(unique_atoms)
 
 
-batch_size=400
+batch_size=100
 log('Batch Size = %d'%batch_size)
 validation_frac=0
 
