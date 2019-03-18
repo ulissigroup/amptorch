@@ -156,6 +156,9 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,at
                     for data_sample in atoms_dataloader[phase]:
                         input_data=data_sample[0]
                         target=data_sample[1]
+                        # target=feature_scaling(target)
+                        # target=target/2000.
+                        batch_size=len(target)
 
                         #Send inputs and labels to the corresponding device (cpu or gpu)
                         for element in unique_atoms:
@@ -176,7 +179,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,at
                                 loss.backward()
                                 optimizer.step()
 
-                        MSE += loss.item()
+                        MSE += loss.item()*batch_size
 
                     MSE=MSE/dataset_size[phase]
                     RMSE=np.sqrt(MSE)
@@ -202,7 +205,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,at
                 input_data=data_sample[0]
                 target=data_sample[1]
                 # target=feature_scaling(target)
-                # target=target/2000.
+                batch_size=len(target)
 
                 #Send inputs and labels to the corresponding device (cpu or gpu)
                 for element in unique_atoms:
@@ -221,7 +224,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,at
                     loss.backward()
                     optimizer.step()
 
-                MSE += loss.item()
+                MSE += loss.item()*batch_size
 
             MSE=MSE/dataset_size
             RMSE=np.sqrt(MSE)
