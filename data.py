@@ -26,28 +26,28 @@ class AtomsDataset(Dataset):
             extension=os.path.splitext(images)[1]
             if extension != ('.traj' or '.db'):
                 self.atom_images=ase.io.read(images,':')
-            self.atom_images=hash_images(self.atom_images)
+        self.hash_images=hash_images(self.atom_images)
         # check_images(self.atom_images,forces=False)
-        self.descriptor.calculate_fingerprints(self.atom_images)
+        self.descriptor.calculate_fingerprints(self.hash_images)
         #fprange is the min,max across each fingerprint for the entire dataset
-        self.fprange=calculate_fingerprints_range(self.descriptor,self.atom_images)
+        self.fprange=calculate_fingerprints_range(self.descriptor,self.hash_images)
 
     def __len__(self):
         return len(self.atom_images)
 
     def __getitem__(self,index):
-        hash_name=self.atom_images.keys()[index]
+        hash_name=self.hash_images.keys()[index]
         image_fingerprint=self.descriptor.fingerprints[hash_name]
-        fprange=self.fprange
-        for i,(symbol,afp) in enumerate(image_fingerprint):
-            _afp=copy.copy(afp)
-            fprange_atom=fprange[symbol]
-            for _ in range(np.shape(_afp)[0]):
-                if(fprange_atom[_][1]-fprange_atom[_][0])>(10.**(-8.)):
-                    _afp[_]=-1+2.*((_afp[_]-fprange_atom[_][0])/(fprange_atom[_][1]-fprange_atom[_][0]))
-            image_fingerprint[i]=(symbol,_afp)
+        # fprange=self.fprange
+        # for i,(symbol,afp) in enumerate(image_fingerprint):
+            # _afp=copy.copy(afp)
+            # fprange_atom=fprange[symbol]
+            # for _ in range(np.shape(_afp)[0]):
+                # if(fprange_atom[_][1]-fprange_atom[_][0])>(10.**(-8.)):
+                    # _afp[_]=-1+2.*((_afp[_]-fprange_atom[_][0])/(fprange_atom[_][1]-fprange_atom[_][0]))
+            # image_fingerprint[i]=(symbol,_afp)
         try:
-            image_potential_energy=self.atom_images[hash_name].get_potential_energy()
+            image_potential_energy=self.hash_images[hash_name].get_potential_energy()
         except:
             print 'Atoms object has no claculatot set! Modify the input images before trying again.'
         return {index:(image_fingerprint,image_potential_energy)}
@@ -94,7 +94,6 @@ def data_factorization(training_data):
                 unique_atoms.append(element)
     return unique_atoms,fingerprint_dataset,energy_dataset,sample_indices
 
-
 def collate_amp(training_data):
     unique_atoms,fingerprint_dataset,energy_dataset,sample_indices=data_factorization(training_data)
     # print energy_dataset
@@ -119,5 +118,7 @@ def collate_amp(training_data):
 
 
 # data=AtomsDataset('benchmark_dataset/water.extxyz',Gaussian())
-# for i in range(400):
-    # print data[i]
+# test_data=[data[0],data[1],data[3]]
+# collate=collate_amp(test_data)
+# print collate
+

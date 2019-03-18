@@ -30,8 +30,8 @@ class Dense(nn.Linear):
         super(Dense,self).__init__(input_size,output_size,bias)
 
     def reset_parameters(self):
-        # init.constant_(self.weight,.5)
-        # init.constant_(self.bias,1)
+        # init.constant_(self.weight,.05)
+        # init.constant_(self.bias,.1)
 
         super(Dense,self).reset_parameters()
         # init.constant_(self.bias,1)
@@ -140,7 +140,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,at
         log_epoch('{} Epoch {}/{}'.format(time.asctime(),epoch+1,num_epochs))
         log_epoch('-'*30)
 
-        if len(atoms_dataloader)==2:
+        if type(atoms_dataloader)=='dict':
 
                 for phase in ['train','val']:
 
@@ -229,7 +229,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,at
             MSE=MSE/dataset_size
             RMSE=np.sqrt(MSE)
             epoch_loss = RMSE
-            print epoch_loss
+            # print epoch_loss
             plot_loss_y[phase].append(np.log10(RMSE))
 
             log_epoch('{} {} Loss: {:.4f}'.format(time.asctime(),phase,epoch_loss))
@@ -262,7 +262,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,at
     if phase=='val':
         plt.plot(plot_epoch_x,plot_loss_y['val'],label='val')
     plt.legend()
-    plt.show()
+    # plt.show()
 
     model.load_state_dict(best_model_wts)
     return model
