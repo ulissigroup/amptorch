@@ -10,6 +10,7 @@ from amp.descriptor.gaussian import Gaussian
 from nn_torch import FullNN,train_model
 import torch.optim as optim
 from torch.optim import lr_scheduler
+import matplotlib.pyplot as plt
 
 from ase.build import molecule
 from ase import Atoms
@@ -27,6 +28,7 @@ log('-'*50)
 log('Filename: %s'%filename)
 
 training_data=AtomsDataset(filename,descriptor=Gaussian())
+# training_data=[training[0],training[1]]
 unique_atoms,_,_,_=data_factorization(training_data)
 n_unique_atoms=len(unique_atoms)
 
@@ -60,7 +62,7 @@ criterion=nn.MSELoss()
 log('Loss Function: %s'%criterion)
 
 #Define the optimizer and implement any optimization settings
-optimizer_ft=optim.SGD(model.parameters(),lr=.01,momentum=0.9)
+optimizer_ft=optim.SGD(model.parameters(),lr=.01,momentum=0)
 # optimizer_ft=optim.LBFGS(model.parameters())
 
 log('Optimizer Info:\n %s'%optimizer_ft)
@@ -75,3 +77,27 @@ log('')
 model=train_model(model,unique_atoms,dataset_size,criterion,optimizer_ft,exp_lr_scheduler,atoms_dataloader,num_epochs)
 torch.save(model.state_dict(),'benchmark_results/benchmark_model.pt')
 
+def test_model(training_data):
+    loader=DataLoader(training_data,collate_fn=collate_amp,shuffle=False)
+    model=FullNN(unique_atoms)
+    model.load_state_dict(torch.load('benchmark_results/benchmark_model.pt'))
+    model.eval()
+    predictions=[]
+    targets=[]
+    device='cuda:0'
+    model=model.to(device)
+    for sample in loader:
+        input=sample[0]
+        for element in unique_atoms:
+            input[element][0]=input[element][0].to(device)
+        target=sample[1]
+        target=target.to(device)
+        prediction=model(input)
+        predictions.append(prediction)
+        targets.append(target)
+    print targets
+    print predictions
+    plt.plot(targets,predictions)
+    plt.show()
+
+test_model(training_data)
