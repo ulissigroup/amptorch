@@ -61,7 +61,7 @@ log('Loss Function: %s'%criterion)
 
 #Define the optimizer and implement any optimization settings
 # optimizer_ft=optim.SGD(model.parameters(),lr=.01,momentum=0.9)
-optimizer_ft=optim.LBFGS(model.parameters())
+optimizer_ft=optim.LBFGS(model.parameters(),.8)
 
 log('Optimizer Info:\n %s'%optimizer_ft)
 

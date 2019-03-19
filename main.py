@@ -27,13 +27,15 @@ filename='benchmark_dataset/water.extxyz'
 log('-'*50)
 log('Filename: %s'%filename)
 
-training_data=AtomsDataset(filename,descriptor=Gaussian())
-# training_data=[training[0],training[1]]
+training=AtomsDataset(filename,descriptor=Gaussian())
+training_data=[training[0],training[1],training[3],training[4]]
+# for i in training_data:
+    # print i
 unique_atoms,_,_,_=data_factorization(training_data)
 n_unique_atoms=len(unique_atoms)
 
 
-batch_size=100
+batch_size=2
 log('Batch Size = %d'%batch_size)
 validation_frac=0
 
@@ -49,6 +51,12 @@ else:
     log('Training Data = %d'%dataset_size)
     atoms_dataloader=DataLoader(training_data,batch_size,collate_fn=collate_amp,shuffle=True,pin_memory=True)
 
+
+# for i in atoms_dataloader:
+    # print i
+# sys.exit()
+    # print np.sqrt(((i[1].std(dim=0))**2)*(len(i)-1)/len(i))
+
 #Check SD of targets
 # for i in atoms_dataloader:
     # print i[1].std(dim=0)
@@ -58,24 +66,25 @@ model=FullNN(unique_atoms)
     # print('Utilizing',torch.cuda.device_count(),'GPUs!')
     # model=nn.DataParallel(model)
 model=model.to(device)
+# criterion=nn.L1Loss()
 criterion=nn.MSELoss()
 log('Loss Function: %s'%criterion)
 
 #Define the optimizer and implement any optimization settings
-optimizer_ft=optim.SGD(model.parameters(),lr=.01,momentum=0)
+optimizer_ft=optim.SGD(model.parameters(),lr=.001,momentum=0)
 # optimizer_ft=optim.LBFGS(model.parameters())
 
 log('Optimizer Info:\n %s'%optimizer_ft)
 
 #Define scheduler search strategies
-exp_lr_scheduler=lr_scheduler.StepLR(optimizer_ft,step_size=20,gamma=0.1)
-log('LR Scheduler Info: \n Step Size = %s \n Gamma = %s'%(exp_lr_scheduler.step_size,exp_lr_scheduler.gamma))
+# exp_lr_scheduler=lr_scheduler.StepLR(optimizer_ft,step_size=20,gamma=0.1)
+# log('LR Scheduler Info: \n Step Size = %s \n Gamma = %s'%(exp_lr_scheduler.step_size,exp_lr_scheduler.gamma))
 
 num_epochs=100
 log('Number of Epochs = %d'%num_epochs)
 log('')
-model=train_model(model,unique_atoms,dataset_size,criterion,optimizer_ft,exp_lr_scheduler,atoms_dataloader,num_epochs)
-torch.save(model.state_dict(),'benchmark_results/benchmark_model.pt')
+model=train_model(model,unique_atoms,dataset_size,criterion,optimizer_ft,atoms_dataloader,num_epochs)
+# torch.save(model.state_dict(),'benchmark_results/benchmark_model.pt')
 
 def test_model(training_data):
     loader=DataLoader(training_data,collate_fn=collate_amp,shuffle=False)
@@ -100,4 +109,4 @@ def test_model(training_data):
     plt.plot(targets,predictions)
     plt.show()
 
-test_model(training_data)
+# test_model(training_data)
