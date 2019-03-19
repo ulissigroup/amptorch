@@ -30,10 +30,10 @@ class Dense(nn.Linear):
         super(Dense,self).__init__(input_size,output_size,bias)
 
     def reset_parameters(self):
-        # init.constant_(self.weight,.05)
-        # init.constant_(self.bias,.1)
+        init.constant_(self.weight,.05)
+        init.constant_(self.bias,-1)
 
-        super(Dense,self).reset_parameters()
+        # super(Dense,self).reset_parameters()
         # init.constant_(self.bias,1)
 
     def forward(self,inputs):
@@ -119,7 +119,7 @@ def feature_scaling(data):
         scale.append((value-data_min)/(data_max-data_min))
     return torch.stack(scale)
 
-def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,atoms_dataloader,num_epochs):
+def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_dataloader,num_epochs):
     log=Logger('benchmark_results/results-log.txt')
     log_epoch=Logger('benchmark_results/epoch-log.txt')
     log('Model: %s'%model)
@@ -179,7 +179,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,at
                                 loss.backward()
                                 optimizer.step()
 
-                        MSE += loss.item()*batch_size
+                        MSE += batch_size*(loss.item())
 
                     MSE=MSE/dataset_size[phase]
                     RMSE=np.sqrt(MSE)
@@ -195,15 +195,17 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,at
 
             phase='train'
 
-            scheduler.step()
+            # scheduler.step()
             model.train()
+            # print list(model.parameters())
 
             MSE=0.0
-
             #Iterate over the dataloader
             for data_sample in atoms_dataloader:
                 input_data=data_sample[0]
+                print input_data
                 target=data_sample[1]
+                print target
                 # target=feature_scaling(target)
                 batch_size=len(target)
 
@@ -217,8 +219,8 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,at
                 #forward
                 with torch.set_grad_enabled(True):
                     output=model(input_data)
-                    # print output.size()
-                    _,preds = torch.max(output,1)
+                    print output
+                    sys.exit()
                     loss=criterion(output,target)
                     #backward + optimize only if in training phase
                     loss.backward()
@@ -229,7 +231,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,at
             MSE=MSE/dataset_size
             RMSE=np.sqrt(MSE)
             epoch_loss = RMSE
-            # print epoch_loss
+            print epoch_loss
             plot_loss_y[phase].append(np.log10(RMSE))
 
             log_epoch('{} {} Loss: {:.4f}'.format(time.asctime(),phase,epoch_loss))
@@ -237,7 +239,6 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,at
             if epoch_loss<best_loss:
                 best_loss=epoch_loss
                 best_model_wts=copy.deepcopy(model.state_dict())
-
         log_epoch('')
 
     time_elapsed=time.time()-since
@@ -262,7 +263,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,scheduler,at
     if phase=='val':
         plt.plot(plot_epoch_x,plot_loss_y['val'],label='val')
     plt.legend()
-    # plt.show()
+    plt.show()
 
     model.load_state_dict(best_model_wts)
     return model

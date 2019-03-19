@@ -27,7 +27,6 @@ class AtomsDataset(Dataset):
             if extension != ('.traj' or '.db'):
                 self.atom_images=ase.io.read(images,':')
         self.hash_images=hash_images(self.atom_images)
-        # check_images(self.atom_images,forces=False)
         self.descriptor.calculate_fingerprints(self.hash_images)
         #fprange is the min,max across each fingerprint for the entire dataset
         self.fprange=calculate_fingerprints_range(self.descriptor,self.hash_images)
@@ -106,6 +105,7 @@ def collate_amp(training_data):
             atom_element=fingerprint[0]
             atom_fingerprint=fingerprint[1]
             element_specific_fingerprints[atom_element][0].append(torch.tensor(atom_fingerprint))
+            # element_specific_fingerprints[atom_element][0].append(torch.FloatTensor(np.random.uniform(-1,1,20)))
             element_specific_fingerprints[atom_element][1].append(sample_indices[fp_index])
             #INSERT SCALING OF INPUT DATA
     for element in unique_atoms:
@@ -117,8 +117,10 @@ def collate_amp(training_data):
     return model_input_data
 
 
-# data=AtomsDataset('benchmark_dataset/water.extxyz',Gaussian())
+data=AtomsDataset('benchmark_dataset/water.extxyz',Gaussian())
+data[0]
 # test_data=[data[0],data[1],data[3]]
+# print test_data
 # collate=collate_amp(test_data)
 # print collate
 
