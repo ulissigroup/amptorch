@@ -3,7 +3,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torch.nn import init
-from torch.nn import Tanh, LeakyReLU
+from torch.nn import Tanh, Softplus,LeakyReLU
+from torch.nn.init import xavier_uniform_
 import copy
 from collections import OrderedDict
 import time
@@ -25,16 +26,16 @@ class Dense(nn.Linear):
 
     """
 
-    def __init__(self,input_size,output_size, bias=True, activation=None):
+    def __init__(self,input_size,output_size, bias=True,activation=None):
         self.activation=activation
         super(Dense,self).__init__(input_size,output_size,bias)
 
     def reset_parameters(self):
         # init.constant_(self.weight,.5)
-        # init.constant_(self.bias,1)
+        # init.constant_(self.bias,0)
 
         super(Dense,self).reset_parameters()
-        # init.constant_(self.bias,1)
+        # init.constant_(self.bias,0)
 
     def forward(self,inputs):
         neuron_output=super(Dense,self).forward(inputs)
@@ -65,7 +66,7 @@ class MLP(nn.Module):
             n_hidden_size=[n_hidden_size] * (n_layers-1)
         self.n_neurons=[n_input_nodes]+n_hidden_size+[n_output_nodes]
         self.activation=activation
-        layers=[Dense(self.n_neurons[i],self.n_neurons[i+1],bias=True,activation=activation) for i in range(n_layers-1)]
+        layers=[Dense(self.n_neurons[i],self.n_neurons[i+1],activation=activation) for i in range(n_layers-1)]
         layers.append(Dense(self.n_neurons[-2],self.n_neurons[-1],activation=None))
         self.model_net=nn.Sequential(*layers)
 
@@ -141,7 +142,8 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
         log_epoch('-'*30)
 
         MSE=0.0
-
+        # print list(model.parameters())
+        # print('')
         for data_sample in atoms_dataloader:
             input_data=data_sample[0]
             target=data_sample[1]
@@ -169,6 +171,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
         MSE=MSE/dataset_size
         RMSE=np.sqrt(MSE)
         epoch_loss=RMSE
+        print epoch_loss
         plot_loss_y.append(np.log10(RMSE))
 
         log_epoch('{} Loss: {:.4f}'.format(time.asctime(),epoch_loss))
