@@ -26,6 +26,8 @@ class AtomsDataset(Dataset):
             extension=os.path.splitext(images)[1]
             if extension != ('.traj' or '.db'):
                 self.atom_images=ase.io.read(images,':')
+            else:
+                self.atom_images=self.images
         self.hash_images=hash_images(self.atom_images)
         self.descriptor.calculate_fingerprints(self.hash_images)
         #fprange is the min,max across each fingerprint for the entire dataset
@@ -48,7 +50,7 @@ class AtomsDataset(Dataset):
         try:
             image_potential_energy=self.hash_images[hash_name].get_potential_energy()
         except:
-            print 'Atoms object has no claculatot set! Modify the input images before trying again.'
+            print 'Atoms object has no claculator set! Modify the input images before trying again.'
         return {index:(image_fingerprint,image_potential_energy)}
 
     def data_split(self,training_data,val_frac):
@@ -107,7 +109,6 @@ def collate_amp(training_data):
             element_specific_fingerprints[atom_element][0].append(torch.tensor(atom_fingerprint))
             # element_specific_fingerprints[atom_element][0].append(torch.FloatTensor(np.random.uniform(-1,1,20)))
             element_specific_fingerprints[atom_element][1].append(sample_indices[fp_index])
-            #INSERT SCALING OF INPUT DATA
     for element in unique_atoms:
         element_specific_fingerprints[element][0]=torch.stack(element_specific_fingerprints[element][0])
         # element_specific_fingerprints[element][2].append(torch.tensor(energy_dataset))
@@ -116,11 +117,5 @@ def collate_amp(training_data):
     # return element_specific_fingerprints
     return model_input_data
 
-
-data=AtomsDataset('benchmark_dataset/water.extxyz',Gaussian())
-data[0]
-# test_data=[data[0],data[1],data[3]]
-# print test_data
-# collate=collate_amp(test_data)
-# print collate
+# data=AtomsDataset('benchmark_dataset/water.extxyz',Gaussian())
 
