@@ -1179,3 +1179,1811 @@ Amp successfully trained. Saving current parameters.
 File "calc.amp" exists. Instead saving to "/tmp/tmpejmBkF.amp".
 Parameters saved in file "/tmp/tmpejmBkF.amp".
 This file can be opened with `calc = Amp.load('/tmp/tmpejmBkF.amp')`
+
+   oo      o       o   oooooo
+  o  o     oo     oo   o     o
+ o    o    o o   o o   o     o
+o      o   o  o o  o   o     o
+oooooooo   o   o   o   oooooo
+o      o   o       o   o
+o      o   o       o   o
+o      o   o       o   o
+
+Amp: Atomistic Machine-learning Package
+Developed by Andrew Peterson, Alireza Khorshidi, and others,
+Brown University.
+PI Website: http://brown.edu/go/catalyst
+Official repository: http://bitbucket.org/andrewpeterson/amp
+Official documentation: http://amp.readthedocs.org/
+Citation:
+  Alireza Khorshidi & Andrew A. Peterson,
+  Computer Physics Communications 207: 310-324 (2016).
+  http://doi.org/10.1016/j.cpc.2016.05.010
+======================================================================
+User: mshuaibi
+Hostname: ulissigroup-Alienware-Shuaibi
+Date: 2019-03-20T09:54:54 (2019-03-20T13:54:54 UTC)
+Architecture: x86_64
+PID: 12059
+Amp version: 0.6.1
+Amp directory: /home/mshuaibi/.local/lib/python2.7/site-packages/amp
+ Last commit: unknown hash
+ Last commit date: unknown date
+Python: v2.7.15: /usr/bin/python
+ASE v3.17.0: /home/mshuaibi/.local/lib/python2.7/site-packages/ase
+NumPy v1.16.2: /home/mshuaibi/.local/lib/python2.7/site-packages/numpy
+SciPy v1.2.1: /home/mshuaibi/.local/lib/python2.7/site-packages/scipy
+ZMQ/PyZMQ v4.3.1/v18.0.1: /home/mshuaibi/.local/lib/python2.7/site-packages/zmq
+pxssh: Not available from pxssh.
+pxssh (via pexpect v4.6.0): /home/mshuaibi/.local/lib/python2.7/site-packages/pexpect/pxssh.pyc
+======================================================================
+No queuing system detected; single machine assumed.
+Parallel configuration determined from environment for <single machine>:
+  localhost: 12
+
+Amp training started. 2019-03-20T09:54:54
+
+Descriptor: Gaussian
+  (<amp.descriptor.gaussian.Gaussian object at 0x7ff5596e6cd0>)
+Model: NeuralNetwork
+  (<amp.model.neuralnetwork.NeuralNetwork object at 0x7ff5596e6d10>)
+Hashing images...
+ 400 unique images after hashing.
+...hashing completed. 0.0 min.
+
+Descriptor
+==========
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+Finding unique set of elements in training data.
+2 unique elements included: H, O
+No symmetry functions supplied; creating defaults.
+Number of symmetry functions for each element:
+  H: 20
+  O: 20
+H feature vector functions:
+ 0: G2, H, eta = 0.05
+ 1: G2, O, eta = 0.05
+ 2: G2, H, eta = 4.0
+ 3: G2, O, eta = 4.0
+ 4: G2, H, eta = 20.0
+ 5: G2, O, eta = 20.0
+ 6: G2, H, eta = 80.0
+ 7: G2, O, eta = 80.0
+ 8: G4, (H, H), eta=0.005, gamma=1.0, zeta=1.0
+ 9: G4, (H, O), eta=0.005, gamma=1.0, zeta=1.0
+ 10: G4, (O, O), eta=0.005, gamma=1.0, zeta=1.0
+ 11: G4, (H, H), eta=0.005, gamma=-1.0, zeta=1.0
+ 12: G4, (H, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 13: G4, (O, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 14: G4, (H, H), eta=0.005, gamma=1.0, zeta=4.0
+ 15: G4, (H, O), eta=0.005, gamma=1.0, zeta=4.0
+ 16: G4, (O, O), eta=0.005, gamma=1.0, zeta=4.0
+ 17: G4, (H, H), eta=0.005, gamma=-1.0, zeta=4.0
+ 18: G4, (H, O), eta=0.005, gamma=-1.0, zeta=4.0
+ 19: G4, (O, O), eta=0.005, gamma=-1.0, zeta=4.0
+O feature vector functions:
+ 0: G2, H, eta = 0.05
+ 1: G2, O, eta = 0.05
+ 2: G2, H, eta = 4.0
+ 3: G2, O, eta = 4.0
+ 4: G2, H, eta = 20.0
+ 5: G2, O, eta = 20.0
+ 6: G2, H, eta = 80.0
+ 7: G2, O, eta = 80.0
+ 8: G4, (H, H), eta=0.005, gamma=1.0, zeta=1.0
+ 9: G4, (H, O), eta=0.005, gamma=1.0, zeta=1.0
+ 10: G4, (O, O), eta=0.005, gamma=1.0, zeta=1.0
+ 11: G4, (H, H), eta=0.005, gamma=-1.0, zeta=1.0
+ 12: G4, (H, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 13: G4, (O, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 14: G4, (H, H), eta=0.005, gamma=1.0, zeta=4.0
+ 15: G4, (H, O), eta=0.005, gamma=1.0, zeta=4.0
+ 16: G4, (O, O), eta=0.005, gamma=1.0, zeta=4.0
+ 17: G4, (H, H), eta=0.005, gamma=-1.0, zeta=4.0
+ 18: G4, (H, O), eta=0.005, gamma=-1.0, zeta=4.0
+ 19: G4, (O, O), eta=0.005, gamma=-1.0, zeta=4.0
+Calculating neighborlists...
+ Data stored in file calc-neighborlists.
+ File exists with 20 total images, 0 of which are needed.
+ 400 new calculations needed.
+ Parallel processing.
+ Established server at ulissigroup-Alienware-Shuaibi:41283.
+ Establishing worker sessions.
+ Starting local connections.
+  Session 0 (localhost): Log and error written to /tmp/tmpXeCEaM.stderr
+  Session 1 (localhost): Log and error written to /tmp/tmpMqanOF.stderr
+  Session 2 (localhost): Log and error written to /tmp/tmpsSryrH.stderr
+  Session 3 (localhost): Log and error written to /tmp/tmpOefduM.stderr
+  Session 4 (localhost): Log and error written to /tmp/tmpXWNcP8.stderr
+  Session 5 (localhost): Log and error written to /tmp/tmpFBW9KE.stderr
+  Session 6 (localhost): Log and error written to /tmp/tmpyemMfV.stderr
+  Session 7 (localhost): Log and error written to /tmp/tmpW3TC61.stderr
+  Session 8 (localhost): Log and error written to /tmp/tmpRwfLcI.stderr
+  Session 9 (localhost): Log and error written to /tmp/tmpx8ZYkJ.stderr
+  Session 10 (localhost): Log and error written to /tmp/tmp0jQWAT.stderr
+  Session 11 (localhost): Log and error written to /tmp/tmpsNqHWY.stderr
+ Parallel calculations starting...
+  Process 1 returned 34 results.
+  Process 2 returned 34 results.
+  Process 6 returned 33 results.
+  Process 0 returned 34 results.
+  Process 3 returned 34 results.
+  Process 10 returned 33 results.
+  Process 4 returned 33 results.
+  Process 8 returned 33 results.
+  Process 9 returned 33 results.
+  Process 7 returned 33 results.
+  Process 5 returned 33 results.
+  Process 11 returned 33 results.
+  400 new results.
+ ...parallel calculations finished. 0.0 min.
+ Adding new results to database.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file calc-fingerprints.
+ File exists with 20 total images, 0 of which are needed.
+ 400 new calculations needed.
+ Parallel processing.
+ Established server at ulissigroup-Alienware-Shuaibi:35603.
+ Establishing worker sessions.
+ Starting local connections.
+  Session 0 (localhost): Log and error written to /tmp/tmp79r4Jp.stderr
+  Session 1 (localhost): Log and error written to /tmp/tmpH0_Uy2.stderr
+  Session 2 (localhost): Log and error written to /tmp/tmp4AM3Pi.stderr
+  Session 3 (localhost): Log and error written to /tmp/tmpqPK8Ov.stderr
+  Session 4 (localhost): Log and error written to /tmp/tmpg2ILlA.stderr
+  Session 5 (localhost): Log and error written to /tmp/tmpXaMbUM.stderr
+  Session 6 (localhost): Log and error written to /tmp/tmpZm8O7D.stderr
+  Session 7 (localhost): Log and error written to /tmp/tmpwpFWkN.stderr
+  Session 8 (localhost): Log and error written to /tmp/tmp8xZ5Zh.stderr
+
+   oo      o       o   oooooo
+  o  o     oo     oo   o     o
+ o    o    o o   o o   o     o
+o      o   o  o o  o   o     o
+oooooooo   o   o   o   oooooo
+o      o   o       o   o
+o      o   o       o   o
+o      o   o       o   o
+
+Amp: Atomistic Machine-learning Package
+Developed by Andrew Peterson, Alireza Khorshidi, and others,
+Brown University.
+PI Website: http://brown.edu/go/catalyst
+Official repository: http://bitbucket.org/andrewpeterson/amp
+Official documentation: http://amp.readthedocs.org/
+Citation:
+  Alireza Khorshidi & Andrew A. Peterson,
+  Computer Physics Communications 207: 310-324 (2016).
+  http://doi.org/10.1016/j.cpc.2016.05.010
+======================================================================
+User: mshuaibi
+Hostname: ulissigroup-Alienware-Shuaibi
+Date: 2019-03-20T09:55:01 (2019-03-20T13:55:01 UTC)
+Architecture: x86_64
+PID: 12390
+Amp version: 0.6.1
+Amp directory: /home/mshuaibi/.local/lib/python2.7/site-packages/amp
+ Last commit: unknown hash
+ Last commit date: unknown date
+Python: v2.7.15: /usr/bin/python
+ASE v3.17.0: /home/mshuaibi/.local/lib/python2.7/site-packages/ase
+NumPy v1.16.2: /home/mshuaibi/.local/lib/python2.7/site-packages/numpy
+SciPy v1.2.1: /home/mshuaibi/.local/lib/python2.7/site-packages/scipy
+ZMQ/PyZMQ v4.3.1/v18.0.1: /home/mshuaibi/.local/lib/python2.7/site-packages/zmq
+pxssh: Not available from pxssh.
+pxssh (via pexpect v4.6.0): /home/mshuaibi/.local/lib/python2.7/site-packages/pexpect/pxssh.pyc
+======================================================================
+No queuing system detected; single machine assumed.
+Parallel configuration determined from environment for <single machine>:
+  localhost: 12
+
+Amp training started. 2019-03-20T09:55:02
+
+Descriptor: Gaussian
+  (<amp.descriptor.gaussian.Gaussian object at 0x7f465e647cd0>)
+Model: NeuralNetwork
+  (<amp.model.neuralnetwork.NeuralNetwork object at 0x7f465e647d10>)
+Hashing images...
+ 400 unique images after hashing.
+...hashing completed. 0.0 min.
+
+Descriptor
+==========
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+Finding unique set of elements in training data.
+2 unique elements included: H, O
+No symmetry functions supplied; creating defaults.
+Number of symmetry functions for each element:
+  H: 20
+  O: 20
+H feature vector functions:
+ 0: G2, H, eta = 0.05
+ 1: G2, O, eta = 0.05
+ 2: G2, H, eta = 4.0
+ 3: G2, O, eta = 4.0
+ 4: G2, H, eta = 20.0
+ 5: G2, O, eta = 20.0
+ 6: G2, H, eta = 80.0
+ 7: G2, O, eta = 80.0
+ 8: G4, (H, H), eta=0.005, gamma=1.0, zeta=1.0
+ 9: G4, (H, O), eta=0.005, gamma=1.0, zeta=1.0
+ 10: G4, (O, O), eta=0.005, gamma=1.0, zeta=1.0
+ 11: G4, (H, H), eta=0.005, gamma=-1.0, zeta=1.0
+ 12: G4, (H, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 13: G4, (O, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 14: G4, (H, H), eta=0.005, gamma=1.0, zeta=4.0
+ 15: G4, (H, O), eta=0.005, gamma=1.0, zeta=4.0
+ 16: G4, (O, O), eta=0.005, gamma=1.0, zeta=4.0
+ 17: G4, (H, H), eta=0.005, gamma=-1.0, zeta=4.0
+ 18: G4, (H, O), eta=0.005, gamma=-1.0, zeta=4.0
+ 19: G4, (O, O), eta=0.005, gamma=-1.0, zeta=4.0
+O feature vector functions:
+ 0: G2, H, eta = 0.05
+ 1: G2, O, eta = 0.05
+ 2: G2, H, eta = 4.0
+ 3: G2, O, eta = 4.0
+ 4: G2, H, eta = 20.0
+ 5: G2, O, eta = 20.0
+ 6: G2, H, eta = 80.0
+ 7: G2, O, eta = 80.0
+ 8: G4, (H, H), eta=0.005, gamma=1.0, zeta=1.0
+ 9: G4, (H, O), eta=0.005, gamma=1.0, zeta=1.0
+ 10: G4, (O, O), eta=0.005, gamma=1.0, zeta=1.0
+ 11: G4, (H, H), eta=0.005, gamma=-1.0, zeta=1.0
+ 12: G4, (H, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 13: G4, (O, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 14: G4, (H, H), eta=0.005, gamma=1.0, zeta=4.0
+ 15: G4, (H, O), eta=0.005, gamma=1.0, zeta=4.0
+ 16: G4, (O, O), eta=0.005, gamma=1.0, zeta=4.0
+ 17: G4, (H, H), eta=0.005, gamma=-1.0, zeta=4.0
+ 18: G4, (H, O), eta=0.005, gamma=-1.0, zeta=4.0
+ 19: G4, (O, O), eta=0.005, gamma=-1.0, zeta=4.0
+Calculating neighborlists...
+ Data stored in file calc-neighborlists.
+ File exists with 420 total images, 400 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file calc-fingerprints.
+ File exists with 20 total images, 0 of which are needed.
+ 400 new calculations needed.
+ Parallel processing.
+ Established server at ulissigroup-Alienware-Shuaibi:43523.
+ Establishing worker sessions.
+ Starting local connections.
+  Session 0 (localhost): Log and error written to /tmp/tmpN2z1yW.stderr
+  Session 1 (localhost): Log and error written to /tmp/tmpiWjAc3.stderr
+  Session 2 (localhost): Log and error written to /tmp/tmpqdJbsO.stderr
+  Session 3 (localhost): Log and error written to /tmp/tmpv09Lpm.stderr
+  Session 4 (localhost): Log and error written to /tmp/tmp88TviJ.stderr
+  Session 5 (localhost): Log and error written to /tmp/tmpWWfkoh.stderr
+  Session 6 (localhost): Log and error written to /tmp/tmpL97RB5.stderr
+  Session 7 (localhost): Log and error written to /tmp/tmpUqelkY.stderr
+  Session 8 (localhost): Log and error written to /tmp/tmpThOkth.stderr
+  Session 9 (localhost): Log and error written to /tmp/tmptssA9h.stderr
+  Session 10 (localhost): Log and error written to /tmp/tmpm17hN3.stderr
+  Session 11 (localhost): Log and error written to /tmp/tmpzZUfar.stderr
+ Parallel calculations starting...
+  Process 3 returned 34 results.
+  Process 4 returned 33 results.
+  Process 8 returned 33 results.
+  Process 5 returned 33 results.
+  Process 10 returned 33 results.
+  Process 7 returned 33 results.
+  Process 1 returned 34 results.
+  Process 6 returned 33 results.
+  Process 2 returned 34 results.
+  Process 9 returned 33 results.
+  Process 0 returned 34 results.
+  Process 11 returned 33 results.
+  400 new results.
+ ...parallel calculations finished. 0.0 min.
+ Adding new results to database.
+...fingerprints calculated. 0.0 min.
+
+Model fitting
+=============
+Regression in atom-centered mode.
+Calculating new fingerprint range; this range is part of the model.
+Hidden-layer structure:
+  H: (5, 5)
+  O: (5, 5)
+Initializing with random weights.
+Initializing with random scalings.
+Starting parameter optimization.
+ Optimizer: <function fmin_bfgs at 0x7f4678b36230>
+ Optimizer kwargs: {'gtol': 1e-15}
+ Parallel processing.
+ Established server at ulissigroup-Alienware-Shuaibi:34195.
+ Establishing worker sessions.
+ Starting local connections.
+  Session 0 (localhost): Log and stderr written to /tmp/tmp6m_gDj.stderr
+  Session 1 (localhost): Log and stderr written to /tmp/tmpsklazD.stderr
+  Session 2 (localhost): Log and stderr written to /tmp/tmp8xxS5P.stderr
+  Session 3 (localhost): Log and stderr written to /tmp/tmp089GMZ.stderr
+  Session 4 (localhost): Log and stderr written to /tmp/tmpPH_ayC.stderr
+  Session 5 (localhost): Log and stderr written to /tmp/tmpFpxK3D.stderr
+  Session 6 (localhost): Log and stderr written to /tmp/tmpS1qRet.stderr
+  Session 7 (localhost): Log and stderr written to /tmp/tmptsq9O0.stderr
+  Session 8 (localhost): Log and stderr written to /tmp/tmpkIglpP.stderr
+  Session 9 (localhost): Log and stderr written to /tmp/tmp6bSsSr.stderr
+  Session 10 (localhost): Log and stderr written to /tmp/tmpwEZLS8.stderr
+  Session 11 (localhost): Log and stderr written to /tmp/tmpzvrABS.stderr
+ Loss function convergence criteria:
+  energy_rmse: 0.001
+  energy_maxresid: None
+  force_rmse: None
+  force_maxresid: None
+ Loss function set-up:
+  energy_coefficient: 1.0
+  force_coefficient: None
+  overfit: 0.0
+
+
+                                                          Energy
+ Step                Time   Loss (SSD)   EnergyRMSE     MaxResid
+===== =================== ============ ============ ============
+Overwriting file: "calc-initial-parameters.amp". Moving original to "/tmp/tmpth1rQL.amp".
+Saving checkpoint data.
+Overwriting file: "calc-checkpoint.amp". Moving original to "/tmp/tmpMrK5BR.amp".
+    0 2019-03-20T09:55:05   3.5458e+02 9.4152e-01 - 2.1509e+00 C
+    1 2019-03-20T09:55:05   2.6014e+02 8.0644e-01 - 1.5490e+00 C
+    2 2019-03-20T09:55:05   2.0902e+02 7.2287e-01 - 1.3496e+00 C
+    3 2019-03-20T09:55:05   1.4011e+02 5.9184e-01 - 1.0983e+00 C
+    4 2019-03-20T09:55:05   7.9262e+01 4.4515e-01 - 1.1799e+00 C
+    5 2019-03-20T09:55:05   1.4174e+01 1.8824e-01 - 5.2223e-01 C
+    6 2019-03-20T09:55:05   6.9429e+02 1.3175e+00 - 2.1548e+00 C
+    7 2019-03-20T09:55:05   1.0548e+01 1.6239e-01 - 5.2646e-01 C
+    8 2019-03-20T09:55:05   8.9389e+00 1.4949e-01 - 3.6951e-01 C
+    9 2019-03-20T09:55:05   5.8110e+00 1.2053e-01 - 3.2574e-01 C
+   10 2019-03-20T09:55:05   1.1787e+01 1.7166e-01 - 5.2329e-01 C
+   11 2019-03-20T09:55:05   4.8554e+00 1.1017e-01 - 2.9614e-01 C
+   12 2019-03-20T09:55:05   3.4981e+00 9.3516e-02 - 3.0201e-01 C
+   13 2019-03-20T09:55:05   5.9601e+00 1.2207e-01 - 3.4297e-01 C
+   14 2019-03-20T09:55:05   3.0659e+00 8.7549e-02 - 2.8879e-01 C
+   15 2019-03-20T09:55:06   2.4269e+00 7.7893e-02 - 2.7209e-01 C
+   16 2019-03-20T09:55:06   2.0297e+00 7.1234e-02 - 2.5178e-01 C
+   17 2019-03-20T09:55:06   1.7692e+00 6.6506e-02 - 2.5857e-01 C
+   18 2019-03-20T09:55:06   1.3982e+00 5.9122e-02 - 2.0771e-01 C
+   19 2019-03-20T09:55:06   1.2918e+00 5.6828e-02 - 1.5868e-01 C
+   20 2019-03-20T09:55:06   1.1534e+00 5.3698e-02 - 1.7113e-01 C
+   21 2019-03-20T09:55:06   9.3992e-01 4.8475e-02 - 1.6897e-01 C
+   22 2019-03-20T09:55:06   9.0861e-01 4.7660e-02 - 1.8145e-01 C
+   23 2019-03-20T09:55:06   8.1583e-01 4.5162e-02 - 1.7319e-01 C
+   24 2019-03-20T09:55:06   6.9980e-01 4.1827e-02 - 1.5607e-01 C
+   25 2019-03-20T09:55:06   6.1091e-01 3.9080e-02 - 1.4805e-01 C
+   26 2019-03-20T09:55:06   4.8729e-01 3.4903e-02 - 1.4575e-01 C
+   27 2019-03-20T09:55:06   5.6503e-01 3.7584e-02 - 1.5669e-01 C
+   28 2019-03-20T09:55:06   4.3739e-01 3.3068e-02 - 1.4422e-01 C
+   29 2019-03-20T09:55:06   4.1395e-01 3.2170e-02 - 1.5824e-01 C
+   30 2019-03-20T09:55:06   3.7556e-01 3.0642e-02 - 1.5502e-01 C
+   31 2019-03-20T09:55:06   3.4738e-01 2.9469e-02 - 1.4084e-01 C
+   32 2019-03-20T09:55:06   3.3819e-01 2.9077e-02 - 1.3546e-01 C
+   33 2019-03-20T09:55:06   3.2203e-01 2.8374e-02 - 1.3207e-01 C
+   34 2019-03-20T09:55:06   2.9474e-01 2.7145e-02 - 1.2870e-01 C
+   35 2019-03-20T09:55:06   2.6184e-01 2.5585e-02 - 1.0960e-01 C
+   36 2019-03-20T09:55:06   2.7373e-01 2.6159e-02 - 1.0257e-01 C
+   37 2019-03-20T09:55:06   2.4412e-01 2.4705e-02 - 1.0525e-01 C
+   38 2019-03-20T09:55:06   2.2744e-01 2.3845e-02 - 9.8040e-02 C
+   39 2019-03-20T09:55:06   2.1106e-01 2.2971e-02 - 9.8568e-02 C
+   40 2019-03-20T09:55:06   1.8766e-01 2.1660e-02 - 9.8707e-02 C
+   41 2019-03-20T09:55:06   1.6083e-01 2.0052e-02 - 9.8800e-02 C
+   42 2019-03-20T09:55:06   2.0958e-01 2.2890e-02 - 8.9067e-02 C
+   43 2019-03-20T09:55:06   1.5225e-01 1.9510e-02 - 9.2239e-02 C
+   44 2019-03-20T09:55:06   1.4853e-01 1.9270e-02 - 9.3223e-02 C
+   45 2019-03-20T09:55:06   1.4141e-01 1.8802e-02 - 9.1192e-02 C
+   46 2019-03-20T09:55:06   1.2809e-01 1.7895e-02 - 8.7349e-02 C
+   47 2019-03-20T09:55:06   1.1333e-01 1.6832e-02 - 7.5477e-02 C
+   48 2019-03-20T09:55:06   1.2055e-01 1.7360e-02 - 8.7387e-02 C
+   49 2019-03-20T09:55:06   1.0522e-01 1.6219e-02 - 7.6598e-02 C
+   50 2019-03-20T09:55:06   9.5733e-02 1.5470e-02 - 7.6966e-02 C
+   51 2019-03-20T09:55:06   8.5243e-02 1.4598e-02 - 7.5568e-02 C
+   52 2019-03-20T09:55:06   7.7673e-02 1.3935e-02 - 6.7220e-02 C
+   53 2019-03-20T09:55:06   7.6917e-02 1.3867e-02 - 5.6383e-02 C
+   54 2019-03-20T09:55:06   7.3351e-02 1.3542e-02 - 6.1542e-02 C
+   55 2019-03-20T09:55:07   6.8295e-02 1.3067e-02 - 6.4524e-02 C
+   56 2019-03-20T09:55:07   6.9769e-02 1.3207e-02 - 6.4254e-02 C
+   57 2019-03-20T09:55:07   6.5837e-02 1.2829e-02 - 6.4280e-02 C
+   58 2019-03-20T09:55:07   6.2701e-02 1.2520e-02 - 6.5294e-02 C
+   59 2019-03-20T09:55:07   6.1062e-02 1.2355e-02 - 6.3240e-02 C
+   60 2019-03-20T09:55:07   5.8123e-02 1.2054e-02 - 6.2909e-02 C
+   61 2019-03-20T09:55:07   5.3352e-02 1.1549e-02 - 6.3713e-02 C
+   62 2019-03-20T09:55:07   4.7544e-02 1.0902e-02 - 5.6517e-02 C
+   63 2019-03-20T09:55:07   4.7083e-02 1.0849e-02 - 5.6458e-02 C
+   64 2019-03-20T09:55:07   4.4358e-02 1.0531e-02 - 5.6379e-02 C
+   65 2019-03-20T09:55:07   4.0171e-02 1.0021e-02 - 6.0153e-02 C
+   66 2019-03-20T09:55:07   3.7554e-02 9.6894e-03 - 6.1565e-02 C
+   67 2019-03-20T09:55:07   3.4391e-02 9.2724e-03 - 6.1935e-02 C
+   68 2019-03-20T09:55:07   3.3987e-02 9.2177e-03 - 6.0874e-02 C
+   69 2019-03-20T09:55:07   3.2580e-02 9.0250e-03 - 6.1367e-02 C
+   70 2019-03-20T09:55:07   3.0703e-02 8.7612e-03 - 5.6475e-02 C
+   71 2019-03-20T09:55:07   2.9716e-02 8.6191e-03 - 5.9050e-02 C
+   72 2019-03-20T09:55:07   2.8318e-02 8.4140e-03 - 5.6261e-02 C
+   73 2019-03-20T09:55:07   2.6920e-02 8.2037e-03 - 5.2955e-02 C
+   74 2019-03-20T09:55:07   2.7974e-02 8.3628e-03 - 5.5025e-02 C
+   75 2019-03-20T09:55:07   2.6407e-02 8.1252e-03 - 5.3682e-02 C
+   76 2019-03-20T09:55:07   2.5764e-02 8.0255e-03 - 5.3199e-02 C
+   77 2019-03-20T09:55:07   2.5082e-02 7.9186e-03 - 5.1781e-02 C
+   78 2019-03-20T09:55:07   2.4029e-02 7.7507e-03 - 4.9380e-02 C
+   79 2019-03-20T09:55:07   2.3118e-02 7.6024e-03 - 4.7390e-02 C
+   80 2019-03-20T09:55:07   2.2192e-02 7.4484e-03 - 4.4602e-02 C
+   81 2019-03-20T09:55:07   2.1129e-02 7.2679e-03 - 4.3232e-02 C
+   82 2019-03-20T09:55:07   2.0310e-02 7.1257e-03 - 3.8444e-02 C
+   83 2019-03-20T09:55:07   1.9355e-02 6.9561e-03 - 3.9698e-02 C
+   84 2019-03-20T09:55:07   1.8796e-02 6.8550e-03 - 3.9965e-02 C
+   85 2019-03-20T09:55:07   1.8427e-02 6.7873e-03 - 3.7546e-02 C
+   86 2019-03-20T09:55:07   1.7896e-02 6.6888e-03 - 3.8293e-02 C
+   87 2019-03-20T09:55:07   1.7038e-02 6.5266e-03 - 3.8429e-02 C
+   88 2019-03-20T09:55:07   1.5739e-02 6.2728e-03 - 3.7881e-02 C
+   89 2019-03-20T09:55:07   1.4168e-02 5.9514e-03 - 3.3274e-02 C
+   90 2019-03-20T09:55:07   1.8462e-02 6.7938e-03 - 3.5282e-02 C
+   91 2019-03-20T09:55:07   1.3743e-02 5.8615e-03 - 3.2859e-02 C
+   92 2019-03-20T09:55:08   1.3216e-02 5.7480e-03 - 3.3074e-02 C
+   93 2019-03-20T09:55:08   1.2806e-02 5.6581e-03 - 3.2331e-02 C
+   94 2019-03-20T09:55:08   1.2245e-02 5.5330e-03 - 2.8588e-02 C
+   95 2019-03-20T09:55:08   1.1596e-02 5.3843e-03 - 2.9555e-02 C
+   96 2019-03-20T09:55:08   1.1303e-02 5.3158e-03 - 2.6421e-02 C
+   97 2019-03-20T09:55:08   1.0920e-02 5.2249e-03 - 2.5705e-02 C
+   98 2019-03-20T09:55:08   1.0459e-02 5.1135e-03 - 2.6796e-02 C
+   99 2019-03-20T09:55:08   1.0425e-02 5.1051e-03 - 2.9264e-02 C
+Saving checkpoint data.
+Overwriting file: "calc-checkpoint.amp". Moving original to "/tmp/tmpTaLYw5.amp".
+  100 2019-03-20T09:55:08   1.0217e-02 5.0540e-03 - 2.8055e-02 C
+  101 2019-03-20T09:55:08   9.8451e-03 4.9611e-03 - 2.8362e-02 C
+  102 2019-03-20T09:55:08   9.4271e-03 4.8547e-03 - 2.9635e-02 C
+  103 2019-03-20T09:55:08   9.3451e-03 4.8335e-03 - 2.9285e-02 C
+  104 2019-03-20T09:55:08   9.2057e-03 4.7973e-03 - 2.9131e-02 C
+  105 2019-03-20T09:55:08   8.9940e-03 4.7418e-03 - 2.9455e-02 C
+  106 2019-03-20T09:55:08   8.8187e-03 4.6954e-03 - 2.8495e-02 C
+  107 2019-03-20T09:55:08   8.7110e-03 4.6666e-03 - 2.8442e-02 C
+  108 2019-03-20T09:55:08   8.5843e-03 4.6326e-03 - 2.8465e-02 C
+  109 2019-03-20T09:55:08   8.4487e-03 4.5958e-03 - 2.8800e-02 C
+  110 2019-03-20T09:55:08   8.2673e-03 4.5462e-03 - 2.7979e-02 C
+  111 2019-03-20T09:55:08   7.9917e-03 4.4698e-03 - 2.7571e-02 C
+  112 2019-03-20T09:55:08   7.7396e-03 4.3987e-03 - 2.7784e-02 C
+  113 2019-03-20T09:55:08   7.4777e-03 4.3237e-03 - 2.7988e-02 C
+  114 2019-03-20T09:55:08   7.2461e-03 4.2562e-03 - 2.6363e-02 C
+  115 2019-03-20T09:55:08   7.0813e-03 4.2075e-03 - 2.9392e-02 C
+  116 2019-03-20T09:55:08   6.8893e-03 4.1501e-03 - 2.8087e-02 C
+  117 2019-03-20T09:55:08   6.7417e-03 4.1054e-03 - 2.6975e-02 C
+  118 2019-03-20T09:55:08   6.5399e-03 4.0435e-03 - 2.5191e-02 C
+  119 2019-03-20T09:55:08   6.2883e-03 3.9649e-03 - 2.4543e-02 C
+  120 2019-03-20T09:55:08   6.1505e-03 3.9212e-03 - 2.1822e-02 C
+  121 2019-03-20T09:55:08   6.1137e-03 3.9095e-03 - 2.0848e-02 C
+  122 2019-03-20T09:55:08   6.0449e-03 3.8875e-03 - 2.0619e-02 C
+  123 2019-03-20T09:55:08   5.9225e-03 3.8479e-03 - 2.0761e-02 C
+  124 2019-03-20T09:55:08   5.7468e-03 3.7904e-03 - 2.0189e-02 C
+  125 2019-03-20T09:55:08   5.6577e-03 3.7609e-03 - 1.9979e-02 C
+  126 2019-03-20T09:55:08   5.5569e-03 3.7272e-03 - 2.0099e-02 C
+  127 2019-03-20T09:55:08   5.5153e-03 3.7133e-03 - 2.0736e-02 C
+  128 2019-03-20T09:55:08   5.4476e-03 3.6904e-03 - 2.0236e-02 C
+  129 2019-03-20T09:55:08   5.3314e-03 3.6508e-03 - 1.9871e-02 C
+  130 2019-03-20T09:55:08   5.1859e-03 3.6007e-03 - 2.0109e-02 C
+  131 2019-03-20T09:55:09   5.0754e-03 3.5621e-03 - 1.9368e-02 C
+  132 2019-03-20T09:55:09   4.9363e-03 3.5129e-03 - 2.0273e-02 C
+  133 2019-03-20T09:55:09   4.8393e-03 3.4783e-03 - 2.0157e-02 C
+  134 2019-03-20T09:55:09   4.7874e-03 3.4596e-03 - 2.0772e-02 C
+  135 2019-03-20T09:55:09   4.7220e-03 3.4359e-03 - 2.0457e-02 C
+  136 2019-03-20T09:55:09   4.6872e-03 3.4231e-03 - 2.0159e-02 C
+  137 2019-03-20T09:55:09   4.6493e-03 3.4093e-03 - 2.0115e-02 C
+  138 2019-03-20T09:55:09   4.6307e-03 3.4025e-03 - 2.0294e-02 C
+  139 2019-03-20T09:55:09   4.6020e-03 3.3919e-03 - 2.0756e-02 C
+  140 2019-03-20T09:55:09   4.5539e-03 3.3741e-03 - 2.0892e-02 C
+  141 2019-03-20T09:55:09   4.4794e-03 3.3464e-03 - 2.0929e-02 C
+  142 2019-03-20T09:55:09   4.3857e-03 3.3112e-03 - 2.0719e-02 C
+  143 2019-03-20T09:55:09   4.3045e-03 3.2804e-03 - 1.9690e-02 C
+  144 2019-03-20T09:55:09   4.1975e-03 3.2394e-03 - 2.0239e-02 C
+  145 2019-03-20T09:55:09   4.0809e-03 3.1941e-03 - 2.0366e-02 C
+  146 2019-03-20T09:55:09   3.9652e-03 3.1485e-03 - 1.9340e-02 C
+  147 2019-03-20T09:55:09   3.9122e-03 3.1274e-03 - 1.8199e-02 C
+  148 2019-03-20T09:55:09   3.8461e-03 3.1008e-03 - 1.8514e-02 C
+  149 2019-03-20T09:55:09   3.7547e-03 3.0638e-03 - 1.8026e-02 C
+  150 2019-03-20T09:55:09   3.6484e-03 3.0201e-03 - 1.8340e-02 C
+  151 2019-03-20T09:55:09   3.6263e-03 3.0109e-03 - 1.8448e-02 C
+  152 2019-03-20T09:55:09   3.5892e-03 2.9955e-03 - 1.8626e-02 C
+  153 2019-03-20T09:55:09   3.5301e-03 2.9707e-03 - 1.8676e-02 C
+  154 2019-03-20T09:55:09   3.4568e-03 2.9397e-03 - 1.8934e-02 C
+  155 2019-03-20T09:55:09   3.4084e-03 2.9191e-03 - 1.8263e-02 C
+  156 2019-03-20T09:55:09   3.3960e-03 2.9138e-03 - 1.8489e-02 C
+  157 2019-03-20T09:55:09   3.3781e-03 2.9061e-03 - 1.8369e-02 C
+  158 2019-03-20T09:55:09   3.3297e-03 2.8852e-03 - 1.8300e-02 C
+  159 2019-03-20T09:55:09   3.2640e-03 2.8566e-03 - 1.8193e-02 C
+  160 2019-03-20T09:55:09   3.2039e-03 2.8301e-03 - 1.7785e-02 C
+  161 2019-03-20T09:55:09   3.1534e-03 2.8077e-03 - 1.7240e-02 C
+  162 2019-03-20T09:55:09   3.1274e-03 2.7962e-03 - 1.7695e-02 C
+  163 2019-03-20T09:55:09   3.0884e-03 2.7787e-03 - 1.7779e-02 C
+  164 2019-03-20T09:55:09   3.0290e-03 2.7518e-03 - 1.7447e-02 C
+  165 2019-03-20T09:55:09   2.9483e-03 2.7149e-03 - 1.7011e-02 C
+  166 2019-03-20T09:55:09   2.8612e-03 2.6745e-03 - 1.6910e-02 C
+  167 2019-03-20T09:55:09   2.7900e-03 2.6410e-03 - 1.6927e-02 C
+  168 2019-03-20T09:55:09   2.7375e-03 2.6161e-03 - 1.7456e-02 C
+  169 2019-03-20T09:55:09   2.6889e-03 2.5927e-03 - 1.7895e-02 C
+  170 2019-03-20T09:55:09   2.6452e-03 2.5716e-03 - 1.7372e-02 C
+  171 2019-03-20T09:55:09   2.6037e-03 2.5513e-03 - 1.7867e-02 C
+  172 2019-03-20T09:55:09   2.5506e-03 2.5252e-03 - 1.7509e-02 C
+  173 2019-03-20T09:55:10   2.5186e-03 2.5093e-03 - 1.7253e-02 C
+  174 2019-03-20T09:55:10   2.4773e-03 2.4886e-03 - 1.7272e-02 C
+  175 2019-03-20T09:55:10   2.4621e-03 2.4810e-03 - 1.7333e-02 C
+  176 2019-03-20T09:55:10   2.4382e-03 2.4689e-03 - 1.7232e-02 C
+  177 2019-03-20T09:55:10   2.4084e-03 2.4538e-03 - 1.7193e-02 C
+  178 2019-03-20T09:55:10   2.3919e-03 2.4453e-03 - 1.7175e-02 C
+  179 2019-03-20T09:55:10   2.3668e-03 2.4325e-03 - 1.7183e-02 C
+  180 2019-03-20T09:55:10   2.3346e-03 2.4159e-03 - 1.7343e-02 C
+  181 2019-03-20T09:55:10   2.3144e-03 2.4054e-03 - 1.7712e-02 C
+  182 2019-03-20T09:55:10   2.3013e-03 2.3986e-03 - 1.7695e-02 C
+  183 2019-03-20T09:55:10   2.2856e-03 2.3904e-03 - 1.7756e-02 C
+  184 2019-03-20T09:55:10   2.2672e-03 2.3808e-03 - 1.7553e-02 C
+  185 2019-03-20T09:55:10   2.2427e-03 2.3678e-03 - 1.7638e-02 C
+  186 2019-03-20T09:55:10   2.2120e-03 2.3516e-03 - 1.7904e-02 C
+  187 2019-03-20T09:55:10   2.1855e-03 2.3375e-03 - 1.7617e-02 C
+  188 2019-03-20T09:55:10   2.1468e-03 2.3167e-03 - 1.7207e-02 C
+  189 2019-03-20T09:55:10   2.0950e-03 2.2886e-03 - 1.7538e-02 C
+  190 2019-03-20T09:55:10   2.0395e-03 2.2580e-03 - 1.6645e-02 C
+  191 2019-03-20T09:55:10   1.9974e-03 2.2346e-03 - 1.6089e-02 C
+  192 2019-03-20T09:55:10   1.9586e-03 2.2128e-03 - 1.6561e-02 C
+  193 2019-03-20T09:55:10   1.9314e-03 2.1974e-03 - 1.6439e-02 C
+  194 2019-03-20T09:55:10   1.8998e-03 2.1793e-03 - 1.5802e-02 C
+  195 2019-03-20T09:55:10   1.8773e-03 2.1664e-03 - 1.6329e-02 C
+  196 2019-03-20T09:55:10   1.8786e-03 2.1672e-03 - 1.6093e-02 C
+  197 2019-03-20T09:55:10   1.8661e-03 2.1599e-03 - 1.6215e-02 C
+  198 2019-03-20T09:55:10   1.8476e-03 2.1492e-03 - 1.6158e-02 C
+  199 2019-03-20T09:55:10   1.8234e-03 2.1351e-03 - 1.6149e-02 C
+Saving checkpoint data.
+Overwriting file: "calc-checkpoint.amp". Moving original to "/tmp/tmplkVCxv.amp".
+  200 2019-03-20T09:55:10   1.8216e-03 2.1340e-03 - 1.5906e-02 C
+  201 2019-03-20T09:55:10   1.8124e-03 2.1286e-03 - 1.6047e-02 C
+  202 2019-03-20T09:55:10   1.7965e-03 2.1192e-03 - 1.6155e-02 C
+  203 2019-03-20T09:55:10   1.7736e-03 2.1057e-03 - 1.6292e-02 C
+  204 2019-03-20T09:55:10   1.7469e-03 2.0898e-03 - 1.6103e-02 C
+  205 2019-03-20T09:55:10   1.7225e-03 2.0752e-03 - 1.6260e-02 C
+  206 2019-03-20T09:55:10   1.6944e-03 2.0582e-03 - 1.6326e-02 C
+  207 2019-03-20T09:55:10   1.6705e-03 2.0436e-03 - 1.5898e-02 C
+  208 2019-03-20T09:55:10   1.6639e-03 2.0396e-03 - 1.5714e-02 C
+  209 2019-03-20T09:55:10   1.6537e-03 2.0333e-03 - 1.5826e-02 C
+  210 2019-03-20T09:55:10   1.6428e-03 2.0266e-03 - 1.5931e-02 C
+  211 2019-03-20T09:55:10   1.6370e-03 2.0230e-03 - 1.5831e-02 C
+  212 2019-03-20T09:55:10   1.6304e-03 2.0189e-03 - 1.6055e-02 C
+  213 2019-03-20T09:55:10   1.6244e-03 2.0152e-03 - 1.5959e-02 C
+  214 2019-03-20T09:55:10   1.6182e-03 2.0113e-03 - 1.6023e-02 C
+  215 2019-03-20T09:55:10   1.6142e-03 2.0089e-03 - 1.5881e-02 C
+  216 2019-03-20T09:55:11   1.6079e-03 2.0049e-03 - 1.5752e-02 C
+  217 2019-03-20T09:55:11   1.5976e-03 1.9985e-03 - 1.5689e-02 C
+  218 2019-03-20T09:55:11   1.5815e-03 1.9884e-03 - 1.5393e-02 C
+  219 2019-03-20T09:55:11   1.5592e-03 1.9743e-03 - 1.5216e-02 C
+  220 2019-03-20T09:55:11   1.5389e-03 1.9614e-03 - 1.4847e-02 C
+  221 2019-03-20T09:55:11   1.5257e-03 1.9530e-03 - 1.4929e-02 C
+  222 2019-03-20T09:55:11   1.5142e-03 1.9456e-03 - 1.4747e-02 C
+  223 2019-03-20T09:55:11   1.5005e-03 1.9368e-03 - 1.4791e-02 C
+  224 2019-03-20T09:55:11   1.4852e-03 1.9269e-03 - 1.4719e-02 C
+  225 2019-03-20T09:55:11   1.4757e-03 1.9207e-03 - 1.4794e-02 C
+  226 2019-03-20T09:55:11   1.4666e-03 1.9148e-03 - 1.4619e-02 C
+  227 2019-03-20T09:55:11   1.4580e-03 1.9092e-03 - 1.4592e-02 C
+  228 2019-03-20T09:55:11   1.4507e-03 1.9044e-03 - 1.4367e-02 C
+  229 2019-03-20T09:55:11   1.4403e-03 1.8976e-03 - 1.4530e-02 C
+  230 2019-03-20T09:55:11   1.4302e-03 1.8909e-03 - 1.4410e-02 C
+  231 2019-03-20T09:55:11   1.4246e-03 1.8872e-03 - 1.4316e-02 C
+  232 2019-03-20T09:55:11   1.4165e-03 1.8818e-03 - 1.4260e-02 C
+  233 2019-03-20T09:55:11   1.4044e-03 1.8737e-03 - 1.4262e-02 C
+  234 2019-03-20T09:55:11   1.3883e-03 1.8630e-03 - 1.4101e-02 C
+  235 2019-03-20T09:55:11   1.3759e-03 1.8546e-03 - 1.4244e-02 C
+  236 2019-03-20T09:55:11   1.3679e-03 1.8492e-03 - 1.4251e-02 C
+  237 2019-03-20T09:55:11   1.3574e-03 1.8421e-03 - 1.4202e-02 C
+  238 2019-03-20T09:55:11   1.3499e-03 1.8370e-03 - 1.4039e-02 C
+  239 2019-03-20T09:55:11   1.3418e-03 1.8315e-03 - 1.4068e-02 C
+  240 2019-03-20T09:55:11   1.3310e-03 1.8241e-03 - 1.4050e-02 C
+  241 2019-03-20T09:55:11   1.3152e-03 1.8133e-03 - 1.3883e-02 C
+  242 2019-03-20T09:55:11   1.2972e-03 1.8008e-03 - 1.3891e-02 C
+  243 2019-03-20T09:55:11   1.2856e-03 1.7927e-03 - 1.3622e-02 C
+  244 2019-03-20T09:55:11   1.2725e-03 1.7836e-03 - 1.3868e-02 C
+  245 2019-03-20T09:55:11   1.2710e-03 1.7826e-03 - 1.4032e-02 C
+  246 2019-03-20T09:55:11   1.2663e-03 1.7792e-03 - 1.3947e-02 C
+  247 2019-03-20T09:55:11   1.2603e-03 1.7750e-03 - 1.3953e-02 C
+  248 2019-03-20T09:55:11   1.2525e-03 1.7695e-03 - 1.3895e-02 C
+  249 2019-03-20T09:55:11   1.2426e-03 1.7625e-03 - 1.3832e-02 C
+  250 2019-03-20T09:55:11   1.2316e-03 1.7547e-03 - 1.3469e-02 C
+  251 2019-03-20T09:55:11   1.2221e-03 1.7479e-03 - 1.3402e-02 C
+  252 2019-03-20T09:55:11   1.2115e-03 1.7404e-03 - 1.3139e-02 C
+  253 2019-03-20T09:55:11   1.2011e-03 1.7329e-03 - 1.3070e-02 C
+  254 2019-03-20T09:55:11   1.1893e-03 1.7243e-03 - 1.3207e-02 C
+  255 2019-03-20T09:55:11   1.1825e-03 1.7194e-03 - 1.3041e-02 C
+  256 2019-03-20T09:55:11   1.1764e-03 1.7150e-03 - 1.3147e-02 C
+  257 2019-03-20T09:55:11   1.1710e-03 1.7110e-03 - 1.3057e-02 C
+  258 2019-03-20T09:55:11   1.1649e-03 1.7065e-03 - 1.3159e-02 C
+  259 2019-03-20T09:55:11   1.1579e-03 1.7014e-03 - 1.3012e-02 C
+  260 2019-03-20T09:55:11   1.1470e-03 1.6934e-03 - 1.2873e-02 C
+  261 2019-03-20T09:55:12   1.1342e-03 1.6839e-03 - 1.2570e-02 C
+  262 2019-03-20T09:55:12   1.1292e-03 1.6802e-03 - 1.2797e-02 C
+  263 2019-03-20T09:55:12   1.1210e-03 1.6741e-03 - 1.2644e-02 C
+  264 2019-03-20T09:55:12   1.1102e-03 1.6660e-03 - 1.2383e-02 C
+  265 2019-03-20T09:55:12   1.0993e-03 1.6578e-03 - 1.2444e-02 C
+  266 2019-03-20T09:55:12   1.0838e-03 1.6461e-03 - 1.2453e-02 C
+  267 2019-03-20T09:55:12   1.0660e-03 1.6325e-03 - 1.2532e-02 C
+  268 2019-03-20T09:55:12   1.0546e-03 1.6238e-03 - 1.2628e-02 C
+  269 2019-03-20T09:55:12   1.0392e-03 1.6118e-03 - 1.2348e-02 C
+  270 2019-03-20T09:55:12   1.0326e-03 1.6067e-03 - 1.2205e-02 C
+  271 2019-03-20T09:55:12   1.0250e-03 1.6007e-03 - 1.2208e-02 C
+  272 2019-03-20T09:55:12   1.0152e-03 1.5931e-03 - 1.2174e-02 C
+  273 2019-03-20T09:55:12   1.0032e-03 1.5837e-03 - 1.1995e-02 C
+  274 2019-03-20T09:55:12   9.8717e-04 1.5710e-03 - 1.2119e-02 C
+  275 2019-03-20T09:55:12   9.7541e-04 1.5616e-03 - 1.1680e-02 C
+  276 2019-03-20T09:55:12   9.6100e-04 1.5500e-03 - 1.1636e-02 C
+  277 2019-03-20T09:55:12   9.5183e-04 1.5426e-03 - 1.1466e-02 C
+  278 2019-03-20T09:55:12   9.4387e-04 1.5361e-03 - 1.1178e-02 C
+  279 2019-03-20T09:55:12   9.3523e-04 1.5291e-03 - 1.0852e-02 C
+  280 2019-03-20T09:55:12   9.2602e-04 1.5215e-03 - 1.0883e-02 C
+  281 2019-03-20T09:55:12   9.1366e-04 1.5113e-03 - 1.0984e-02 C
+  282 2019-03-20T09:55:12   9.0502e-04 1.5042e-03 - 1.0851e-02 C
+  283 2019-03-20T09:55:12   8.9948e-04 1.4996e-03 - 1.1021e-02 C
+  284 2019-03-20T09:55:12   8.9322e-04 1.4943e-03 - 1.0854e-02 C
+  285 2019-03-20T09:55:12   8.8695e-04 1.4891e-03 - 1.0733e-02 C
+  286 2019-03-20T09:55:12   8.7988e-04 1.4831e-03 - 1.0672e-02 C
+  287 2019-03-20T09:55:12   8.6955e-04 1.4744e-03 - 1.0580e-02 C
+  288 2019-03-20T09:55:12   8.5659e-04 1.4634e-03 - 1.0652e-02 C
+  289 2019-03-20T09:55:12   8.5402e-04 1.4612e-03 - 1.0349e-02 C
+  290 2019-03-20T09:55:12   8.4889e-04 1.4568e-03 - 1.0501e-02 C
+  291 2019-03-20T09:55:12   8.4072e-04 1.4498e-03 - 1.0604e-02 C
+  292 2019-03-20T09:55:12   8.3234e-04 1.4425e-03 - 1.0489e-02 C
+  293 2019-03-20T09:55:12   8.2605e-04 1.4371e-03 - 1.0447e-02 C
+  294 2019-03-20T09:55:12   8.1977e-04 1.4316e-03 - 1.0239e-02 C
+  295 2019-03-20T09:55:12   8.1026e-04 1.4233e-03 - 1.0229e-02 C
+  296 2019-03-20T09:55:12   7.9678e-04 1.4114e-03 - 1.0066e-02 C
+  297 2019-03-20T09:55:12   7.8574e-04 1.4016e-03 - 9.9588e-03 C
+  298 2019-03-20T09:55:12   7.8077e-04 1.3971e-03 - 1.0055e-02 C
+  299 2019-03-20T09:55:12   7.7596e-04 1.3928e-03 - 1.0003e-02 C
+Saving checkpoint data.
+Overwriting file: "calc-checkpoint.amp". Moving original to "/tmp/tmp3mE3Sw.amp".
+  300 2019-03-20T09:55:12   7.7652e-04 1.3933e-03 - 9.8091e-03 C
+  301 2019-03-20T09:55:12   7.7396e-04 1.3910e-03 - 9.9124e-03 C
+  302 2019-03-20T09:55:12   7.7154e-04 1.3888e-03 - 1.0048e-02 C
+  303 2019-03-20T09:55:12   7.6778e-04 1.3854e-03 - 1.0009e-02 C
+  304 2019-03-20T09:55:13   7.6197e-04 1.3802e-03 - 9.9715e-03 C
+  305 2019-03-20T09:55:13   7.5450e-04 1.3734e-03 - 9.8359e-03 C
+  306 2019-03-20T09:55:13   7.4878e-04 1.3682e-03 - 9.7837e-03 C
+  307 2019-03-20T09:55:13   7.4259e-04 1.3625e-03 - 9.7796e-03 C
+  308 2019-03-20T09:55:13   7.3409e-04 1.3547e-03 - 9.7331e-03 C
+  309 2019-03-20T09:55:13   7.2591e-04 1.3471e-03 - 9.7424e-03 C
+  310 2019-03-20T09:55:13   7.1989e-04 1.3415e-03 - 9.7991e-03 C
+  311 2019-03-20T09:55:13   7.1610e-04 1.3380e-03 - 9.6336e-03 C
+  312 2019-03-20T09:55:13   7.1376e-04 1.3358e-03 - 9.6671e-03 C
+  313 2019-03-20T09:55:13   7.1037e-04 1.3326e-03 - 9.5902e-03 C
+  314 2019-03-20T09:55:13   7.0602e-04 1.3286e-03 - 9.4080e-03 C
+  315 2019-03-20T09:55:13   7.0242e-04 1.3252e-03 - 9.1973e-03 C
+  316 2019-03-20T09:55:13   6.9933e-04 1.3222e-03 - 8.9961e-03 C
+  317 2019-03-20T09:55:13   6.9743e-04 1.3204e-03 - 8.8553e-03 C
+  318 2019-03-20T09:55:13   6.9558e-04 1.3187e-03 - 8.7466e-03 C
+  319 2019-03-20T09:55:13   6.9345e-04 1.3167e-03 - 8.8058e-03 C
+  320 2019-03-20T09:55:13   6.9063e-04 1.3140e-03 - 8.6947e-03 C
+  321 2019-03-20T09:55:13   6.8596e-04 1.3095e-03 - 8.5518e-03 C
+  322 2019-03-20T09:55:13   6.7920e-04 1.3031e-03 - 8.1470e-03 C
+  323 2019-03-20T09:55:13   6.7243e-04 1.2966e-03 - 7.8211e-03 C
+  324 2019-03-20T09:55:13   6.6879e-04 1.2931e-03 - 7.3867e-03 C
+  325 2019-03-20T09:55:13   6.6468e-04 1.2891e-03 - 7.4658e-03 C
+  326 2019-03-20T09:55:13   6.6104e-04 1.2855e-03 - 7.2448e-03 C
+  327 2019-03-20T09:55:13   6.5860e-04 1.2832e-03 - 7.4560e-03 C
+  328 2019-03-20T09:55:13   6.5612e-04 1.2807e-03 - 7.6222e-03 C
+  329 2019-03-20T09:55:13   6.5316e-04 1.2778e-03 - 7.4894e-03 C
+  330 2019-03-20T09:55:13   6.4888e-04 1.2737e-03 - 7.3017e-03 C
+  331 2019-03-20T09:55:13   6.4222e-04 1.2671e-03 - 7.3781e-03 C
+  332 2019-03-20T09:55:13   6.3286e-04 1.2578e-03 - 7.2213e-03 C
+  333 2019-03-20T09:55:13   6.1943e-04 1.2444e-03 - 7.3399e-03 C
+  334 2019-03-20T09:55:13   6.0552e-04 1.2304e-03 - 7.2665e-03 C
+  335 2019-03-20T09:55:13   5.9226e-04 1.2168e-03 - 7.2193e-03 C
+  336 2019-03-20T09:55:13   5.8467e-04 1.2090e-03 - 7.1522e-03 C
+  337 2019-03-20T09:55:13   5.8149e-04 1.2057e-03 - 6.9080e-03 C
+  338 2019-03-20T09:55:13   5.7685e-04 1.2009e-03 - 6.9377e-03 C
+  339 2019-03-20T09:55:13   5.7083e-04 1.1946e-03 - 6.9205e-03 C
+  340 2019-03-20T09:55:13   5.6369e-04 1.1871e-03 - 6.7040e-03 C
+  341 2019-03-20T09:55:13   5.5549e-04 1.1784e-03 - 6.5431e-03 C
+  342 2019-03-20T09:55:13   5.5176e-04 1.1745e-03 - 6.8523e-03 C
+  343 2019-03-20T09:55:13   5.4963e-04 1.1722e-03 - 6.6289e-03 C
+  344 2019-03-20T09:55:13   5.4412e-04 1.1663e-03 - 6.5596e-03 C
+  345 2019-03-20T09:55:13   5.4014e-04 1.1620e-03 - 6.5021e-03 C
+  346 2019-03-20T09:55:14   5.3444e-04 1.1559e-03 - 6.3744e-03 C
+  347 2019-03-20T09:55:14   5.2718e-04 1.1480e-03 - 6.4017e-03 C
+  348 2019-03-20T09:55:14   5.2266e-04 1.1431e-03 - 6.3929e-03 C
+  349 2019-03-20T09:55:14   5.1672e-04 1.1366e-03 - 6.3532e-03 C
+  350 2019-03-20T09:55:14   5.1338e-04 1.1329e-03 - 6.4181e-03 C
+  351 2019-03-20T09:55:14   5.1118e-04 1.1305e-03 - 6.4672e-03 C
+  352 2019-03-20T09:55:14   5.0869e-04 1.1277e-03 - 6.4100e-03 C
+  353 2019-03-20T09:55:14   5.0610e-04 1.1248e-03 - 6.4401e-03 C
+  354 2019-03-20T09:55:14   5.0375e-04 1.1222e-03 - 6.3319e-03 C
+  355 2019-03-20T09:55:14   5.0118e-04 1.1194e-03 - 6.3247e-03 C
+  356 2019-03-20T09:55:14   4.9907e-04 1.1170e-03 - 6.2959e-03 C
+  357 2019-03-20T09:55:14   4.9675e-04 1.1144e-03 - 6.1605e-03 C
+  358 2019-03-20T09:55:14   4.9358e-04 1.1108e-03 - 6.0402e-03 C
+  359 2019-03-20T09:55:14   4.9054e-04 1.1074e-03 - 5.9913e-03 C
+  360 2019-03-20T09:55:14   4.8750e-04 1.1040e-03 - 5.8900e-03 C
+  361 2019-03-20T09:55:14   4.8460e-04 1.1007e-03 - 5.9331e-03 C
+  362 2019-03-20T09:55:14   4.8128e-04 1.0969e-03 - 6.0552e-03 C
+  363 2019-03-20T09:55:14   4.7786e-04 1.0930e-03 - 6.1099e-03 C
+  364 2019-03-20T09:55:14   4.7438e-04 1.0890e-03 - 6.1645e-03 C
+  365 2019-03-20T09:55:14   4.6957e-04 1.0835e-03 - 6.1311e-03 C
+  366 2019-03-20T09:55:14   4.6445e-04 1.0775e-03 - 6.0728e-03 C
+  367 2019-03-20T09:55:14   4.6125e-04 1.0738e-03 - 5.9723e-03 C
+  368 2019-03-20T09:55:14   4.5771e-04 1.0697e-03 - 5.6998e-03 C
+  369 2019-03-20T09:55:14   4.5581e-04 1.0675e-03 - 5.4258e-03 C
+  370 2019-03-20T09:55:14   4.5320e-04 1.0644e-03 - 5.3965e-03 C
+  371 2019-03-20T09:55:14   4.5082e-04 1.0616e-03 - 5.4610e-03 C
+  372 2019-03-20T09:55:14   4.4807e-04 1.0584e-03 - 5.4294e-03 C
+  373 2019-03-20T09:55:14   4.4418e-04 1.0538e-03 - 5.4063e-03 C
+  374 2019-03-20T09:55:14   4.3939e-04 1.0481e-03 - 5.4219e-03 C
+  375 2019-03-20T09:55:14   4.3525e-04 1.0431e-03 - 5.7325e-03 C
+  376 2019-03-20T09:55:14   4.3088e-04 1.0379e-03 - 5.9264e-03 C
+  377 2019-03-20T09:55:14   4.2622e-04 1.0323e-03 - 6.2338e-03 C
+  378 2019-03-20T09:55:14   4.2204e-04 1.0272e-03 - 6.3499e-03 C
+  379 2019-03-20T09:55:14   4.1799e-04 1.0222e-03 - 6.2279e-03 C
+  380 2019-03-20T09:55:14   4.1622e-04 1.0201e-03 - 6.1454e-03 C
+  381 2019-03-20T09:55:14   4.1463e-04 1.0181e-03 - 6.1306e-03 C
+  382 2019-03-20T09:55:14   4.1290e-04 1.0160e-03 - 6.0834e-03 C
+  383 2019-03-20T09:55:14   4.1075e-04 1.0134e-03 - 6.0721e-03 C
+  384 2019-03-20T09:55:14   4.0741e-04 1.0092e-03 - 6.0912e-03 C
+  385 2019-03-20T09:55:14   4.0382e-04 1.0048e-03 - 6.0475e-03 C
+  386 2019-03-20T09:55:14   4.0173e-04 1.0022e-03 - 5.8535e-03 C
+  387 2019-03-20T09:55:14   3.9963e-04 9.9954e-04 C 5.7357e-03 C
+...optimization successful. 0.2 min.
+Amp successfully trained. Saving current parameters.
+File "calc.amp" exists. Instead saving to "/tmp/tmpjd9v7e.amp".
+Parameters saved in file "/tmp/tmpjd9v7e.amp".
+This file can be opened with `calc = Amp.load('/tmp/tmpjd9v7e.amp')`
+
+   oo      o       o   oooooo
+  o  o     oo     oo   o     o
+ o    o    o o   o o   o     o
+o      o   o  o o  o   o     o
+oooooooo   o   o   o   oooooo
+o      o   o       o   o
+o      o   o       o   o
+o      o   o       o   o
+
+Amp: Atomistic Machine-learning Package
+Developed by Andrew Peterson, Alireza Khorshidi, and others,
+Brown University.
+PI Website: http://brown.edu/go/catalyst
+Official repository: http://bitbucket.org/andrewpeterson/amp
+Official documentation: http://amp.readthedocs.org/
+Citation:
+  Alireza Khorshidi & Andrew A. Peterson,
+  Computer Physics Communications 207: 310-324 (2016).
+  http://doi.org/10.1016/j.cpc.2016.05.010
+======================================================================
+User: mshuaibi
+Hostname: ulissigroup-Alienware-Shuaibi
+Date: 2019-03-20T09:59:26 (2019-03-20T13:59:26 UTC)
+Architecture: x86_64
+PID: 12923
+Amp version: 0.6.1
+Amp directory: /home/mshuaibi/.local/lib/python2.7/site-packages/amp
+ Last commit: unknown hash
+ Last commit date: unknown date
+Python: v2.7.15: /usr/bin/python
+ASE v3.17.0: /home/mshuaibi/.local/lib/python2.7/site-packages/ase
+NumPy v1.16.2: /home/mshuaibi/.local/lib/python2.7/site-packages/numpy
+SciPy v1.2.1: /home/mshuaibi/.local/lib/python2.7/site-packages/scipy
+ZMQ/PyZMQ v4.3.1/v18.0.1: /home/mshuaibi/.local/lib/python2.7/site-packages/zmq
+pxssh: Not available from pxssh.
+pxssh (via pexpect v4.6.0): /home/mshuaibi/.local/lib/python2.7/site-packages/pexpect/pxssh.pyc
+======================================================================
+No queuing system detected; single machine assumed.
+Parallel configuration determined from environment for <single machine>:
+  localhost: 12
+
+Amp training started. 2019-03-20T09:59:26
+
+Descriptor: Gaussian
+  (<amp.descriptor.gaussian.Gaussian object at 0x7fcac06a3cd0>)
+Model: NeuralNetwork
+  (<amp.model.neuralnetwork.NeuralNetwork object at 0x7fcac06a3d10>)
+Hashing images...
+ 400 unique images after hashing.
+...hashing completed. 0.0 min.
+
+Descriptor
+==========
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+Finding unique set of elements in training data.
+2 unique elements included: H, O
+No symmetry functions supplied; creating defaults.
+Number of symmetry functions for each element:
+  H: 20
+  O: 20
+H feature vector functions:
+ 0: G2, H, eta = 0.05
+ 1: G2, O, eta = 0.05
+ 2: G2, H, eta = 4.0
+ 3: G2, O, eta = 4.0
+ 4: G2, H, eta = 20.0
+ 5: G2, O, eta = 20.0
+ 6: G2, H, eta = 80.0
+ 7: G2, O, eta = 80.0
+ 8: G4, (H, H), eta=0.005, gamma=1.0, zeta=1.0
+ 9: G4, (H, O), eta=0.005, gamma=1.0, zeta=1.0
+ 10: G4, (O, O), eta=0.005, gamma=1.0, zeta=1.0
+ 11: G4, (H, H), eta=0.005, gamma=-1.0, zeta=1.0
+ 12: G4, (H, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 13: G4, (O, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 14: G4, (H, H), eta=0.005, gamma=1.0, zeta=4.0
+ 15: G4, (H, O), eta=0.005, gamma=1.0, zeta=4.0
+ 16: G4, (O, O), eta=0.005, gamma=1.0, zeta=4.0
+ 17: G4, (H, H), eta=0.005, gamma=-1.0, zeta=4.0
+ 18: G4, (H, O), eta=0.005, gamma=-1.0, zeta=4.0
+ 19: G4, (O, O), eta=0.005, gamma=-1.0, zeta=4.0
+O feature vector functions:
+ 0: G2, H, eta = 0.05
+ 1: G2, O, eta = 0.05
+ 2: G2, H, eta = 4.0
+ 3: G2, O, eta = 4.0
+ 4: G2, H, eta = 20.0
+ 5: G2, O, eta = 20.0
+ 6: G2, H, eta = 80.0
+ 7: G2, O, eta = 80.0
+ 8: G4, (H, H), eta=0.005, gamma=1.0, zeta=1.0
+ 9: G4, (H, O), eta=0.005, gamma=1.0, zeta=1.0
+ 10: G4, (O, O), eta=0.005, gamma=1.0, zeta=1.0
+ 11: G4, (H, H), eta=0.005, gamma=-1.0, zeta=1.0
+ 12: G4, (H, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 13: G4, (O, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 14: G4, (H, H), eta=0.005, gamma=1.0, zeta=4.0
+ 15: G4, (H, O), eta=0.005, gamma=1.0, zeta=4.0
+ 16: G4, (O, O), eta=0.005, gamma=1.0, zeta=4.0
+ 17: G4, (H, H), eta=0.005, gamma=-1.0, zeta=4.0
+ 18: G4, (H, O), eta=0.005, gamma=-1.0, zeta=4.0
+ 19: G4, (O, O), eta=0.005, gamma=-1.0, zeta=4.0
+Calculating neighborlists...
+ Data stored in file calc-neighborlists.
+ File exists with 420 total images, 400 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file calc-fingerprints.
+ File exists with 420 total images, 400 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+
+Model fitting
+=============
+Regression in atom-centered mode.
+Calculating new fingerprint range; this range is part of the model.
+Hidden-layer structure:
+  H: (5, 5)
+  O: (5, 5)
+Initializing with random weights.
+Initializing with random scalings.
+Starting parameter optimization.
+ Optimizer: <function fmin_bfgs at 0x7fcadb1fb0c8>
+ Optimizer kwargs: {'gtol': 1e-15}
+ Parallel processing.
+ Established server at ulissigroup-Alienware-Shuaibi:36561.
+ Establishing worker sessions.
+ Starting local connections.
+  Session 0 (localhost): Log and stderr written to /tmp/tmpi2ADUb.stderr
+  Session 1 (localhost): Log and stderr written to /tmp/tmpS3jDgA.stderr
+  Session 2 (localhost): Log and stderr written to /tmp/tmpEoQMLM.stderr
+  Session 3 (localhost): Log and stderr written to /tmp/tmp91ZXWV.stderr
+  Session 4 (localhost): Log and stderr written to /tmp/tmp0qU94w.stderr
+  Session 5 (localhost): Log and stderr written to /tmp/tmpMdgc8_.stderr
+  Session 6 (localhost): Log and stderr written to /tmp/tmpt3uPSE.stderr
+  Session 7 (localhost): Log and stderr written to /tmp/tmp15paI_.stderr
+  Session 8 (localhost): Log and stderr written to /tmp/tmpeli7NJ.stderr
+  Session 9 (localhost): Log and stderr written to /tmp/tmppdyp7v.stderr
+  Session 10 (localhost): Log and stderr written to /tmp/tmpcjqN4r.stderr
+  Session 11 (localhost): Log and stderr written to /tmp/tmprY892y.stderr
+ Loss function convergence criteria:
+  energy_rmse: 0.001
+  energy_maxresid: None
+  force_rmse: None
+  force_maxresid: None
+ Loss function set-up:
+  energy_coefficient: 1.0
+  force_coefficient: None
+  overfit: 0.0
+
+
+                                                          Energy
+ Step                Time   Loss (SSD)   EnergyRMSE     MaxResid
+===== =================== ============ ============ ============
+Overwriting file: "calc-initial-parameters.amp". Moving original to "/tmp/tmpkOtOOp.amp".
+Saving checkpoint data.
+Overwriting file: "calc-checkpoint.amp". Moving original to "/tmp/tmpaBkpzq.amp".
+    0 2019-03-20T09:59:28   1.3604e+02 5.8319e-01 - 1.1094e+00 C
+    1 2019-03-20T09:59:28   7.4777e+01 4.3237e-01 - 9.4976e-01 C
+    2 2019-03-20T09:59:28   1.8296e+01 2.1387e-01 - 5.6139e-01 C
+    3 2019-03-20T09:59:28   2.5334e+02 7.9583e-01 - 1.4753e+00 C
+    4 2019-03-20T09:59:28   1.3017e+01 1.8040e-01 - 5.4622e-01 C
+    5 2019-03-20T09:59:28   1.3966e+01 1.8685e-01 - 6.2759e-01 C
+    6 2019-03-20T09:59:28   1.0619e+01 1.6294e-01 - 5.2960e-01 C
+    7 2019-03-20T09:59:28   8.7203e+00 1.4765e-01 - 4.5507e-01 C
+    8 2019-03-20T09:59:28   6.0468e+00 1.2295e-01 - 3.1812e-01 C
+    9 2019-03-20T09:59:28   9.5685e+00 1.5466e-01 - 3.4609e-01 C
+   10 2019-03-20T09:59:28   4.6484e+00 1.0780e-01 - 3.1629e-01 C
+   11 2019-03-20T09:59:28   3.2251e+00 8.9792e-02 - 2.7209e-01 C
+   12 2019-03-20T09:59:28   4.1350e+00 1.0167e-01 - 4.4682e-01 C
+   13 2019-03-20T09:59:28   2.5057e+00 7.9147e-02 - 2.9590e-01 C
+   14 2019-03-20T09:59:28   1.5082e+00 6.1404e-02 - 2.5982e-01 C
+   15 2019-03-20T09:59:28   1.3847e+01 1.8606e-01 - 5.1871e-01 C
+   16 2019-03-20T09:59:28   1.4188e+00 5.9557e-02 - 2.5612e-01 C
+   17 2019-03-20T09:59:28   1.3106e+00 5.7241e-02 - 2.3458e-01 C
+   18 2019-03-20T09:59:28   1.2643e+00 5.6221e-02 - 2.0371e-01 C
+   19 2019-03-20T09:59:28   1.1889e+00 5.4518e-02 - 2.0857e-01 C
+   20 2019-03-20T09:59:28   1.0474e+00 5.1170e-02 - 2.1112e-01 C
+   21 2019-03-20T09:59:28   1.3683e+00 5.8487e-02 - 1.8639e-01 C
+   22 2019-03-20T09:59:28   9.7719e-01 4.9426e-02 - 2.0502e-01 C
+   23 2019-03-20T09:59:28   8.7573e-01 4.6790e-02 - 2.0754e-01 C
+   24 2019-03-20T09:59:28   7.6415e-01 4.3708e-02 - 2.0456e-01 C
+   25 2019-03-20T09:59:28   1.0285e+00 5.0707e-02 - 2.0018e-01 C
+   26 2019-03-20T09:59:28   7.2530e-01 4.2582e-02 - 2.0013e-01 C
+   27 2019-03-20T09:59:28   6.5740e-01 4.0540e-02 - 1.8276e-01 C
+   28 2019-03-20T09:59:28   5.4600e-01 3.6946e-02 - 1.5693e-01 C
+   29 2019-03-20T09:59:28   4.7962e-01 3.4627e-02 - 1.0948e-01 C
+   30 2019-03-20T09:59:28   5.2979e-01 3.6394e-02 - 1.4251e-01 C
+   31 2019-03-20T09:59:28   4.4976e-01 3.3532e-02 - 1.1987e-01 C
+   32 2019-03-20T09:59:28   4.0694e-01 3.1896e-02 - 1.1522e-01 C
+   33 2019-03-20T09:59:28   3.9828e-01 3.1555e-02 - 1.3029e-01 C
+   34 2019-03-20T09:59:28   3.8017e-01 3.0829e-02 - 1.2169e-01 C
+   35 2019-03-20T09:59:28   3.4052e-01 2.9177e-02 - 1.2532e-01 C
+   36 2019-03-20T09:59:28   3.2993e-01 2.8720e-02 - 1.4006e-01 C
+   37 2019-03-20T09:59:28   3.1520e-01 2.8071e-02 - 1.3204e-01 C
+   38 2019-03-20T09:59:28   2.8275e-01 2.6587e-02 - 1.2738e-01 C
+   39 2019-03-20T09:59:28   2.8212e-01 2.6557e-02 - 1.4216e-01 C
+   40 2019-03-20T09:59:28   2.6534e-01 2.5756e-02 - 1.3377e-01 C
+   41 2019-03-20T09:59:28   2.5823e-01 2.5408e-02 - 1.1978e-01 C
+   42 2019-03-20T09:59:28   2.4577e-01 2.4787e-02 - 1.1660e-01 C
+   43 2019-03-20T09:59:28   2.2759e-01 2.3853e-02 - 1.1591e-01 C
+   44 2019-03-20T09:59:28   2.0149e-01 2.2444e-02 - 1.1346e-01 C
+   45 2019-03-20T09:59:28   2.2471e-01 2.3702e-02 - 8.6583e-02 C
+   46 2019-03-20T09:59:28   1.9039e-01 2.1817e-02 - 1.0388e-01 C
+   47 2019-03-20T09:59:28   1.8864e-01 2.1717e-02 - 8.9918e-02 C
+   48 2019-03-20T09:59:28   1.8382e-01 2.1437e-02 - 9.7374e-02 C
+   49 2019-03-20T09:59:28   1.7278e-01 2.0783e-02 - 9.7959e-02 C
+   50 2019-03-20T09:59:28   1.5567e-01 1.9728e-02 - 9.4919e-02 C
+   51 2019-03-20T09:59:28   1.5663e-01 1.9788e-02 - 9.0122e-02 C
+   52 2019-03-20T09:59:28   1.4507e-01 1.9044e-02 - 9.1940e-02 C
+   53 2019-03-20T09:59:28   1.3249e-01 1.8200e-02 - 1.0044e-01 C
+   54 2019-03-20T09:59:29   1.1849e-01 1.7211e-02 - 9.4660e-02 C
+   55 2019-03-20T09:59:29   1.1307e-01 1.6813e-02 - 7.6533e-02 C
+   56 2019-03-20T09:59:29   1.0886e-01 1.6497e-02 - 8.6280e-02 C
+   57 2019-03-20T09:59:29   9.9276e-02 1.5754e-02 - 7.8123e-02 C
+   58 2019-03-20T09:59:29   9.4299e-02 1.5354e-02 - 6.5991e-02 C
+   59 2019-03-20T09:59:29   8.8424e-02 1.4868e-02 - 7.0644e-02 C
+   60 2019-03-20T09:59:29   8.1806e-02 1.4301e-02 - 7.3982e-02 C
+   61 2019-03-20T09:59:29   7.7553e-02 1.3924e-02 - 7.7959e-02 C
+   62 2019-03-20T09:59:29   7.1415e-02 1.3362e-02 - 7.8746e-02 C
+   63 2019-03-20T09:59:29   6.3460e-02 1.2596e-02 - 7.2216e-02 C
+   64 2019-03-20T09:59:29   5.9736e-02 1.2221e-02 - 6.1389e-02 C
+   65 2019-03-20T09:59:29   5.5737e-02 1.1804e-02 - 6.5882e-02 C
+   66 2019-03-20T09:59:29   5.3287e-02 1.1542e-02 - 6.2578e-02 C
+   67 2019-03-20T09:59:29   4.9991e-02 1.1179e-02 - 6.2440e-02 C
+   68 2019-03-20T09:59:29   4.5811e-02 1.0702e-02 - 6.6908e-02 C
+   69 2019-03-20T09:59:29   4.1597e-02 1.0198e-02 - 5.9169e-02 C
+   70 2019-03-20T09:59:29   4.0231e-02 1.0029e-02 - 5.7573e-02 C
+   71 2019-03-20T09:59:29   3.8793e-02 9.8480e-03 - 5.8398e-02 C
+   72 2019-03-20T09:59:29   3.5608e-02 9.4350e-03 - 6.0559e-02 C
+   73 2019-03-20T09:59:29   3.4379e-02 9.2707e-03 - 5.8699e-02 C
+   74 2019-03-20T09:59:29   3.2320e-02 8.9888e-03 - 5.8294e-02 C
+   75 2019-03-20T09:59:29   2.9516e-02 8.5902e-03 - 5.8330e-02 C
+   76 2019-03-20T09:59:29   2.6183e-02 8.0906e-03 - 5.8427e-02 C
+   77 2019-03-20T09:59:29   3.1424e-02 8.8633e-03 - 4.8236e-02 C
+   78 2019-03-20T09:59:29   2.4970e-02 7.9010e-03 - 5.5199e-02 C
+   79 2019-03-20T09:59:29   2.3101e-02 7.5994e-03 - 5.3084e-02 C
+   80 2019-03-20T09:59:29   2.1379e-02 7.3107e-03 - 4.5349e-02 C
+   81 2019-03-20T09:59:29   1.9315e-02 6.9488e-03 - 4.4945e-02 C
+   82 2019-03-20T09:59:29   1.8688e-02 6.8353e-03 - 4.8098e-02 C
+   83 2019-03-20T09:59:29   1.7964e-02 6.7015e-03 - 4.6208e-02 C
+   84 2019-03-20T09:59:29   1.7113e-02 6.5408e-03 - 3.8725e-02 C
+   85 2019-03-20T09:59:29   1.6012e-02 6.3269e-03 - 4.1705e-02 C
+   86 2019-03-20T09:59:29   1.5114e-02 6.1469e-03 - 4.3104e-02 C
+   87 2019-03-20T09:59:29   1.4289e-02 5.9769e-03 - 4.4409e-02 C
+   88 2019-03-20T09:59:29   1.3785e-02 5.8704e-03 - 4.2081e-02 C
+   89 2019-03-20T09:59:29   1.3429e-02 5.7942e-03 - 4.0324e-02 C
+   90 2019-03-20T09:59:29   1.2836e-02 5.6649e-03 - 3.8863e-02 C
+   91 2019-03-20T09:59:30   1.1990e-02 5.4750e-03 - 3.9333e-02 C
+   92 2019-03-20T09:59:30   1.1594e-02 5.3838e-03 - 3.2770e-02 C
+   93 2019-03-20T09:59:30   1.0991e-02 5.2419e-03 - 3.4253e-02 C
+   94 2019-03-20T09:59:30   1.0529e-02 5.1306e-03 - 3.5114e-02 C
+   95 2019-03-20T09:59:30   1.0297e-02 5.0738e-03 - 3.4139e-02 C
+   96 2019-03-20T09:59:30   1.0085e-02 5.0213e-03 - 3.1750e-02 C
+   97 2019-03-20T09:59:30   9.8180e-03 4.9543e-03 - 3.1385e-02 C
+   98 2019-03-20T09:59:30   9.5575e-03 4.8881e-03 - 3.1042e-02 C
+   99 2019-03-20T09:59:30   9.2484e-03 4.8084e-03 - 2.9267e-02 C
+Saving checkpoint data.
+Overwriting file: "calc-checkpoint.amp". Moving original to "/tmp/tmp8jZc2q.amp".
+  100 2019-03-20T09:59:30   8.9189e-03 4.7220e-03 - 2.7171e-02 C
+  101 2019-03-20T09:59:30   8.5668e-03 4.6278e-03 - 2.4748e-02 C
+  102 2019-03-20T09:59:30   8.2008e-03 4.5279e-03 - 2.7764e-02 C
+  103 2019-03-20T09:59:30   7.8379e-03 4.4266e-03 - 2.7766e-02 C
+  104 2019-03-20T09:59:30   7.3856e-03 4.2970e-03 - 2.5857e-02 C
+  105 2019-03-20T09:59:30   7.0434e-03 4.1963e-03 - 2.6605e-02 C
+  106 2019-03-20T09:59:30   6.5638e-03 4.0509e-03 - 2.6201e-02 C
+  107 2019-03-20T09:59:30   6.2098e-03 3.9401e-03 - 2.3917e-02 C
+  108 2019-03-20T09:59:30   5.8907e-03 3.8376e-03 - 2.4998e-02 C
+  109 2019-03-20T09:59:30   5.6710e-03 3.7653e-03 - 2.6421e-02 C
+  110 2019-03-20T09:59:30   5.6519e-03 3.7590e-03 - 2.4546e-02 C
+  111 2019-03-20T09:59:30   5.5544e-03 3.7264e-03 - 2.5451e-02 C
+  112 2019-03-20T09:59:30   5.4704e-03 3.6981e-03 - 2.4995e-02 C
+  113 2019-03-20T09:59:30   5.3528e-03 3.6581e-03 - 2.4464e-02 C
+  114 2019-03-20T09:59:30   5.2319e-03 3.6166e-03 - 2.3279e-02 C
+  115 2019-03-20T09:59:30   5.1049e-03 3.5724e-03 - 2.2469e-02 C
+  116 2019-03-20T09:59:30   4.9066e-03 3.5024e-03 - 2.1896e-02 C
+  117 2019-03-20T09:59:30   4.6446e-03 3.4076e-03 - 2.1473e-02 C
+  118 2019-03-20T09:59:30   4.4236e-03 3.3255e-03 - 2.2653e-02 C
+  119 2019-03-20T09:59:30   4.5121e-03 3.3586e-03 - 1.9457e-02 C
+  120 2019-03-20T09:59:30   4.3259e-03 3.2886e-03 - 2.1312e-02 C
+  121 2019-03-20T09:59:30   4.2232e-03 3.2493e-03 - 2.1445e-02 C
+  122 2019-03-20T09:59:30   4.2574e-03 3.2624e-03 - 2.3250e-02 C
+  123 2019-03-20T09:59:30   4.1760e-03 3.2311e-03 - 2.2210e-02 C
+  124 2019-03-20T09:59:30   4.1016e-03 3.2022e-03 - 2.1652e-02 C
+  125 2019-03-20T09:59:30   4.0047e-03 3.1641e-03 - 2.1047e-02 C
+  126 2019-03-20T09:59:30   3.9634e-03 3.1478e-03 - 1.9858e-02 C
+  127 2019-03-20T09:59:30   3.9128e-03 3.1276e-03 - 1.9990e-02 C
+  128 2019-03-20T09:59:31   3.8702e-03 3.1105e-03 - 2.0324e-02 C
+  129 2019-03-20T09:59:31   3.8076e-03 3.0853e-03 - 2.0473e-02 C
+  130 2019-03-20T09:59:31   3.7342e-03 3.0554e-03 - 1.9906e-02 C
+  131 2019-03-20T09:59:31   3.6813e-03 3.0337e-03 - 1.9152e-02 C
+  132 2019-03-20T09:59:31   3.6314e-03 3.0130e-03 - 1.8957e-02 C
+  133 2019-03-20T09:59:31   3.5779e-03 2.9908e-03 - 1.7506e-02 C
+  134 2019-03-20T09:59:31   3.5166e-03 2.9651e-03 - 1.7476e-02 C
+  135 2019-03-20T09:59:31   3.4336e-03 2.9299e-03 - 1.7514e-02 C
+  136 2019-03-20T09:59:31   3.3767e-03 2.9055e-03 - 1.7338e-02 C
+  137 2019-03-20T09:59:31   3.3444e-03 2.8916e-03 - 1.7241e-02 C
+  138 2019-03-20T09:59:31   3.3147e-03 2.8787e-03 - 1.7040e-02 C
+  139 2019-03-20T09:59:31   3.2677e-03 2.8582e-03 - 1.6791e-02 C
+  140 2019-03-20T09:59:31   3.1953e-03 2.8263e-03 - 1.7097e-02 C
+  141 2019-03-20T09:59:31   3.1311e-03 2.7978e-03 - 1.6555e-02 C
+  142 2019-03-20T09:59:31   3.0526e-03 2.7625e-03 - 1.7033e-02 C
+  143 2019-03-20T09:59:31   3.0440e-03 2.7586e-03 - 1.6851e-02 C
+  144 2019-03-20T09:59:31   3.0279e-03 2.7513e-03 - 1.6842e-02 C
+  145 2019-03-20T09:59:31   2.9990e-03 2.7381e-03 - 1.6770e-02 C
+  146 2019-03-20T09:59:31   2.9564e-03 2.7186e-03 - 1.6721e-02 C
+  147 2019-03-20T09:59:31   2.9739e-03 2.7267e-03 - 1.6046e-02 C
+  148 2019-03-20T09:59:31   2.9376e-03 2.7100e-03 - 1.6447e-02 C
+  149 2019-03-20T09:59:31   2.9156e-03 2.6998e-03 - 1.6528e-02 C
+  150 2019-03-20T09:59:31   2.8820e-03 2.6842e-03 - 1.6562e-02 C
+  151 2019-03-20T09:59:31   2.8250e-03 2.6575e-03 - 1.6495e-02 C
+  152 2019-03-20T09:59:31   2.7483e-03 2.6212e-03 - 1.6446e-02 C
+  153 2019-03-20T09:59:31   2.7126e-03 2.6041e-03 - 1.6505e-02 C
+  154 2019-03-20T09:59:31   2.6808e-03 2.5888e-03 - 1.6463e-02 C
+  155 2019-03-20T09:59:31   2.6569e-03 2.5773e-03 - 1.7028e-02 C
+  156 2019-03-20T09:59:31   2.6406e-03 2.5694e-03 - 1.7810e-02 C
+  157 2019-03-20T09:59:31   2.6182e-03 2.5584e-03 - 1.7293e-02 C
+  158 2019-03-20T09:59:31   2.5968e-03 2.5480e-03 - 1.6778e-02 C
+  159 2019-03-20T09:59:31   2.5857e-03 2.5425e-03 - 1.6683e-02 C
+  160 2019-03-20T09:59:31   2.5680e-03 2.5338e-03 - 1.6828e-02 C
+  161 2019-03-20T09:59:31   2.5388e-03 2.5193e-03 - 1.7100e-02 C
+  162 2019-03-20T09:59:31   2.4962e-03 2.4981e-03 - 1.7341e-02 C
+  163 2019-03-20T09:59:31   2.4573e-03 2.4786e-03 - 1.7488e-02 C
+  164 2019-03-20T09:59:31   2.4227e-03 2.4611e-03 - 1.7660e-02 C
+  165 2019-03-20T09:59:31   2.3942e-03 2.4465e-03 - 1.6972e-02 C
+  166 2019-03-20T09:59:31   2.3758e-03 2.4371e-03 - 1.6809e-02 C
+  167 2019-03-20T09:59:31   2.3531e-03 2.4254e-03 - 1.6692e-02 C
+  168 2019-03-20T09:59:32   2.3235e-03 2.4102e-03 - 1.6622e-02 C
+  169 2019-03-20T09:59:32   2.3069e-03 2.4015e-03 - 1.6534e-02 C
+  170 2019-03-20T09:59:32   2.2844e-03 2.3898e-03 - 1.6719e-02 C
+  171 2019-03-20T09:59:32   2.2764e-03 2.3856e-03 - 1.6440e-02 C
+  172 2019-03-20T09:59:32   2.2621e-03 2.3781e-03 - 1.6333e-02 C
+  173 2019-03-20T09:59:32   2.2373e-03 2.3650e-03 - 1.6362e-02 C
+  174 2019-03-20T09:59:32   2.2026e-03 2.3466e-03 - 1.5925e-02 C
+  175 2019-03-20T09:59:32   2.1908e-03 2.3403e-03 - 1.5963e-02 C
+  176 2019-03-20T09:59:32   2.1742e-03 2.3314e-03 - 1.5851e-02 C
+  177 2019-03-20T09:59:32   2.1558e-03 2.3215e-03 - 1.5506e-02 C
+  178 2019-03-20T09:59:32   2.1270e-03 2.3060e-03 - 1.5118e-02 C
+  179 2019-03-20T09:59:32   2.0810e-03 2.2809e-03 - 1.4806e-02 C
+  180 2019-03-20T09:59:32   2.0319e-03 2.2538e-03 - 1.4761e-02 C
+  181 2019-03-20T09:59:32   2.1250e-03 2.3049e-03 - 1.3066e-02 C
+  182 2019-03-20T09:59:32   2.0139e-03 2.2438e-03 - 1.4251e-02 C
+  183 2019-03-20T09:59:32   1.9878e-03 2.2292e-03 - 1.4273e-02 C
+  184 2019-03-20T09:59:32   1.9494e-03 2.2076e-03 - 1.4119e-02 C
+  185 2019-03-20T09:59:32   1.9188e-03 2.1902e-03 - 1.4317e-02 C
+  186 2019-03-20T09:59:32   1.8991e-03 2.1790e-03 - 1.4429e-02 C
+  187 2019-03-20T09:59:32   1.8840e-03 2.1702e-03 - 1.3938e-02 C
+  188 2019-03-20T09:59:32   1.8748e-03 2.1649e-03 - 1.4088e-02 C
+  189 2019-03-20T09:59:32   1.8628e-03 2.1580e-03 - 1.4051e-02 C
+  190 2019-03-20T09:59:32   1.8515e-03 2.1514e-03 - 1.4225e-02 C
+  191 2019-03-20T09:59:32   1.8433e-03 2.1467e-03 - 1.3874e-02 C
+  192 2019-03-20T09:59:32   1.8314e-03 2.1397e-03 - 1.4039e-02 C
+  193 2019-03-20T09:59:32   1.8142e-03 2.1297e-03 - 1.4153e-02 C
+  194 2019-03-20T09:59:32   1.7927e-03 2.1170e-03 - 1.4382e-02 C
+  195 2019-03-20T09:59:32   1.7713e-03 2.1044e-03 - 1.4736e-02 C
+  196 2019-03-20T09:59:32   1.7593e-03 2.0972e-03 - 1.4093e-02 C
+  197 2019-03-20T09:59:32   1.7424e-03 2.0871e-03 - 1.4607e-02 C
+  198 2019-03-20T09:59:32   1.7267e-03 2.0777e-03 - 1.4820e-02 C
+  199 2019-03-20T09:59:32   1.7177e-03 2.0723e-03 - 1.4840e-02 C
+Saving checkpoint data.
+Overwriting file: "calc-checkpoint.amp". Moving original to "/tmp/tmpltxbzl.amp".
+  200 2019-03-20T09:59:32   1.7067e-03 2.0656e-03 - 1.4879e-02 C
+  201 2019-03-20T09:59:32   1.6950e-03 2.0585e-03 - 1.4666e-02 C
+  202 2019-03-20T09:59:32   1.6848e-03 2.0523e-03 - 1.4444e-02 C
+  203 2019-03-20T09:59:32   1.6763e-03 2.0472e-03 - 1.4821e-02 C
+  204 2019-03-20T09:59:32   1.6662e-03 2.0410e-03 - 1.4844e-02 C
+  205 2019-03-20T09:59:32   1.6533e-03 2.0331e-03 - 1.4547e-02 C
+  206 2019-03-20T09:59:32   1.6328e-03 2.0204e-03 - 1.4385e-02 C
+  207 2019-03-20T09:59:32   1.6085e-03 2.0053e-03 - 1.4189e-02 C
+  208 2019-03-20T09:59:33   1.5960e-03 1.9975e-03 - 1.3956e-02 C
+  209 2019-03-20T09:59:33   1.5786e-03 1.9866e-03 - 1.4188e-02 C
+  210 2019-03-20T09:59:33   1.5575e-03 1.9733e-03 - 1.4236e-02 C
+  211 2019-03-20T09:59:33   1.5385e-03 1.9612e-03 - 1.4103e-02 C
+  212 2019-03-20T09:59:33   1.5224e-03 1.9509e-03 - 1.3967e-02 C
+  213 2019-03-20T09:59:33   1.5025e-03 1.9381e-03 - 1.3641e-02 C
+  214 2019-03-20T09:59:33   1.4876e-03 1.9285e-03 - 1.3878e-02 C
+  215 2019-03-20T09:59:33   1.4742e-03 1.9198e-03 - 1.3461e-02 C
+  216 2019-03-20T09:59:33   1.4613e-03 1.9114e-03 - 1.3677e-02 C
+  217 2019-03-20T09:59:33   1.4543e-03 1.9067e-03 - 1.3829e-02 C
+  218 2019-03-20T09:59:33   1.4418e-03 1.8986e-03 - 1.3856e-02 C
+  219 2019-03-20T09:59:33   1.4203e-03 1.8844e-03 - 1.3735e-02 C
+  220 2019-03-20T09:59:33   1.3869e-03 1.8621e-03 - 1.3203e-02 C
+  221 2019-03-20T09:59:33   1.3720e-03 1.8520e-03 - 1.2604e-02 C
+  222 2019-03-20T09:59:33   1.3631e-03 1.8460e-03 - 1.2881e-02 C
+  223 2019-03-20T09:59:33   1.3287e-03 1.8226e-03 - 1.2147e-02 C
+  224 2019-03-20T09:59:33   1.3320e-03 1.8249e-03 - 1.0876e-02 C
+  225 2019-03-20T09:59:33   1.3088e-03 1.8089e-03 - 1.1493e-02 C
+  226 2019-03-20T09:59:33   1.2884e-03 1.7947e-03 - 1.0580e-02 C
+  227 2019-03-20T09:59:33   1.2792e-03 1.7883e-03 - 1.0323e-02 C
+  228 2019-03-20T09:59:33   1.2730e-03 1.7840e-03 - 1.0509e-02 C
+  229 2019-03-20T09:59:33   1.2688e-03 1.7810e-03 - 1.0428e-02 C
+  230 2019-03-20T09:59:33   1.2653e-03 1.7785e-03 - 1.0698e-02 C
+  231 2019-03-20T09:59:33   1.2590e-03 1.7741e-03 - 1.0668e-02 C
+  232 2019-03-20T09:59:33   1.2488e-03 1.7669e-03 - 1.0647e-02 C
+  233 2019-03-20T09:59:33   1.2379e-03 1.7592e-03 - 1.0478e-02 C
+  234 2019-03-20T09:59:33   1.2290e-03 1.7528e-03 - 1.0514e-02 C
+  235 2019-03-20T09:59:33   1.2184e-03 1.7453e-03 - 1.0266e-02 C
+  236 2019-03-20T09:59:33   1.2035e-03 1.7346e-03 - 9.8003e-03 C
+  237 2019-03-20T09:59:33   1.1942e-03 1.7278e-03 - 9.1698e-03 C
+  238 2019-03-20T09:59:33   1.1859e-03 1.7218e-03 - 9.2501e-03 C
+  239 2019-03-20T09:59:33   1.1811e-03 1.7184e-03 - 8.9648e-03 C
+  240 2019-03-20T09:59:33   1.1735e-03 1.7128e-03 - 9.0869e-03 C
+  241 2019-03-20T09:59:33   1.1631e-03 1.7052e-03 - 9.1860e-03 C
+  242 2019-03-20T09:59:33   1.1540e-03 1.6985e-03 - 8.7234e-03 C
+  243 2019-03-20T09:59:33   1.1459e-03 1.6926e-03 - 8.9604e-03 C
+  244 2019-03-20T09:59:33   1.1370e-03 1.6860e-03 - 8.9046e-03 C
+  245 2019-03-20T09:59:33   1.1310e-03 1.6815e-03 - 8.8887e-03 C
+  246 2019-03-20T09:59:33   1.1266e-03 1.6782e-03 - 8.7357e-03 C
+  247 2019-03-20T09:59:33   1.1220e-03 1.6748e-03 - 8.6337e-03 C
+  248 2019-03-20T09:59:34   1.1149e-03 1.6695e-03 - 8.7188e-03 C
+  249 2019-03-20T09:59:34   1.1040e-03 1.6614e-03 - 8.9511e-03 C
+  250 2019-03-20T09:59:34   1.0931e-03 1.6531e-03 - 9.0261e-03 C
+  251 2019-03-20T09:59:34   1.0856e-03 1.6474e-03 - 9.2880e-03 C
+  252 2019-03-20T09:59:34   1.0756e-03 1.6398e-03 - 9.3264e-03 C
+  253 2019-03-20T09:59:34   1.0627e-03 1.6300e-03 - 9.3267e-03 C
+  254 2019-03-20T09:59:34   1.0564e-03 1.6251e-03 - 9.4288e-03 C
+  255 2019-03-20T09:59:34   1.0542e-03 1.6234e-03 - 9.3458e-03 C
+  256 2019-03-20T09:59:34   1.0521e-03 1.6218e-03 - 9.2119e-03 C
+  257 2019-03-20T09:59:34   1.0494e-03 1.6197e-03 - 9.2898e-03 C
+  258 2019-03-20T09:59:34   1.0450e-03 1.6163e-03 - 9.3518e-03 C
+  259 2019-03-20T09:59:34   1.0370e-03 1.6101e-03 - 9.3330e-03 C
+  260 2019-03-20T09:59:34   1.0233e-03 1.5995e-03 - 9.2395e-03 C
+  261 2019-03-20T09:59:34   1.0041e-03 1.5843e-03 - 8.9896e-03 C
+  262 2019-03-20T09:59:34   9.8701e-04 1.5708e-03 - 9.0926e-03 C
+  263 2019-03-20T09:59:34   9.7377e-04 1.5603e-03 - 8.9229e-03 C
+  264 2019-03-20T09:59:34   9.5818e-04 1.5477e-03 - 8.8168e-03 C
+  265 2019-03-20T09:59:34   9.4896e-04 1.5403e-03 - 8.4371e-03 C
+  266 2019-03-20T09:59:34   9.3580e-04 1.5295e-03 - 8.4837e-03 C
+  267 2019-03-20T09:59:34   9.2446e-04 1.5202e-03 - 8.7500e-03 C
+  268 2019-03-20T09:59:34   9.1933e-04 1.5160e-03 - 8.7826e-03 C
+  269 2019-03-20T09:59:34   9.1448e-04 1.5120e-03 - 8.7690e-03 C
+  270 2019-03-20T09:59:34   9.1002e-04 1.5083e-03 - 8.9303e-03 C
+  271 2019-03-20T09:59:34   9.0702e-04 1.5058e-03 - 8.9970e-03 C
+  272 2019-03-20T09:59:34   9.0279e-04 1.5023e-03 - 9.0403e-03 C
+  273 2019-03-20T09:59:34   8.9758e-04 1.4980e-03 - 9.0835e-03 C
+  274 2019-03-20T09:59:34   8.9063e-04 1.4922e-03 - 9.1058e-03 C
+  275 2019-03-20T09:59:34   8.8078e-04 1.4839e-03 - 9.1087e-03 C
+  276 2019-03-20T09:59:34   8.6885e-04 1.4738e-03 - 9.2117e-03 C
+  277 2019-03-20T09:59:34   8.6033e-04 1.4666e-03 - 9.0749e-03 C
+  278 2019-03-20T09:59:34   8.5058e-04 1.4582e-03 - 9.1829e-03 C
+  279 2019-03-20T09:59:34   8.4191e-04 1.4508e-03 - 8.8592e-03 C
+  280 2019-03-20T09:59:34   8.3484e-04 1.4447e-03 - 8.9507e-03 C
+  281 2019-03-20T09:59:34   8.3007e-04 1.4405e-03 - 8.7326e-03 C
+  282 2019-03-20T09:59:34   8.2368e-04 1.4350e-03 - 8.6551e-03 C
+  283 2019-03-20T09:59:34   8.1447e-04 1.4270e-03 - 8.4258e-03 C
+  284 2019-03-20T09:59:34   8.0500e-04 1.4186e-03 - 8.2481e-03 C
+  285 2019-03-20T09:59:34   7.9678e-04 1.4114e-03 - 8.0725e-03 C
+  286 2019-03-20T09:59:34   7.9006e-04 1.4054e-03 - 8.1218e-03 C
+  287 2019-03-20T09:59:34   7.8867e-04 1.4042e-03 - 8.0260e-03 C
+  288 2019-03-20T09:59:34   7.8622e-04 1.4020e-03 - 8.0338e-03 C
+  289 2019-03-20T09:59:35   7.8251e-04 1.3987e-03 - 8.0157e-03 C
+  290 2019-03-20T09:59:35   7.7964e-04 1.3961e-03 - 8.0790e-03 C
+  291 2019-03-20T09:59:35   7.7754e-04 1.3942e-03 - 8.0601e-03 C
+  292 2019-03-20T09:59:35   7.7405e-04 1.3911e-03 - 8.0600e-03 C
+  293 2019-03-20T09:59:35   7.6881e-04 1.3864e-03 - 8.0712e-03 C
+  294 2019-03-20T09:59:35   7.6413e-04 1.3821e-03 - 8.1278e-03 C
+  295 2019-03-20T09:59:35   7.5970e-04 1.3781e-03 - 8.1903e-03 C
+  296 2019-03-20T09:59:35   7.5430e-04 1.3732e-03 - 8.2495e-03 C
+  297 2019-03-20T09:59:35   7.4652e-04 1.3661e-03 - 8.4625e-03 C
+  298 2019-03-20T09:59:35   7.3603e-04 1.3565e-03 - 8.6468e-03 C
+  299 2019-03-20T09:59:35   7.2778e-04 1.3489e-03 - 8.8893e-03 C
+Saving checkpoint data.
+Overwriting file: "calc-checkpoint.amp". Moving original to "/tmp/tmpuxit4W.amp".
+  300 2019-03-20T09:59:35   7.2381e-04 1.3452e-03 - 8.8728e-03 C
+  301 2019-03-20T09:59:35   7.1945e-04 1.3411e-03 - 8.9005e-03 C
+  302 2019-03-20T09:59:35   7.1432e-04 1.3363e-03 - 8.8862e-03 C
+  303 2019-03-20T09:59:35   7.0802e-04 1.3304e-03 - 8.9195e-03 C
+  304 2019-03-20T09:59:35   6.9955e-04 1.3224e-03 - 8.8908e-03 C
+  305 2019-03-20T09:59:35   6.9111e-04 1.3144e-03 - 8.8875e-03 C
+  306 2019-03-20T09:59:35   6.8139e-04 1.3052e-03 - 8.5429e-03 C
+  307 2019-03-20T09:59:35   6.7229e-04 1.2964e-03 - 8.5371e-03 C
+  308 2019-03-20T09:59:35   6.6366e-04 1.2881e-03 - 8.1644e-03 C
+  309 2019-03-20T09:59:35   6.6310e-04 1.2875e-03 - 8.1209e-03 C
+  310 2019-03-20T09:59:35   6.5935e-04 1.2839e-03 - 8.1324e-03 C
+  311 2019-03-20T09:59:35   6.5592e-04 1.2805e-03 - 7.8443e-03 C
+  312 2019-03-20T09:59:35   6.5294e-04 1.2776e-03 - 7.8839e-03 C
+  313 2019-03-20T09:59:35   6.4916e-04 1.2739e-03 - 7.8613e-03 C
+  314 2019-03-20T09:59:35   6.4454e-04 1.2694e-03 - 7.7923e-03 C
+  315 2019-03-20T09:59:35   6.4207e-04 1.2670e-03 - 7.5230e-03 C
+  316 2019-03-20T09:59:35   6.3897e-04 1.2639e-03 - 7.4020e-03 C
+  317 2019-03-20T09:59:35   6.3488e-04 1.2598e-03 - 7.4216e-03 C
+  318 2019-03-20T09:59:35   6.3012e-04 1.2551e-03 - 7.4298e-03 C
+  319 2019-03-20T09:59:35   6.2778e-04 1.2528e-03 - 7.2638e-03 C
+  320 2019-03-20T09:59:35   6.2641e-04 1.2514e-03 - 7.3558e-03 C
+  321 2019-03-20T09:59:35   6.2422e-04 1.2492e-03 - 7.3561e-03 C
+  322 2019-03-20T09:59:35   6.2103e-04 1.2460e-03 - 7.3270e-03 C
+  323 2019-03-20T09:59:35   6.1797e-04 1.2430e-03 - 7.2747e-03 C
+  324 2019-03-20T09:59:35   6.1472e-04 1.2397e-03 - 7.1272e-03 C
+  325 2019-03-20T09:59:35   6.1023e-04 1.2351e-03 - 7.1968e-03 C
+  326 2019-03-20T09:59:35   6.0413e-04 1.2290e-03 - 7.2810e-03 C
+  327 2019-03-20T09:59:35   5.9865e-04 1.2234e-03 - 7.4277e-03 C
+  328 2019-03-20T09:59:35   5.9554e-04 1.2202e-03 - 7.5347e-03 C
+  329 2019-03-20T09:59:35   5.9187e-04 1.2164e-03 - 7.4875e-03 C
+  330 2019-03-20T09:59:35   5.8843e-04 1.2129e-03 - 7.5904e-03 C
+  331 2019-03-20T09:59:35   5.8672e-04 1.2111e-03 - 7.2004e-03 C
+  332 2019-03-20T09:59:36   5.8419e-04 1.2085e-03 - 7.3302e-03 C
+  333 2019-03-20T09:59:36   5.8049e-04 1.2047e-03 - 7.3261e-03 C
+  334 2019-03-20T09:59:36   5.7518e-04 1.1992e-03 - 7.4798e-03 C
+  335 2019-03-20T09:59:36   5.6884e-04 1.1925e-03 - 7.1714e-03 C
+  336 2019-03-20T09:59:36   5.6491e-04 1.1884e-03 - 7.0824e-03 C
+  337 2019-03-20T09:59:36   5.6224e-04 1.1856e-03 - 7.2039e-03 C
+  338 2019-03-20T09:59:36   5.6008e-04 1.1833e-03 - 7.1625e-03 C
+  339 2019-03-20T09:59:36   5.5698e-04 1.1800e-03 - 7.1449e-03 C
+  340 2019-03-20T09:59:36   5.5247e-04 1.1752e-03 - 6.9374e-03 C
+  341 2019-03-20T09:59:36   5.4783e-04 1.1703e-03 - 6.8712e-03 C
+  342 2019-03-20T09:59:36   5.4259e-04 1.1647e-03 - 6.6027e-03 C
+  343 2019-03-20T09:59:36   5.3724e-04 1.1589e-03 - 6.3817e-03 C
+  344 2019-03-20T09:59:36   5.3085e-04 1.1520e-03 - 6.4537e-03 C
+  345 2019-03-20T09:59:36   5.2689e-04 1.1477e-03 - 6.2916e-03 C
+  346 2019-03-20T09:59:36   5.2357e-04 1.1441e-03 - 6.3165e-03 C
+  347 2019-03-20T09:59:36   5.2173e-04 1.1421e-03 - 6.3710e-03 C
+  348 2019-03-20T09:59:36   5.2054e-04 1.1408e-03 - 6.2861e-03 C
+  349 2019-03-20T09:59:36   5.1907e-04 1.1392e-03 - 6.2496e-03 C
+  350 2019-03-20T09:59:36   5.1680e-04 1.1367e-03 - 6.1540e-03 C
+  351 2019-03-20T09:59:36   5.1359e-04 1.1331e-03 - 5.9594e-03 C
+  352 2019-03-20T09:59:36   5.1012e-04 1.1293e-03 - 5.7280e-03 C
+  353 2019-03-20T09:59:36   5.0694e-04 1.1258e-03 - 5.5169e-03 C
+  354 2019-03-20T09:59:36   5.0401e-04 1.1225e-03 - 5.4541e-03 C
+  355 2019-03-20T09:59:36   5.0245e-04 1.1208e-03 - 5.3595e-03 C
+  356 2019-03-20T09:59:36   5.0084e-04 1.1190e-03 - 5.4173e-03 C
+  357 2019-03-20T09:59:36   4.9899e-04 1.1169e-03 - 5.2787e-03 C
+  358 2019-03-20T09:59:36   4.9624e-04 1.1138e-03 - 5.2692e-03 C
+  359 2019-03-20T09:59:36   4.9274e-04 1.1099e-03 - 5.2893e-03 C
+  360 2019-03-20T09:59:36   4.9000e-04 1.1068e-03 - 5.2504e-03 C
+  361 2019-03-20T09:59:36   4.8704e-04 1.1035e-03 - 5.1313e-03 C
+  362 2019-03-20T09:59:36   4.8461e-04 1.1007e-03 - 4.9076e-03 C
+  363 2019-03-20T09:59:36   4.8328e-04 1.0992e-03 - 4.9172e-03 C
+  364 2019-03-20T09:59:36   4.8239e-04 1.0982e-03 - 4.9342e-03 C
+  365 2019-03-20T09:59:36   4.8162e-04 1.0973e-03 - 4.9973e-03 C
+  366 2019-03-20T09:59:36   4.8091e-04 1.0965e-03 - 5.0093e-03 C
+  367 2019-03-20T09:59:36   4.7975e-04 1.0952e-03 - 5.0176e-03 C
+  368 2019-03-20T09:59:36   4.7791e-04 1.0931e-03 - 4.9612e-03 C
+  369 2019-03-20T09:59:36   4.7507e-04 1.0898e-03 - 4.8804e-03 C
+  370 2019-03-20T09:59:36   4.7098e-04 1.0851e-03 - 4.8494e-03 C
+  371 2019-03-20T09:59:36   4.6723e-04 1.0808e-03 - 4.8580e-03 C
+  372 2019-03-20T09:59:36   4.6543e-04 1.0787e-03 - 5.2467e-03 C
+  373 2019-03-20T09:59:36   4.6264e-04 1.0755e-03 - 5.0637e-03 C
+  374 2019-03-20T09:59:36   4.5996e-04 1.0723e-03 - 4.7890e-03 C
+  375 2019-03-20T09:59:36   4.5833e-04 1.0704e-03 - 4.6534e-03 C
+  376 2019-03-20T09:59:36   4.5645e-04 1.0682e-03 - 4.7062e-03 C
+  377 2019-03-20T09:59:36   4.5369e-04 1.0650e-03 - 4.7427e-03 C
+  378 2019-03-20T09:59:36   4.5162e-04 1.0626e-03 - 4.6440e-03 C
+  379 2019-03-20T09:59:36   4.5130e-04 1.0622e-03 - 4.8744e-03 C
+  380 2019-03-20T09:59:37   4.5072e-04 1.0615e-03 - 4.8640e-03 C
+  381 2019-03-20T09:59:37   4.4972e-04 1.0603e-03 - 4.8052e-03 C
+  382 2019-03-20T09:59:37   4.4806e-04 1.0584e-03 - 4.7664e-03 C
+  383 2019-03-20T09:59:37   4.4594e-04 1.0559e-03 - 4.7687e-03 C
+  384 2019-03-20T09:59:37   4.4445e-04 1.0541e-03 - 4.8623e-03 C
+  385 2019-03-20T09:59:37   4.4251e-04 1.0518e-03 - 5.0303e-03 C
+  386 2019-03-20T09:59:37   4.4038e-04 1.0493e-03 - 5.4554e-03 C
+  387 2019-03-20T09:59:37   4.3888e-04 1.0475e-03 - 5.4478e-03 C
+  388 2019-03-20T09:59:37   4.3781e-04 1.0462e-03 - 5.5683e-03 C
+  389 2019-03-20T09:59:37   4.3614e-04 1.0442e-03 - 5.6211e-03 C
+  390 2019-03-20T09:59:37   4.3379e-04 1.0414e-03 - 5.6567e-03 C
+  391 2019-03-20T09:59:37   4.3226e-04 1.0395e-03 - 5.6488e-03 C
+  392 2019-03-20T09:59:37   4.3117e-04 1.0382e-03 - 5.7583e-03 C
+  393 2019-03-20T09:59:37   4.2980e-04 1.0366e-03 - 5.6320e-03 C
+  394 2019-03-20T09:59:37   4.2793e-04 1.0343e-03 - 5.6866e-03 C
+  395 2019-03-20T09:59:37   4.2522e-04 1.0310e-03 - 5.6033e-03 C
+  396 2019-03-20T09:59:37   4.2156e-04 1.0266e-03 - 5.4744e-03 C
+  397 2019-03-20T09:59:37   4.1873e-04 1.0231e-03 - 5.3994e-03 C
+  398 2019-03-20T09:59:37   4.2031e-04 1.0251e-03 - 5.0876e-03 C
+  399 2019-03-20T09:59:37   4.1734e-04 1.0215e-03 - 5.2733e-03 C
+Saving checkpoint data.
+Overwriting file: "calc-checkpoint.amp". Moving original to "/tmp/tmpG2qq_t.amp".
+  400 2019-03-20T09:59:37   4.1551e-04 1.0192e-03 - 5.1677e-03 C
+  401 2019-03-20T09:59:37   4.1379e-04 1.0171e-03 - 5.1838e-03 C
+  402 2019-03-20T09:59:37   4.1328e-04 1.0165e-03 - 4.9247e-03 C
+  403 2019-03-20T09:59:37   4.1257e-04 1.0156e-03 - 5.0293e-03 C
+  404 2019-03-20T09:59:37   4.1202e-04 1.0149e-03 - 5.0981e-03 C
+  405 2019-03-20T09:59:37   4.1145e-04 1.0142e-03 - 5.0387e-03 C
+  406 2019-03-20T09:59:37   4.1076e-04 1.0134e-03 - 4.9740e-03 C
+  407 2019-03-20T09:59:37   4.0981e-04 1.0122e-03 - 4.8017e-03 C
+  408 2019-03-20T09:59:37   4.0873e-04 1.0109e-03 - 4.7129e-03 C
+  409 2019-03-20T09:59:37   4.0710e-04 1.0088e-03 - 4.7107e-03 C
+  410 2019-03-20T09:59:37   4.0495e-04 1.0062e-03 - 4.6263e-03 C
+  411 2019-03-20T09:59:37   4.0292e-04 1.0036e-03 - 4.5385e-03 C
+  412 2019-03-20T09:59:37   4.0129e-04 1.0016e-03 - 4.5765e-03 C
+  413 2019-03-20T09:59:37   3.9964e-04 9.9955e-04 C 4.6377e-03 C
+...optimization successful. 0.2 min.
+Amp successfully trained. Saving current parameters.
+File "calc.amp" exists. Instead saving to "/tmp/tmpQPUdMQ.amp".
+Parameters saved in file "/tmp/tmpQPUdMQ.amp".
+This file can be opened with `calc = Amp.load('/tmp/tmpQPUdMQ.amp')`
+
+   oo      o       o   oooooo
+  o  o     oo     oo   o     o
+ o    o    o o   o o   o     o
+o      o   o  o o  o   o     o
+oooooooo   o   o   o   oooooo
+o      o   o       o   o
+o      o   o       o   o
+o      o   o       o   o
+
+Amp: Atomistic Machine-learning Package
+Developed by Andrew Peterson, Alireza Khorshidi, and others,
+Brown University.
+PI Website: http://brown.edu/go/catalyst
+Official repository: http://bitbucket.org/andrewpeterson/amp
+Official documentation: http://amp.readthedocs.org/
+Citation:
+  Alireza Khorshidi & Andrew A. Peterson,
+  Computer Physics Communications 207: 310-324 (2016).
+  http://doi.org/10.1016/j.cpc.2016.05.010
+======================================================================
+User: mshuaibi
+Hostname: ulissigroup-Alienware-Shuaibi
+Date: 2019-03-20T09:59:52 (2019-03-20T13:59:52 UTC)
+Architecture: x86_64
+PID: 13126
+Amp version: 0.6.1
+Amp directory: /home/mshuaibi/.local/lib/python2.7/site-packages/amp
+ Last commit: unknown hash
+ Last commit date: unknown date
+Python: v2.7.15: /usr/bin/python
+ASE v3.17.0: /home/mshuaibi/.local/lib/python2.7/site-packages/ase
+NumPy v1.16.2: /home/mshuaibi/.local/lib/python2.7/site-packages/numpy
+SciPy v1.2.1: /home/mshuaibi/.local/lib/python2.7/site-packages/scipy
+ZMQ/PyZMQ v4.3.1/v18.0.1: /home/mshuaibi/.local/lib/python2.7/site-packages/zmq
+pxssh: Not available from pxssh.
+pxssh (via pexpect v4.6.0): /home/mshuaibi/.local/lib/python2.7/site-packages/pexpect/pxssh.pyc
+======================================================================
+No queuing system detected; single machine assumed.
+Parallel configuration determined from environment for <single machine>:
+  localhost: 12
+
+Amp training started. 2019-03-20T09:59:52
+
+Descriptor: Gaussian
+  (<amp.descriptor.gaussian.Gaussian object at 0x7f6d6a069cd0>)
+Model: NeuralNetwork
+  (<amp.model.neuralnetwork.NeuralNetwork object at 0x7f6d6a069d10>)
+Hashing images...
+ 400 unique images after hashing.
+...hashing completed. 0.0 min.
+
+Descriptor
+==========
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+Finding unique set of elements in training data.
+2 unique elements included: H, O
+No symmetry functions supplied; creating defaults.
+Number of symmetry functions for each element:
+  H: 20
+  O: 20
+H feature vector functions:
+ 0: G2, H, eta = 0.05
+ 1: G2, O, eta = 0.05
+ 2: G2, H, eta = 4.0
+ 3: G2, O, eta = 4.0
+ 4: G2, H, eta = 20.0
+ 5: G2, O, eta = 20.0
+ 6: G2, H, eta = 80.0
+ 7: G2, O, eta = 80.0
+ 8: G4, (H, H), eta=0.005, gamma=1.0, zeta=1.0
+ 9: G4, (H, O), eta=0.005, gamma=1.0, zeta=1.0
+ 10: G4, (O, O), eta=0.005, gamma=1.0, zeta=1.0
+ 11: G4, (H, H), eta=0.005, gamma=-1.0, zeta=1.0
+ 12: G4, (H, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 13: G4, (O, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 14: G4, (H, H), eta=0.005, gamma=1.0, zeta=4.0
+ 15: G4, (H, O), eta=0.005, gamma=1.0, zeta=4.0
+ 16: G4, (O, O), eta=0.005, gamma=1.0, zeta=4.0
+ 17: G4, (H, H), eta=0.005, gamma=-1.0, zeta=4.0
+ 18: G4, (H, O), eta=0.005, gamma=-1.0, zeta=4.0
+ 19: G4, (O, O), eta=0.005, gamma=-1.0, zeta=4.0
+O feature vector functions:
+ 0: G2, H, eta = 0.05
+ 1: G2, O, eta = 0.05
+ 2: G2, H, eta = 4.0
+ 3: G2, O, eta = 4.0
+ 4: G2, H, eta = 20.0
+ 5: G2, O, eta = 20.0
+ 6: G2, H, eta = 80.0
+ 7: G2, O, eta = 80.0
+ 8: G4, (H, H), eta=0.005, gamma=1.0, zeta=1.0
+ 9: G4, (H, O), eta=0.005, gamma=1.0, zeta=1.0
+ 10: G4, (O, O), eta=0.005, gamma=1.0, zeta=1.0
+ 11: G4, (H, H), eta=0.005, gamma=-1.0, zeta=1.0
+ 12: G4, (H, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 13: G4, (O, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 14: G4, (H, H), eta=0.005, gamma=1.0, zeta=4.0
+ 15: G4, (H, O), eta=0.005, gamma=1.0, zeta=4.0
+ 16: G4, (O, O), eta=0.005, gamma=1.0, zeta=4.0
+ 17: G4, (H, H), eta=0.005, gamma=-1.0, zeta=4.0
+ 18: G4, (H, O), eta=0.005, gamma=-1.0, zeta=4.0
+ 19: G4, (O, O), eta=0.005, gamma=-1.0, zeta=4.0
+Calculating neighborlists...
+ Data stored in file calc-neighborlists.
+ File exists with 420 total images, 400 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file calc-fingerprints.
+ File exists with 420 total images, 400 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+
+Model fitting
+=============
+Regression in atom-centered mode.
+Calculating new fingerprint range; this range is part of the model.
+Hidden-layer structure:
+  H: (5, 5)
+  O: (5, 5)
+Initializing with random weights.
+Initializing with random scalings.
+Starting parameter optimization.
+ Optimizer: <function fmin_bfgs at 0x7f6d84dc40c8>
+ Optimizer kwargs: {'gtol': 1e-15}
+ Parallel processing.
+ Established server at ulissigroup-Alienware-Shuaibi:43473.
+ Establishing worker sessions.
+ Starting local connections.
+  Session 0 (localhost): Log and stderr written to /tmp/tmphksWZF.stderr
+  Session 1 (localhost): Log and stderr written to /tmp/tmpjKxut9.stderr
+  Session 2 (localhost): Log and stderr written to /tmp/tmpCS2EXQ.stderr
+  Session 3 (localhost): Log and stderr written to /tmp/tmpeiE4aG.stderr
+  Session 4 (localhost): Log and stderr written to /tmp/tmpeMrur8.stderr
+  Session 5 (localhost): Log and stderr written to /tmp/tmp_kNLFl.stderr
+  Session 6 (localhost): Log and stderr written to /tmp/tmpudEevV.stderr
+  Session 7 (localhost): Log and stderr written to /tmp/tmpYRe8hn.stderr
+  Session 8 (localhost): Log and stderr written to /tmp/tmpes0w0j.stderr
+  Session 9 (localhost): Log and stderr written to /tmp/tmpUeBHoW.stderr
+  Session 10 (localhost): Log and stderr written to /tmp/tmpBq2PGS.stderr
+  Session 11 (localhost): Log and stderr written to /tmp/tmp8aOvAN.stderr
+ Loss function convergence criteria:
+  energy_rmse: 0.001
+  energy_maxresid: None
+  force_rmse: None
+  force_maxresid: None
+ Loss function set-up:
+  energy_coefficient: 1.0
+  force_coefficient: None
+  overfit: 0.0
+
+
+                                                          Energy
+ Step                Time   Loss (SSD)   EnergyRMSE     MaxResid
+===== =================== ============ ============ ============
+Overwriting file: "calc-initial-parameters.amp". Moving original to "/tmp/tmpR7fAfO.amp".
+Saving checkpoint data.
+Overwriting file: "calc-checkpoint.amp". Moving original to "/tmp/tmpn01qp4.amp".
+    0 2019-03-20T09:59:53   1.1082e+02 5.2635e-01 - 1.0621e+00 C
+    1 2019-03-20T09:59:53   1.7870e+02 6.6839e-01 - 1.1057e+00 C
+    2 2019-03-20T09:59:53   5.8160e+01 3.8131e-01 - 1.0612e+00 C
+    3 2019-03-20T09:59:53   1.5567e+01 1.9728e-01 - 6.9392e-01 C
+    4 2019-03-20T09:59:53   9.3446e+01 4.8334e-01 - 1.1192e+00 C
+    5 2019-03-20T09:59:53   8.8232e+00 1.4852e-01 - 5.5837e-01 C
+    6 2019-03-20T09:59:53   2.2998e+01 2.3978e-01 - 5.3263e-01 C
+    7 2019-03-20T09:59:53   6.8271e+00 1.3064e-01 - 4.6927e-01 C
+    8 2019-03-20T09:59:53   4.5586e+00 1.0675e-01 - 3.1236e-01 C
+    9 2019-03-20T09:59:53   1.3945e+01 1.8672e-01 - 4.5848e-01 C
+   10 2019-03-20T09:59:53   3.8309e+00 9.7863e-02 - 3.0631e-01 C
+   11 2019-03-20T09:59:53   3.3293e+00 9.1232e-02 - 2.7560e-01 C
+   12 2019-03-20T09:59:53   2.9892e+00 8.6447e-02 - 3.8684e-01 C
+   13 2019-03-20T09:59:53   3.2267e+00 8.9815e-02 - 3.2985e-01 C
+   14 2019-03-20T09:59:53   2.8377e+00 8.4228e-02 - 3.6531e-01 C
+   15 2019-03-20T09:59:53   2.6465e+00 8.1341e-02 - 3.3711e-01 C
+   16 2019-03-20T09:59:53   2.3036e+00 7.5888e-02 - 3.2446e-01 C
+   17 2019-03-20T09:59:53   1.8203e+00 6.7459e-02 - 2.7500e-01 C
+   18 2019-03-20T09:59:53   1.0398e+00 5.0985e-02 - 1.6853e-01 C
+   19 2019-03-20T09:59:53   5.6097e+00 1.1842e-01 - 2.3663e-01 C
+   20 2019-03-20T09:59:53   8.9054e-01 4.7184e-02 - 1.6645e-01 C
+   21 2019-03-20T09:59:53   6.8319e-01 4.1328e-02 - 1.6706e-01 C
+   22 2019-03-20T09:59:53   1.3922e+00 5.8996e-02 - 1.4866e-01 C
+   23 2019-03-20T09:59:53   6.3785e-01 3.9933e-02 - 1.5432e-01 C
+   24 2019-03-20T09:59:53   5.7151e-01 3.7799e-02 - 1.4352e-01 C
+   25 2019-03-20T09:59:53   4.9039e-01 3.5014e-02 - 1.4060e-01 C
+   26 2019-03-20T09:59:53   4.9165e-01 3.5059e-02 - 1.5445e-01 C
+   27 2019-03-20T09:59:53   4.4705e-01 3.3431e-02 - 1.4534e-01 C
+   28 2019-03-20T09:59:53   3.9818e-01 3.1551e-02 - 1.3916e-01 C
+   29 2019-03-20T09:59:53   3.5399e-01 2.9749e-02 - 1.5108e-01 C
+   30 2019-03-20T09:59:53   3.1051e-01 2.7862e-02 - 1.2612e-01 C
+   31 2019-03-20T09:59:53   3.4616e-01 2.9418e-02 - 1.2670e-01 C
+   32 2019-03-20T09:59:54   2.9217e-01 2.7026e-02 - 1.2491e-01 C
+   33 2019-03-20T09:59:54   2.6556e-01 2.5766e-02 - 1.2701e-01 C
+   34 2019-03-20T09:59:54   2.3290e-01 2.4130e-02 - 1.2811e-01 C
+   35 2019-03-20T09:59:54   2.6910e-01 2.5937e-02 - 9.7994e-02 C
+   36 2019-03-20T09:59:54   2.1877e-01 2.3387e-02 - 1.1803e-01 C
+   37 2019-03-20T09:59:54   2.0897e-01 2.2857e-02 - 1.1879e-01 C
+   38 2019-03-20T09:59:54   1.9232e-01 2.1927e-02 - 1.1398e-01 C
+   39 2019-03-20T09:59:54   1.6954e-01 2.0588e-02 - 1.0178e-01 C
+   40 2019-03-20T09:59:54   1.5435e-01 1.9644e-02 - 9.1573e-02 C
+   41 2019-03-20T09:59:54   1.3563e-01 1.8414e-02 - 1.0391e-01 C
+   42 2019-03-20T09:59:54   1.1700e-01 1.7103e-02 - 1.1426e-01 C
+   43 2019-03-20T09:59:54   1.2209e-01 1.7470e-02 - 9.9619e-02 C
+   44 2019-03-20T09:59:54   1.0874e-01 1.6488e-02 - 1.0680e-01 C
+   45 2019-03-20T09:59:54   1.0031e-01 1.5836e-02 - 1.0973e-01 C
+   46 2019-03-20T09:59:54   9.4540e-02 1.5374e-02 - 1.0635e-01 C
+   47 2019-03-20T09:59:54   8.4843e-02 1.4564e-02 - 1.0178e-01 C
+   48 2019-03-20T09:59:54   6.8677e-02 1.3103e-02 - 9.3481e-02 C
+   49 2019-03-20T09:59:54   8.3196e-02 1.4422e-02 - 8.2754e-02 C
+   50 2019-03-20T09:59:54   6.1000e-02 1.2349e-02 - 8.9528e-02 C
+   51 2019-03-20T09:59:54   5.2374e-02 1.1443e-02 - 8.2221e-02 C
+   52 2019-03-20T09:59:54   5.9766e-02 1.2224e-02 - 8.7478e-02 C
+   53 2019-03-20T09:59:54   4.8880e-02 1.1054e-02 - 8.3673e-02 C
+   54 2019-03-20T09:59:54   4.4884e-02 1.0593e-02 - 7.4117e-02 C
+   55 2019-03-20T09:59:54   5.0079e-02 1.1189e-02 - 7.4431e-02 C
+   56 2019-03-20T09:59:54   4.3430e-02 1.0420e-02 - 7.4048e-02 C
+   57 2019-03-20T09:59:54   4.1999e-02 1.0247e-02 - 7.4747e-02 C
+   58 2019-03-20T09:59:54   3.9648e-02 9.9560e-03 - 7.2045e-02 C
+   59 2019-03-20T09:59:54   3.6355e-02 9.5335e-03 - 6.7172e-02 C
+   60 2019-03-20T09:59:54   3.4328e-02 9.2638e-03 - 5.6624e-02 C
+   61 2019-03-20T09:59:54   3.1700e-02 8.9023e-03 - 6.0902e-02 C
+   62 2019-03-20T09:59:54   2.9338e-02 8.5642e-03 - 5.5416e-02 C
+   63 2019-03-20T09:59:54   2.8919e-02 8.5028e-03 - 5.9209e-02 C
+   64 2019-03-20T09:59:54   2.7956e-02 8.3601e-03 - 5.7239e-02 C
+   65 2019-03-20T09:59:54   2.6321e-02 8.1119e-03 - 5.7130e-02 C
+   66 2019-03-20T09:59:54   2.5161e-02 7.9312e-03 - 6.0228e-02 C
+   67 2019-03-20T09:59:54   2.3240e-02 7.6224e-03 - 5.9708e-02 C
+   68 2019-03-20T09:59:54   2.0403e-02 7.1419e-03 - 5.2668e-02 C
+   69 2019-03-20T09:59:54   2.1440e-02 7.3212e-03 - 4.4232e-02 C
+   70 2019-03-20T09:59:54   1.8912e-02 6.8760e-03 - 4.8550e-02 C
+   71 2019-03-20T09:59:54   1.8087e-02 6.7243e-03 - 4.2774e-02 C
+   72 2019-03-20T09:59:54   1.7135e-02 6.5451e-03 - 4.1623e-02 C
+   73 2019-03-20T09:59:54   1.6813e-02 6.4833e-03 - 3.9405e-02 C
+   74 2019-03-20T09:59:54   1.6291e-02 6.3819e-03 - 3.8820e-02 C
+   75 2019-03-20T09:59:54   1.5483e-02 6.2214e-03 - 4.0138e-02 C
+   76 2019-03-20T09:59:54   1.4759e-02 6.0743e-03 - 3.9013e-02 C
+   77 2019-03-20T09:59:54   1.3963e-02 5.9083e-03 - 3.9957e-02 C
+   78 2019-03-20T09:59:54   1.4112e-02 5.9397e-03 - 3.6685e-02 C
+   79 2019-03-20T09:59:54   1.3655e-02 5.8428e-03 - 3.8485e-02 C
+   80 2019-03-20T09:59:54   1.3550e-02 5.8201e-03 - 4.0909e-02 C
+   81 2019-03-20T09:59:54   1.3367e-02 5.7808e-03 - 4.0321e-02 C
+   82 2019-03-20T09:59:55   1.3077e-02 5.7178e-03 - 3.9483e-02 C
+   83 2019-03-20T09:59:55   1.2704e-02 5.6356e-03 - 3.7068e-02 C
+   84 2019-03-20T09:59:55   1.2775e-02 5.6513e-03 - 3.7394e-02 C
+   85 2019-03-20T09:59:55   1.2512e-02 5.5928e-03 - 3.7137e-02 C
+   86 2019-03-20T09:59:55   1.2254e-02 5.5348e-03 - 3.7225e-02 C
+   87 2019-03-20T09:59:55   1.1984e-02 5.4735e-03 - 3.7659e-02 C
+   88 2019-03-20T09:59:55   1.1601e-02 5.3853e-03 - 3.6043e-02 C
+   89 2019-03-20T09:59:55   1.1033e-02 5.2519e-03 - 3.3740e-02 C
+   90 2019-03-20T09:59:55   1.0567e-02 5.1398e-03 - 3.1524e-02 C
+   91 2019-03-20T09:59:55   1.0301e-02 5.0747e-03 - 3.0097e-02 C
+   92 2019-03-20T09:59:55   1.0054e-02 5.0134e-03 - 3.2386e-02 C
+   93 2019-03-20T09:59:55   9.7872e-03 4.9465e-03 - 3.5498e-02 C
+   94 2019-03-20T09:59:55   9.6538e-03 4.9127e-03 - 3.5210e-02 C
+   95 2019-03-20T09:59:55   9.4411e-03 4.8583e-03 - 3.4627e-02 C
+   96 2019-03-20T09:59:55   9.1510e-03 4.7830e-03 - 3.4463e-02 C
+   97 2019-03-20T09:59:55   9.0961e-03 4.7687e-03 - 3.5853e-02 C
+   98 2019-03-20T09:59:55   9.0040e-03 4.7445e-03 - 3.5144e-02 C
+   99 2019-03-20T09:59:55   8.8506e-03 4.7039e-03 - 3.4519e-02 C
+Saving checkpoint data.
+Overwriting file: "calc-checkpoint.amp". Moving original to "/tmp/tmplJy5oJ.amp".
+  100 2019-03-20T09:59:55   8.7034e-03 4.6646e-03 - 3.3812e-02 C
+  101 2019-03-20T09:59:55   8.5576e-03 4.6254e-03 - 3.2961e-02 C
+  102 2019-03-20T09:59:55   8.3883e-03 4.5794e-03 - 3.4049e-02 C
+  103 2019-03-20T09:59:55   8.1555e-03 4.5154e-03 - 3.1238e-02 C
+  104 2019-03-20T09:59:55   7.8537e-03 4.4311e-03 - 2.8224e-02 C
+  105 2019-03-20T09:59:55   7.5411e-03 4.3420e-03 - 2.4611e-02 C
+  106 2019-03-20T09:59:55   7.4594e-03 4.3184e-03 - 2.3507e-02 C
+  107 2019-03-20T09:59:55   7.3192e-03 4.2776e-03 - 2.3701e-02 C
+  108 2019-03-20T09:59:55   7.1063e-03 4.2150e-03 - 2.4314e-02 C
+  109 2019-03-20T09:59:55   6.8624e-03 4.1420e-03 - 2.4504e-02 C
+  110 2019-03-20T09:59:55   6.6679e-03 4.0828e-03 - 2.3697e-02 C
+  111 2019-03-20T09:59:55   6.4000e-03 4.0000e-03 - 2.3972e-02 C
+  112 2019-03-20T09:59:55   6.1455e-03 3.9197e-03 - 2.3836e-02 C
+  113 2019-03-20T09:59:55   5.9945e-03 3.8712e-03 - 2.1640e-02 C
+  114 2019-03-20T09:59:55   5.7870e-03 3.8036e-03 - 2.0054e-02 C
+  115 2019-03-20T09:59:55   5.5626e-03 3.7292e-03 - 2.0323e-02 C
+  116 2019-03-20T09:59:55   5.4138e-03 3.6789e-03 - 2.0965e-02 C
+  117 2019-03-20T09:59:55   5.3590e-03 3.6603e-03 - 2.1452e-02 C
+  118 2019-03-20T09:59:55   5.3142e-03 3.6449e-03 - 2.1076e-02 C
+  119 2019-03-20T09:59:55   5.2134e-03 3.6102e-03 - 2.1145e-02 C
+  120 2019-03-20T09:59:55   5.2116e-03 3.6096e-03 - 2.1074e-02 C
+  121 2019-03-20T09:59:55   5.1573e-03 3.5907e-03 - 2.1103e-02 C
+  122 2019-03-20T09:59:55   5.0726e-03 3.5611e-03 - 2.0725e-02 C
+  123 2019-03-20T09:59:55   4.9703e-03 3.5250e-03 - 2.0328e-02 C
+  124 2019-03-20T09:59:55   4.8105e-03 3.4679e-03 - 1.9812e-02 C
+  125 2019-03-20T09:59:56   4.6199e-03 3.3985e-03 - 2.0609e-02 C
+  126 2019-03-20T09:59:56   4.5381e-03 3.3683e-03 - 2.1113e-02 C
+  127 2019-03-20T09:59:56   4.4127e-03 3.3214e-03 - 2.0413e-02 C
+  128 2019-03-20T09:59:56   4.4605e-03 3.3394e-03 - 2.0848e-02 C
+  129 2019-03-20T09:59:56   4.3493e-03 3.2975e-03 - 2.0542e-02 C
+  130 2019-03-20T09:59:56   4.2783e-03 3.2705e-03 - 1.9530e-02 C
+  131 2019-03-20T09:59:56   4.2013e-03 3.2409e-03 - 2.0017e-02 C
+  132 2019-03-20T09:59:56   4.0832e-03 3.1950e-03 - 1.9927e-02 C
+  133 2019-03-20T09:59:56   3.9619e-03 3.1472e-03 - 1.9951e-02 C
+  134 2019-03-20T09:59:56   3.9009e-03 3.1229e-03 - 2.2778e-02 C
+  135 2019-03-20T09:59:56   3.8129e-03 3.0874e-03 - 2.2089e-02 C
+  136 2019-03-20T09:59:56   3.7030e-03 3.0426e-03 - 2.1461e-02 C
+  137 2019-03-20T09:59:56   3.5525e-03 2.9801e-03 - 2.0351e-02 C
+  138 2019-03-20T09:59:56   3.3938e-03 2.9128e-03 - 2.0229e-02 C
+  139 2019-03-20T09:59:56   3.3001e-03 2.8723e-03 - 1.9424e-02 C
+  140 2019-03-20T09:59:56   3.1657e-03 2.8132e-03 - 1.9593e-02 C
+  141 2019-03-20T09:59:56   3.0410e-03 2.7573e-03 - 1.9934e-02 C
+  142 2019-03-20T09:59:56   2.9123e-03 2.6983e-03 - 2.0747e-02 C
+  143 2019-03-20T09:59:56   2.7647e-03 2.6290e-03 - 1.9569e-02 C
+  144 2019-03-20T09:59:56   2.7877e-03 2.6399e-03 - 1.8343e-02 C
+  145 2019-03-20T09:59:56   2.6790e-03 2.5879e-03 - 1.9035e-02 C
+  146 2019-03-20T09:59:56   2.6092e-03 2.5540e-03 - 1.8594e-02 C
+  147 2019-03-20T09:59:56   2.5621e-03 2.5309e-03 - 1.9386e-02 C
+  148 2019-03-20T09:59:56   2.5456e-03 2.5227e-03 - 1.8720e-02 C
+  149 2019-03-20T09:59:56   2.5180e-03 2.5090e-03 - 1.8609e-02 C
+  150 2019-03-20T09:59:56   2.4764e-03 2.4882e-03 - 1.8340e-02 C
+  151 2019-03-20T09:59:56   2.4639e-03 2.4819e-03 - 1.8758e-02 C
+  152 2019-03-20T09:59:56   2.4424e-03 2.4710e-03 - 1.8600e-02 C
+  153 2019-03-20T09:59:56   2.4104e-03 2.4548e-03 - 1.8351e-02 C
+  154 2019-03-20T09:59:56   2.3867e-03 2.4427e-03 - 1.7825e-02 C
+  155 2019-03-20T09:59:56   2.3695e-03 2.4339e-03 - 1.8328e-02 C
+  156 2019-03-20T09:59:56   2.3400e-03 2.4187e-03 - 1.8225e-02 C
+  157 2019-03-20T09:59:56   2.2910e-03 2.3932e-03 - 1.8173e-02 C
+  158 2019-03-20T09:59:56   2.2357e-03 2.3642e-03 - 1.8176e-02 C
+  159 2019-03-20T09:59:56   2.2030e-03 2.3468e-03 - 1.8517e-02 C
+  160 2019-03-20T09:59:56   2.1748e-03 2.3317e-03 - 1.8447e-02 C
+  161 2019-03-20T09:59:56   2.1708e-03 2.3296e-03 - 1.9074e-02 C
+  162 2019-03-20T09:59:56   2.1592e-03 2.3234e-03 - 1.8770e-02 C
+  163 2019-03-20T09:59:56   2.1423e-03 2.3143e-03 - 1.8786e-02 C
+  164 2019-03-20T09:59:56   2.1233e-03 2.3040e-03 - 1.8334e-02 C
+  165 2019-03-20T09:59:56   2.0997e-03 2.2911e-03 - 1.8547e-02 C
+  166 2019-03-20T09:59:56   2.0692e-03 2.2744e-03 - 1.8572e-02 C
+  167 2019-03-20T09:59:56   2.0528e-03 2.2654e-03 - 1.8438e-02 C
+  168 2019-03-20T09:59:57   2.0348e-03 2.2554e-03 - 1.8370e-02 C
+  169 2019-03-20T09:59:57   2.0236e-03 2.2492e-03 - 1.8584e-02 C
+  170 2019-03-20T09:59:57   2.0076e-03 2.2403e-03 - 1.8271e-02 C
+  171 2019-03-20T09:59:57   1.9876e-03 2.2291e-03 - 1.8496e-02 C
+  172 2019-03-20T09:59:57   1.9635e-03 2.2156e-03 - 1.7921e-02 C
+  173 2019-03-20T09:59:57   1.9407e-03 2.2027e-03 - 1.7687e-02 C
+  174 2019-03-20T09:59:57   1.9183e-03 2.1899e-03 - 1.7799e-02 C
+  175 2019-03-20T09:59:57   1.9006e-03 2.1798e-03 - 1.7509e-02 C
+  176 2019-03-20T09:59:57   1.8812e-03 2.1686e-03 - 1.7597e-02 C
+  177 2019-03-20T09:59:57   1.8618e-03 2.1574e-03 - 1.7491e-02 C
+  178 2019-03-20T09:59:57   1.8437e-03 2.1469e-03 - 1.7353e-02 C
+  179 2019-03-20T09:59:57   1.8241e-03 2.1355e-03 - 1.7152e-02 C
+  180 2019-03-20T09:59:57   1.8184e-03 2.1322e-03 - 1.6165e-02 C
+  181 2019-03-20T09:59:57   1.8117e-03 2.1282e-03 - 1.6669e-02 C
+  182 2019-03-20T09:59:57   1.7977e-03 2.1200e-03 - 1.6477e-02 C
+  183 2019-03-20T09:59:57   1.7876e-03 2.1140e-03 - 1.6237e-02 C
+  184 2019-03-20T09:59:57   1.7712e-03 2.1043e-03 - 1.6075e-02 C
+  185 2019-03-20T09:59:57   1.7460e-03 2.0893e-03 - 1.5862e-02 C
+  186 2019-03-20T09:59:57   1.7156e-03 2.0710e-03 - 1.5556e-02 C
+  187 2019-03-20T09:59:57   1.6878e-03 2.0542e-03 - 1.5154e-02 C
+  188 2019-03-20T09:59:57   1.6562e-03 2.0348e-03 - 1.4716e-02 C
+  189 2019-03-20T09:59:57   1.6247e-03 2.0154e-03 - 1.5329e-02 C
+  190 2019-03-20T09:59:57   1.5809e-03 1.9880e-03 - 1.4369e-02 C
+  191 2019-03-20T09:59:57   1.5383e-03 1.9610e-03 - 1.4093e-02 C
+  192 2019-03-20T09:59:57   1.5440e-03 1.9647e-03 - 1.3593e-02 C
+  193 2019-03-20T09:59:57   1.5269e-03 1.9538e-03 - 1.3856e-02 C
+  194 2019-03-20T09:59:57   1.5170e-03 1.9474e-03 - 1.3547e-02 C
+  195 2019-03-20T09:59:57   1.5054e-03 1.9400e-03 - 1.3800e-02 C
+  196 2019-03-20T09:59:57   1.4876e-03 1.9285e-03 - 1.3646e-02 C
+  197 2019-03-20T09:59:57   1.4613e-03 1.9113e-03 - 1.3693e-02 C
+  198 2019-03-20T09:59:57   1.4349e-03 1.8940e-03 - 1.3778e-02 C
+  199 2019-03-20T09:59:57   1.4091e-03 1.8769e-03 - 1.4103e-02 C
+Saving checkpoint data.
+Overwriting file: "calc-checkpoint.amp". Moving original to "/tmp/tmpiSXQjo.amp".
+  200 2019-03-20T09:59:57   1.3937e-03 1.8666e-03 - 1.3512e-02 C
+  201 2019-03-20T09:59:57   1.3749e-03 1.8540e-03 - 1.3422e-02 C
+  202 2019-03-20T09:59:57   1.3649e-03 1.8472e-03 - 1.2959e-02 C
+  203 2019-03-20T09:59:57   1.3529e-03 1.8391e-03 - 1.2610e-02 C
+  204 2019-03-20T09:59:57   1.3429e-03 1.8323e-03 - 1.2803e-02 C
+  205 2019-03-20T09:59:57   1.3313e-03 1.8243e-03 - 1.2535e-02 C
+  206 2019-03-20T09:59:57   1.3150e-03 1.8131e-03 - 1.2370e-02 C
+  207 2019-03-20T09:59:57   1.2938e-03 1.7984e-03 - 1.2675e-02 C
+  208 2019-03-20T09:59:57   1.2685e-03 1.7808e-03 - 1.2278e-02 C
+  209 2019-03-20T09:59:57   1.2361e-03 1.7579e-03 - 1.2377e-02 C
+  210 2019-03-20T09:59:57   1.2001e-03 1.7321e-03 - 1.2285e-02 C
+  211 2019-03-20T09:59:57   1.1624e-03 1.7047e-03 - 1.2585e-02 C
+  212 2019-03-20T09:59:57   1.1434e-03 1.6907e-03 - 1.1707e-02 C
+  213 2019-03-20T09:59:57   1.1192e-03 1.6727e-03 - 1.1971e-02 C
+  214 2019-03-20T09:59:57   1.0963e-03 1.6555e-03 - 1.1814e-02 C
+  215 2019-03-20T09:59:58   1.0818e-03 1.6446e-03 - 1.1657e-02 C
+  216 2019-03-20T09:59:58   1.0601e-03 1.6280e-03 - 1.1606e-02 C
+  217 2019-03-20T09:59:58   1.0351e-03 1.6087e-03 - 1.1302e-02 C
+  218 2019-03-20T09:59:58   1.0172e-03 1.5947e-03 - 1.1239e-02 C
+  219 2019-03-20T09:59:58   1.0012e-03 1.5821e-03 - 1.1443e-02 C
+  220 2019-03-20T09:59:58   9.8995e-04 1.5732e-03 - 1.0601e-02 C
+  221 2019-03-20T09:59:58   9.8219e-04 1.5670e-03 - 1.0480e-02 C
+  222 2019-03-20T09:59:58   9.7176e-04 1.5587e-03 - 1.0599e-02 C
+  223 2019-03-20T09:59:58   9.5664e-04 1.5465e-03 - 1.0599e-02 C
+  224 2019-03-20T09:59:58   9.3703e-04 1.5305e-03 - 1.0481e-02 C
+  225 2019-03-20T09:59:58   9.1417e-04 1.5118e-03 - 1.0095e-02 C
+  226 2019-03-20T09:59:58   9.0309e-04 1.5026e-03 - 9.8370e-03 C
+  227 2019-03-20T09:59:58   8.9486e-04 1.4957e-03 - 9.7389e-03 C
+  228 2019-03-20T09:59:58   8.8845e-04 1.4903e-03 - 9.9788e-03 C
+  229 2019-03-20T09:59:58   8.8056e-04 1.4837e-03 - 9.6888e-03 C
+  230 2019-03-20T09:59:58   8.7359e-04 1.4778e-03 - 9.5310e-03 C
+  231 2019-03-20T09:59:58   8.6879e-04 1.4738e-03 - 9.3588e-03 C
+  232 2019-03-20T09:59:58   8.6491e-04 1.4705e-03 - 9.3647e-03 C
+  233 2019-03-20T09:59:58   8.5853e-04 1.4650e-03 - 9.4208e-03 C
+  234 2019-03-20T09:59:58   8.4902e-04 1.4569e-03 - 9.5211e-03 C
+  235 2019-03-20T09:59:58   8.4079e-04 1.4498e-03 - 9.4830e-03 C
+  236 2019-03-20T09:59:58   8.3462e-04 1.4445e-03 - 9.5109e-03 C
+  237 2019-03-20T09:59:58   8.2676e-04 1.4377e-03 - 9.3115e-03 C
+  238 2019-03-20T09:59:58   8.1935e-04 1.4312e-03 - 9.1803e-03 C
+  239 2019-03-20T09:59:58   8.1210e-04 1.4249e-03 - 9.1699e-03 C
+  240 2019-03-20T09:59:58   8.0439e-04 1.4181e-03 - 9.0484e-03 C
+  241 2019-03-20T09:59:58   8.0002e-04 1.4142e-03 - 9.2062e-03 C
+  242 2019-03-20T09:59:58   7.9490e-04 1.4097e-03 - 9.2429e-03 C
+  243 2019-03-20T09:59:58   7.8961e-04 1.4050e-03 - 9.2485e-03 C
+  244 2019-03-20T09:59:58   7.8151e-04 1.3978e-03 - 9.2505e-03 C
+  245 2019-03-20T09:59:58   7.7039e-04 1.3878e-03 - 9.2798e-03 C
+  246 2019-03-20T09:59:58   7.5924e-04 1.3777e-03 - 9.2156e-03 C
+  247 2019-03-20T09:59:58   7.4973e-04 1.3691e-03 - 9.0485e-03 C
+  248 2019-03-20T09:59:58   7.4432e-04 1.3641e-03 - 9.2725e-03 C
+  249 2019-03-20T09:59:58   7.3982e-04 1.3600e-03 - 8.9345e-03 C
+  250 2019-03-20T09:59:58   7.3483e-04 1.3554e-03 - 8.8687e-03 C
+  251 2019-03-20T09:59:58   7.2649e-04 1.3477e-03 - 8.7851e-03 C
+  252 2019-03-20T09:59:58   7.1372e-04 1.3358e-03 - 8.7501e-03 C
+  253 2019-03-20T09:59:58   7.0344e-04 1.3261e-03 - 8.6218e-03 C
+  254 2019-03-20T09:59:58   6.9678e-04 1.3198e-03 - 8.5677e-03 C
+  255 2019-03-20T09:59:58   6.8710e-04 1.3106e-03 - 8.2641e-03 C
+  256 2019-03-20T09:59:58   6.7538e-04 1.2994e-03 - 8.0106e-03 C
+  257 2019-03-20T09:59:58   6.6680e-04 1.2911e-03 - 7.7165e-03 C
+  258 2019-03-20T09:59:58   6.5785e-04 1.2824e-03 - 7.5402e-03 C
+  259 2019-03-20T09:59:58   6.4884e-04 1.2736e-03 - 7.4537e-03 C
+  260 2019-03-20T09:59:58   6.4227e-04 1.2672e-03 - 7.7209e-03 C
+  261 2019-03-20T09:59:58   6.3570e-04 1.2607e-03 - 7.7784e-03 C
+  262 2019-03-20T09:59:59   6.3148e-04 1.2565e-03 - 7.4495e-03 C
+  263 2019-03-20T09:59:59   6.2730e-04 1.2523e-03 - 7.5455e-03 C
+  264 2019-03-20T09:59:59   6.2235e-04 1.2473e-03 - 7.5627e-03 C
+  265 2019-03-20T09:59:59   6.1887e-04 1.2439e-03 - 7.2751e-03 C
+  266 2019-03-20T09:59:59   6.1626e-04 1.2412e-03 - 7.1617e-03 C
+  267 2019-03-20T09:59:59   6.1240e-04 1.2373e-03 - 7.0155e-03 C
+  268 2019-03-20T09:59:59   6.0628e-04 1.2311e-03 - 6.8676e-03 C
+  269 2019-03-20T09:59:59   5.9759e-04 1.2223e-03 - 6.6563e-03 C
+  270 2019-03-20T09:59:59   5.9256e-04 1.2171e-03 - 6.3823e-03 C
+  271 2019-03-20T09:59:59   5.8471e-04 1.2090e-03 - 6.2258e-03 C
+  272 2019-03-20T09:59:59   5.7281e-04 1.1967e-03 - 5.8261e-03 C
+  273 2019-03-20T09:59:59   5.5593e-04 1.1789e-03 - 5.4317e-03 C
+  274 2019-03-20T09:59:59   5.4676e-04 1.1691e-03 - 5.2372e-03 C
+  275 2019-03-20T09:59:59   5.3629e-04 1.1579e-03 - 5.3288e-03 C
+  276 2019-03-20T09:59:59   5.3164e-04 1.1529e-03 - 5.1458e-03 C
+  277 2019-03-20T09:59:59   5.2751e-04 1.1484e-03 - 4.8682e-03 C
+  278 2019-03-20T09:59:59   5.2264e-04 1.1431e-03 - 4.9369e-03 C
+  279 2019-03-20T09:59:59   5.1637e-04 1.1362e-03 - 5.0200e-03 C
+  280 2019-03-20T09:59:59   5.0851e-04 1.1275e-03 - 4.8353e-03 C
+  281 2019-03-20T09:59:59   5.0334e-04 1.1218e-03 - 4.6726e-03 C
+  282 2019-03-20T09:59:59   4.9745e-04 1.1152e-03 - 4.8261e-03 C
+  283 2019-03-20T09:59:59   4.9402e-04 1.1113e-03 - 4.9301e-03 C
+  284 2019-03-20T09:59:59   4.9077e-04 1.1077e-03 - 4.9148e-03 C
+  285 2019-03-20T09:59:59   4.8791e-04 1.1044e-03 - 5.1093e-03 C
+  286 2019-03-20T09:59:59   4.8483e-04 1.1009e-03 - 4.9963e-03 C
+  287 2019-03-20T09:59:59   4.8036e-04 1.0959e-03 - 4.7867e-03 C
+  288 2019-03-20T09:59:59   4.7397e-04 1.0885e-03 - 4.6080e-03 C
+  289 2019-03-20T09:59:59   4.6628e-04 1.0797e-03 - 4.6250e-03 C
+  290 2019-03-20T09:59:59   4.5888e-04 1.0711e-03 - 4.6076e-03 C
+  291 2019-03-20T09:59:59   4.5159e-04 1.0625e-03 - 4.5855e-03 C
+  292 2019-03-20T09:59:59   4.4445e-04 1.0541e-03 - 4.3647e-03 C
+  293 2019-03-20T09:59:59   4.3801e-04 1.0464e-03 - 4.4951e-03 C
+  294 2019-03-20T09:59:59   4.3371e-04 1.0413e-03 - 4.3742e-03 C
+  295 2019-03-20T09:59:59   4.2956e-04 1.0363e-03 - 4.1811e-03 C
+  296 2019-03-20T09:59:59   4.2668e-04 1.0328e-03 - 4.1969e-03 C
+  297 2019-03-20T09:59:59   4.2481e-04 1.0305e-03 - 4.2570e-03 C
+  298 2019-03-20T09:59:59   4.2331e-04 1.0287e-03 - 4.1463e-03 C
+  299 2019-03-20T09:59:59   4.2123e-04 1.0262e-03 - 4.0858e-03 C
+Saving checkpoint data.
+Overwriting file: "calc-checkpoint.amp". Moving original to "/tmp/tmpNAOXet.amp".
+  300 2019-03-20T09:59:59   4.1841e-04 1.0228e-03 - 4.0613e-03 C
+  301 2019-03-20T09:59:59   4.1421e-04 1.0176e-03 - 3.9369e-03 C
+  302 2019-03-20T10:00:00   4.0822e-04 1.0102e-03 - 3.9158e-03 C
+  303 2019-03-20T10:00:00   4.0278e-04 1.0035e-03 - 3.9499e-03 C
+  304 2019-03-20T10:00:00   3.9818e-04 9.9773e-04 C 4.0825e-03 C
+...optimization successful. 0.1 min.
+Amp successfully trained. Saving current parameters.
+File "calc.amp" exists. Instead saving to "/tmp/tmptXlSj_.amp".
+Parameters saved in file "/tmp/tmptXlSj_.amp".
+This file can be opened with `calc = Amp.load('/tmp/tmptXlSj_.amp')`

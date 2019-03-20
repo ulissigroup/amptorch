@@ -21,15 +21,16 @@ log_epoch=Logger('benchmark_results/epoch-log.txt')
 log(time.asctime())
 
 device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# filename='benchmark_dataset/defect-training100.extxyz'
 filename='benchmark_dataset/water.extxyz'
 
 log('-'*50)
 log('Filename: %s'%filename)
 
-training_data=AtomsDataset(filename,descriptor=Gaussian())
+training=AtomsDataset(filename,descriptor=Gaussian())
+training_data=[training[0],training[1],training[2]]
 unique_atoms,_,_,_=data_factorization(training_data)
 n_unique_atoms=len(unique_atoms)
-
 
 batch_size=400
 log('Batch Size = %d'%batch_size)
@@ -45,7 +46,7 @@ if validation_frac!=0:
 else:
     dataset_size=len(training_data)
     log('Training Data = %d'%dataset_size)
-    atoms_dataloader=DataLoader(training_data,batch_size,collate_fn=collate_amp,shuffle=True,pin_memory=True)
+    atoms_dataloader=DataLoader(training_data,batch_size,collate_fn=collate_amp,shuffle=True)
 
 #Check SD of targets
 # for i in atoms_dataloader:
@@ -61,7 +62,7 @@ log('Loss Function: %s'%criterion)
 
 #Define the optimizer and implement any optimization settings
 # optimizer_ft=optim.SGD(model.parameters(),lr=.01,momentum=0.9)
-optimizer_ft=optim.LBFGS(model.parameters(),.8)
+optimizer_ft=optim.LBFGS(model.parameters(),.5)
 
 log('Optimizer Info:\n %s'%optimizer_ft)
 
