@@ -142,3 +142,23 @@ def collate_amp(training_data):
     # return element_specific_fingerprints
     return model_input_data
 
+# data=AtomsDataset('benchmark_dataset/water.extxyz',Gaussian())
+# sample=[data[5],data[0]]
+# sample=[data[0],data[5]]
+# print data_factorization(sample)
+# print('')
+# k=collate_amp(sample)
+# sample=k[0]
+# k=torch.zeros(2)
+# k[0]=k[0]+1
+# print k
+# sys.exit()
+# print len(sample)
+# sys.exit()
+# unique_atoms=['O','H']
+# for index,element in enumerate(unique_atoms):
+    # inputs=sample[element][0]
+    # contribution=sample[element][1]
+    # sys.exit()
+# print data[0]
+# print collate_amp(sample)

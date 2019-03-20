@@ -9,6 +9,7 @@ import copy
 from collections import OrderedDict
 import time
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 from amp.utilities import Logger
 
 class Dense(nn.Linear):
@@ -31,8 +32,8 @@ class Dense(nn.Linear):
         super(Dense,self).__init__(input_size,output_size,bias)
 
     def reset_parameters(self):
-        # init.constant_(self.weight,.5)
-        # init.constant_(self.bias,0)
+        # init.constant_(self.weight,.05)
+        # init.constant_(self.bias,-1)
 
         super(Dense,self).reset_parameters()
         # init.constant_(self.bias,0)
@@ -84,33 +85,30 @@ class FullNN(nn.Module):
     structure
 
     '''
-    def __init__(self,unique_atoms):
+    def __init__(self,unique_atoms,batch_size):
         log=Logger('benchmark_results/results-log.txt')
 
         super(FullNN,self).__init__()
         self.unique_atoms=unique_atoms
+        self.batch_size=batch_size
         n_unique_atoms=len(unique_atoms)
         elementwise_models=nn.ModuleList()
         for n_models in range(n_unique_atoms):
             elementwise_models.append(MLP())
         self.elementwise_models=elementwise_models
         log('Activation Function = %s'%elementwise_models[0].activation)
-        # self.model_device=next(elementwise_models.parameters()).device
 
     def forward(self,data):
-        energy_pred=OrderedDict()
+        energy_pred=torch.zeros(self.batch_size,1)
+        energy_pred.require_grad=True
+        energy_pred=energy_pred.to(device)
         for index,element in enumerate(self.unique_atoms):
             model_inputs=data[element][0]
             contribution_index=data[element][1]
             atomwise_outputs=self.elementwise_models[index].forward(model_inputs)
-            for index,atom_output in enumerate(atomwise_outputs):
-                if contribution_index[index] not in energy_pred.keys():
-                    energy_pred[contribution_index[index]]=atom_output
-                else:
-                    energy_pred[contribution_index[index]]+=atom_output
-        output=energy_pred.values()
-        output=torch.stack(output)
-        return output
+            for cindex,atom_output in enumerate(atomwise_outputs):
+                energy_pred[contribution_index[cindex]]+=atom_output
+        return energy_pred
 
 def feature_scaling(data):
     data_max=max(data)
@@ -119,6 +117,34 @@ def feature_scaling(data):
     for index,value in enumerate(data):
         scale.append((value-data_min)/(data_max-data_min))
     return torch.stack(scale)
+
+def plot_grad_flow(named_parameters):
+    '''Plots the gradients flowing through different layers in the net during training.
+    Can be used for checking for possible gradient vanishing / exploding problems.
+
+    Usage: Plug this function in Trainer class after loss.backwards() as
+    "plot_grad_flow(self.model.named_parameters())" to visualize the gradient flow'''
+    ave_grads = []
+    max_grads= []
+    layers = []
+    for n, p in named_parameters:
+        if(p.requires_grad) and ("bias" not in n):
+            layers.append(n)
+            ave_grads.append(p.grad.abs().mean())
+            max_grads.append(p.grad.abs().max())
+    plt.bar(np.arange(len(max_grads)), max_grads, alpha=0.1, lw=1, color="c")
+    plt.bar(np.arange(len(max_grads)), ave_grads, alpha=0.1, lw=1, color="b")
+    plt.hlines(0, 0, len(ave_grads)+1, lw=2, color="k" )
+    plt.xticks(range(0,len(ave_grads), 1), layers, rotation="vertical")
+    plt.xlim(left=0, right=len(ave_grads))
+    plt.ylim(bottom = -0.001, top=0.02) # zoom in on the lower gradient regions
+    plt.xlabel("Layers")
+    plt.ylabel("average gradient")
+    plt.title("Gradient flow")
+    plt.grid(True)
+    plt.legend([Line2D([0], [0], color="c", lw=4),
+                Line2D([0], [0], color="b",
+                    lw=4),Line2D([0],[0],color="k",lw=4)],['max-gradient','mean-gradient','zero-gradient'])
 
 def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_dataloader,num_epochs):
     log=Logger('benchmark_results/results-log.txt')
@@ -142,8 +168,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
         log_epoch('-'*30)
 
         MSE=0.0
-        # print list(model.parameters())
-        # print('')
+
         for data_sample in atoms_dataloader:
             input_data=data_sample[0]
             target=data_sample[1]
@@ -158,15 +183,16 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
             def closure():
                 #zero the parameter gradients
                 optimizer.zero_grad()
-            #forward
+                #forward
                 output=model(input_data)
                 loss=criterion(output,target)
                 #backward + optimize only if in training phase
                 loss.backward()
+                # plot_grad_flow(model.named_parameters())
                 return loss
 
-            loss=optimizer.step(closure)
-            MSE+=loss.item()*batch_size
+        loss=optimizer.step(closure)
+        MSE+=loss.item()*batch_size
 
         MSE=MSE/dataset_size
         RMSE=np.sqrt(MSE)
