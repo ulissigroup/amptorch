@@ -27,9 +27,10 @@ filename='benchmark_dataset/water.extxyz'
 log('-'*50)
 log('Filename: %s'%filename)
 
-training=AtomsDataset(filename,descriptor=Gaussian())
-training_data=[training[0],training[1],training[2]]
-unique_atoms,_,_,_=data_factorization(training_data)
+training_data=AtomsDataset(filename,descriptor=Gaussian())
+# training_data=[training[0],training[1],training[2]]
+# training_data=[training[0]]
+unique_atoms,_,_=data_factorization(training_data)
 n_unique_atoms=len(unique_atoms)
 
 batch_size=400
@@ -46,13 +47,13 @@ if validation_frac!=0:
 else:
     dataset_size=len(training_data)
     log('Training Data = %d'%dataset_size)
-    atoms_dataloader=DataLoader(training_data,batch_size,collate_fn=collate_amp,shuffle=True)
+    atoms_dataloader=DataLoader(training_data,batch_size,collate_fn=collate_amp,shuffle=False)
 
 #Check SD of targets
 # for i in atoms_dataloader:
     # print i[1].std(dim=0)
 
-model=FullNN(unique_atoms)
+model=FullNN(unique_atoms,batch_size)
 # if torch.cuda.device_count()>1:
     # print('Utilizing',torch.cuda.device_count(),'GPUs!')
     # model=nn.DataParallel(model)
@@ -62,7 +63,7 @@ log('Loss Function: %s'%criterion)
 
 #Define the optimizer and implement any optimization settings
 # optimizer_ft=optim.SGD(model.parameters(),lr=.01,momentum=0.9)
-optimizer_ft=optim.LBFGS(model.parameters(),.5)
+optimizer_ft=optim.LBFGS(model.parameters(),.8)
 
 log('Optimizer Info:\n %s'%optimizer_ft)
 
