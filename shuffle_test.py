@@ -19,7 +19,7 @@ from ase.calculators.emt import EMT
 filename='benchmark_dataset/water.extxyz'
 training_data=AtomsDataset(filename,descriptor=Gaussian())
 sample_batch=[training_data[0],training_data[1],training_data[2],training_data[3],training_data[4]]
-atoms_loader=DataLoader(sample_batch,batch_size=2,collate_fn=collate_amp,shuffle=False)
+atoms_loader=DataLoader(sample_batch,batch_size=1,collate_fn=collate_amp,shuffle=True)
 unique_atoms,_,_,_=data_factorization(training_data)
 
 '''A test to ensure the shuffling step in the model is working properly.'''
