@@ -63,7 +63,7 @@ log('Loss Function: %s'%criterion)
 
 #Define the optimizer and implement any optimization settings
 # optimizer_ft=optim.SGD(model.parameters(),lr=.01,momentum=0.9)
-optimizer_ft=optim.LBFGS(model.parameters(),.8)
+optimizer_ft=optim.LBFGS(model.parameters(),.5)
 
 log('Optimizer Info:\n %s'%optimizer_ft)
 
@@ -71,7 +71,7 @@ log('Optimizer Info:\n %s'%optimizer_ft)
 # exp_lr_scheduler=lr_scheduler.StepLR(optimizer_ft,step_size=20,gamma=0.1)
 # log('LR Scheduler Info: \n Step Size = %s \n Gamma = %s'%(exp_lr_scheduler.step_size,exp_lr_scheduler.gamma))
 
-num_epochs=100
+num_epochs=1000
 log('Number of Epochs = %d'%num_epochs)
 log('')
 model=train_model(model,unique_atoms,dataset_size,criterion,optimizer_ft,atoms_dataloader,num_epochs)

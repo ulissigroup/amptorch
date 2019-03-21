@@ -27,15 +27,15 @@ filename='benchmark_dataset/water.extxyz'
 log('-'*50)
 log('Filename: %s'%filename)
 
-training=AtomsDataset(filename,descriptor=Gaussian())
-training_data=[training[0],training[1],training[3],training[4]]
+training_data=AtomsDataset(filename,descriptor=Gaussian())
+# training_data=[training[0],training[1],training[3],training[4]]
 # for i in training_data:
     # print i
-unique_atoms,_,_,_=data_factorization(training_data)
+unique_atoms,_,_=data_factorization(training_data)
 n_unique_atoms=len(unique_atoms)
 
 
-batch_size=2
+batch_size=100
 log('Batch Size = %d'%batch_size)
 validation_frac=0
 
@@ -61,7 +61,7 @@ else:
 # for i in atoms_dataloader:
     # print i[1].std(dim=0)
 
-model=FullNN(unique_atoms)
+model=FullNN(unique_atoms,batch_size)
 # if torch.cuda.device_count()>1:
     # print('Utilizing',torch.cuda.device_count(),'GPUs!')
     # model=nn.DataParallel(model)
