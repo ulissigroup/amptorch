@@ -25,15 +25,15 @@ class Dense(nn.Linear):
 
     """
 
-    def __init__(self,input_size,output_size, bias=True, activation=None):
+    def __init__(self,input_size,output_size,bias=True, activation=None):
         self.activation=activation
         super(Dense,self).__init__(input_size,output_size,bias)
 
     def reset_parameters(self):
-        # init.constant_(self.weight,.05)
-        # init.constant_(self.bias,-1)
+        init.constant_(self.weight,.05)
+        init.constant_(self.bias,-1)
 
-        super(Dense,self).reset_parameters()
+        # super(Dense,self).reset_parameters()
         # init.constant_(self.bias,1)
 
     def forward(self,inputs):
@@ -57,7 +57,7 @@ class MLP(nn.Module):
 
     """
 
-    def __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=3,n_hidden_size=5,activation=Tanh):
+    def __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=3,n_hidden_size=5,activation=LeakyReLU):
         super(MLP,self).__init__()
         #if n_hidden_size is None:
             #implement pyramid neuron structure across each layer
@@ -127,7 +127,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
     log_epoch('')
 
     best_model_wts=copy.deepcopy(model.state_dict())
-    best_loss=100000000
+    best_loss=1e10
 
     plot_epoch_x=list(range(1,num_epochs+1))
     plot_loss_y={'train':[],'val':[]}
@@ -153,8 +153,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
                         input_data=data_sample[0]
                         print input_data
                         target=data_sample[1]
-                        print target
-                        sys.exit()
+                        print target.size()
                         # target=feature_scaling(target)
                         # target=target/2000.
                         batch_size=len(target)
@@ -170,8 +169,8 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
                         #forward
                         with torch.set_grad_enabled(phase == 'train'):
                             output=model(input_data)
-                            # print output.size()
-                            _,preds = torch.max(output,1)
+                            print output.size()
+                            sys.exit()
                             loss=criterion(output,target)
                             #backward + optimize only if in training phase
                             if phase == 'train':
@@ -205,11 +204,14 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
                 target=data_sample[1]
                 # target=feature_scaling(target)
                 batch_size=len(target)
+                target=target.reshape(batch_size,1)
+                target=feature_scaling(target)
 
                 #Send inputs and labels to the corresponding device (cpu or gpu)
                 for element in unique_atoms:
                     input_data[element][0]=input_data[element][0].to(device)
                 target=target.to(device)
+
                 #zero the parameter gradients
                 optimizer.zero_grad()
 

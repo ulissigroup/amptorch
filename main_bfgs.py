@@ -10,6 +10,7 @@ from amp.descriptor.gaussian import Gaussian
 from nn_torch_bfgs import FullNN,train_model
 import torch.optim as optim
 from torch.optim import lr_scheduler
+import matplotlib.pyplot as plt
 
 from ase.build import molecule
 from ase import Atoms
@@ -17,9 +18,10 @@ from ase.calculators.emt import EMT
 
 log=Logger('benchmark_results/results-log.txt')
 log_epoch=Logger('benchmark_results/epoch-log.txt')
+log_diag=Logger('benchmark_results/diagnosis.txt')
 
 log(time.asctime())
-
+log_diag(time.asctime())
 device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 # filename='benchmark_dataset/defect-training100.extxyz'
 filename='benchmark_dataset/water.extxyz'
@@ -27,8 +29,13 @@ filename='benchmark_dataset/water.extxyz'
 log('-'*50)
 log('Filename: %s'%filename)
 
+# training_data=AtomsDataset(filename,descriptor=Gaussian())
 training_data=AtomsDataset(filename,descriptor=Gaussian())
-# training_data=[training[0],training[1],training[2]]
+# training_data=[training[34],training[123]]
+# print 'Training 1 target: %s'%training_data[0][1]
+# print 'Training 2 target: %s'%training_data[1][1]
+# log_diag('Training 1 target: %s'%training_data[0][1])
+# log_diag('Training 2 target: %s'%training_data[1][1])
 # training_data=[training[0]]
 unique_atoms,_,_=data_factorization(training_data)
 n_unique_atoms=len(unique_atoms)
@@ -49,6 +56,9 @@ else:
     log('Training Data = %d'%dataset_size)
     atoms_dataloader=DataLoader(training_data,batch_size,collate_fn=collate_amp,shuffle=False)
 
+# for i in atoms_dataloader:
+    # print'Post-Prepocessing target order:%s'%i[1]
+    # log_diag('Post-Preprocessing target order: %s' %i[1])
 #Check SD of targets
 # for i in atoms_dataloader:
     # print i[1].std(dim=0)
@@ -71,9 +81,33 @@ log('Optimizer Info:\n %s'%optimizer_ft)
 # exp_lr_scheduler=lr_scheduler.StepLR(optimizer_ft,step_size=20,gamma=0.1)
 # log('LR Scheduler Info: \n Step Size = %s \n Gamma = %s'%(exp_lr_scheduler.step_size,exp_lr_scheduler.gamma))
 
-num_epochs=1000
+num_epochs=50
 log('Number of Epochs = %d'%num_epochs)
 log('')
-model=train_model(model,unique_atoms,dataset_size,criterion,optimizer_ft,atoms_dataloader,num_epochs)
-torch.save(model.state_dict(),'benchmark_results/benchmark_model.pt')
+# model=train_model(model,unique_atoms,dataset_size,criterion,optimizer_ft,atoms_dataloader,num_epochs)
+# torch.save(model.state_dict(),'benchmark_results/benchmark_model.pt')
 
+def test_model(training_data):
+    loader=DataLoader(training_data,collate_fn=collate_amp,shuffle=False)
+    model=FullNN(unique_atoms,400)
+    model.load_state_dict(torch.load('benchmark_results/benchmark_model.pt'))
+    model.eval()
+    predictions=[]
+    targets=[]
+    device='cuda:0'
+    model=model.to(device)
+    for sample in loader:
+        input=sample[0]
+        for element in unique_atoms:
+            input[element][0]=input[element][0].to(device)
+        target=sample[1]
+        target=target.to(device)
+        prediction=model(input)
+        predictions.append(prediction)
+        targets.append(target)
+    # print targets
+    # print predictions
+    plt.plot(targets,predictions)
+    plt.show()
+
+test_model(training_data)

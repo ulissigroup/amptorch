@@ -32,10 +32,10 @@ class Dense(nn.Linear):
         super(Dense,self).__init__(input_size,output_size,bias)
 
     def reset_parameters(self):
-        # init.constant_(self.weight,.05)
-        # init.constant_(self.bias,-1)
+        init.constant_(self.weight,.05)
+        init.constant_(self.bias,-1)
 
-        super(Dense,self).reset_parameters()
+        # super(Dense,self).reset_parameters()
         # init.constant_(self.bias,0)
 
     def forward(self,inputs):
@@ -154,6 +154,8 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
     log_epoch=Logger('benchmark_results/epoch-log.txt')
     log('Model: %s'%model)
 
+    model.train()
+
     since = time.time()
     log_epoch('-'*50)
     print('Training Initiated!')
@@ -161,7 +163,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
     log_epoch('')
 
     best_model_wts=copy.deepcopy(model.state_dict())
-    best_loss=100000000
+    best_loss=1e8
 
     plot_epoch_x=list(range(1,num_epochs+1))
     plot_loss_y=[]
@@ -169,15 +171,17 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
     for epoch in range(num_epochs):
         log_epoch('{} Epoch {}/{}'.format(time.asctime(),epoch+1,num_epochs))
         log_epoch('-'*30)
-
+        # print('epoch %s'%epoch)
         MSE=0.0
 
         for data_sample in atoms_dataloader:
             # print data_sample
             input_data=data_sample[0]
             target=data_sample[1]
+            # print 'Targets fed to model: %s'%target
             batch_size=len(target)
-            # target=feature_scaling(target)
+            target=target.reshape(batch_size,1)
+            target=feature_scaling(target)
 
             #Send inputs and labels to the corresponding device (cpu or gpu)
             for element in unique_atoms:
@@ -189,19 +193,21 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
                 optimizer.zero_grad()
                 #forward
                 output=model(input_data)
+                # print output.size()
+                # print ('Prediction: %s'%output)
                 loss=criterion(output,target)
+                # print loss
                 #backward + optimize only if in training phase
                 loss.backward()
                 # plot_grad_flow(model.named_parameters())
                 return loss
 
             optimizer.step(closure)
-
+            # sys.exit()
             with torch.no_grad():
                 pred=model(input_data)
                 loss=criterion(pred,target)
                 MSE+=loss.item()*batch_size
-                sys.exit()
 
         MSE=MSE/dataset_size
         RMSE=np.sqrt(MSE)
@@ -233,7 +239,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
     plt.ylabel('log(RMSE)')
     plt.plot(plot_epoch_x,plot_loss_y,label='train')
     plt.legend()
-    plt.show()
+    # plt.show()
 
     model.load_state_dict(best_model_wts)
     return model
