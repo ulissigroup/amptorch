@@ -51,7 +51,6 @@ class AtomsDataset(Dataset):
             image_potential_energy=self.hash_images[hash_name].get_potential_energy()
         except:
             print 'Atoms object has no claculator set! Modify the input images before trying again.'
-        # return {index:(image_fingerprint,image_potential_energy)}
         return image_fingerprint,image_potential_energy
 
     def data_split(self,training_data,val_frac):
@@ -91,25 +90,10 @@ def data_factorization(training_data):
             element=atom[0]
             if element not in unique_atoms:
                 unique_atoms.append(element)
-    # for data_sample in training_data:
-        # sample_index=data_sample.keys()[0]
-        # sample_indices.append(sample_index)
-        # atom_image=data_sample[sample_index]
-        # atom_fingerprint=atom_image[0]
-        # fingerprint_dataset.append(atom_fingerprint)
-        # image_potential_energy=atom_image[1]
-        # energy_dataset.append(image_potential_energy)
-        # for atom in atom_fingerprint:
-            # element=atom[0]
-            # if element not in unique_atoms:
-                # unique_atoms.append(element)
-    # return unique_atoms,fingerprint_dataset,energy_dataset,sample_indices
     return unique_atoms,fingerprint_dataset,energy_dataset
 
 def collate_amp(training_data):
-    # unique_atoms,fingerprint_dataset,energy_dataset,sample_indices=data_factorization(training_data)
     unique_atoms,fingerprint_dataset,energy_dataset=data_factorization(training_data)
-    # print energy_dataset
     element_specific_fingerprints={}
     model_input_data=[]
     for element in unique_atoms:
@@ -124,21 +108,5 @@ def collate_amp(training_data):
         element_specific_fingerprints[element][0]=torch.stack(element_specific_fingerprints[element][0])
     model_input_data.append(element_specific_fingerprints)
     model_input_data.append(torch.tensor(energy_dataset))
-    # model_input_data=[]
-    # for element in unique_atoms:
-        # element_specific_fingerprints[element]=[[],[]]
-    # for fp_index, sample_fingerprints in enumerate(fingerprint_dataset):
-        # for fingerprint in sample_fingerprints:
-            # atom_element=fingerprint[0]
-            # atom_fingerprint=fingerprint[1]
-            # element_specific_fingerprints[atom_element][0].append(torch.tensor(atom_fingerprint))
-            # element_specific_fingerprints[atom_element][0].append(torch.FloatTensor(np.random.uniform(-1,1,20)))
-            # element_specific_fingerprints[atom_element][1].append(sample_indices[fp_index])
-    # for element in unique_atoms:
-        # element_specific_fingerprints[element][0]=torch.stack(element_specific_fingerprints[element][0])
-        # element_specific_fingerprints[element][2].append(torch.tensor(energy_dataset))
-    # model_input_data.append(element_specific_fingerprints)
-    # model_input_data.append(torch.tensor(energy_dataset))
-    # return element_specific_fingerprints
     return model_input_data
 

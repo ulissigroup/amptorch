@@ -30,10 +30,10 @@ class Dense(nn.Linear):
         super(Dense,self).__init__(input_size,output_size,bias)
 
     def reset_parameters(self):
-        init.constant_(self.weight,.05)
-        init.constant_(self.bias,-1)
+        # init.constant_(self.weight,.05)
+        # init.constant_(self.bias,-1)
 
-        # super(Dense,self).reset_parameters()
+        super(Dense,self).reset_parameters()
         # init.constant_(self.bias,1)
 
     def forward(self,inputs):
@@ -83,33 +83,29 @@ class FullNN(nn.Module):
     structure
 
     '''
-    def __init__(self,unique_atoms):
+    def __init__(self,unique_atoms,batch_size):
         log=Logger('benchmark_results/results-log.txt')
 
         super(FullNN,self).__init__()
         self.unique_atoms=unique_atoms
+        self.batch_size=batch_size
         n_unique_atoms=len(unique_atoms)
         elementwise_models=nn.ModuleList()
         for n_models in range(n_unique_atoms):
             elementwise_models.append(MLP())
         self.elementwise_models=elementwise_models
         log('Activation Function = %s'%elementwise_models[0].activation)
-        # self.model_device=next(elementwise_models.parameters()).device
 
     def forward(self,data):
-        energy_pred=OrderedDict()
+        energy_pred=torch.zeros(self.batch_size,1)
+        energy_pred=energy_pred.to(device)
         for index,element in enumerate(self.unique_atoms):
             model_inputs=data[element][0]
             contribution_index=data[element][1]
             atomwise_outputs=self.elementwise_models[index].forward(model_inputs)
-            for index,atom_output in enumerate(atomwise_outputs):
-                if contribution_index[index] not in energy_pred.keys():
-                    energy_pred[contribution_index[index]]=atom_output
-                else:
-                    energy_pred[contribution_index[index]]+=atom_output
-        output=energy_pred.values()
-        output=torch.stack(output)
-        return output
+            for cindex,atom_output in enumerate(atomwise_outputs):
+                energy_pred[contribution_index[cindex]]+=atom_output
+        return energy_pred
 
 def feature_scaling(data):
     data_max=max(data)
@@ -155,7 +151,10 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
                     #Iterate over the dataloader
                     for data_sample in atoms_dataloader[phase]:
                         input_data=data_sample[0]
+                        print input_data
                         target=data_sample[1]
+                        print target
+                        sys.exit()
                         # target=feature_scaling(target)
                         # target=target/2000.
                         batch_size=len(target)
@@ -203,9 +202,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
             #Iterate over the dataloader
             for data_sample in atoms_dataloader:
                 input_data=data_sample[0]
-                print input_data
                 target=data_sample[1]
-                print target
                 # target=feature_scaling(target)
                 batch_size=len(target)
 
@@ -219,8 +216,6 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
                 #forward
                 with torch.set_grad_enabled(True):
                     output=model(input_data)
-                    print output
-                    sys.exit()
                     loss=criterion(output,target)
                     #backward + optimize only if in training phase
                     loss.backward()

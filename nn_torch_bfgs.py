@@ -67,9 +67,13 @@ class MLP(nn.Module):
             n_hidden_size=[n_hidden_size] * (n_layers-1)
         self.n_neurons=[n_input_nodes]+n_hidden_size+[n_output_nodes]
         self.activation=activation
+        # HiddenLayer1=Dense(20,5,activation=activation)
+        # HiddenLayer2=Dense(5,5,activation=activation)
+        # OutputLayer3=Dense(5,1,activation=None)
         layers=[Dense(self.n_neurons[i],self.n_neurons[i+1],activation=activation) for i in range(n_layers-1)]
         layers.append(Dense(self.n_neurons[-2],self.n_neurons[-1],activation=None))
         self.model_net=nn.Sequential(*layers)
+        # self.model_net=nn.Sequential(HiddenLayer1,HiddenLayer2,OutputLayer3)
 
     def forward(self, inputs):
         """Feeds data forward in the neural network
@@ -100,7 +104,6 @@ class FullNN(nn.Module):
 
     def forward(self,data):
         energy_pred=torch.zeros(self.batch_size,1)
-        energy_pred.require_grad=True
         energy_pred=energy_pred.to(device)
         for index,element in enumerate(self.unique_atoms):
             model_inputs=data[element][0]
@@ -170,6 +173,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
         MSE=0.0
 
         for data_sample in atoms_dataloader:
+            # print data_sample
             input_data=data_sample[0]
             target=data_sample[1]
             batch_size=len(target)
@@ -191,8 +195,13 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
                 # plot_grad_flow(model.named_parameters())
                 return loss
 
-        loss=optimizer.step(closure)
-        MSE+=loss.item()*batch_size
+            optimizer.step(closure)
+
+            with torch.no_grad():
+                pred=model(input_data)
+                loss=criterion(pred,target)
+                MSE+=loss.item()*batch_size
+                sys.exit()
 
         MSE=MSE/dataset_size
         RMSE=np.sqrt(MSE)
