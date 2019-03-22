@@ -207,7 +207,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
     plt.plot(plot_epoch_x,plot_loss_y,label='train')
     plt.legend()
     plt.show()
-
+    plt.savefig('test.png')
     model.load_state_dict(best_model_wts)
     return model
 

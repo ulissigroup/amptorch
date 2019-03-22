@@ -11,6 +11,7 @@ from nn_torch_bfgs import FullNN,train_model
 import torch.optim as optim
 from torch.optim import lr_scheduler
 import matplotlib.pyplot as plt
+from LBFGS import LBFGS, FullBatchLBFGS
 
 from ase.build import molecule
 from ase import Atoms
@@ -18,10 +19,8 @@ from ase.calculators.emt import EMT
 
 log=Logger('benchmark_results/results-log.txt')
 log_epoch=Logger('benchmark_results/epoch-log.txt')
-log_diag=Logger('benchmark_results/diagnosis.txt')
 
 log(time.asctime())
-log_diag(time.asctime())
 device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 filename='benchmark_dataset/water.extxyz'
 
@@ -57,7 +56,7 @@ criterion=nn.MSELoss()
 log('Loss Function: %s'%criterion)
 
 #Define the optimizer and implement any optimization settings
-optimizer_ft=optim.LBFGS(model.parameters(),.01)
+optimizer_ft=optim.LBFGS(model.parameters(),1)
 
 log('Optimizer Info:\n %s'%optimizer_ft)
 
@@ -65,7 +64,7 @@ log('Optimizer Info:\n %s'%optimizer_ft)
 # exp_lr_scheduler=lr_scheduler.StepLR(optimizer_ft,step_size=20,gamma=0.1)
 # log('LR Scheduler Info: \n Step Size = %s \n Gamma = %s'%(exp_lr_scheduler.step_size,exp_lr_scheduler.gamma))
 
-num_epochs=100
+num_epochs=10
 log('Number of Epochs = %d'%num_epochs)
 log('')
 model=train_model(model,unique_atoms,dataset_size,criterion,optimizer_ft,atoms_dataloader,num_epochs)
