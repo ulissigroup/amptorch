@@ -28,9 +28,6 @@ log('-'*50)
 log('Filename: %s'%filename)
 
 training_data=AtomsDataset(filename,descriptor=Gaussian())
-# training_data=[training[0],training[1],training[3],training[4]]
-# for i in training_data:
-    # print i
 unique_atoms,_,_=data_factorization(training_data)
 n_unique_atoms=len(unique_atoms)
 
@@ -51,29 +48,20 @@ else:
     log('Training Data = %d'%dataset_size)
     atoms_dataloader=DataLoader(training_data,batch_size,collate_fn=collate_amp,shuffle=True,pin_memory=True)
 
-
-# for i in atoms_dataloader:
-    # print i
-# sys.exit()
-    # print np.sqrt(((i[1].std(dim=0))**2)*(len(i)-1)/len(i))
-
-#Check SD of targets
-# for i in atoms_dataloader:
-    # print i[1].std(dim=0)
-
 model=FullNN(unique_atoms,batch_size)
+
 # if torch.cuda.device_count()>1:
     # print('Utilizing',torch.cuda.device_count(),'GPUs!')
     # model=nn.DataParallel(model)
+
 model=model.to(device)
 # criterion=nn.L1Loss()
 criterion=nn.MSELoss()
 log('Loss Function: %s'%criterion)
 
 #Define the optimizer and implement any optimization settings
-optimizer_ft=optim.SGD(model.parameters(),lr=.001,momentum=.5)
+optimizer_ft=optim.SGD(model.parameters(),lr=.1,momentum=0)
 # optimizer_ft=optim.Adam(model.parameters(),lr=.1)
-# optimizer_ft=optim.LBFGS(model.parameters())
 
 log('Optimizer Info:\n %s'%optimizer_ft)
 
@@ -85,29 +73,31 @@ num_epochs=100
 log('Number of Epochs = %d'%num_epochs)
 log('')
 model=train_model(model,unique_atoms,dataset_size,criterion,optimizer_ft,atoms_dataloader,num_epochs)
-# torch.save(model.state_dict(),'benchmark_results/benchmark_model.pt')
+torch.save(model.state_dict(),'benchmark_results/benchmark_model_SGD.pt')
 
 def test_model(training_data):
-    loader=DataLoader(training_data,collate_fn=collate_amp,shuffle=False)
-    model=FullNN(unique_atoms)
-    model.load_state_dict(torch.load('benchmark_results/benchmark_model.pt'))
+    loader=DataLoader(training_data,1,collate_fn=collate_amp,shuffle=False)
+    model=FullNN(unique_atoms,1)
+    model.load_state_dict(torch.load('benchmark_results/benchmark_model_SGD.pt'))
     model.eval()
     predictions=[]
+    scaled_pred=[]
     targets=[]
     device='cuda:0'
     model=model.to(device)
     for sample in loader:
-        input=sample[0]
+        inputs=sample[0]
         for element in unique_atoms:
-            input[element][0]=input[element][0].to(device)
+            inputs[element][0]=inputs[element][0].to(device)
         target=sample[1]
         target=target.to(device)
-        prediction=model(input)
+        prediction=model(inputs)
         predictions.append(prediction)
         targets.append(target)
-    print targets
-    print predictions
-    plt.plot(targets,predictions)
+    for value in predictions:
+        data_max=max(targets)
+        data_min=min(targets)
+        scaled_pred.append((value*(data_max-data_min))+data_min)
+    plt.plot(targets,scaled_pred,'ro')
     plt.show()
-
 # test_model(training_data)
