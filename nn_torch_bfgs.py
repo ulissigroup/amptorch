@@ -9,7 +9,6 @@ import copy
 from collections import OrderedDict
 import time
 import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
 from amp.utilities import Logger
 
 class Dense(nn.Linear):
@@ -32,10 +31,10 @@ class Dense(nn.Linear):
         super(Dense,self).__init__(input_size,output_size,bias)
 
     def reset_parameters(self):
-        init.constant_(self.weight,.05)
-        init.constant_(self.bias,-1)
+        # init.constant_(self.weight,45)
+        # init.constant_(self.bias,-1)
 
-        # super(Dense,self).reset_parameters()
+        super(Dense,self).reset_parameters()
         # init.constant_(self.bias,0)
 
     def forward(self,inputs):
@@ -104,7 +103,8 @@ class FullNN(nn.Module):
 
     def forward(self,data):
         energy_pred=torch.zeros(self.batch_size,1)
-        energy_pred=energy_pred.to(device)
+        if torch.cuda.is_available():
+            energy_pred=energy_pred.cuda()
         for index,element in enumerate(self.unique_atoms):
             model_inputs=data[element][0]
             contribution_index=data[element][1]
@@ -121,35 +121,9 @@ def feature_scaling(data):
         scale.append((value-data_min)/(data_max-data_min))
     return torch.stack(scale)
 
-def plot_grad_flow(named_parameters):
-    '''Plots the gradients flowing through different layers in the net during training.
-    Can be used for checking for possible gradient vanishing / exploding problems.
-
-    Usage: Plug this function in Trainer class after loss.backwards() as
-    "plot_grad_flow(self.model.named_parameters())" to visualize the gradient flow'''
-    ave_grads = []
-    max_grads= []
-    layers = []
-    for n, p in named_parameters:
-        if(p.requires_grad) and ("bias" not in n):
-            layers.append(n)
-            ave_grads.append(p.grad.abs().mean())
-            max_grads.append(p.grad.abs().max())
-    plt.bar(np.arange(len(max_grads)), max_grads, alpha=0.1, lw=1, color="c")
-    plt.bar(np.arange(len(max_grads)), ave_grads, alpha=0.1, lw=1, color="b")
-    plt.hlines(0, 0, len(ave_grads)+1, lw=2, color="k" )
-    plt.xticks(range(0,len(ave_grads), 1), layers, rotation="vertical")
-    plt.xlim(left=0, right=len(ave_grads))
-    plt.ylim(bottom = -0.001, top=0.02) # zoom in on the lower gradient regions
-    plt.xlabel("Layers")
-    plt.ylabel("average gradient")
-    plt.title("Gradient flow")
-    plt.grid(True)
-    plt.legend([Line2D([0], [0], color="c", lw=4),
-                Line2D([0], [0], color="b",
-                    lw=4),Line2D([0],[0],color="k",lw=4)],['max-gradient','mean-gradient','zero-gradient'])
-
 def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_dataloader,num_epochs):
+    device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
     log=Logger('benchmark_results/results-log.txt')
     log_epoch=Logger('benchmark_results/epoch-log.txt')
     log('Model: %s'%model)
@@ -168,17 +142,17 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
     plot_epoch_x=list(range(1,num_epochs+1))
     plot_loss_y=[]
 
+    # epoch=0
     for epoch in range(num_epochs):
+    # while best_loss>=1e-3:
         log_epoch('{} Epoch {}/{}'.format(time.asctime(),epoch+1,num_epochs))
         log_epoch('-'*30)
-        # print('epoch %s'%epoch)
+
         MSE=0.0
 
         for data_sample in atoms_dataloader:
-            # print data_sample
             input_data=data_sample[0]
             target=data_sample[1]
-            # print 'Targets fed to model: %s'%target
             batch_size=len(target)
             target=target.reshape(batch_size,1)
             target=feature_scaling(target)
@@ -189,21 +163,14 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
             target=target.to(device)
 
             def closure():
-                #zero the parameter gradients
                 optimizer.zero_grad()
-                #forward
                 output=model(input_data)
-                # print output.size()
-                # print ('Prediction: %s'%output)
                 loss=criterion(output,target)
-                # print loss
-                #backward + optimize only if in training phase
                 loss.backward()
-                # plot_grad_flow(model.named_parameters())
                 return loss
 
             optimizer.step(closure)
-            # sys.exit()
+
             with torch.no_grad():
                 pred=model(input_data)
                 loss=criterion(pred,target)
@@ -221,6 +188,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
             best_loss=epoch_loss
             best_model_wts=copy.deepcopy(model.state_dict())
         log_epoch('')
+        # epoch+=1
 
     time_elapsed=time.time()-since
     print('Training complete in {:.0f}m {:.0f}s'.format
@@ -231,7 +199,6 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
                 (time_elapsed//60,time_elapsed % 60))
 
     log('Best training loss: {:4f}'.format(best_loss))
-
     log('')
 
     plt.title('RMSE vs. Epoch')
@@ -239,9 +206,8 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
     plt.ylabel('log(RMSE)')
     plt.plot(plot_epoch_x,plot_loss_y,label='train')
     plt.legend()
-    # plt.show()
+    plt.show()
 
     model.load_state_dict(best_model_wts)
     return model
 
-device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")

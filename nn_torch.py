@@ -30,10 +30,10 @@ class Dense(nn.Linear):
         super(Dense,self).__init__(input_size,output_size,bias)
 
     def reset_parameters(self):
-        init.constant_(self.weight,.05)
-        init.constant_(self.bias,-1)
+        # init.constant_(self.weight,.05)
+        # init.constant_(self.bias,-1)
 
-        # super(Dense,self).reset_parameters()
+        super(Dense,self).reset_parameters()
         # init.constant_(self.bias,1)
 
     def forward(self,inputs):
@@ -98,7 +98,8 @@ class FullNN(nn.Module):
 
     def forward(self,data):
         energy_pred=torch.zeros(self.batch_size,1)
-        energy_pred=energy_pred.to(device)
+        if torch.cuda.is_available():
+            energy_pred=energy_pred.cuda()
         for index,element in enumerate(self.unique_atoms):
             model_inputs=data[element][0]
             contribution_index=data[element][1]
@@ -116,6 +117,8 @@ def feature_scaling(data):
     return torch.stack(scale)
 
 def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_dataloader,num_epochs):
+    device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
     log=Logger('benchmark_results/results-log.txt')
     log_epoch=Logger('benchmark_results/epoch-log.txt')
     log('Model: %s'%model)
@@ -127,7 +130,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
     log_epoch('')
 
     best_model_wts=copy.deepcopy(model.state_dict())
-    best_loss=1e10
+    best_loss=1e8
 
     plot_epoch_x=list(range(1,num_epochs+1))
     plot_loss_y={'train':[],'val':[]}
@@ -195,14 +198,12 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
 
             # scheduler.step()
             model.train()
-            # print list(model.parameters())
 
             MSE=0.0
             #Iterate over the dataloader
             for data_sample in atoms_dataloader:
                 input_data=data_sample[0]
                 target=data_sample[1]
-                # target=feature_scaling(target)
                 batch_size=len(target)
                 target=target.reshape(batch_size,1)
                 target=feature_scaling(target)
@@ -265,4 +266,3 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
     model.load_state_dict(best_model_wts)
     return model
 
-device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
