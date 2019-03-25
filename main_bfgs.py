@@ -45,7 +45,7 @@ if validation_frac!=0:
 else:
     dataset_size=len(training_data)
     log('Training Data = %d'%dataset_size)
-    atoms_dataloader=DataLoader(training_data,batch_size,collate_fn=collate_amp,shuffle=False)
+    atoms_dataloader=DataLoader(training_data,batch_size,collate_fn=collate_amp,shuffle=True,pin_memory=True)
 
 model=FullNN(unique_atoms,batch_size)
 # if torch.cuda.device_count()>1:
@@ -56,7 +56,8 @@ criterion=nn.MSELoss()
 log('Loss Function: %s'%criterion)
 
 #Define the optimizer and implement any optimization settings
-optimizer_ft=optim.LBFGS(model.parameters(),1)
+# optimizer_ft=optim.LBFGS(model.parameters(),1)
+optimizer_ft=FullBatchLBFGS(model.parameters(),lr=1,history_size=100,line_search='Wolfe')
 
 log('Optimizer Info:\n %s'%optimizer_ft)
 
@@ -64,11 +65,11 @@ log('Optimizer Info:\n %s'%optimizer_ft)
 # exp_lr_scheduler=lr_scheduler.StepLR(optimizer_ft,step_size=20,gamma=0.1)
 # log('LR Scheduler Info: \n Step Size = %s \n Gamma = %s'%(exp_lr_scheduler.step_size,exp_lr_scheduler.gamma))
 
-num_epochs=10
+num_epochs=100
 log('Number of Epochs = %d'%num_epochs)
 log('')
 model=train_model(model,unique_atoms,dataset_size,criterion,optimizer_ft,atoms_dataloader,num_epochs)
-torch.save(model.state_dict(),'benchmark_results/benchmark_model.pt')
+# torch.save(model.state_dict(),'benchmark_results/benchmark_model.pt')
 
 def test_model(training_data):
     loader=DataLoader(training_data,1,collate_fn=collate_amp,shuffle=False)
@@ -89,12 +90,18 @@ def test_model(training_data):
         prediction=model(inputs)
         predictions.append(prediction)
         targets.append(target)
+    data_max=max(targets)
+    data_min=min(targets)
     for value in predictions:
-        data_max=max(targets)
-        data_min=min(targets)
         scaled_pred.append((value*(data_max-data_min))+data_min)
-    # print targets
-    # print predictions
-    plt.plot(targets,scaled_pred,'ro')
+    fig=plt.figure(figsize=(7.,7.))
+    ax=fig.add_subplot(111)
+    ax.plot(targets,scaled_pred,'bo')
+    ax.plot([data_min,data_max],[data_min,data_max],'r-',lw=0.3)
+    ax.set_xlabel('ab initio energy, eV')
+    ax.set_ylabel('PyTorch energy, eV')
+    ax.set_title('Energies')
+    fig.savefig('benchmark_results/Plots/PyTorch_Prelims.pdf')
     plt.show()
 
+# test_model(training_data)

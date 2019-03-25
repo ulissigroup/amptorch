@@ -21,9 +21,6 @@ class Dense(nn.Linear):
         bias (bool): True to include bias at each neuron. False otherwise
         (Default: True)
         activation (callable): activation function to be utilized (Default:None)
-
-    (Simplified version of SchNet Pack's implementation')
-
     """
 
     def __init__(self,input_size,output_size, bias=True,activation=None):
@@ -169,7 +166,9 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
                 loss.backward()
                 return loss
 
-            optimizer.step(closure)
+            options={'closure':closure,'current_loss':obj}
+            # optimizer.step(closure)
+            obj,grad,lr,_,_,_,_,_=optimizer.step(options)
 
             with torch.no_grad():
                 pred=model(input_data)
@@ -206,7 +205,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
     plt.ylabel('log(RMSE)')
     plt.plot(plot_epoch_x,plot_loss_y,label='train')
     plt.legend()
-    plt.show()
+    # plt.show()
     plt.savefig('test.png')
     model.load_state_dict(best_model_wts)
     return model
