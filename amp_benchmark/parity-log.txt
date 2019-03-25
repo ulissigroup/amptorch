@@ -1,0 +1,219 @@
+
+   oo      o       o   oooooo
+  o  o     oo     oo   o     o
+ o    o    o o   o o   o     o
+o      o   o  o o  o   o     o
+oooooooo   o   o   o   oooooo
+o      o   o       o   o
+o      o   o       o   o
+o      o   o       o   o
+
+Amp: Atomistic Machine-learning Package
+Developed by Andrew Peterson, Alireza Khorshidi, and others,
+Brown University.
+PI Website: http://brown.edu/go/catalyst
+Official repository: http://bitbucket.org/andrewpeterson/amp
+Official documentation: http://amp.readthedocs.org/
+Citation:
+  Alireza Khorshidi & Andrew A. Peterson,
+  Computer Physics Communications 207: 310-324 (2016).
+  http://doi.org/10.1016/j.cpc.2016.05.010
+======================================================================
+User: mshuaibi
+Hostname: ulissigroup-Alienware-Shuaibi
+Date: 2019-03-25T11:51:17 (2019-03-25T15:51:17 UTC)
+Architecture: x86_64
+PID: 20821
+Amp version: 0.6.1
+Amp directory: /home/mshuaibi/.local/lib/python2.7/site-packages/amp
+ Last commit: unknown hash
+ Last commit date: unknown date
+Python: v2.7.15: /usr/bin/python
+ASE v3.17.0: /home/mshuaibi/.local/lib/python2.7/site-packages/ase
+NumPy v1.16.2: /home/mshuaibi/.local/lib/python2.7/site-packages/numpy
+SciPy v1.2.1: /home/mshuaibi/.local/lib/python2.7/site-packages/scipy
+ZMQ/PyZMQ v4.3.1/v18.0.1: /home/mshuaibi/.local/lib/python2.7/site-packages/zmq
+pxssh: Not available from pxssh.
+pxssh (via pexpect v4.6.0): /home/mshuaibi/.local/lib/python2.7/site-packages/pexpect/pxssh.pyc
+======================================================================
+No queuing system detected; single machine assumed.
+Parallel configuration determined from environment for <single machine>:
+  localhost: 12
+Loaded file: calc.amp
+
+Amp parity plot started. 2019-03-25T11:51:17
+
+Descriptor: Gaussian
+Model: NeuralNetwork
+Hashing images...
+ 400 unique images after hashing.
+...hashing completed. 0.0 min.
+
+Descriptor
+==========
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+2 unique elements included: H, O
+Number of symmetry functions for each element:
+  H: 20
+  O: 20
+H feature vector functions:
+ 0: G2, H, eta = 0.05
+ 1: G2, O, eta = 0.05
+ 2: G2, H, eta = 4.0
+ 3: G2, O, eta = 4.0
+ 4: G2, H, eta = 20.0
+ 5: G2, O, eta = 20.0
+ 6: G2, H, eta = 80.0
+ 7: G2, O, eta = 80.0
+ 8: G4, (H, H), eta=0.005, gamma=1.0, zeta=1.0
+ 9: G4, (H, O), eta=0.005, gamma=1.0, zeta=1.0
+ 10: G4, (O, O), eta=0.005, gamma=1.0, zeta=1.0
+ 11: G4, (H, H), eta=0.005, gamma=-1.0, zeta=1.0
+ 12: G4, (H, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 13: G4, (O, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 14: G4, (H, H), eta=0.005, gamma=1.0, zeta=4.0
+ 15: G4, (H, O), eta=0.005, gamma=1.0, zeta=4.0
+ 16: G4, (O, O), eta=0.005, gamma=1.0, zeta=4.0
+ 17: G4, (H, H), eta=0.005, gamma=-1.0, zeta=4.0
+ 18: G4, (H, O), eta=0.005, gamma=-1.0, zeta=4.0
+ 19: G4, (O, O), eta=0.005, gamma=-1.0, zeta=4.0
+O feature vector functions:
+ 0: G2, H, eta = 0.05
+ 1: G2, O, eta = 0.05
+ 2: G2, H, eta = 4.0
+ 3: G2, O, eta = 4.0
+ 4: G2, H, eta = 20.0
+ 5: G2, O, eta = 20.0
+ 6: G2, H, eta = 80.0
+ 7: G2, O, eta = 80.0
+ 8: G4, (H, H), eta=0.005, gamma=1.0, zeta=1.0
+ 9: G4, (H, O), eta=0.005, gamma=1.0, zeta=1.0
+ 10: G4, (O, O), eta=0.005, gamma=1.0, zeta=1.0
+ 11: G4, (H, H), eta=0.005, gamma=-1.0, zeta=1.0
+ 12: G4, (H, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 13: G4, (O, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 14: G4, (H, H), eta=0.005, gamma=1.0, zeta=4.0
+ 15: G4, (H, O), eta=0.005, gamma=1.0, zeta=4.0
+ 16: G4, (O, O), eta=0.005, gamma=1.0, zeta=4.0
+ 17: G4, (H, H), eta=0.005, gamma=-1.0, zeta=4.0
+ 18: G4, (H, O), eta=0.005, gamma=-1.0, zeta=4.0
+ 19: G4, (O, O), eta=0.005, gamma=-1.0, zeta=4.0
+Calculating neighborlists...
+ Data stored in file parity-neighborlists.
+ File exists with 0 total images, 0 of which are needed.
+ 400 new calculations needed.
+ Parallel processing.
+ Established server at ulissigroup-Alienware-Shuaibi:39247.
+ Establishing worker sessions.
+ Starting local connections.
+  Session 0 (localhost): Log and error written to /tmp/tmpl1R9W4.stderr
+  Session 1 (localhost): Log and error written to /tmp/tmpBa4Ku5.stderr
+  Session 2 (localhost): Log and error written to /tmp/tmpusbPK6.stderr
+  Session 3 (localhost): Log and error written to /tmp/tmpEKR7ib.stderr
+  Session 4 (localhost): Log and error written to /tmp/tmpwbOqwk.stderr
+  Session 5 (localhost): Log and error written to /tmp/tmprqrVt5.stderr
+  Session 6 (localhost): Log and error written to /tmp/tmpAevop2.stderr
+  Session 7 (localhost): Log and error written to /tmp/tmpwnbT9p.stderr
+  Session 8 (localhost): Log and error written to /tmp/tmpRW5H1S.stderr
+  Session 9 (localhost): Log and error written to /tmp/tmpZv_fkK.stderr
+  Session 10 (localhost): Log and error written to /tmp/tmpNgJ9zX.stderr
+  Session 11 (localhost): Log and error written to /tmp/tmpSwXGKx.stderr
+ Parallel calculations starting...
+  Process 3 returned 34 results.
+  Process 0 returned 34 results.
+  Process 2 returned 34 results.
+  Process 7 returned 33 results.
+  Process 8 returned 33 results.
+  Process 10 returned 33 results.
+  Process 4 returned 33 results.
+  Process 5 returned 33 results.
+  Process 9 returned 33 results.
+  Process 1 returned 34 results.
+  Process 6 returned 33 results.
+  Process 11 returned 33 results.
+  400 new results.
+ ...parallel calculations finished. 0.0 min.
+ Adding new results to database.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file parity-fingerprints.
+ File exists with 0 total images, 0 of which are needed.
+ 400 new calculations needed.
+ Parallel processing.
+ Established server at ulissigroup-Alienware-Shuaibi:38697.
+ Establishing worker sessions.
+ Starting local connections.
+  Session 0 (localhost): Log and error written to /tmp/tmpQWVAc0.stderr
+  Session 1 (localhost): Log and error written to /tmp/tmpWJpR6P.stderr
+  Session 2 (localhost): Log and error written to /tmp/tmpql20NL.stderr
+  Session 3 (localhost): Log and error written to /tmp/tmpmjVc9o.stderr
+  Session 4 (localhost): Log and error written to /tmp/tmp_4_iKo.stderr
+  Session 5 (localhost): Log and error written to /tmp/tmprcM5K2.stderr
+  Session 6 (localhost): Log and error written to /tmp/tmp7rJkQ4.stderr
+  Session 7 (localhost): Log and error written to /tmp/tmpfgxDDj.stderr
+  Session 8 (localhost): Log and error written to /tmp/tmpL_miPj.stderr
+  Session 9 (localhost): Log and error written to /tmp/tmpRAEQqf.stderr
+  Session 10 (localhost): Log and error written to /tmp/tmpBudnua.stderr
+  Session 11 (localhost): Log and error written to /tmp/tmphHl02e.stderr
+ Parallel calculations starting...
+  Process 2 returned 34 results.
+  Process 1 returned 34 results.
+  Process 7 returned 33 results.
+  Process 3 returned 34 results.
+  Process 4 returned 33 results.
+  Process 6 returned 33 results.
+  Process 8 returned 33 results.
+  Process 10 returned 33 results.
+  Process 0 returned 34 results.
+  Process 9 returned 33 results.
+  Process 5 returned 33 results.
+  Process 11 returned 33 results.
+  400 new results.
+ ...parallel calculations finished. 0.0 min.
+ Adding new results to database.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file parity-fingerprint-primes.
+ File exists with 0 total images, 0 of which are needed.
+ 400 new calculations needed.
+ Parallel processing.
+ Established server at ulissigroup-Alienware-Shuaibi:33567.
+ Establishing worker sessions.
+ Starting local connections.
+  Session 0 (localhost): Log and error written to /tmp/tmpsrCUNA.stderr
+  Session 1 (localhost): Log and error written to /tmp/tmpv81wlE.stderr
+  Session 2 (localhost): Log and error written to /tmp/tmpMEGB6x.stderr
+  Session 3 (localhost): Log and error written to /tmp/tmp2NwLbV.stderr
+  Session 4 (localhost): Log and error written to /tmp/tmpU2aNLs.stderr
+  Session 5 (localhost): Log and error written to /tmp/tmpYYlSLV.stderr
+  Session 6 (localhost): Log and error written to /tmp/tmphs_XIg.stderr
+  Session 7 (localhost): Log and error written to /tmp/tmpf5z_X1.stderr
+  Session 8 (localhost): Log and error written to /tmp/tmpo9CwlB.stderr
+  Session 9 (localhost): Log and error written to /tmp/tmpNoF64r.stderr
+  Session 10 (localhost): Log and error written to /tmp/tmpFmhQod.stderr
+  Session 11 (localhost): Log and error written to /tmp/tmpEXnA_j.stderr
+ Parallel calculations starting...
+  Process 5 returned 33 results.
+  Process 4 returned 33 results.
+  Process 9 returned 33 results.
+  Process 1 returned 34 results.
+  Process 7 returned 33 results.
+  Process 0 returned 34 results.
+  Process 10 returned 33 results.
+  Process 8 returned 33 results.
+  Process 3 returned 34 results.
+  Process 11 returned 33 results.
+  Process 6 returned 33 results.
+  Process 2 returned 34 results.
+  400 new results.
+ ...parallel calculations finished. 0.0 min.
+ Adding new results to database.
+...fingerprint derivatives calculated. 0.0 min.
+Calculating potential energies...
+...potential energies calculated. 0.0 min.
+Plotting energies...
+...energies plotted. 0.0 min.
+Calculating forces...
+...forces calculated. 0.0 min.
+Plotting forces...
+...forces plotted. 0.1 min.
