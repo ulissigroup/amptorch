@@ -116,7 +116,7 @@ def feature_scaling(data):
         scale.append((value-data_min)/(data_max-data_min))
     return torch.stack(scale)
 
-def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_dataloader,num_epochs):
+def train_model(model,unique_atoms,dataset_size,criterion,scheduler,optimizer,atoms_dataloader,num_epochs):
     device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     log=Logger('benchmark_results/results-log.txt')
@@ -196,7 +196,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
 
             phase='train'
 
-            # scheduler.step()
+            scheduler.step()
             model.train()
 
             MSE=0.0
