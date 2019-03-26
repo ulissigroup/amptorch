@@ -154,12 +154,10 @@ def train_model(model,unique_atoms,dataset_size,criterion,scheduler,optimizer,at
                     #Iterate over the dataloader
                     for data_sample in atoms_dataloader[phase]:
                         input_data=data_sample[0]
-                        print input_data
                         target=data_sample[1]
-                        print target.size()
-                        # target=feature_scaling(target)
-                        # target=target/2000.
                         batch_size=len(target)
+                        target=target.reshape(batch_size,1)
+                        target=feature_scaling(target)
 
                         #Send inputs and labels to the corresponding device (cpu or gpu)
                         for element in unique_atoms:
@@ -172,8 +170,6 @@ def train_model(model,unique_atoms,dataset_size,criterion,scheduler,optimizer,at
                         #forward
                         with torch.set_grad_enabled(phase == 'train'):
                             output=model(input_data)
-                            print output.size()
-                            sys.exit()
                             loss=criterion(output,target)
                             #backward + optimize only if in training phase
                             if phase == 'train':
@@ -230,7 +226,8 @@ def train_model(model,unique_atoms,dataset_size,criterion,scheduler,optimizer,at
             RMSE=np.sqrt(MSE)
             epoch_loss = RMSE
             print epoch_loss
-            plot_loss_y[phase].append(np.log10(RMSE))
+            plot_loss_y[phase].append(RMSE)
+            # plot_loss_y[phase].append(np.log10(RMSE))
 
             log_epoch('{} {} Loss: {:.4f}'.format(time.asctime(),phase,epoch_loss))
 
