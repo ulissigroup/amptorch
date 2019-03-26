@@ -56,8 +56,8 @@ criterion=nn.MSELoss()
 log('Loss Function: %s'%criterion)
 
 #Define the optimizer and implement any optimization settings
-# optimizer_ft=optim.LBFGS(model.parameters(),1)
-optimizer_ft=FullBatchLBFGS(model.parameters(),lr=1,history_size=100,line_search='Wolfe')
+optimizer_ft=optim.LBFGS(model.parameters(),1,max_iter=3)
+# optimizer_ft=FullBatchLBFGS(model.parameters(),lr=1,history_size=100,line_search='Wolfe')
 
 log('Optimizer Info:\n %s'%optimizer_ft)
 

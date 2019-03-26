@@ -166,9 +166,9 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
                 loss.backward()
                 return loss
 
-            options={'closure':closure,'current_loss':obj}
-            # optimizer.step(closure)
-            obj,grad,lr,_,_,_,_,_=optimizer.step(options)
+            # options={'closure':closure,'current_loss':obj}
+            optimizer.step(closure)
+            # obj,grad,lr,_,_,_,_,_=optimizer.step(options)
 
             with torch.no_grad():
                 pred=model(input_data)
