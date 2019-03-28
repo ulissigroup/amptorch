@@ -27,4 +27,4 @@ def generate_data(count,filename='training.traj'):
         dyn.run(50)
         traj.write(atoms)
 
-generate_data(20)
+generate_data(2000)

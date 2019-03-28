@@ -7,10 +7,11 @@ from torch.utils.data import DataLoader
 from data import AtomsDataset,data_factorization,collate_amp
 from amp.utilities import Logger
 from amp.descriptor.gaussian import Gaussian
-from nn_torch import FullNN,train_model
+from nn_torch_lbfgs import FullNN,train_model
 import torch.optim as optim
 from torch.optim import lr_scheduler
 import matplotlib.pyplot as plt
+from LBFGS import LBFGS, FullBatchLBFGS
 
 from ase.build import molecule
 from ase import Atoms
@@ -20,10 +21,12 @@ log=Logger('benchmark_results/results-log.txt')
 log_epoch=Logger('benchmark_results/epoch-log.txt')
 
 log(time.asctime())
-
 # device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-device='cpu'
+device="cpu"
 filename='benchmark_dataset/water.extxyz'
+
+# Batch_size=2000 sample test
+# filename='benchmark_dataset/training.traj'
 
 log('-'*50)
 log('Filename: %s'%filename)
@@ -32,8 +35,7 @@ training_data=AtomsDataset(filename,descriptor=Gaussian())
 unique_atoms,_,_=data_factorization(training_data)
 n_unique_atoms=len(unique_atoms)
 
-
-batch_size=100
+batch_size=400
 log('Batch Size = %d'%batch_size)
 validation_frac=0
 
@@ -50,40 +52,40 @@ else:
     atoms_dataloader=DataLoader(training_data,batch_size,collate_fn=collate_amp,shuffle=True)
 
 model=FullNN(unique_atoms,batch_size)
-
 # if torch.cuda.device_count()>1:
     # print('Utilizing',torch.cuda.device_count(),'GPUs!')
     # model=nn.DataParallel(model)
-
 model=model.to(device)
 criterion=nn.MSELoss()
+# criterion=nn.L1Loss()
 log('Loss Function: %s'%criterion)
 
 #Define the optimizer and implement any optimization settings
-# optimizer_ft=optim.SGD(model.parameters(),lr=.01,momentum=0)
-optimizer_ft=optim.Adam(model.parameters(),lr=.01)
+# optimizer_ft=optim.LBFGS(model.parameters(),1,max_iter=20)
+optimizer_ft=FullBatchLBFGS(model.parameters(),lr=1,history_size=10,line_search='Wolfe')
 
 log('Optimizer Info:\n %s'%optimizer_ft)
 
 #Define scheduler search strategies
-exp_lr_scheduler=lr_scheduler.StepLR(optimizer_ft,step_size=200,gamma=0.1)
-log('LR Scheduler Info: \n Step Size = %s \n Gamma = %s'%(exp_lr_scheduler.step_size,exp_lr_scheduler.gamma))
+# exp_lr_scheduler=lr_scheduler.StepLR(optimizer_ft,step_size=20,gamma=0.1)
+# log('LR Scheduler Info: \n Step Size = %s \n Gamma = %s'%(exp_lr_scheduler.step_size,exp_lr_scheduler.gamma))
 
-num_epochs=100
+num_epochs=20
 log('Number of Epochs = %d'%num_epochs)
 log('')
-model=train_model(model,unique_atoms,dataset_size,criterion,exp_lr_scheduler,optimizer_ft,atoms_dataloader,num_epochs)
-torch.save(model.state_dict(),'benchmark_results/benchmark_model_SGD.pt')
+model=train_model(model,unique_atoms,dataset_size,criterion,optimizer_ft,atoms_dataloader,num_epochs)
+torch.save(model.state_dict(),'benchmark_results/benchmark_model.pt')
 
 def test_model(training_data):
     loader=DataLoader(training_data,1,collate_fn=collate_amp,shuffle=False)
     model=FullNN(unique_atoms,1)
-    model.load_state_dict(torch.load('benchmark_results/benchmark_model_SGD.pt'))
+    model.load_state_dict(torch.load('benchmark_results/benchmark_model.pt'))
     model.eval()
     predictions=[]
     scaled_pred=[]
     targets=[]
-    device='cuda:0'
+    # device='cuda:0'
+    device='cpu'
     model=model.to(device)
     for sample in loader:
         inputs=sample[0]
@@ -94,10 +96,23 @@ def test_model(training_data):
         prediction=model(inputs)
         predictions.append(prediction)
         targets.append(target)
+    data_max=max(targets)
+    data_min=min(targets)
     for value in predictions:
-        data_max=max(targets)
-        data_min=min(targets)
         scaled_pred.append((value*(data_max-data_min))+data_min)
-    plt.plot(targets,scaled_pred,'ro')
+    crit=nn.MSELoss()
+    loss=crit(torch.FloatTensor(scaled_pred),torch.FloatTensor(targets))
+    loss=loss/len(unique_atoms)**2
+    RMSE=np.sqrt(loss)
+    print RMSE
+    fig=plt.figure(figsize=(7.,7.))
+    ax=fig.add_subplot(111)
+    ax.plot(targets,scaled_pred,'bo',markersize=5)
+    ax.plot([data_min,data_max],[data_min,data_max],'r-',lw=0.3)
+    ax.set_xlabel('ab initio energy, eV')
+    ax.set_ylabel('PyTorch energy, eV')
+    ax.set_title('Energies')
+    fig.savefig('benchmark_results/Plots/PyTorch_Prelims.pdf')
     plt.show()
+
 # test_model(training_data)

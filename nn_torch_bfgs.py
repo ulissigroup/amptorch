@@ -28,10 +28,15 @@ class Dense(nn.Linear):
         super(Dense,self).__init__(input_size,output_size,bias)
 
     def reset_parameters(self):
-        # init.constant_(self.weight,45)
-        # init.constant_(self.bias,-1)
+        # init.constant_(self.weight,100)
+        # init.constant_(self.bias,100)
 
-        super(Dense,self).reset_parameters()
+        xavier_uniform_(self.weight,gain=5.0/3)
+        if self.bias is not None:
+            fan_in,_ =init._calculate_fan_in_and_fan_out(self.weight)
+            bound=1/np.sqrt(fan_in)
+            init.uniform_(self.bias,-bound,bound)
+        # super(Dense,self).reset_parameters()
         # init.constant_(self.bias,0)
 
     def forward(self,inputs):
@@ -63,9 +68,6 @@ class MLP(nn.Module):
             n_hidden_size=[n_hidden_size] * (n_layers-1)
         self.n_neurons=[n_input_nodes]+n_hidden_size+[n_output_nodes]
         self.activation=activation
-        # HiddenLayer1=Dense(20,5,activation=activation)
-        # HiddenLayer2=Dense(5,5,activation=activation)
-        # OutputLayer3=Dense(5,1,activation=None)
         layers=[Dense(self.n_neurons[i],self.n_neurons[i+1],activation=activation) for i in range(n_layers-1)]
         layers.append(Dense(self.n_neurons[-2],self.n_neurons[-1],activation=None))
         self.model_net=nn.Sequential(*layers)
@@ -100,8 +102,8 @@ class FullNN(nn.Module):
 
     def forward(self,data):
         energy_pred=torch.zeros(self.batch_size,1)
-        if torch.cuda.is_available():
-            energy_pred=energy_pred.cuda()
+        # if torch.cuda.is_available():
+            # energy_pred=energy_pred.cuda()
         for index,element in enumerate(self.unique_atoms):
             model_inputs=data[element][0]
             contribution_index=data[element][1]
@@ -110,7 +112,7 @@ class FullNN(nn.Module):
                 energy_pred[contribution_index[cindex]]+=atom_output
         return energy_pred
 
-def feature_scaling(data):
+def target_scaling(data):
     data_max=max(data)
     data_min=min(data)
     scale=[]
@@ -119,7 +121,8 @@ def feature_scaling(data):
     return torch.stack(scale)
 
 def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_dataloader,num_epochs):
-    device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    # device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device="cpu"
 
     log=Logger('benchmark_results/results-log.txt')
     log_epoch=Logger('benchmark_results/epoch-log.txt')
@@ -136,12 +139,12 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
     best_model_wts=copy.deepcopy(model.state_dict())
     best_loss=1e8
 
-    plot_epoch_x=list(range(1,num_epochs+1))
+    # plot_epoch_x=list(range(1,num_epochs+1))
     plot_loss_y=[]
 
-    # epoch=0
-    for epoch in range(num_epochs):
-    # while best_loss>=1e-3:
+    epoch=0
+    # for epoch in range(num_epochs):
+    while best_loss>=2e-3:
         log_epoch('{} Epoch {}/{}'.format(time.asctime(),epoch+1,num_epochs))
         log_epoch('-'*30)
 
@@ -149,34 +152,33 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
 
         for data_sample in atoms_dataloader:
             input_data=data_sample[0]
-            target=data_sample[1]
+            target=data_sample[1].requires_grad_(False)
             batch_size=len(target)
             target=target.reshape(batch_size,1)
-            target=feature_scaling(target)
+            target_sd=torch.std(target,dim=0)
+            scaled_target=target_scaling(target)
+            scaled_target_sd=torch.std(scaled_target,dim=0)
 
             #Send inputs and labels to the corresponding device (cpu or gpu)
             for element in unique_atoms:
                 input_data[element][0]=input_data[element][0].to(device)
-            target=target.to(device)
+            scaled_target=scaled_target.to(device)
 
             def closure():
                 optimizer.zero_grad()
                 output=model(input_data)
-                loss=criterion(output,target)
+                loss=criterion(output,scaled_target)
                 loss.backward()
                 return loss
 
-            # options={'closure':closure,'current_loss':obj}
-            optimizer.step(closure)
-            # obj,grad,lr,_,_,_,_,_=optimizer.step(options)
-
-            with torch.no_grad():
-                pred=model(input_data)
-                loss=criterion(pred,target)
-                MSE+=loss.item()*batch_size
+            loss=optimizer.step(closure)
+            MSE+=loss.item()*batch_size/len(unique_atoms)**2
 
         MSE=MSE/dataset_size
         RMSE=np.sqrt(MSE)
+        unscaled_RMSE=RMSE*target_sd/scaled_target_sd
+        unscaled_RMSE=float(unscaled_RMSE)
+        # epoch_loss=unscaled_RMSE
         epoch_loss=RMSE
         print epoch_loss
         plot_loss_y.append(np.log10(RMSE))
@@ -187,9 +189,10 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
             best_loss=epoch_loss
             best_model_wts=copy.deepcopy(model.state_dict())
         log_epoch('')
-        # epoch+=1
+        epoch+=1
 
     time_elapsed=time.time()-since
+    print epoch
     print('Training complete in {:.0f}m {:.0f}s'.format
             (time_elapsed//60,time_elapsed % 60))
 
@@ -203,6 +206,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
     plt.title('RMSE vs. Epoch')
     plt.xlabel('Epoch #')
     plt.ylabel('log(RMSE)')
+    plot_epoch_x=list(range(1,epoch+1))
     plt.plot(plot_epoch_x,plot_loss_y,label='train')
     plt.legend()
     # plt.show()

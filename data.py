@@ -34,7 +34,7 @@ class AtomsDataset(Dataset):
         self.fprange=calculate_fingerprints_range(self.descriptor,self.hash_images)
 
     def __len__(self):
-        return len(self.atom_images)
+        return len(self.hash_images)
 
     def __getitem__(self,index):
         hash_name=self.hash_images.keys()[index]
@@ -48,7 +48,7 @@ class AtomsDataset(Dataset):
                     _afp[_]=-1+2.*((_afp[_]-fprange_atom[_][0])/(fprange_atom[_][1]-fprange_atom[_][0]))
             image_fingerprint[i]=(symbol,_afp)
         try:
-            image_potential_energy=self.hash_images[hash_name].get_potential_energy()
+            image_potential_energy=self.hash_images[hash_name].get_potential_energy(apply_constraint=False)
         except:
             print 'Atoms object has no claculator set! Modify the input images before trying again.'
         return image_fingerprint,image_potential_energy
@@ -109,4 +109,3 @@ def collate_amp(training_data):
     model_input_data.append(element_specific_fingerprints)
     model_input_data.append(torch.tensor(energy_dataset))
     return model_input_data
-

@@ -21,8 +21,12 @@ log=Logger('benchmark_results/results-log.txt')
 log_epoch=Logger('benchmark_results/epoch-log.txt')
 
 log(time.asctime())
-device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device="cpu"
 filename='benchmark_dataset/water.extxyz'
+
+# Batch_size=2000 sample test
+# filename='benchmark_dataset/training.traj'
 
 log('-'*50)
 log('Filename: %s'%filename)
@@ -45,7 +49,7 @@ if validation_frac!=0:
 else:
     dataset_size=len(training_data)
     log('Training Data = %d'%dataset_size)
-    atoms_dataloader=DataLoader(training_data,batch_size,collate_fn=collate_amp,shuffle=True,pin_memory=True)
+    atoms_dataloader=DataLoader(training_data,batch_size,collate_fn=collate_amp,shuffle=True)
 
 model=FullNN(unique_atoms,batch_size)
 # if torch.cuda.device_count()>1:
@@ -53,11 +57,12 @@ model=FullNN(unique_atoms,batch_size)
     # model=nn.DataParallel(model)
 model=model.to(device)
 criterion=nn.MSELoss()
+# criterion=nn.L1Loss()
 log('Loss Function: %s'%criterion)
 
 #Define the optimizer and implement any optimization settings
-optimizer_ft=optim.LBFGS(model.parameters(),1,max_iter=3)
-# optimizer_ft=FullBatchLBFGS(model.parameters(),lr=1,history_size=100,line_search='Wolfe')
+optimizer_ft=optim.LBFGS(model.parameters(),1,max_iter=20)
+# optimizer_ft=FullBatchLBFGS(model.parameters(),lr=1,history_size=10,line_search='Wolfe')
 
 log('Optimizer Info:\n %s'%optimizer_ft)
 
@@ -65,11 +70,11 @@ log('Optimizer Info:\n %s'%optimizer_ft)
 # exp_lr_scheduler=lr_scheduler.StepLR(optimizer_ft,step_size=20,gamma=0.1)
 # log('LR Scheduler Info: \n Step Size = %s \n Gamma = %s'%(exp_lr_scheduler.step_size,exp_lr_scheduler.gamma))
 
-num_epochs=100
+num_epochs=20
 log('Number of Epochs = %d'%num_epochs)
 log('')
 model=train_model(model,unique_atoms,dataset_size,criterion,optimizer_ft,atoms_dataloader,num_epochs)
-# torch.save(model.state_dict(),'benchmark_results/benchmark_model.pt')
+torch.save(model.state_dict(),'benchmark_results/benchmark_model.pt')
 
 def test_model(training_data):
     loader=DataLoader(training_data,1,collate_fn=collate_amp,shuffle=False)
@@ -79,7 +84,8 @@ def test_model(training_data):
     predictions=[]
     scaled_pred=[]
     targets=[]
-    device='cuda:0'
+    # device='cuda:0'
+    device='cpu'
     model=model.to(device)
     for sample in loader:
         inputs=sample[0]
@@ -94,9 +100,14 @@ def test_model(training_data):
     data_min=min(targets)
     for value in predictions:
         scaled_pred.append((value*(data_max-data_min))+data_min)
+    crit=nn.MSELoss()
+    loss=crit(torch.FloatTensor(scaled_pred),torch.FloatTensor(targets))
+    loss=loss/len(unique_atoms)**2
+    RMSE=np.sqrt(loss)
+    print RMSE
     fig=plt.figure(figsize=(7.,7.))
     ax=fig.add_subplot(111)
-    ax.plot(targets,scaled_pred,'bo')
+    ax.plot(targets,scaled_pred,'bo',markersize=5)
     ax.plot([data_min,data_max],[data_min,data_max],'r-',lw=0.3)
     ax.set_xlabel('ab initio energy, eV')
     ax.set_ylabel('PyTorch energy, eV')
