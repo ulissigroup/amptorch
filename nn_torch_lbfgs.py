@@ -3,13 +3,14 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torch.nn import init
-from torch.nn import Tanh, LeakyReLU
+from torch.nn import Tanh, Softplus,LeakyReLU
 from torch.nn.init import xavier_uniform_
 import copy
 from collections import OrderedDict
 import time
 import matplotlib.pyplot as plt
 from amp.utilities import Logger
+from utils import get_grad
 
 class Dense(nn.Linear):
     """Constructs and applies a dense layer with an activation function (when
@@ -21,26 +22,23 @@ class Dense(nn.Linear):
         bias (bool): True to include bias at each neuron. False otherwise
         (Default: True)
         activation (callable): activation function to be utilized (Default:None)
-
-    (Simplified version of SchNet Pack's implementation')
-
     """
 
-    def __init__(self,input_size,output_size,bias=True, activation=None):
+    def __init__(self,input_size,output_size, bias=True,activation=None):
         self.activation=activation
         super(Dense,self).__init__(input_size,output_size,bias)
 
     def reset_parameters(self):
-        # init.constant_(self.weight,.05)
-        # init.constant_(self.bias,-1)
+        # init.constant_(self.weight,100)
+        # init.constant_(self.bias,100)
 
-        xavier_uniform_(self.weight,gain=5./3)
+        xavier_uniform_(self.weight,gain=5.0/3)
         if self.bias is not None:
-            fan_in,_=init._calculate_fan_in_and_fan_out(self.weight)
+            fan_in,_ =init._calculate_fan_in_and_fan_out(self.weight)
             bound=1/np.sqrt(fan_in)
             init.uniform_(self.bias,-bound,bound)
         # super(Dense,self).reset_parameters()
-        # init.constant_(self.bias,1)
+        # init.constant_(self.bias,0)
 
     def forward(self,inputs):
         neuron_output=super(Dense,self).forward(inputs)
@@ -63,7 +61,7 @@ class MLP(nn.Module):
 
     """
 
-    def __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=3,n_hidden_size=5,activation=LeakyReLU):
+    def __init__(self,n_input_nodes=20,n_output_nodes=1,n_layers=3,n_hidden_size=5,activation=Tanh):
         super(MLP,self).__init__()
         #if n_hidden_size is None:
             #implement pyramid neuron structure across each layer
@@ -71,9 +69,10 @@ class MLP(nn.Module):
             n_hidden_size=[n_hidden_size] * (n_layers-1)
         self.n_neurons=[n_input_nodes]+n_hidden_size+[n_output_nodes]
         self.activation=activation
-        layers=[Dense(self.n_neurons[i],self.n_neurons[i+1],bias=True,activation=activation) for i in range(n_layers-1)]
+        layers=[Dense(self.n_neurons[i],self.n_neurons[i+1],activation=activation) for i in range(n_layers-1)]
         layers.append(Dense(self.n_neurons[-2],self.n_neurons[-1],activation=None))
         self.model_net=nn.Sequential(*layers)
+        # self.model_net=nn.Sequential(HiddenLayer1,HiddenLayer2,OutputLayer3)
 
     def forward(self, inputs):
         """Feeds data forward in the neural network
@@ -114,7 +113,7 @@ class FullNN(nn.Module):
                 energy_pred[contribution_index[cindex]]+=atom_output
         return energy_pred
 
-def feature_scaling(data):
+def target_scaling(data):
     data_max=max(data)
     data_min=min(data)
     scale=[]
@@ -122,13 +121,15 @@ def feature_scaling(data):
         scale.append((value-data_min)/(data_max-data_min))
     return torch.stack(scale)
 
-def train_model(model,unique_atoms,dataset_size,criterion,scheduler,optimizer,atoms_dataloader,num_epochs):
+def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_dataloader,num_epochs):
     # device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    device='cpu'
+    device="cpu"
 
     log=Logger('benchmark_results/results-log.txt')
     log_epoch=Logger('benchmark_results/epoch-log.txt')
     log('Model: %s'%model)
+
+    model.train()
 
     since = time.time()
     log_epoch('-'*50)
@@ -139,111 +140,63 @@ def train_model(model,unique_atoms,dataset_size,criterion,scheduler,optimizer,at
     best_model_wts=copy.deepcopy(model.state_dict())
     best_loss=1e8
 
-    plot_epoch_x=list(range(1,num_epochs+1))
-    plot_loss_y={'train':[],'val':[]}
+    for data_set in atoms_dataloader:
+        data_sample=data_set
 
-    for epoch in range(num_epochs):
+    input_data=data_sample[0]
+    target=data_sample[1].requires_grad_(False)
+    batch_size=len(target)
+    target=target.reshape(batch_size,1)
+    target=target_scaling(target)
+    for element in unique_atoms:
+        input_data[element][0]=input_data[element][0].to(device)
+    target=target.to(device)
+
+    opfun=lambda x:model(input_data)
+    grad,obj=get_grad(optimizer,input_data,target,opfun)
+    sys.exit()
+
+    # plot_epoch_x=list(range(1,num_epochs+1))
+    plot_loss_y=[]
+
+    epoch=0
+    # for epoch in range(num_epochs):
+    grad,obj=get_grad(optimizer)
+    while best_loss>=2e-3:
         log_epoch('{} Epoch {}/{}'.format(time.asctime(),epoch+1,num_epochs))
         log_epoch('-'*30)
 
-        if type(atoms_dataloader)=='dict':
+        MSE=0.0
 
-                for phase in ['train','val']:
+        def closure():
+            optimizer.zero_grad()
+            output=model(input_data)
+            loss=criterion(output,scaled_target)
+            loss.backward()
+            return loss
 
-                    if phase == 'train':
-                        scheduler.step()
-                        model.train()
-                    else:
-                        model.eval()
+        loss=optimizer.step(closure)
+        MSE+=loss.item()*batch_size/len(unique_atoms)**2
 
-                    MSE=0.0
+        MSE=MSE/dataset_size
+        RMSE=np.sqrt(MSE)
+        unscaled_RMSE=RMSE*target_sd/scaled_target_sd
+        unscaled_RMSE=float(unscaled_RMSE)
+        # epoch_loss=unscaled_RMSE
+        epoch_loss=RMSE
+        print epoch_loss
+        plot_loss_y.append(np.log10(RMSE))
 
-                    #Iterate over the dataloader
-                    for data_sample in atoms_dataloader[phase]:
-                        input_data=data_sample[0]
-                        target=data_sample[1]
-                        batch_size=len(target)
-                        target=target.reshape(batch_size,1)
-                        target=feature_scaling(target)
+        log_epoch('{} Loss: {:.4f}'.format(time.asctime(),epoch_loss))
 
-                        #Send inputs and labels to the corresponding device (cpu or gpu)
-                        for element in unique_atoms:
-                            input_data[element][0]=input_data[element][0].to(device)
-                        target=target.to(device)
-
-                        #zero the parameter gradients
-                        optimizer.zero_grad()
-
-                        #forward
-                        with torch.set_grad_enabled(phase == 'train'):
-                            output=model(input_data)
-                            loss=criterion(output,target)
-                            #backward + optimize only if in training phase
-                            if phase == 'train':
-                                loss.backward()
-                                optimizer.step()
-
-                        MSE += batch_size*(loss.item())
-
-                    MSE=MSE/dataset_size[phase]
-                    RMSE=np.sqrt(MSE)
-                    epoch_loss = RMSE
-                    plot_loss_y[phase].append(np.log10(RMSE))
-
-                    log_epoch('{} {} Loss: {:.4f}'.format(time.asctime(),phase,epoch_loss))
-
-                    if phase == 'val' and epoch_loss<best_loss:
-                        best_loss=epoch_loss
-                        best_model_wts=copy.deepcopy(model.state_dict())
-        else:
-
-            phase='train'
-
-            scheduler.step()
-            model.train()
-
-            MSE=0.0
-            #Iterate over the dataloader
-            for data_sample in atoms_dataloader:
-                input_data=data_sample[0]
-                target=data_sample[1]
-                batch_size=len(target)
-                target=target.reshape(batch_size,1)
-                target=feature_scaling(target)
-
-                #Send inputs and labels to the corresponding device (cpu or gpu)
-                for element in unique_atoms:
-                    input_data[element][0]=input_data[element][0].to(device)
-                target=target.to(device)
-
-                #zero the parameter gradients
-                optimizer.zero_grad()
-
-                #forward
-                with torch.set_grad_enabled(True):
-                    output=model(input_data)
-                    loss=criterion(output,target)
-                    #backward + optimize only if in training phase
-                    loss.backward()
-                    optimizer.step()
-
-                MSE += loss.item()*batch_size/len(unique_atoms)**2
-
-            MSE=MSE/dataset_size
-            RMSE=np.sqrt(MSE)
-            epoch_loss = RMSE
-            print epoch_loss
-            plot_loss_y[phase].append(RMSE)
-            # plot_loss_y[phase].append(np.log10(RMSE))
-
-            log_epoch('{} {} Loss: {:.4f}'.format(time.asctime(),phase,epoch_loss))
-
-            if epoch_loss<best_loss:
-                best_loss=epoch_loss
-                best_model_wts=copy.deepcopy(model.state_dict())
+        if epoch_loss<best_loss:
+            best_loss=epoch_loss
+            best_model_wts=copy.deepcopy(model.state_dict())
         log_epoch('')
+        epoch+=1
 
     time_elapsed=time.time()-since
+    print epoch
     print('Training complete in {:.0f}m {:.0f}s'.format
             (time_elapsed//60,time_elapsed % 60))
 
@@ -251,22 +204,17 @@ def train_model(model,unique_atoms,dataset_size,criterion,scheduler,optimizer,at
     log('Training complete in {:.0f}m {:.0f}s'.format
                 (time_elapsed//60,time_elapsed % 60))
 
-    if phase=='val':
-        log('Best validation loss: {:4f}'.format(best_loss))
-    else:
-        log('Best training loss: {:4f}'.format(best_loss))
-
+    log('Best training loss: {:4f}'.format(best_loss))
     log('')
 
     plt.title('RMSE vs. Epoch')
     plt.xlabel('Epoch #')
     plt.ylabel('log(RMSE)')
-    plt.plot(plot_epoch_x,plot_loss_y['train'],label='train')
-    if phase=='val':
-        plt.plot(plot_epoch_x,plot_loss_y['val'],label='val')
+    plot_epoch_x=list(range(1,epoch+1))
+    plt.plot(plot_epoch_x,plot_loss_y,label='train')
     plt.legend()
-    plt.show()
-
+    # plt.show()
+    plt.savefig('test.png')
     model.load_state_dict(best_model_wts)
     return model
 
