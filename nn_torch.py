@@ -109,9 +109,16 @@ class FullNN(nn.Module):
         for index,element in enumerate(self.unique_atoms):
             model_inputs=data[element][0]
             contribution_index=data[element][1]
+            l=len(contribution_index)
+            dim=l/self.batch_size
+            contribution_index=torch.tensor(contribution_index)
+            contribution_index=contribution_index.reshape(self.batch_size,dim)
             atomwise_outputs=self.elementwise_models[index].forward(model_inputs)
-            for cindex,atom_output in enumerate(atomwise_outputs):
-                energy_pred[contribution_index[cindex]]+=atom_output
+            atomwise_outputs=atomwise_outputs.reshape(self.batch_size,dim)
+            element_pred=torch.sum(atomwise_outputs,1).reshape(self.batch_size,1)
+            energy_pred+=element_pred
+            # for cindex,atom_output in enumerate(atomwise_outputs):
+                # energy_pred[contribution_index[cindex]]+=atom_output
         return energy_pred
 
 def feature_scaling(data):

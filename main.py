@@ -60,8 +60,8 @@ criterion=nn.MSELoss()
 log('Loss Function: %s'%criterion)
 
 #Define the optimizer and implement any optimization settings
-# optimizer_ft=optim.SGD(model.parameters(),lr=.01,momentum=0)
-optimizer_ft=optim.Adam(model.parameters(),lr=.01)
+optimizer_ft=optim.SGD(model.parameters(),lr=.01,momentum=0)
+# optimizer_ft=optim.Adam(model.parameters(),lr=.01)
 
 log('Optimizer Info:\n %s'%optimizer_ft)
 
