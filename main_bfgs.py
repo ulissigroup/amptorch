@@ -49,7 +49,7 @@ if validation_frac!=0:
 else:
     dataset_size=len(training_data)
     log('Training Data = %d'%dataset_size)
-    atoms_dataloader=DataLoader(training_data,batch_size,collate_fn=collate_amp,shuffle=True)
+    atoms_dataloader=DataLoader(training_data,batch_size,collate_fn=collate_amp,shuffle=False)
 
 model=FullNN(unique_atoms,batch_size)
 # if torch.cuda.device_count()>1:
@@ -61,7 +61,7 @@ criterion=nn.MSELoss()
 log('Loss Function: %s'%criterion)
 
 #Define the optimizer and implement any optimization settings
-optimizer_ft=optim.LBFGS(model.parameters(),1,max_iter=20)
+optimizer_ft=optim.LBFGS(model.parameters(),.8,max_iter=20)
 # optimizer_ft=FullBatchLBFGS(model.parameters(),lr=1,history_size=10,line_search='Wolfe')
 
 log('Optimizer Info:\n %s'%optimizer_ft)
@@ -107,7 +107,7 @@ def test_model(training_data):
     print RMSE
     fig=plt.figure(figsize=(7.,7.))
     ax=fig.add_subplot(111)
-    ax.plot(targets,scaled_pred,'bo',markersize=5)
+    ax.plot(targets,scaled_pred,'bo',markersize=3)
     ax.plot([data_min,data_max],[data_min,data_max],'r-',lw=0.3)
     ax.set_xlabel('ab initio energy, eV')
     ax.set_ylabel('PyTorch energy, eV')

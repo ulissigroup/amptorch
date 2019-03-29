@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 from torch.nn import init
 from torch.nn import Tanh, Softplus,LeakyReLU
-from torch.nn.init import xavier_uniform_
+from torch.nn.init import xavier_uniform_,kaiming_uniform_
 import copy
 from collections import OrderedDict
 import time
@@ -28,16 +28,16 @@ class Dense(nn.Linear):
         super(Dense,self).__init__(input_size,output_size,bias)
 
     def reset_parameters(self):
-        # init.constant_(self.weight,100)
-        # init.constant_(self.bias,100)
+        # init.constant_(self.weight,1)
+        init.constant_(self.bias,0)
 
-        xavier_uniform_(self.weight,gain=5.0/3)
-        if self.bias is not None:
-            fan_in,_ =init._calculate_fan_in_and_fan_out(self.weight)
-            bound=1/np.sqrt(fan_in)
-            init.uniform_(self.bias,-bound,bound)
+        # xavier_uniform_(self.weight,gain=5.0/3)
+        kaiming_uniform_(self.weight,nonlinearity='tanh')
+        # if self.bias is not None:
+            # fan_in,_ =init._calculate_fan_in_and_fan_out(self.weight)
+            # bound=1/np.sqrt(fan_in)
+            # init.uniform_(self.bias,-bound,bound)
         # super(Dense,self).reset_parameters()
-        # init.constant_(self.bias,0)
 
     def forward(self,inputs):
         neuron_output=super(Dense,self).forward(inputs)
@@ -107,9 +107,16 @@ class FullNN(nn.Module):
         for index,element in enumerate(self.unique_atoms):
             model_inputs=data[element][0]
             contribution_index=data[element][1]
+            l=len(contribution_index)
+            dim=l/self.batch_size
+            contribution_index=torch.tensor(contribution_index)
+            contribution_index=contribution_index.reshape(self.batch_size,dim)
             atomwise_outputs=self.elementwise_models[index].forward(model_inputs)
-            for cindex,atom_output in enumerate(atomwise_outputs):
-                energy_pred[contribution_index[cindex]]+=atom_output
+            atomwise_outputs=atomwise_outputs.reshape(self.batch_size,dim)
+            element_pred=torch.sum(atomwise_outputs,1).reshape(self.batch_size,1)
+            energy_pred+=element_pred
+            # for cindex,atom_output in enumerate(atomwise_outputs):
+                # energy_pred[contribution_index[cindex]]+=atom_output
         return energy_pred
 
 def target_scaling(data):
@@ -144,7 +151,7 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
 
     epoch=0
     # for epoch in range(num_epochs):
-    while best_loss>=2e-3:
+    while best_loss>=1e-3:
         log_epoch('{} Epoch {}/{}'.format(time.asctime(),epoch+1,num_epochs))
         log_epoch('-'*30)
 
