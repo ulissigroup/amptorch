@@ -4,13 +4,12 @@ import torch
 import torch.nn as nn
 from torch.nn import init
 from torch.nn import Tanh, Softplus,LeakyReLU
-from torch.nn.init import xavier_uniform_
+from torch.nn.init import xavier_uniform_,kaiming_uniform_
 import copy
 from collections import OrderedDict
 import time
 import matplotlib.pyplot as plt
 from amp.utilities import Logger
-from utils import get_grad
 
 class Dense(nn.Linear):
     """Constructs and applies a dense layer with an activation function (when
@@ -29,16 +28,16 @@ class Dense(nn.Linear):
         super(Dense,self).__init__(input_size,output_size,bias)
 
     def reset_parameters(self):
-        # init.constant_(self.weight,100)
-        # init.constant_(self.bias,100)
+        # init.constant_(self.weight,1)
+        # init.constant_(self.bias,0)
 
-        xavier_uniform_(self.weight,gain=5.0/3)
+        # xavier_uniform_(self.weight,gain=5.0/3)
+        kaiming_uniform_(self.weight,nonlinearity='tanh')
         if self.bias is not None:
             fan_in,_ =init._calculate_fan_in_and_fan_out(self.weight)
             bound=1/np.sqrt(fan_in)
             init.uniform_(self.bias,-bound,bound)
         # super(Dense,self).reset_parameters()
-        # init.constant_(self.bias,0)
 
     def forward(self,inputs):
         neuron_output=super(Dense,self).forward(inputs)
@@ -89,7 +88,7 @@ class FullNN(nn.Module):
 
     '''
     def __init__(self,unique_atoms,batch_size):
-        log=Logger('benchmark_results/results-log.txt')
+        log=Logger('../benchmark_results/results-log.txt')
 
         super(FullNN,self).__init__()
         self.unique_atoms=unique_atoms
@@ -108,25 +107,60 @@ class FullNN(nn.Module):
         for index,element in enumerate(self.unique_atoms):
             model_inputs=data[element][0]
             contribution_index=data[element][1]
+            l=len(contribution_index)
+            dim=l/self.batch_size
+            contribution_index=torch.tensor(contribution_index)
+            contribution_index=contribution_index.reshape(self.batch_size,dim)
             atomwise_outputs=self.elementwise_models[index].forward(model_inputs)
-            for cindex,atom_output in enumerate(atomwise_outputs):
-                energy_pred[contribution_index[cindex]]+=atom_output
+            atomwise_outputs=atomwise_outputs.reshape(self.batch_size,dim)
+            element_pred=torch.sum(atomwise_outputs,1).reshape(self.batch_size,1)
+            energy_pred+=element_pred
+            # for cindex,atom_output in enumerate(atomwise_outputs):
+                # energy_pred[contribution_index[cindex]]+=atom_output
         return energy_pred
 
-def target_scaling(data):
-    data_max=max(data)
-    data_min=min(data)
-    scale=[]
-    for index,value in enumerate(data):
-        scale.append((value-data_min)/(data_max-data_min))
-    return torch.stack(scale)
+def target_scaling(data,method=None):
+    if method=='minmax':
+        data_max=max(data)
+        data_min=min(data)
+        scale=[]
+        for index,value in enumerate(data):
+            scale.append((value-data_min)/(data_max-data_min))
+        return torch.stack(scale)
+    elif method=='standardize':
+        data_mean=torch.mean(data)
+        data_sd=torch.std(data,dim=0)
+        scale=[]
+        for index,value in enumerate(data):
+            scale.append((value-data_mean)/data_sd)
+        return torch.stack(scale)
+    else:
+        return data
+
+def pred_scaling(data,target,method=None):
+    if method=='minmax':
+        target_max=max(target)
+        target_min=min(target)
+        scale=[]
+        for index,value in enumerate(data):
+            scale.append((value*(target_max-target_min))+target_min)
+        return torch.stack(scale)
+    elif method=='standardize':
+        target_mean=torch.mean(target)
+        target_sd=torch.std(target,dim=0)
+        scale=[]
+        for index,value in enumerate(data):
+            scale.append((value*target_sd)+target_mean)
+        return torch.stack(scale)
+    else:
+        return data
 
 def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_dataloader,num_epochs):
     # device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     device="cpu"
 
-    log=Logger('benchmark_results/results-log.txt')
-    log_epoch=Logger('benchmark_results/epoch-log.txt')
+    log=Logger('../benchmark_results/results-log.txt')
+    log_epoch=Logger('../benchmark_results/epoch-log.txt')
     log('Model: %s'%model)
 
     model.train()
@@ -140,49 +174,46 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
     best_model_wts=copy.deepcopy(model.state_dict())
     best_loss=1e8
 
-    for data_set in atoms_dataloader:
-        data_sample=data_set
-
-    input_data=data_sample[0]
-    target=data_sample[1].requires_grad_(False)
-    batch_size=len(target)
-    target=target.reshape(batch_size,1)
-    target=target_scaling(target)
-    for element in unique_atoms:
-        input_data[element][0]=input_data[element][0].to(device)
-    target=target.to(device)
-
-    opfun=lambda x:model(input_data)
-    grad,obj=get_grad(optimizer,input_data,target,opfun)
-    sys.exit()
-
     # plot_epoch_x=list(range(1,num_epochs+1))
     plot_loss_y=[]
 
     epoch=0
     # for epoch in range(num_epochs):
-    grad,obj=get_grad(optimizer)
     while best_loss>=2e-3:
         log_epoch('{} Epoch {}/{}'.format(time.asctime(),epoch+1,num_epochs))
         log_epoch('-'*30)
 
         MSE=0.0
 
-        def closure():
-            optimizer.zero_grad()
-            output=model(input_data)
-            loss=criterion(output,scaled_target)
-            loss.backward()
-            return loss
+        for data_sample in atoms_dataloader:
+            input_data=data_sample[0]
+            target=data_sample[1].requires_grad_(False)
+            batch_size=len(target)
+            target=target.reshape(batch_size,1)
+            scaled_target=target_scaling(target,method='standardize')
+            #Send inputs and labels to the corresponding device (cpu or gpu)
+            for element in unique_atoms:
+                input_data[element][0]=input_data[element][0].to(device)
+            scaled_target=scaled_target.to(device)
 
-        loss=optimizer.step(closure)
-        MSE+=loss.item()*batch_size/len(unique_atoms)**2
+            def closure():
+                optimizer.zero_grad()
+                output=model(input_data)
+                loss=criterion(output,scaled_target)
+                loss.backward()
+                return loss
+
+            optimizer.step(closure)
+
+            #Perform predictions and compute loss
+            with torch.no_grad():
+                scaled_preds=model(input_data)
+                raw_preds=pred_scaling(scaled_preds,target,method='standardize')
+                loss=criterion(raw_preds,target)
+                MSE+=loss.item()*batch_size/len(unique_atoms)**2
 
         MSE=MSE/dataset_size
         RMSE=np.sqrt(MSE)
-        unscaled_RMSE=RMSE*target_sd/scaled_target_sd
-        unscaled_RMSE=float(unscaled_RMSE)
-        # epoch_loss=unscaled_RMSE
         epoch_loss=RMSE
         print epoch_loss
         plot_loss_y.append(np.log10(RMSE))
@@ -192,11 +223,10 @@ def train_model(model,unique_atoms,dataset_size,criterion,optimizer,atoms_datalo
         if epoch_loss<best_loss:
             best_loss=epoch_loss
             best_model_wts=copy.deepcopy(model.state_dict())
-        log_epoch('')
         epoch+=1
 
     time_elapsed=time.time()-since
-    print epoch
+    print ('Training complete in {} steps'.format(epoch))
     print('Training complete in {:.0f}m {:.0f}s'.format
             (time_elapsed//60,time_elapsed % 60))
 

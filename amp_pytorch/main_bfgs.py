@@ -11,19 +11,18 @@ from nn_torch_bfgs import FullNN,train_model
 import torch.optim as optim
 from torch.optim import lr_scheduler
 import matplotlib.pyplot as plt
-from LBFGS import LBFGS, FullBatchLBFGS
 
 from ase.build import molecule
 from ase import Atoms
 from ase.calculators.emt import EMT
 
-log=Logger('benchmark_results/results-log.txt')
-log_epoch=Logger('benchmark_results/epoch-log.txt')
+log=Logger('../benchmark_results/results-log.txt')
+log_epoch=Logger('../benchmark_results/epoch-log.txt')
 
 log(time.asctime())
 # device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 device="cpu"
-filename='benchmark_dataset/water.extxyz'
+filename='../benchmark_dataset/water.extxyz'
 
 # Batch_size=2000 sample test
 # filename='benchmark_dataset/training.traj'
@@ -32,10 +31,12 @@ log('-'*50)
 log('Filename: %s'%filename)
 
 training_data=AtomsDataset(filename,descriptor=Gaussian())
+# training=AtomsDataset(filename,descriptor=Gaussian())
+# training_data=[training[0],training[1]]
 unique_atoms,_,_=data_factorization(training_data)
 n_unique_atoms=len(unique_atoms)
 
-batch_size=400
+batch_size=len(training_data)
 log('Batch Size = %d'%batch_size)
 validation_frac=0
 
@@ -57,12 +58,11 @@ model=FullNN(unique_atoms,batch_size)
     # model=nn.DataParallel(model)
 model=model.to(device)
 criterion=nn.MSELoss()
-# criterion=nn.L1Loss()
 log('Loss Function: %s'%criterion)
 
 #Define the optimizer and implement any optimization settings
 optimizer_ft=optim.LBFGS(model.parameters(),.8,max_iter=20)
-# optimizer_ft=FullBatchLBFGS(model.parameters(),lr=1,history_size=10,line_search='Wolfe')
+# optimizer_ft=optim.LBFGS(model.parameters(),.8,max_iter=20,max_eval=100000,tolerance_grad=1e-8,tolerance_change=1e-6)
 
 log('Optimizer Info:\n %s'%optimizer_ft)
 
@@ -74,9 +74,53 @@ num_epochs=20
 log('Number of Epochs = %d'%num_epochs)
 log('')
 model=train_model(model,unique_atoms,dataset_size,criterion,optimizer_ft,atoms_dataloader,num_epochs)
-torch.save(model.state_dict(),'benchmark_results/benchmark_model.pt')
+# torch.save(model.state_dict(),'../benchmark_results/benchmark_model.pt')
 
-def test_model(training_data):
+def parity_plot(training_data):
+    loader=DataLoader(training_data,400,collate_fn=collate_amp,shuffle=False)
+    model=FullNN(unique_atoms,400)
+    model.load_state_dict(torch.load('../benchmark_results/benchmark_model.pt'))
+    model.eval()
+    predictions=[]
+    scaled_pred=[]
+    targets=[]
+    # device='cuda:0'
+    device='cpu'
+    model=model.to(device)
+    with torch.no_grad():
+        for sample in loader:
+            inputs=sample[0]
+            for element in unique_atoms:
+                inputs[element][0]=inputs[element][0].to(device)
+            targets=sample[1]
+            targets=targets.to(device)
+            predictions=model(inputs)
+        data_max=max(targets)
+        data_min=min(targets)
+        data_mean=torch.mean(targets)
+        data_sd=torch.std(targets,dim=0)
+        scale=(predictions*data_sd)+data_mean
+        # scale=(predictions*(data_max-data_min))+data_min
+        targets=targets.reshape(len(targets),1)
+        scaled_pred=scaled_pred.reshape(len(targets),1)
+        crit=nn.MSELoss()
+        loss=crit(scale,targets)
+        loss=loss/len(unique_atoms)**2
+        loss=loss.detach().numpy()
+        RMSE=np.sqrt(loss)
+        fig=plt.figure(figsize=(7.,7.))
+        ax=fig.add_subplot(111)
+        targets=targets.detach().numpy()
+        scale=scale.detach().numpy()
+        ax.plot(targets,scale,'bo',markersize=3)
+        ax.plot([data_min,data_max],[data_min,data_max],'r-',lw=0.3)
+        ax.set_xlabel('ab initio energy, eV')
+        ax.set_ylabel('PyTorch energy, eV')
+        ax.set_title('Energies')
+        fig.savefig('../benchmark_results/Plots/PyTorch_Prelims.pdf')
+    plt.show()
+
+def plot_hist(training_data):
     loader=DataLoader(training_data,1,collate_fn=collate_amp,shuffle=False)
     model=FullNN(unique_atoms,1)
     model.load_state_dict(torch.load('benchmark_results/benchmark_model.pt'))
@@ -84,6 +128,7 @@ def test_model(training_data):
     predictions=[]
     scaled_pred=[]
     targets=[]
+    residuals=[]
     # device='cuda:0'
     device='cpu'
     model=model.to(device)
@@ -98,21 +143,23 @@ def test_model(training_data):
         targets.append(target)
     data_max=max(targets)
     data_min=min(targets)
-    for value in predictions:
-        scaled_pred.append((value*(data_max-data_min))+data_min)
-    crit=nn.MSELoss()
-    loss=crit(torch.FloatTensor(scaled_pred),torch.FloatTensor(targets))
-    loss=loss/len(unique_atoms)**2
-    RMSE=np.sqrt(loss)
-    print RMSE
+    targets=torch.stack(targets)
+    data_mean=torch.mean(targets)
+    data_sd=torch.std(targets,dim=0)
+    for index,value in enumerate(predictions):
+        # scaled_value=(value*(data_max-data_min))+data_min
+        scaled_value=(value*data_sd)+data_mean
+        scaled_pred.append(scaled_value)
+        residual=targets[index]-scaled_value
+        residuals.append(residual)
     fig=plt.figure(figsize=(7.,7.))
     ax=fig.add_subplot(111)
-    ax.plot(targets,scaled_pred,'bo',markersize=3)
-    ax.plot([data_min,data_max],[data_min,data_max],'r-',lw=0.3)
-    ax.set_xlabel('ab initio energy, eV')
-    ax.set_ylabel('PyTorch energy, eV')
+    ax.plot(scaled_pred,residuals,'bo',markersize=3)
+    ax.set_xlabel('PyTorch energy, eV')
+    ax.set_ylabel('residual, eV')
     ax.set_title('Energies')
-    fig.savefig('benchmark_results/Plots/PyTorch_Prelims.pdf')
-    plt.show()
+    fig.savefig('benchmark_results/Plots/PyTorch_Residuals.pdf')
+    # plt.show()
 
-# test_model(training_data)
+# parity_plot(training_data)
+# plot_hist(training_data)
