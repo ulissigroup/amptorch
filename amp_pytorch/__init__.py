@@ -7,88 +7,97 @@ from torch.utils.data import DataLoader
 from data_preprocess import AtomsDataset, factorize_data, collate_amp
 from amp.utilities import Logger
 from amp.descriptor.gaussian import Gaussian
-from nn_torch_bfgs import FullNN, train_model
+from NN_model import FullNN
+from trainer import train_model
 import torch.optim as optim
 import matplotlib.pyplot as plt
 
-log = Logger("../benchmark_results/results-log.txt")
-log_epoch = Logger("../benchmark_results/epoch-log.txt")
 
-log(time.asctime())
-# device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-device = "cpu"
-filename = "../benchmark_dataset/water.extxyz"
+class AMPtorch():
 
-log("-" * 50)
-log("Filename: %s" % filename)
+    def __init__(self, datafile='../benchmark_dataset/water.extxyz',
+                 device='cpu', val_frac=0):
 
-training_data = AtomsDataset(filename, descriptor=Gaussian())
-unique_atoms, _, _, _ = factorize_data(training_data)
-n_unique_atoms = len(unique_atoms)
+        self.log = Logger("../benchmark_results/results-log.txt")
+        self.log_epoch = Logger("../benchmark_results/epoch-log.txt")
+        self.log(time.asctime())
+        self.device = device
+        self.filename = datafile
 
-batch_size = len(training_data)
-log("Batch Size = %d" % batch_size)
-validation_frac = 0
+        self.log("-" * 50)
+        self.log("Filename: %s" % self.filename)
 
-if validation_frac != 0:
-    samplers = training_data.create_splits(training_data, validation_frac)
-    dataset_size = {
-        "train": (1.0 - validation_frac) * len(training_data),
-        "val": validation_frac * len(training_data),
-    }
+        self.training_data = AtomsDataset(self.filename, descriptor=Gaussian())
+        self.unique_atoms, _, _, _ = factorize_data(self.training_data)
+        # n_unique_atoms = len(unique_atoms)
 
-    log(
-        "Training Data = %d Validation Data = %d"
-        % (dataset_size["train"], dataset_size["val"])
-    )
+        self.batch_size = len(self.training_data)
+        self.log("Batch Size = %d" % self.batch_size)
+        self.validation_frac = val_frac
 
-    atoms_dataloader = {
-        x: DataLoader(
-            training_data,
-            batch_size,
-            collate_fn=collate_amp,
-            sampler=samplers[x],
+        if self.validation_frac != 0:
+            samplers = self.training_data.create_splits(
+                self.training_data, self.validation_frac)
+            dataset_size = {
+                "train": (1.0 - self.validation_frac) * len(self.training_data),
+                "val": self.validation_frac * len(self.training_data),
+            }
+
+            self.log(
+                "Training Data = %d Validation Data = %d"
+                % (dataset_size["train"], dataset_size["val"])
+            )
+
+            self.atoms_dataloader = {
+                x: DataLoader(
+                    self.training_data,
+                    self.batch_size,
+                    collate_fn=collate_amp,
+                    sampler=samplers[x],
+                )
+                for x in ["train", "val"]
+            }
+
+        else:
+            self.dataset_size = len(self.training_data)
+            self.log("Training Data = %d" % self.dataset_size)
+            self.atoms_dataloader = DataLoader(
+                self.training_data, self.batch_size, collate_fn=collate_amp,
+                shuffle=False
+            )
+
+        self.model = FullNN(self.unique_atoms, self.batch_size, device='cpu')
+        self.model = self.model.to(self.device)
+
+    def train(self, criterion=nn.MSELoss(), optimizer_ft=optim.LBFGS,
+              rmse_criteria=2e-3):
+
+        self.criterion = criterion
+        self.log("Loss Function: %s" % self.criterion)
+        # Define the optimizer and implement any optimization settings
+        self.optimizer_ft = optimizer_ft(self.model.parameters(), 1)
+        self.log("Optimizer Info:\n %s" % self.optimizer_ft)
+
+        self.rmse_criteria = rmse_criteria
+        self.log("RMSE criteria = {}".format(self.rmse_criteria))
+        self.log("")
+
+        self.model = train_model(
+            self.model,
+            self.device,
+            self.unique_atoms,
+            self.dataset_size,
+            self.criterion,
+            self.optimizer_ft,
+            self.atoms_dataloader,
+            rmse_criteria
         )
-        for x in ["train", "val"]
-    }
+        torch.save(self.model.state_dict(),
+                   "../benchmark_results/benchmark_model.pt")
 
-else:
-    dataset_size = len(training_data)
-    log("Training Data = %d" % dataset_size)
-    atoms_dataloader = DataLoader(
-        training_data, batch_size, collate_fn=collate_amp, shuffle=False
-    )
-model = FullNN(unique_atoms, batch_size)
-# if torch.cuda.device_count()>1:
-# print('Utilizing',torch.cuda.device_count(),'GPUs!')
-# model=nn.DataParallel(model)
-model = model.to(device)
-criterion = nn.MSELoss()
-log("Loss Function: %s" % criterion)
 
-# Define the optimizer and implement any optimization settings
-optimizer_ft = optim.LBFGS(model.parameters(), 1, max_iter=20)
-# optimizer_ft=optim.LBFGS(model.parameters(),.8,max_iter=20,max_eval=100000,tolerance_grad=1e-8,tolerance_change=1e-6)
-
-log("Optimizer Info:\n %s" % optimizer_ft)
-
-# Define scheduler search strategies
-# exp_lr_scheduler=lr_scheduler.StepLR(optimizer_ft,step_size=20,gamma=0.1)
-# log('LR Scheduler Info: \n Step Size = %s \n Gamma = %s'%(exp_lr_scheduler.step_size,exp_lr_scheduler.gamma))
-
-num_epochs = 20
-log("Number of Epochs = %d" % num_epochs)
-log("")
-model = train_model(
-    model,
-    unique_atoms,
-    dataset_size,
-    criterion,
-    optimizer_ft,
-    atoms_dataloader,
-    num_epochs,
-)
-torch.save(model.state_dict(), "../benchmark_results/benchmark_model.pt")
+test = AMPtorch()
+test.train()
 
 
 def parity_plot(training_data):
@@ -179,7 +188,3 @@ def plot_hist(training_data):
     ax.set_title("Energies")
     fig.savefig("benchmark_results/Plots/PyTorch_Residuals.pdf")
     # plt.show()
-
-
-# parity_plot(training_data)
-# plot_hist(training_data)
