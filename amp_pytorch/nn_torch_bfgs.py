@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 import torch
 import torch.nn as nn
@@ -196,6 +197,7 @@ def train_model(model, unique_atoms, dataset_size, criterion, optimizer, atoms_d
             batch_size = len(target)
             target = target.reshape(batch_size, 1)
             scaled_target = target_scaling(target, method='standardize')
+            num_of_atoms = data_sample[2].reshape(batch_size, 1)
             # Send inputs and labels to the corresponding device (cpu or gpu)
             for element in unique_atoms:
                 input_data[element][0] = input_data[element][0].to(device)
@@ -215,8 +217,10 @@ def train_model(model, unique_atoms, dataset_size, criterion, optimizer, atoms_d
                 scaled_preds = model(input_data)
                 raw_preds = pred_scaling(
                     scaled_preds, target, method='standardize')
-                loss = criterion(raw_preds, target)
-                MSE += loss.item()*batch_size/len(unique_atoms)**2
+                raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
+                target_per_atom = torch.div(target, num_of_atoms)
+                loss = criterion(raw_preds_per_atom, target_per_atom)
+                MSE += loss.item()*batch_size
 
         MSE = MSE/dataset_size
         RMSE = np.sqrt(MSE)

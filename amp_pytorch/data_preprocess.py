@@ -83,16 +83,18 @@ def factorize_data(training_data):
     unique_atoms = []
     fingerprint_dataset = []
     energy_dataset = []
+    num_of_atoms = []
     for image_sample in training_data:
         image_fingerprint = image_sample[0]
         fingerprint_dataset.append(image_fingerprint)
         image_potential_energy = image_sample[1]
         energy_dataset.append(image_potential_energy)
+        num_of_atoms.append(float(len(image_fingerprint)))
         for atom in image_fingerprint:
             element = atom[0]
             if element not in unique_atoms:
                 unique_atoms.append(element)
-    return unique_atoms, fingerprint_dataset, energy_dataset
+    return unique_atoms, fingerprint_dataset, energy_dataset, num_of_atoms
 
 
 def collate_amp(training_data):
@@ -101,7 +103,7 @@ def collate_amp(training_data):
     specific datasets to be fed into the element specific Neural Nets.
     """
 
-    unique_atoms, fingerprint_dataset, energy_dataset = factorize_data(
+    unique_atoms, fingerprint_dataset, energy_dataset, num_of_atoms = factorize_data(
         training_data)
     element_specific_fingerprints = {}
     model_input_data = []
@@ -119,4 +121,5 @@ def collate_amp(training_data):
             element_specific_fingerprints[element][0])
     model_input_data.append(element_specific_fingerprints)
     model_input_data.append(torch.tensor(energy_dataset))
+    model_input_data.append(torch.tensor(num_of_atoms))
     return model_input_data
