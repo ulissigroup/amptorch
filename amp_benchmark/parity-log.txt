@@ -301,3 +301,45 @@ No queuing system detected; single machine assumed.
 Parallel configuration determined from environment for <single machine>:
   localhost: 12
 Loaded file: calc.amp
+
+   oo      o       o   oooooo
+  o  o     oo     oo   o     o
+ o    o    o o   o o   o     o
+o      o   o  o o  o   o     o
+oooooooo   o   o   o   oooooo
+o      o   o       o   o
+o      o   o       o   o
+o      o   o       o   o
+
+Amp: Atomistic Machine-learning Package
+Developed by Andrew Peterson, Alireza Khorshidi, and others,
+Brown University.
+PI Website: http://brown.edu/go/catalyst
+Official repository: http://bitbucket.org/andrewpeterson/amp
+Official documentation: http://amp.readthedocs.org/
+Citation:
+  Alireza Khorshidi & Andrew A. Peterson,
+  Computer Physics Communications 207: 310-324 (2016).
+  http://doi.org/10.1016/j.cpc.2016.05.010
+======================================================================
+User: mshuaibi
+Hostname: ulissigroup-Alienware-Shuaibi
+Date: 2019-04-02T16:39:05 (2019-04-02T20:39:05 UTC)
+Architecture: x86_64
+PID: 15619
+Amp version: 0.6.1
+Amp directory: /home/mshuaibi/.local/lib/python2.7/site-packages/amp
+ Last commit: unknown hash
+ Last commit date: unknown date
+Python: v2.7.15: /usr/bin/python
+ASE v3.17.0: /home/mshuaibi/.local/lib/python2.7/site-packages/ase
+NumPy v1.16.2: /home/mshuaibi/.local/lib/python2.7/site-packages/numpy
+SciPy v1.2.1: /home/mshuaibi/.local/lib/python2.7/site-packages/scipy
+ZMQ/PyZMQ v4.3.1/v18.0.1: /home/mshuaibi/.local/lib/python2.7/site-packages/zmq
+pxssh: Not available from pxssh.
+pxssh (via pexpect v4.6.0): /home/mshuaibi/.local/lib/python2.7/site-packages/pexpect/pxssh.pyc
+======================================================================
+No queuing system detected; single machine assumed.
+Parallel configuration determined from environment for <single machine>:
+  localhost: 12
+Loaded file: calc.amp
