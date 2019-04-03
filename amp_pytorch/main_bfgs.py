@@ -1,3 +1,4 @@
+import sys
 import time
 import torch
 import torch.nn as nn
@@ -22,7 +23,7 @@ log("-" * 50)
 log("Filename: %s" % filename)
 
 training_data = AtomsDataset(filename, descriptor=Gaussian())
-unique_atoms, _, _ = factorize_data(training_data)
+unique_atoms, _, _, _ = factorize_data(training_data)
 n_unique_atoms = len(unique_atoms)
 
 batch_size = len(training_data)
@@ -57,7 +58,6 @@ else:
     atoms_dataloader = DataLoader(
         training_data, batch_size, collate_fn=collate_amp, shuffle=False
     )
-
 model = FullNN(unique_atoms, batch_size)
 # if torch.cuda.device_count()>1:
 # print('Utilizing',torch.cuda.device_count(),'GPUs!')
