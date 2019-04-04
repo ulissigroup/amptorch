@@ -84,7 +84,7 @@ class FullNN(nn.Module):
     """
 
     def __init__(self, unique_atoms, batch_size, device):
-        log = Logger('../benchmark_results/results-log.txt')
+        log = Logger('results/results-log.txt')
 
         super(FullNN, self).__init__()
         self.device = device

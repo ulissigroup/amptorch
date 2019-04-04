@@ -5,7 +5,7 @@ from amp import analysis
 import ase
 from ase import io
 
-calc=Amp(descriptor=Gaussian(),model=NeuralNetwork(),label='calc')
-images=ase.io.read('water.extxyz',':')
+calc = Amp(descriptor=Gaussian(), model=NeuralNetwork(), label="calc")
+images = ase.io.read("water.extxyz", ":")
 calc.train(images)
-analysis.plot_parity('calc.amp',images)
+analysis.plot_parity("calc.amp", images)

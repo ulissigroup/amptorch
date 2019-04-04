@@ -48,8 +48,8 @@ def pred_scaling(data, target, method=None):
 def train_model(model, device, unique_atoms, dataset_size, criterion, 
                 optimizer, atoms_dataloader, rmse_criteria):
 
-    log = Logger('../benchmark_results/results-log.txt')
-    log_epoch = Logger('../benchmark_results/epoch-log.txt')
+    log = Logger('results/results-log.txt')
+    log_epoch = Logger('results/epoch-log.txt')
     log('Model: %s' % model)
 
     model.train()
