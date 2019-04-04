@@ -9,7 +9,7 @@ from data_preprocess import AtomsDataset, factorize_data, collate_amp
 from amp.utilities import Logger
 from amp.descriptor.gaussian import Gaussian
 from NN_model import FullNN
-from trainer import train_model
+from uni_trainer import train_model
 import torch.optim as optim
 import matplotlib.pyplot as plt
 
@@ -34,27 +34,28 @@ class AMPtorch():
         self.unique_atoms, _, _, _ = factorize_data(self.training_data)
         # n_unique_atoms = len(unique_atoms)
 
-        self.batch_size = len(self.training_data)
-        self.log("Batch Size = %d" % self.batch_size)
+        self.data_size = len(self.training_data)
+        # self.log("Dataset Size = %d" % self.data_size)
         self.validation_frac = val_frac
 
         if self.validation_frac != 0:
             samplers = self.training_data.create_splits(
                 self.training_data, self.validation_frac)
-            dataset_size = {
-                "train": (1.0 - self.validation_frac) * len(self.training_data),
-                "val": self.validation_frac * len(self.training_data),
+            self.dataset_size = {
+                "train": self.data_size -
+                int(self.validation_frac*self.data_size),
+                "val": int(self.validation_frac*self.data_size)
             }
 
             self.log(
                 "Training Data = %d Validation Data = %d"
-                % (dataset_size["train"], dataset_size["val"])
+                % (self.dataset_size["train"], self.dataset_size["val"])
             )
 
             self.atoms_dataloader = {
                 x: DataLoader(
                     self.training_data,
-                    self.batch_size,
+                    self.data_size,
                     collate_fn=collate_amp,
                     sampler=samplers[x],
                 )
@@ -65,11 +66,11 @@ class AMPtorch():
             self.dataset_size = len(self.training_data)
             self.log("Training Data = %d" % self.dataset_size)
             self.atoms_dataloader = DataLoader(
-                self.training_data, self.batch_size, collate_fn=collate_amp,
+                self.training_data, self.data_size, collate_fn=collate_amp,
                 shuffle=False
             )
 
-        self.model = FullNN(self.unique_atoms, self.batch_size, device='cpu')
+        self.model = FullNN(self.unique_atoms, device='cpu')
         self.model = self.model.to(self.device)
 
     def train(self, criterion=nn.MSELoss(), optimizer_ft=optim.LBFGS,
