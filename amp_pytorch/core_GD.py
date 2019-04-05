@@ -1,30 +1,23 @@
-"""core.py: Defines an AMPtorch instance that allows users to specify the
-training images, GPU utilization, and validation data usage. An AMPtorch
-instance contains the ability to call forth a 'train' method and subsequent
-plotting methods."""
-
+import sys
 import time
 import os
 import torch
-import torch.optim as optim
-from torch.utils.data import DataLoader
 import torch.nn as nn
+import numpy as np
+from torch.utils.data import DataLoader
+from data_preprocess import AtomsDataset, factorize_data, collate_amp
 from amp.utilities import Logger
 from amp.descriptor.gaussian import Gaussian
+from NN_model import FullNN
+from GD_trainer import train_model
+import torch.optim as optim
 import matplotlib.pyplot as plt
-import numpy as np
-from amp_pytorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
-from amp_pytorch.NN_model import FullNN
-from amp_pytorch.trainer import train_model
-
-__author__ = "Muhammed Shuaibi"
-__email__ = "mshuaibi@andrew.cmu.edu"
 
 
 class AMPtorch():
 
-    def __init__(self, datafile,
-                 device='cpu', val_frac=0):
+    def __init__(self, datafile='../datasets/water.extxyz',
+                 device='cpu', val_frac=0, batch=None):
 
         if not os.path.exists("results"):
             os.mkdir("results")
@@ -33,15 +26,17 @@ class AMPtorch():
         self.log(time.asctime())
         self.device = device
         self.filename = datafile
+        self.batch = batch
 
         self.log("-" * 50)
         self.log("Filename: %s" % self.filename)
 
         self.training_data = AtomsDataset(self.filename, descriptor=Gaussian())
         self.unique_atoms, _, _, _ = factorize_data(self.training_data)
-
-        self.data_size = len(self.training_data)
         self.validation_frac = val_frac
+        self.data_size = len(self.training_data)
+        if self.batch is None:
+            self.batch = self.data_size
 
         if self.validation_frac != 0:
             samplers = self.training_data.create_splits(
@@ -60,7 +55,7 @@ class AMPtorch():
             self.atoms_dataloader = {
                 x: DataLoader(
                     self.training_data,
-                    self.data_size,
+                    self.batch,
                     collate_fn=collate_amp,
                     sampler=samplers[x],
                 )
@@ -71,18 +66,19 @@ class AMPtorch():
             self.dataset_size = len(self.training_data)
             self.log("Training Data = %d" % self.dataset_size)
             self.atoms_dataloader = DataLoader(
-                self.training_data, self.data_size, collate_fn=collate_amp,
-                shuffle=False
+                self.training_data, self.batch, collate_fn=collate_amp,
+                shuffle=True
             )
 
-        self.model = FullNN(self.unique_atoms, self.device)
+        self.model = FullNN(self.unique_atoms, device)
         self.model = self.model.to(self.device)
 
-    def train(self, criterion=nn.MSELoss(), optimizer_ft=optim.LBFGS, lr=1,
+    def train(self, criterion=nn.MSELoss(), optimizer_ft=optim.SGD, lr=.01,
               rmse_criteria=2e-3):
 
         self.criterion = criterion
         self.log("Loss Function: %s" % self.criterion)
+        self.log("Batch Size: %d" % self.batch)
         # Define the optimizer and implement any optimization settings
         self.optimizer_ft = optimizer_ft(self.model.parameters(), lr)
         self.log("Optimizer Info:\n %s" % self.optimizer_ft)
@@ -104,6 +100,7 @@ class AMPtorch():
         torch.save(self.model.state_dict(),
                    "results/best_model.pt")
         return self.model
+
 
 def parity_plot(training_data):
     loader = DataLoader(training_data, 400,
