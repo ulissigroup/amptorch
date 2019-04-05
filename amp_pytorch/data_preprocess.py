@@ -41,7 +41,7 @@ class AtomsDataset(Dataset):
         hash_name = self.hashed_images.keys()[index]
         image_fingerprint = self.descriptor.fingerprints[hash_name]
         fprange = self.fprange
-        "fingerprint scaling to [-1,1]"
+        # fingerprint scaling to [-1,1]
         for i, (atom, afp) in enumerate(image_fingerprint):
             _afp = copy.copy(afp)
             fprange_atom = fprange[atom]
