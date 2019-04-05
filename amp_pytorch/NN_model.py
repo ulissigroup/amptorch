@@ -1,4 +1,7 @@
-import sys
+"""NN_model.py: Constructs a model consisting of element specific Neural
+Networks as understood from Behler and Parrinello's works. A model instance is
+constructed based off the unique number of atoms in the dataset."""
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -6,6 +9,9 @@ from torch.nn import init
 from torch.nn import Tanh, Softplus, LeakyReLU
 from torch.nn.init import xavier_uniform_, kaiming_uniform_
 from amp.utilities import Logger
+
+__author__ = "Muhammed Shuaibi"
+__email__ = "mshuaibi@andrew.cmu.edu"
 
 
 class Dense(nn.Linear):
@@ -57,7 +63,7 @@ class MLP(nn.Module):
     def __init__(self, n_input_nodes=20, n_output_nodes=1, n_layers=3,
                  n_hidden_size=5, activation=Tanh):
         super(MLP, self).__init__()
-        if type(n_hidden_size) is int:
+        if isinstance(n_hidden_size, int):
             n_hidden_size = [n_hidden_size] * (n_layers-1)
         self.n_neurons = [n_input_nodes]+n_hidden_size+[n_output_nodes]
         self.activation = activation
