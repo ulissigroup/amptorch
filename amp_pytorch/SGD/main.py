@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 from torch.utils.data import DataLoader
-from data import AtomsDataset,data_factorization,collate_amp
+from data_preprocess import AtomsDataset,factorize_data,collate_amp
 from amp.utilities import Logger
 from amp.descriptor.gaussian import Gaussian
 from nn_torch import FullNN,train_model

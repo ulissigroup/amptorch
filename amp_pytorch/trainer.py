@@ -89,9 +89,8 @@ def train_model(model, device, unique_atoms, dataset_size, criterion,
         for data_sample in atoms_dataloader:
             input_data = data_sample[0]
             target = data_sample[1].requires_grad_(False)
-            target = target.to(device)
             batch_size = len(target)
-            target = target.reshape(batch_size, 1)
+            target = target.reshape(batch_size, 1).to(device)
             scaled_target = target_scaling(target, method='standardize')
             num_of_atoms = data_sample[2].reshape(batch_size, 1).to(device)
             # Send inputs and labels to the corresponding device (cpu or gpu)

@@ -80,15 +80,17 @@ class AMPtorch():
 
     def train(self, criterion=nn.MSELoss(), optimizer_ft=optim.LBFGS, lr=1,
               rmse_criteria=2e-3):
+        """Trains the model under the provided optimizer conditions until
+        convergence is reached as specified by the rmse_critieria."""
 
-        self.criterion = criterion
-        self.log("Loss Function: %s" % self.criterion)
+        criterion = criterion
+        self.log("Loss Function: %s" % criterion)
         # Define the optimizer and implement any optimization settings
-        self.optimizer_ft = optimizer_ft(self.model.parameters(), lr)
-        self.log("Optimizer Info:\n %s" % self.optimizer_ft)
+        optimizer_ft = optimizer_ft(self.model.parameters(), lr)
+        self.log("Optimizer Info:\n %s" % optimizer_ft)
 
-        self.rmse_criteria = rmse_criteria
-        self.log("RMSE criteria = {}".format(self.rmse_criteria))
+        rmse_criteria = rmse_criteria
+        self.log("RMSE criteria = {}".format(rmse_criteria))
         self.log("")
 
         self.model = train_model(
@@ -96,14 +98,15 @@ class AMPtorch():
             self.device,
             self.unique_atoms,
             self.dataset_size,
-            self.criterion,
-            self.optimizer_ft,
+            criterion,
+            optimizer_ft,
             self.atoms_dataloader,
             rmse_criteria
         )
         torch.save(self.model.state_dict(),
                    "results/best_model.pt")
         return self.model
+
 
 def parity_plot(training_data):
     loader = DataLoader(training_data, 400,
