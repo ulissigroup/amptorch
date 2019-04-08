@@ -10,12 +10,10 @@ import torch
 from torch.utils.data import Dataset, SubsetRandomSampler
 from amp.utilities import hash_images
 from amp.model import calculate_fingerprints_range
-from amp.descriptor.gaussian import Gaussian
 import ase
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
-
 
 class AtomsDataset(Dataset):
     """
