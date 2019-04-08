@@ -60,7 +60,7 @@ class MLP(nn.Module):
         activation: Activation function to be utilized. (Default=Tanh())
     """
 
-    def __init__(self, n_input_nodes=20, n_output_nodes=1, n_layers=3,
+    def __init__(self, n_input_nodes=8, n_output_nodes=1, n_layers=3,
                  n_hidden_size=5, activation=Tanh):
         super(MLP, self).__init__()
         if isinstance(n_hidden_size, int):

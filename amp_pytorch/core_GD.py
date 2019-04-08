@@ -1,21 +1,27 @@
-import sys
+"""core_GD.py: Defines an AMPtorch instance that allows users to specify the
+training images, GPU utilization, and validation data usage. An AMPtorch
+instance contains the ability to call forth a 'train' method and subsequent
+plotting methods. Utilized for GD-based algorithms including SGD, Adam, etc."""
+
 import time
 import os
 import torch
-import torch.nn as nn
-import numpy as np
+import torch.optim as optim
 from torch.utils.data import DataLoader
-from data_preprocess import AtomsDataset, factorize_data, collate_amp
+import torch.nn as nn
 from amp.utilities import Logger
 from amp.descriptor.gaussian import Gaussian
-from NN_model import FullNN
-from GD_trainer import train_model
-import torch.optim as optim
 import matplotlib.pyplot as plt
+import numpy as np
+from amp_pytorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
+from amp_pytorch.NN_model import FullNN
+from amp_pytorch.GD_trainer import train_model
+
+__author__ = "Muhammed Shuaibi"
+__email__ = "mshuaibi@andrew.cmu.edu"
 
 
 class AMPtorch():
-
     def __init__(self, datafile='../datasets/water.extxyz',
                  device='cpu', val_frac=0, batch=None):
 
@@ -73,18 +79,24 @@ class AMPtorch():
         self.model = FullNN(self.unique_atoms, device)
         self.model = self.model.to(self.device)
 
-    def train(self, criterion=nn.MSELoss(), optimizer_ft=optim.SGD, lr=.01,
+    def train(self, criterion=nn.MSELoss(),
+              optimizer_ft=optim.SGD, scheduler=None, lr=.01,
               rmse_criteria=2e-3):
+        """Trains the model under the provided optimizer conditions until
+        convergence is reached as specified by the rmse_critieria."""
 
-        self.criterion = criterion
-        self.log("Loss Function: %s" % self.criterion)
+        criterion = criterion
+        self.log("Loss Function: %s" % criterion)
         self.log("Batch Size: %d" % self.batch)
         # Define the optimizer and implement any optimization settings
-        self.optimizer_ft = optimizer_ft(self.model.parameters(), lr)
-        self.log("Optimizer Info:\n %s" % self.optimizer_ft)
+        optimizer_ft = optimizer_ft(self.model.parameters(), lr)
+        self.log("Optimizer Info:\n %s" % optimizer_ft)
+        if scheduler:
+            scheduler = scheduler(optimizer_ft, step_size=7, gamma=0.1)
+        self.log("Scheduler Info:\n %s" % scheduler)
 
-        self.rmse_criteria = rmse_criteria
-        self.log("RMSE criteria = {}".format(self.rmse_criteria))
+        rmse_criteria = rmse_criteria
+        self.log("RMSE criteria = {}".format(rmse_criteria))
         self.log("")
 
         self.model = train_model(
@@ -92,13 +104,14 @@ class AMPtorch():
             self.device,
             self.unique_atoms,
             self.dataset_size,
-            self.criterion,
-            self.optimizer_ft,
+            criterion,
+            optimizer_ft,
+            scheduler,
             self.atoms_dataloader,
             rmse_criteria
         )
         torch.save(self.model.state_dict(),
-                   "results/best_model.pt")
+                   "results/best_model_GD.pt")
         return self.model
 
 

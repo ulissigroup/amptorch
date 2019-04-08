@@ -1,49 +1,65 @@
+"""GD_trainer.py: Trains a provided model utilizing GD based algorithms
+including SGD, Adam, etc. Model convergence is achieved upon reaching the
+specified rmse convergence criteria."""
+
 import sys
-import numpy as np
-import torch
-import torch.nn
-import copy
 import time
-import matplotlib.pyplot as plt
+import copy
 from amp.utilities import Logger
+import matplotlib.pyplot as plt
+import torch.nn
+import torch
+import numpy as np
+
+__author__ = "Muhammed Shuaibi"
+__email__ = "mshuaibi@andrew.cmu.edu"
 
 
 def target_scaling(data, method=None):
-    if method == "minmax":
+    """Scales the target values through a specified method:
+
+        method: 'minmax' = scales values to between[0,1]
+                'standardize' = scales values to have a mean of 0 and standard
+                deviation of 1
+        """
+
+    if method == 'minmax':
         data_max = max(data)
         data_min = min(data)
         scale = []
-        for index, value in enumerate(data):
-            scale.append((value - data_min) / (data_max - data_min))
+        for value in data:
+            scale.append((value-data_min)/(data_max-data_min))
         return torch.stack(scale)
-    elif method == "standardize":
+    elif method == 'standardize':
         data_mean = torch.mean(data)
         data_sd = torch.std(data, dim=0)
         scale = []
-        for index, value in enumerate(data):
-            scale.append((value - data_mean) / data_sd)
+        for value in data:
+            scale.append((value-data_mean)/data_sd)
         return torch.stack(scale)
-    else:
-        return data
+    return data
 
 
 def pred_scaling(data, target, method=None):
-    if method == "minmax":
+    """Unscales model predictions based off the previous scaling method.
+    Unscaling is necessary in order to compute RMSE values off the raw targets
+    """
+
+    if method == 'minmax':
         target_max = max(target)
         target_min = min(target)
         scale = []
-        for index, value in enumerate(data):
-            scale.append((value * (target_max - target_min)) + target_min)
+        for value in data:
+            scale.append((value*(target_max-target_min))+target_min)
         return torch.stack(scale)
-    elif method == "standardize":
+    elif method == 'standardize':
         target_mean = torch.mean(target)
         target_sd = torch.std(target, dim=0)
         scale = []
-        for index, value in enumerate(data):
-            scale.append((value * target_sd) + target_mean)
+        for value in data:
+            scale.append((value*target_sd)+target_mean)
         return torch.stack(scale)
-    else:
-        return data
+    return data
 
 
 def train_model(
@@ -53,6 +69,7 @@ def train_model(
         dataset_size,
         criterion,
         optimizer,
+        scheduler,
         atoms_dataloader,
         rmse_criteria,
 ):
@@ -63,7 +80,7 @@ def train_model(
 
     since = time.time()
     log_epoch("-" * 50)
-    print("Training Initiated!")
+    print "Training Initiated!"
     log_epoch("%s Training Initiated!" % time.asctime())
     log_epoch("")
 
@@ -77,17 +94,18 @@ def train_model(
         log_epoch("{} Epoch {}".format(time.asctime(), epoch + 1))
         log_epoch("-" * 30)
 
-        if type(atoms_dataloader) == dict:
+        if isinstance(atoms_dataloader, dict):
 
             for phase in ["train", "val"]:
 
                 if phase == "train":
-                    # scheduler.step()
+                    if scheduler:
+                        scheduler.step()
                     model.train()
                 else:
                     model.eval()
 
-                MSE = 0.0
+                mse = 0.0
 
                 for data_sample in atoms_dataloader[phase]:
                     input_data = data_sample[0]
@@ -107,22 +125,26 @@ def train_model(
                     with torch.set_grad_enabled(phase == "train"):
                         output = model(input_data)
                         loss = criterion(output, scaled_target)
+                        with torch.no_grad():
+                            scaled_preds = model(input_data)
+                            raw_preds = pred_scaling(
+                                scaled_preds, target, method="standardize")
+                            raw_preds_per_atom = torch.div(raw_preds,
+                                                           num_of_atoms)
+                            target_per_atom = torch.div(target, num_of_atoms)
+                            actual_loss = criterion(raw_preds_per_atom,
+                                                    target_per_atom)
                         if phase == "train":
                             loss.backward()
                             optimizer.step()
-                    with torch.no_grad():
-                        scaled_preds = model(input_data)
-                        raw_preds = pred_scaling(
-                            scaled_preds, target, method="standardize")
-                        raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
-                        target_per_atom = torch.div(target, num_of_atoms)
-                        loss = criterion(raw_preds_per_atom, target_per_atom)
-                        MSE += loss.item() * batch_size
+                    mse += actual_loss.item() * batch_size
 
-                MSE = MSE / dataset_size[phase]
-                RMSE = np.sqrt(MSE)
-                epoch_loss = RMSE
-                plot_loss_y[phase].append(np.log10(RMSE))
+                mse = mse / dataset_size[phase]
+                rmse = np.sqrt(mse)
+                epoch_loss = rmse
+                plot_loss_y[phase].append(np.log10(rmse))
+
+                print "{} Loss: {:.4f}".format(phase, epoch_loss)
 
                 log_epoch("{} {} Loss: {:.4f}".format(
                     time.asctime(), phase, epoch_loss))
@@ -136,19 +158,20 @@ def train_model(
         else:
             phase = 'train'
 
-            # scheduler.step()
+            if scheduler:
+                scheduler.step()
             model.train()
 
-            MSE = 0.0
+            mse = 0.0
 
             for data_sample in atoms_dataloader:
                 input_data = data_sample[0]
                 target = data_sample[1].requires_grad_(False)
                 batch_size = len(target)
-                target = target.reshape(batch_size, 1)
+                target = target.reshape(batch_size, 1).to(device)
                 scaled_target = target_scaling(
                     target, method="standardize")
-                num_of_atoms = data_sample[2].reshape(batch_size, 1)
+                num_of_atoms = data_sample[2].reshape(batch_size, 1).to(device)
                 for element in unique_atoms:
                     input_data[element][0] = input_data[element][0].to(
                         device)
@@ -159,23 +182,24 @@ def train_model(
                 with torch.set_grad_enabled(True):
                     output = model(input_data)
                     loss = criterion(output, scaled_target)
+                    with torch.no_grad():
+                        scaled_preds = model(input_data)
+                        raw_preds = pred_scaling(
+                            scaled_preds, target, method="standardize")
+                        raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
+                        target_per_atom = torch.div(target, num_of_atoms)
+                        actual_loss = criterion(raw_preds_per_atom,
+                                                target_per_atom)
                     loss.backward()
                     optimizer.step()
-                with torch.no_grad():
-                    scaled_preds = model(input_data)
-                    raw_preds = pred_scaling(
-                        scaled_preds, target, method="standardize")
-                    raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
-                    target_per_atom = torch.div(target, num_of_atoms)
-                    loss = criterion(raw_preds_per_atom, target_per_atom)
-                    MSE += loss.item() * batch_size
+                mse += actual_loss.item() * batch_size
 
-            MSE = MSE / dataset_size
-            RMSE = np.sqrt(MSE)
-            epoch_loss = RMSE
+            mse = mse / dataset_size
+            rmse = np.sqrt(mse)
+            epoch_loss = rmse
             print epoch_loss
 
-            plot_loss_y[phase].append(np.log10(RMSE))
+            plot_loss_y[phase].append(np.log10(rmse))
 
             if epoch_loss < best_loss:
                 best_loss = epoch_loss
@@ -188,7 +212,7 @@ def train_model(
         epoch += 1
 
     time_elapsed = time.time() - since
-    print("Training complete in {} steps".format(epoch))
+    print "Training complete in {} steps".format(epoch)
     print(
         "Training complete in {:.0f}m {:.0f}s".format(
             time_elapsed // 60, time_elapsed % 60

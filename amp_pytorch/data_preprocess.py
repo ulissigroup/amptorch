@@ -10,10 +10,12 @@ import torch
 from torch.utils.data import Dataset, SubsetRandomSampler
 from amp.utilities import hash_images
 from amp.model import calculate_fingerprints_range
+from amp.descriptor.gaussian import Gaussian
 import ase
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
+
 
 class AtomsDataset(Dataset):
     """
@@ -48,7 +50,7 @@ class AtomsDataset(Dataset):
         hash_name = self.hashed_images.keys()[index]
         image_fingerprint = self.descriptor.fingerprints[hash_name]
         fprange = self.fprange
-        "fingerprint scaling to [-1,1]"
+        # fingerprint scaling to [-1,1]
         for i, (atom, afp) in enumerate(image_fingerprint):
             _afp = copy.copy(afp)
             fprange_atom = fprange[atom]
