@@ -7,11 +7,11 @@ import torch.optim as optim
 from amp_pytorch import core
 
 # locate training images
-IMAGES = "../datasets/defect-trajectory.extxyz"
+IMAGES = "../datasets/water.extxyz"
 
 # specify whether a GPU is to be utilized
-# DEVICE = "cpu"
-DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+DEVICE = "cpu"
+# DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # define model
 MODEL = core.AMPtorch(IMAGES, DEVICE, val_frac=0)
@@ -19,8 +19,11 @@ MODEL = core.AMPtorch(IMAGES, DEVICE, val_frac=0)
 # define training parameters
 CRITERION = nn.MSELoss()
 OPTIMIZER = optim.LBFGS
-RMSE_CRITERIA = 2e-3
-LR = 1
+RMSE_CRITERIA = 1e-3
+LR = 0.8
 
 # train the model
-MODEL.train(CRITERION, OPTIMIZER, LR, RMSE_CRITERIA)
+TRAINED_MODEL = MODEL.train(CRITERION, OPTIMIZER, LR, RMSE_CRITERIA)
+# plotting
+MODEL.parity_plot(TRAINED_MODEL)
+MODEL.plot_residuals(TRAINED_MODEL)
