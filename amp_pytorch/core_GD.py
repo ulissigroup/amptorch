@@ -1,9 +1,8 @@
-"""core.py: Defines an AMPtorch instance that allows users to specify the
+"""core_GD.py: Defines an AMPtorch instance that allows users to specify the
 training images, GPU utilization, and validation data usage. An AMPtorch
 instance contains the ability to call forth a 'train' method and subsequent
-plotting methods."""
+plotting methods. Utilized for GD-based algorithms including SGD, Adam, etc."""
 
-import sys
 import time
 import os
 import torch
@@ -16,14 +15,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 from amp_pytorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
 from amp_pytorch.NN_model import FullNN
-from amp_pytorch.trainer import train_model, pred_scaling
+from amp_pytorch.GD_trainer import train_model, pred_scaling
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
 
 
-class AMPtorch:
-    def __init__(self, datafile, device="cpu", val_frac=0):
+class AMPtorch():
+    def __init__(self, datafile='../datasets/water.extxyz',
+                 device='cpu', val_frac=0, batch=None):
 
         if not os.path.exists("results"):
             os.mkdir("results")
@@ -32,23 +32,25 @@ class AMPtorch:
         self.log(time.asctime())
         self.device = device
         self.filename = datafile
+        self.batch = batch
 
         self.log("-" * 50)
         self.log("Filename: %s" % self.filename)
 
         self.training_data = AtomsDataset(self.filename, descriptor=Gaussian())
         self.unique_atoms, _, _, _ = factorize_data(self.training_data)
-
-        self.data_size = len(self.training_data)
         self.validation_frac = val_frac
+        self.data_size = len(self.training_data)
+        if self.batch is None:
+            self.batch = self.data_size
 
         if self.validation_frac != 0:
             samplers = self.training_data.create_splits(
-                self.training_data, self.validation_frac
-            )
+                self.training_data, self.validation_frac)
             self.dataset_size = {
-                "train": self.data_size - int(self.validation_frac * self.data_size),
-                "val": int(self.validation_frac * self.data_size),
+                "train": self.data_size -
+                int(self.validation_frac*self.data_size),
+                "val": int(self.validation_frac*self.data_size)
             }
 
             self.log(
@@ -59,7 +61,7 @@ class AMPtorch:
             self.atoms_dataloader = {
                 x: DataLoader(
                     self.training_data,
-                    self.data_size,
+                    self.batch,
                     collate_fn=collate_amp,
                     sampler=samplers[x],
                 )
@@ -70,26 +72,28 @@ class AMPtorch:
             self.dataset_size = len(self.training_data)
             self.log("Training Data = %d" % self.dataset_size)
             self.atoms_dataloader = DataLoader(
-                self.training_data,
-                self.data_size,
-                collate_fn=collate_amp,
-                shuffle=False,
+                self.training_data, self.batch, collate_fn=collate_amp,
+                shuffle=True
             )
 
-        self.model = FullNN(self.unique_atoms, self.device)
+        self.model = FullNN(self.unique_atoms, device)
         self.model = self.model.to(self.device)
 
-    def train(
-        self, criterion=nn.MSELoss(), optimizer_ft=optim.LBFGS, lr=1, rmse_criteria=2e-3
-    ):
+    def train(self, criterion=nn.MSELoss(),
+              optimizer_ft=optim.SGD, scheduler=None, lr=.01,
+              rmse_criteria=2e-3):
         """Trains the model under the provided optimizer conditions until
         convergence is reached as specified by the rmse_critieria."""
 
         criterion = criterion
         self.log("Loss Function: %s" % criterion)
+        self.log("Batch Size: %d" % self.batch)
         # Define the optimizer and implement any optimization settings
         optimizer_ft = optimizer_ft(self.model.parameters(), lr)
         self.log("Optimizer Info:\n %s" % optimizer_ft)
+        if scheduler:
+            scheduler = scheduler(optimizer_ft, step_size=7, gamma=0.1)
+        self.log("Scheduler Info:\n %s" % scheduler)
 
         rmse_criteria = rmse_criteria
         self.log("RMSE criteria = {}".format(rmse_criteria))
@@ -102,10 +106,12 @@ class AMPtorch:
             self.dataset_size,
             criterion,
             optimizer_ft,
+            scheduler,
             self.atoms_dataloader,
-            rmse_criteria,
+            rmse_criteria
         )
-        torch.save(self.model.state_dict(), "results/best_model.pt")
+        torch.save(self.model.state_dict(),
+                   "results/best_model_GD.pt")
         return self.model
 
     def parity_plot(self, model):
@@ -124,7 +130,8 @@ class AMPtorch:
                 targets = sample[1]
                 targets = targets.to(device)
                 predictions = model(inputs)
-            scaled_pred = pred_scaling(predictions, targets, method="standardize")
+            scaled_pred = pred_scaling(predictions, targets,
+                                       method="standardize")
             targets = targets.reshape(len(targets), 1)
             data_min = min(targets)
             data_max = max(targets)

@@ -1,4 +1,7 @@
-import sys
+"""NN_model.py: Constructs a model consisting of element specific Neural
+Networks as understood from Behler and Parrinello's works. A model instance is
+constructed based off the unique number of atoms in the dataset."""
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -6,6 +9,9 @@ from torch.nn import init
 from torch.nn import Tanh, Softplus, LeakyReLU
 from torch.nn.init import xavier_uniform_, kaiming_uniform_
 from amp.utilities import Logger
+
+__author__ = "Muhammed Shuaibi"
+__email__ = "mshuaibi@andrew.cmu.edu"
 
 
 class Dense(nn.Linear):
@@ -57,7 +63,7 @@ class MLP(nn.Module):
     def __init__(self, n_input_nodes=20, n_output_nodes=1, n_layers=3,
                  n_hidden_size=5, activation=Tanh):
         super(MLP, self).__init__()
-        if type(n_hidden_size) is int:
+        if isinstance(n_hidden_size, int):
             n_hidden_size = [n_hidden_size] * (n_layers-1)
         self.n_neurons = [n_input_nodes]+n_hidden_size+[n_output_nodes]
         self.activation = activation
@@ -83,13 +89,12 @@ class FullNN(nn.Module):
 
     """
 
-    def __init__(self, unique_atoms, batch_size, device):
+    def __init__(self, unique_atoms, device):
         log = Logger('results/results-log.txt')
 
         super(FullNN, self).__init__()
         self.device = device
         self.unique_atoms = unique_atoms
-        self.batch_size = batch_size
         n_unique_atoms = len(unique_atoms)
         elementwise_models = nn.ModuleList()
         for n_models in range(n_unique_atoms):
@@ -98,20 +103,21 @@ class FullNN(nn.Module):
         log('Activation Function = %s' % elementwise_models[0].activation)
 
     def forward(self, input_data):
-        energy_pred = torch.zeros(self.batch_size, 1)
+        batch_size = len(set(input_data.values()[0][1]))
+        energy_pred = torch.zeros(batch_size, 1)
         energy_pred = energy_pred.to(self.device)
         for index, element in enumerate(self.unique_atoms):
             model_inputs = input_data[element][0]
             contribution_index = input_data[element][1]
-            contributions_per_atom = len(contribution_index)/self.batch_size
+            contributions_per_atom = len(contribution_index)/batch_size
             contribution_index = torch.tensor(contribution_index)
             contribution_index = contribution_index.reshape(
-                self.batch_size, contributions_per_atom)
+                batch_size, contributions_per_atom)
             atomwise_outputs = self.elementwise_models[index].forward(
                 model_inputs)
-            atomwise_outputs = atomwise_outputs.reshape(self.batch_size,
+            atomwise_outputs = atomwise_outputs.reshape(batch_size,
                                                         contributions_per_atom)
             element_pred = torch.sum(
-                atomwise_outputs, 1).reshape(self.batch_size, 1)
+                atomwise_outputs, 1).reshape(batch_size, 1)
             energy_pred += element_pred
         return energy_pred
