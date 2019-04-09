@@ -1,4 +1,4 @@
-Fri Apr  5 13:02:07 2019
+Tue Apr  9 11:31:08 2019
 --------------------------------------------------
 Filename: ../datasets/water.extxyz
 Training Data = 400
@@ -15,2711 +15,6 @@ Parameter Group 0
     tolerance_change: 1e-09
     tolerance_grad: 1e-05
 )
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-
-Training complete in 0m 5s
-Training complete in 33 steps
-Best training loss: 0.001992
-
-Fri Apr  5 14:17:35 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Optimizer Info:
- LBFGS (
-Parameter Group 0
-    history_size: 100
-    line_search_fn: None
-    lr: 1
-    max_eval: 25
-    max_iter: 20
-    tolerance_change: 1e-09
-    tolerance_grad: 1e-05
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Fri Apr  5 14:17:52 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Optimizer Info:
- LBFGS (
-Parameter Group 0
-    history_size: 100
-    line_search_fn: None
-    lr: 1
-    max_eval: 25
-    max_iter: 20
-    tolerance_change: 1e-09
-    tolerance_grad: 1e-05
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 11:49:53 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 360 Validation Data = 40
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.001
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 11:50:06 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Optimizer Info:
- LBFGS (
-Parameter Group 0
-    history_size: 100
-    line_search_fn: None
-    lr: 1
-    max_eval: 25
-    max_iter: 20
-    tolerance_change: 1e-09
-    tolerance_grad: 1e-05
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 11:50:55 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Optimizer Info:
- LBFGS (
-Parameter Group 0
-    history_size: 100
-    line_search_fn: None
-    lr: 1
-    max_eval: 25
-    max_iter: 20
-    tolerance_change: 1e-09
-    tolerance_grad: 1e-05
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 11:51:00 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.001
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 11:51:47 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 11:57:09 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 11:57:18 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 11:57:20 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 11:57:37 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 11:57:38 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 11:58:35 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 11:58:37 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 11:59:07 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Training complete in 1 steps
-Best training loss: 0.000000
-
-Mon Apr  8 12:01:36 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 12:01:38 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 12:01:48 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Training complete in 1 steps
-Best training loss: 0.000000
-
-Mon Apr  8 12:01:53 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Training complete in 1 steps
-Best training loss: 0.000000
-
-Mon Apr  8 12:01:59 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Training complete in 1 steps
-Best training loss: 0.000000
-
-Mon Apr  8 12:02:08 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Training complete in 1 steps
-Best training loss: 0.000000
-
-Mon Apr  8 12:02:16 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Training complete in 1 steps
-Best training loss: 0.000000
-
-Mon Apr  8 12:02:26 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Training complete in 1 steps
-Best training loss: 0.000000
-
-Mon Apr  8 12:04:23 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 12:04:42 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 12:04:46 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Training complete in 1 steps
-Best training loss: 0.000000
-
-Mon Apr  8 12:05:30 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 12:06:17 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 12:09:40 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 12:09:51 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 12:23:25 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 14:38:23 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 14:38:50 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 14:39:50 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 15:58:50 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Scheduler Info:
- <torch.optim.lr_scheduler.StepLR object at 0x7f68acb8eed0>
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 15:58:59 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Scheduler Info:
- <torch.optim.lr_scheduler.StepLR object at 0x7f3fc9534e50>
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 15:59:32 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.002
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Mon Apr  8 15:59:37 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.002
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Mon Apr  8 16:00:23 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.002
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Mon Apr  8 16:00:34 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.002
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Mon Apr  8 16:01:08 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.002
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Mon Apr  8 16:02:04 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Mon Apr  8 16:02:39 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:02:57 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:03:12 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:03:28 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Scheduler Info:
- <torch.optim.lr_scheduler.StepLR object at 0x7f60780d0e50>
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:03:42 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.1
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Scheduler Info:
- <torch.optim.lr_scheduler.StepLR object at 0x7efc34756e50>
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:04:27 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.1
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:04:34 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:04:43 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:04:55 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 360 Validation Data = 40
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:05:23 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:05:30 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 100
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:05:35 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 100
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:05:49 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 20
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:06:00 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:06:11 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 320 Validation Data = 80
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0
-    nesterov: False
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:06:39 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- Adam (
-Parameter Group 0
-    amsgrad: False
-    betas: (0.9, 0.999)
-    eps: 1e-08
-    lr: 0.01
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:08:49 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Mon Apr  8 16:09:59 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- SGD (
-Parameter Group 0
-    dampening: 0
-    lr: 0.01
-    momentum: 0.9
-    nesterov: False
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:10:17 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Mon Apr  8 16:11:03 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- Adam (
-Parameter Group 0
-    amsgrad: False
-    betas: (0.9, 0.999)
-    eps: 1e-08
-    lr: 0.01
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:11:15 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- Adam (
-Parameter Group 0
-    amsgrad: False
-    betas: (0.9, 0.999)
-    eps: 1e-08
-    lr: 0.1
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:11:26 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- Adam (
-Parameter Group 0
-    amsgrad: False
-    betas: (0.9, 0.999)
-    eps: 1e-08
-    lr: 0.001
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:11:40 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- Adam (
-Parameter Group 0
-    amsgrad: False
-    betas: (0.9, 0.999)
-    eps: 1e-08
-    lr: 0.01
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:22:45 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- Adam (
-Parameter Group 0
-    amsgrad: False
-    betas: (0.9, 0.999)
-    eps: 1e-08
-    lr: 0.01
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:22:49 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Optimizer Info:
- LBFGS (
-Parameter Group 0
-    history_size: 100
-    line_search_fn: None
-    lr: 1
-    max_eval: 25
-    max_iter: 20
-    tolerance_change: 1e-09
-    tolerance_grad: 1e-05
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-
-Training complete in 0m 8s
-Training complete in 54 steps
-Best training loss: 0.001997
-
-Mon Apr  8 16:23:20 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Optimizer Info:
- LBFGS (
-Parameter Group 0
-    history_size: 100
-    line_search_fn: None
-    lr: 1
-    max_eval: 25
-    max_iter: 20
-    tolerance_change: 1e-09
-    tolerance_grad: 1e-05
-)
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:23:47 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- Adam (
-Parameter Group 0
-    amsgrad: False
-    betas: (0.9, 0.999)
-    eps: 1e-08
-    lr: 0.01
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:24:11 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- Adam (
-Parameter Group 0
-    amsgrad: False
-    betas: (0.9, 0.999)
-    eps: 1e-08
-    lr: 0.01
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:26:30 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- Adam (
-Parameter Group 0
-    amsgrad: False
-    betas: (0.9, 0.999)
-    eps: 1e-08
-    lr: 0.01
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:29:09 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 400
-Optimizer Info:
- Adam (
-Parameter Group 0
-    amsgrad: False
-    betas: (0.9, 0.999)
-    eps: 1e-08
-    lr: 0.01
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 16:29:36 2019
---------------------------------------------------
-Filename: ../datasets/water.extxyz
-Training Data = 400
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 100
-Optimizer Info:
- Adam (
-Parameter Group 0
-    amsgrad: False
-    betas: (0.9, 0.999)
-    eps: 1e-08
-    lr: 0.01
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-    (1): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 17:44:58 2019
---------------------------------------------------
-Filename: ../datasets/defect-trajectory.extxyz
-Mon Apr  8 17:48:27 2019
---------------------------------------------------
-Filename: ../datasets/defect-trajectory.extxyz
-Mon Apr  8 17:49:46 2019
---------------------------------------------------
-Filename: ../datasets/defect-trajectory.extxyz
-Training Data = 10000
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 100
-Optimizer Info:
- Adam (
-Parameter Group 0
-    amsgrad: False
-    betas: (0.9, 0.999)
-    eps: 1e-08
-    lr: 0.01
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 17:52:25 2019
---------------------------------------------------
-Filename: ../datasets/defect-trajectory.extxyz
-Training Data = 10000
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 100
-Optimizer Info:
- Adam (
-Parameter Group 0
-    amsgrad: False
-    betas: (0.9, 0.999)
-    eps: 1e-08
-    lr: 0.01
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 17:55:01 2019
---------------------------------------------------
-Filename: ../datasets/defect-trajectory.extxyz
-Training Data = 10000
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 100
-Optimizer Info:
- Adam (
-Parameter Group 0
-    amsgrad: False
-    betas: (0.9, 0.999)
-    eps: 1e-08
-    lr: 0.01
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 17:55:45 2019
---------------------------------------------------
-Filename: ../datasets/defect-trajectory.extxyz
-Training Data = 10000
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 100
-Optimizer Info:
- Adam (
-Parameter Group 0
-    amsgrad: False
-    betas: (0.9, 0.999)
-    eps: 1e-08
-    lr: 0.01
-    weight_decay: 0
-)
-Scheduler Info:
- None
-RMSE criteria = 0.002
-
-Model: FullNN(
-  (elementwise_models): ModuleList(
-    (0): MLP(
-      (model_net): Sequential(
-        (0): Dense(in_features=20, out_features=5, bias=True)
-        (1): Dense(in_features=5, out_features=5, bias=True)
-        (2): Dense(in_features=5, out_features=1, bias=True)
-      )
-    )
-  )
-)
-Mon Apr  8 17:57:49 2019
---------------------------------------------------
-Filename: ../datasets/defect-trajectory.extxyz
-Training Data = 10000
-Activation Function = <class 'torch.nn.modules.activation.Tanh'>
-Loss Function: MSELoss()
-Batch Size: 100
-Optimizer Info:
- Adam (
-Parameter Group 0
-    amsgrad: False
-    betas: (0.9, 0.999)
-    eps: 1e-08
-    lr: 0.01
-    weight_decay: 0
-)
-Scheduler Info:
- None
 RMSE criteria = 0.002
 
 Model: FullNN(
@@ -2731,5 +26,938 @@ Model: FullNN(
         (2): Dense(in_features=5, out_features=1, bias=True)
       )
     )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=8, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
   )
 )
+Tue Apr  9 11:31:45 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 1
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 7s
+Training complete in 48 steps
+Best training loss: 0.001949
+
+Tue Apr  9 11:33:29 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Tue Apr  9 11:33:54 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Tue Apr  9 11:34:40 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Tue Apr  9 11:35:30 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Tue Apr  9 11:35:46 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Tue Apr  9 11:36:12 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 1
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 10s
+Training complete in 62 steps
+Best training loss: 0.001939
+
+Tue Apr  9 11:38:10 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Tue Apr  9 11:38:18 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Tue Apr  9 11:38:25 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Tue Apr  9 11:38:36 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Tue Apr  9 11:39:10 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Tue Apr  9 11:40:01 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 1
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 10s
+Training complete in 62 steps
+Best training loss: 0.001923
+
+Tue Apr  9 11:41:15 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 1
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue Apr  9 11:41:21 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 1
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 9s
+Training complete in 60 steps
+Best training loss: 0.001939
+
+Tue Apr  9 11:42:01 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 1
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 11s
+Training complete in 70 steps
+Best training loss: 0.001981
+
+Tue Apr  9 11:42:25 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 1
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue Apr  9 11:42:33 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 1
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 16s
+Training complete in 105 steps
+Best training loss: 0.001955
+
+Tue Apr  9 11:52:38 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 1
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 11s
+Training complete in 68 steps
+Best training loss: 0.001997
+
+Tue Apr  9 11:53:42 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 1
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 7s
+Training complete in 41 steps
+Best training loss: 0.001937
+
+Tue Apr  9 12:01:52 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 1
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 39s
+Training complete in 293 steps
+Best training loss: 0.002000
+
+Tue Apr  9 12:03:05 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Batch Size: 100
+Optimizer Info:
+ Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    eps: 1e-08
+    lr: 0.01
+    weight_decay: 0
+)
+Scheduler Info:
+ None
+RMSE criteria = 0.05
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Training complete in 66 steps
+Best training loss: 0.046088
+
+Tue Apr  9 12:07:14 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Batch Size: 100
+Optimizer Info:
+ Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    eps: 1e-08
+    lr: 0.01
+    weight_decay: 0
+)
+Scheduler Info:
+ None
+RMSE criteria = 0.05
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Training complete in 104 steps
+Best training loss: 0.048916
+
+Tue Apr  9 12:08:29 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Batch Size: 400
+Optimizer Info:
+ Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    eps: 1e-08
+    lr: 0.01
+    weight_decay: 0
+)
+Scheduler Info:
+ None
+RMSE criteria = 0.05
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Training complete in 197 steps
+Best training loss: 0.049835
+
+Tue Apr  9 12:15:01 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 1
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue Apr  9 12:15:21 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 1
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.001
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue Apr  9 12:15:29 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 1
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.001
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue Apr  9 12:15:38 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 1
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.001
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue Apr  9 12:15:46 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 1
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.001
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue Apr  9 12:16:23 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 1
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.001
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue Apr  9 12:17:05 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 1
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.001
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue Apr  9 12:17:19 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.001
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=5, bias=True)
+        (1): Dense(in_features=5, out_features=5, bias=True)
+        (2): Dense(in_features=5, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 17s
+Training complete in 124 steps
+Best training loss: 0.000984
+
