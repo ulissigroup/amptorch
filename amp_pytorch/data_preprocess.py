@@ -1,3 +1,8 @@
+"""data_preprocess.py: Defines the PyTorch required Dataset class. Takes in raw
+training data, computes/scales image fingerprints and potential energies.
+Functions are included to factorize the data and organize it accordingly in
+'collate_amp' as needed to be fed into the PyTorch required DataLoader class"""
+
 import copy
 import os
 import numpy as np
@@ -5,7 +10,11 @@ import torch
 from torch.utils.data import Dataset, SubsetRandomSampler
 from amp.utilities import hash_images
 from amp.model import calculate_fingerprints_range
+from amp.descriptor.gaussian import Gaussian
 import ase
+
+__author__ = "Muhammed Shuaibi"
+__email__ = "mshuaibi@andrew.cmu.edu"
 
 
 class AtomsDataset(Dataset):
@@ -53,14 +62,14 @@ class AtomsDataset(Dataset):
         try:
             image_potential_energy = self.hashed_images[hash_name].get_potential_energy(
                 apply_constraint=False)
-        except:
+        except NotImplementedError:
             print 'Atoms object has no claculator set!'
         return image_fingerprint, image_potential_energy
 
     def create_splits(self, training_data, val_frac):
         dataset_size = len(training_data)
         indices = np.random.permutation(dataset_size)
-        split = int(np.floor(val_frac*dataset_size))
+        split = int(val_frac*dataset_size)
         train_idx, val_idx = indices[split:], indices[:split]
         train_sampler = SubsetRandomSampler(train_idx)
         val_sampler = SubsetRandomSampler(val_idx)
