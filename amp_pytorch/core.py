@@ -1,23 +1,29 @@
+"""core.py: Defines an AMPtorch instance that allows users to specify the
+training images, GPU utilization, and validation data usage. An AMPtorch
+instance contains the ability to call forth a 'train' method and subsequent
+plotting methods."""
+
 import sys
 import time
 import os
 import torch
-import torch.nn as nn
-import numpy as np
+import torch.optim as optim
 from torch.utils.data import DataLoader
-from data_preprocess import AtomsDataset, factorize_data, collate_amp
+import torch.nn as nn
 from amp.utilities import Logger
 from amp.descriptor.gaussian import Gaussian
-from NN_model import FullNN
-from trainer import train_model
-import torch.optim as optim
 import matplotlib.pyplot as plt
+import numpy as np
+from amp_pytorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
+from amp_pytorch.NN_model import FullNN
+from amp_pytorch.trainer import train_model, pred_scaling
+
+__author__ = "Muhammed Shuaibi"
+__email__ = "mshuaibi@andrew.cmu.edu"
 
 
-class AMPtorch():
-
-    def __init__(self, datafile='../datasets/water.extxyz',
-                 device='cpu', val_frac=0):
+class AMPtorch:
+    def __init__(self, datafile, device="cpu", val_frac=0):
 
         if not os.path.exists("results"):
             os.mkdir("results")
@@ -32,29 +38,28 @@ class AMPtorch():
 
         self.training_data = AtomsDataset(self.filename, descriptor=Gaussian())
         self.unique_atoms, _, _, _ = factorize_data(self.training_data)
-        # n_unique_atoms = len(unique_atoms)
 
-        self.batch_size = len(self.training_data)
-        self.log("Batch Size = %d" % self.batch_size)
+        self.data_size = len(self.training_data)
         self.validation_frac = val_frac
 
         if self.validation_frac != 0:
             samplers = self.training_data.create_splits(
-                self.training_data, self.validation_frac)
-            dataset_size = {
-                "train": (1.0 - self.validation_frac) * len(self.training_data),
-                "val": self.validation_frac * len(self.training_data),
+                self.training_data, self.validation_frac
+            )
+            self.dataset_size = {
+                "train": self.data_size - int(self.validation_frac * self.data_size),
+                "val": int(self.validation_frac * self.data_size),
             }
 
             self.log(
                 "Training Data = %d Validation Data = %d"
-                % (dataset_size["train"], dataset_size["val"])
+                % (self.dataset_size["train"], self.dataset_size["val"])
             )
 
             self.atoms_dataloader = {
                 x: DataLoader(
                     self.training_data,
-                    self.batch_size,
+                    self.data_size,
                     collate_fn=collate_amp,
                     sampler=samplers[x],
                 )
@@ -65,24 +70,29 @@ class AMPtorch():
             self.dataset_size = len(self.training_data)
             self.log("Training Data = %d" % self.dataset_size)
             self.atoms_dataloader = DataLoader(
-                self.training_data, self.batch_size, collate_fn=collate_amp,
-                shuffle=False
+                self.training_data,
+                self.data_size,
+                collate_fn=collate_amp,
+                shuffle=False,
             )
 
-        self.model = FullNN(self.unique_atoms, self.batch_size, device='cpu')
+        self.model = FullNN(self.unique_atoms, self.device)
         self.model = self.model.to(self.device)
 
-    def train(self, criterion=nn.MSELoss(), optimizer_ft=optim.LBFGS,
-              rmse_criteria=2e-3):
+    def train(
+        self, criterion=nn.MSELoss(), optimizer_ft=optim.LBFGS, lr=1, rmse_criteria=2e-3
+    ):
+        """Trains the model under the provided optimizer conditions until
+        convergence is reached as specified by the rmse_critieria."""
 
-        self.criterion = criterion
-        self.log("Loss Function: %s" % self.criterion)
+        criterion = criterion
+        self.log("Loss Function: %s" % criterion)
         # Define the optimizer and implement any optimization settings
-        self.optimizer_ft = optimizer_ft(self.model.parameters(), 1)
-        self.log("Optimizer Info:\n %s" % self.optimizer_ft)
+        optimizer_ft = optimizer_ft(self.model.parameters(), lr)
+        self.log("Optimizer Info:\n %s" % optimizer_ft)
 
-        self.rmse_criteria = rmse_criteria
-        self.log("RMSE criteria = {}".format(self.rmse_criteria))
+        rmse_criteria = rmse_criteria
+        self.log("RMSE criteria = {}".format(rmse_criteria))
         self.log("")
 
         self.model = train_model(
@@ -90,105 +100,72 @@ class AMPtorch():
             self.device,
             self.unique_atoms,
             self.dataset_size,
-            self.criterion,
-            self.optimizer_ft,
+            criterion,
+            optimizer_ft,
             self.atoms_dataloader,
-            rmse_criteria
+            rmse_criteria,
         )
-        torch.save(self.model.state_dict(),
-                   "results/best_model.pt")
+        torch.save(self.model.state_dict(), "results/best_model.pt")
         return self.model
 
+    def parity_plot(self, model):
+        """Constructs a parity plot"""
 
-# test = AMPtorch()
-# test.train()
+        model.eval()
+        predictions = []
+        targets = []
+        device = self.device
+        model = model.to(device)
+        with torch.no_grad():
+            for sample in self.atoms_dataloader:
+                inputs = sample[0]
+                for element in self.unique_atoms:
+                    inputs[element][0] = inputs[element][0].to(device)
+                targets = sample[1]
+                targets = targets.to(device)
+                predictions = model(inputs)
+            scaled_pred = pred_scaling(predictions, targets, method="standardize")
+            targets = targets.reshape(len(targets), 1)
+            data_min = min(targets)
+            data_max = max(targets)
+            fig = plt.figure(figsize=(7.0, 7.0))
+            ax = fig.add_subplot(111)
+            targets = targets.detach().cpu().numpy()
+            scaled_pred = scaled_pred.detach().cpu().numpy()
+            ax.plot(targets, scaled_pred, "bo", markersize=3)
+            ax.plot([data_min, data_max], [data_min, data_max], "r-", lw=0.3)
+            ax.set_xlabel("ab initio energy, eV")
+            ax.set_ylabel("PyTorch energy, eV")
+            ax.set_title("Energies")
+            fig.savefig("results/parity_plot.pdf")
+        plt.show()
 
+    def plot_residuals(self, model):
+        """Plots model residuals"""
 
-def parity_plot(training_data):
-    loader = DataLoader(training_data, 400,
-                        collate_fn=collate_amp, shuffle=False)
-    model = FullNN(unique_atoms, 400)
-    model.load_state_dict(torch.load(
-        "../benchmark_results/benchmark_model.pt"))
-    model.eval()
-    predictions = []
-    targets = []
-    # device='cuda:0'
-    device = "cpu"
-    model = model.to(device)
-    with torch.no_grad():
-        for sample in loader:
-            inputs = sample[0]
-            for element in unique_atoms:
-                inputs[element][0] = inputs[element][0].to(device)
-            targets = sample[1]
-            targets = targets.to(device)
-            predictions = model(inputs)
-        data_max = max(targets)
-        data_min = min(targets)
-        data_mean = torch.mean(targets)
-        data_sd = torch.std(targets, dim=0)
-        scale = (predictions * data_sd) + data_mean
-        # scale=(predictions*(data_max-data_min))+data_min
+        model.eval()
+        predictions = []
+        targets = []
+        device = self.device
+        model = model.to(device)
+        with torch.no_grad():
+            for sample in self.atoms_dataloader:
+                inputs = sample[0]
+                for element in self.unique_atoms:
+                    inputs[element][0] = inputs[element][0].to(device)
+                targets = sample[1]
+                targets = targets.to(device)
+                predictions = model(inputs)
+        scaled_pred = pred_scaling(predictions, targets, method="standardize")
         targets = targets.reshape(len(targets), 1)
-        # scaled_pred=scaled_pred.reshape(len(targets),1)
-        crit = nn.MSELoss()
-        loss = crit(scale, targets)
-        loss = loss / len(unique_atoms) ** 2
-        loss = loss.detach().numpy()
-        RMSE = np.sqrt(loss)
-        print RMSE
+        residuals = targets - scaled_pred
         fig = plt.figure(figsize=(7.0, 7.0))
         ax = fig.add_subplot(111)
-        targets = targets.detach().numpy()
-        scale = scale.detach().numpy()
-        ax.plot(targets, scale, "bo", markersize=3)
-        ax.plot([data_min, data_max], [data_min, data_max], "r-", lw=0.3)
-        ax.set_xlabel("ab initio energy, eV")
-        ax.set_ylabel("PyTorch energy, eV")
+        scaled_pred = scaled_pred.detach().cpu().numpy()
+        residuals = residuals.detach().cpu().numpy()
+        ax.plot(scaled_pred, residuals, "bo", markersize=3)
+        ax.set_xlabel("PyTorch energy, eV")
+        ax.set_ylabel("residual, eV")
         ax.set_title("Energies")
-        fig.savefig("../benchmark_results/Plots/PyTorch_Prelims.pdf")
-    plt.show()
-
-
-def plot_hist(training_data):
-    loader = DataLoader(
-        training_data, 1, collate_fn=collate_amp, shuffle=False)
-    model = FullNN(unique_atoms, 1)
-    model.load_state_dict(torch.load("benchmark_results/benchmark_model.pt"))
-    model.eval()
-    predictions = []
-    scaled_pred = []
-    targets = []
-    residuals = []
-    # device='cuda:0'
-    device = "cpu"
-    model = model.to(device)
-    for sample in loader:
-        inputs = sample[0]
-        for element in unique_atoms:
-            inputs[element][0] = inputs[element][0].to(device)
-        target = sample[1]
-        target = target.to(device)
-        prediction = model(inputs)
-        predictions.append(prediction)
-        targets.append(target)
-    # data_max = max(targets)
-    # data_min = min(targets)
-    targets = torch.stack(targets)
-    data_mean = torch.mean(targets)
-    data_sd = torch.std(targets, dim=0)
-    for index, value in enumerate(predictions):
-        # scaled_value=(value*(data_max-data_min))+data_min
-        scaled_value = (value * data_sd) + data_mean
-        scaled_pred.append(scaled_value)
-        residual = targets[index] - scaled_value
-        residuals.append(residual)
-    fig = plt.figure(figsize=(7.0, 7.0))
-    ax = fig.add_subplot(111)
-    ax.plot(scaled_pred, residuals, "bo", markersize=3)
-    ax.set_xlabel("PyTorch energy, eV")
-    ax.set_ylabel("residual, eV")
-    ax.set_title("Energies")
-    fig.savefig("benchmark_results/Plots/PyTorch_Residuals.pdf")
-    # plt.show()
+        fig.savefig("results/residuals_plot.pdf")
+        plt.show()
