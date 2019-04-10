@@ -80,7 +80,7 @@ def train_model(
 
     since = time.time()
     log_epoch("-" * 50)
-    print "Training Initiated!"
+    print("Training Initiated!")
     log_epoch("%s Training Initiated!" % time.asctime())
     log_epoch("")
 
@@ -144,7 +144,7 @@ def train_model(
                 epoch_loss = rmse
                 plot_loss_y[phase].append(np.log10(rmse))
 
-                print "{} Loss: {:.4f}".format(phase, epoch_loss)
+                print ("{} Loss: {:.4f}".format(phase, epoch_loss))
 
                 log_epoch("{} {} Loss: {:.4f}".format(
                     time.asctime(), phase, epoch_loss))
@@ -197,7 +197,7 @@ def train_model(
             mse = mse / dataset_size
             rmse = np.sqrt(mse)
             epoch_loss = rmse
-            print epoch_loss
+            print(epoch_loss)
 
             plot_loss_y[phase].append(np.log10(rmse))
 
@@ -212,7 +212,7 @@ def train_model(
         epoch += 1
 
     time_elapsed = time.time() - since
-    print "Training complete in {} steps".format(epoch)
+    print ("Training complete in {} steps".format(epoch))
     print(
         "Training complete in {:.0f}m {:.0f}s".format(
             time_elapsed // 60, time_elapsed % 60
