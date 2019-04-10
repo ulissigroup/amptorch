@@ -15,7 +15,9 @@ atoms_dataloader = DataLoader(
 )
 
 net = NeuralNetRegressor(
-    module=FullNN, criterion=nn.MSELoss(), iterator_train=atoms_dataloader, dataset=training_data
+    module=FullNN,
+    criterion=nn.MSELoss,
+    iterator_train_collate_fn=collate_amp,
 )
 
 net.fit(training_data, None)
