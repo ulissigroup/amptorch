@@ -15,12 +15,12 @@ DEVICE = "cpu"
 # DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # define model
-MODEL = core_GD.AMPtorch(IMAGES, DEVICE, val_frac=0, batch=None)
+MODEL = core_GD.AMPtorch(IMAGES, DEVICE, val_frac=0, batch=100)
 
 # define training parameters
 CRITERION = nn.MSELoss()
 OPTIMIZER = optim.Adam
-RMSE_CRITERIA = 5e-2
+RMSE_CRITERIA = 1e-2
 LR = 0.01
 
 # train the model

@@ -19,7 +19,7 @@ MODEL = core.AMPtorch(IMAGES, DEVICE, val_frac=0)
 # define training parameters
 CRITERION = nn.MSELoss()
 OPTIMIZER = optim.LBFGS
-RMSE_CRITERIA = 1e-3
+RMSE_CRITERIA = 2e-3
 LR = 0.8
 
 # train the model
