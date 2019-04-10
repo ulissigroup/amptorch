@@ -21,7 +21,6 @@ from amp_pytorch.trainer import train_model, pred_scaling
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
 
-
 class AMPtorch:
     def __init__(self, datafile, device="cpu", val_frac=0):
 

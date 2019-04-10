@@ -1,8 +1,21 @@
 import sys
-# from skorch import NeuralNetRegressor
+import torch.nn as nn
+from skorch import NeuralNetRegressor
 from torch.utils.data import DataLoader
 from amp.descriptor.gaussian import Gaussian
 from NN_model import FullNN
 from data_preprocess import AtomsDataset, factorize_data, collate_amp
 
-k=AtomsDataset('../datasets/water.extxyz', descriptor=Gaussian())
+training_data = AtomsDataset("../datasets/water.extxyz", descriptor=Gaussian())
+unique_atoms, _, _, _ = factorize_data(training_data)
+size = len(training_data)
+
+atoms_dataloader = DataLoader(
+    training_data, size, collate_fn=collate_amp, shuffle=False
+)
+
+net = NeuralNetRegressor(
+    module=FullNN, criterion=nn.MSELoss(), iterator_train=atoms_dataloader, dataset=training_data
+)
+
+net.fit(training_data, None)
