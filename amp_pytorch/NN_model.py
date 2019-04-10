@@ -2,6 +2,7 @@
 Networks as understood from Behler and Parrinello's works. A model instance is
 constructed based off the unique number of atoms in the dataset."""
 
+import sys
 import numpy as np
 import torch
 import torch.nn as nn
@@ -35,10 +36,10 @@ class Dense(nn.Linear):
         """Weight initialization scheme"""
 
         # xavier_uniform_(self.weight,gain=5.0/3)
-        kaiming_uniform_(self.weight, nonlinearity='tanh')
+        kaiming_uniform_(self.weight, nonlinearity="tanh")
         if self.bias is not None:
             fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
-            bound = 1/np.sqrt(fan_in)
+            bound = 1 / np.sqrt(fan_in)
             init.uniform_(self.bias, -bound, bound)
 
     def forward(self, inputs):
@@ -60,17 +61,24 @@ class MLP(nn.Module):
         activation: Activation function to be utilized. (Default=Tanh())
     """
 
-    def __init__(self, n_input_nodes=20, n_output_nodes=1, n_layers=3,
-                 n_hidden_size=5, activation=Tanh):
+    def __init__(
+        self,
+        n_input_nodes=20,
+        n_output_nodes=1,
+        n_layers=3,
+        n_hidden_size=5,
+        activation=Tanh,
+    ):
         super(MLP, self).__init__()
         if isinstance(n_hidden_size, int):
-            n_hidden_size = [n_hidden_size] * (n_layers-1)
-        self.n_neurons = [n_input_nodes]+n_hidden_size+[n_output_nodes]
+            n_hidden_size = [n_hidden_size] * (n_layers - 1)
+        self.n_neurons = [n_input_nodes] + n_hidden_size + [n_output_nodes]
         self.activation = activation
-        layers = [Dense(self.n_neurons[i], self.n_neurons[i+1],
-                        activation=activation) for i in range(n_layers-1)]
-        layers.append(
-            Dense(self.n_neurons[-2], self.n_neurons[-1], activation=None))
+        layers = [
+            Dense(self.n_neurons[i], self.n_neurons[i + 1], activation=activation)
+            for i in range(n_layers - 1)
+        ]
+        layers.append(Dense(self.n_neurons[-2], self.n_neurons[-1], activation=None))
         self.model_net = nn.Sequential(*layers)
 
     def forward(self, inputs):
@@ -90,7 +98,7 @@ class FullNN(nn.Module):
     """
 
     def __init__(self, unique_atoms, device):
-        log = Logger('results/results-log.txt')
+        log = Logger("results/results-log.txt")
 
         super(FullNN, self).__init__()
         self.device = device
@@ -100,24 +108,24 @@ class FullNN(nn.Module):
         for n_models in range(n_unique_atoms):
             elementwise_models.append(MLP())
         self.elementwise_models = elementwise_models
-        log('Activation Function = %s' % elementwise_models[0].activation)
+        log("Activation Function = %s" % elementwise_models[0].activation)
 
     def forward(self, input_data):
-        batch_size = len(set(input_data.values()[0][1]))
+        batch_size = len(set(list(input_data.values())[0][1]))
         energy_pred = torch.zeros(batch_size, 1)
         energy_pred = energy_pred.to(self.device)
         for index, element in enumerate(self.unique_atoms):
             model_inputs = input_data[element][0]
             contribution_index = input_data[element][1]
-            contributions_per_atom = len(contribution_index)/batch_size
+            contributions_per_atom = int(len(contribution_index) / batch_size)
             contribution_index = torch.tensor(contribution_index)
             contribution_index = contribution_index.reshape(
-                batch_size, contributions_per_atom)
-            atomwise_outputs = self.elementwise_models[index].forward(
-                model_inputs)
-            atomwise_outputs = atomwise_outputs.reshape(batch_size,
-                                                        contributions_per_atom)
-            element_pred = torch.sum(
-                atomwise_outputs, 1).reshape(batch_size, 1)
+                (batch_size, contributions_per_atom)
+            )
+            atomwise_outputs = self.elementwise_models[index].forward(model_inputs)
+            atomwise_outputs = atomwise_outputs.reshape(
+                batch_size, contributions_per_atom
+            )
+            element_pred = torch.sum(atomwise_outputs, 1).reshape(batch_size, 1)
             energy_pred += element_pred
         return energy_pred

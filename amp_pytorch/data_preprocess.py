@@ -47,7 +47,7 @@ class AtomsDataset(Dataset):
         return len(self.hashed_images)
 
     def __getitem__(self, index):
-        hash_name = self.hashed_images.keys()[index]
+        hash_name = list(self.hashed_images.keys())[index]
         image_fingerprint = self.descriptor.fingerprints[hash_name]
         fprange = self.fprange
         # fingerprint scaling to [-1,1]
@@ -63,7 +63,7 @@ class AtomsDataset(Dataset):
             image_potential_energy = self.hashed_images[hash_name].get_potential_energy(
                 apply_constraint=False)
         except NotImplementedError:
-            print 'Atoms object has no claculator set!'
+            print ('Atoms object has no claculator set!')
         return image_fingerprint, image_potential_energy
 
     def create_splits(self, training_data, val_frac):
