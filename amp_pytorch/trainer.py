@@ -1,6 +1,7 @@
 """trainer.py: Trains a provided model utilizing an LBFGS algorithm. Model
 convergence is achieved upon reaching a specific rmse convergence criteria."""
 
+import sys
 import time
 import copy
 from amp.utilities import Logger
@@ -95,7 +96,7 @@ def train_model(model, device, unique_atoms, dataset_size, criterion,
             num_of_atoms = data_sample[2].reshape(batch_size, 1).to(device)
             # Send inputs and labels to the corresponding device (cpu or gpu)
             for element in unique_atoms:
-                input_data[element][0] = input_data[element][0].to(device)
+                input_data[element][0] = input_data[element][0].to(device).requires_grad_(True)
             scaled_target = scaled_target.to(device)
 
             def closure():
@@ -103,6 +104,7 @@ def train_model(model, device, unique_atoms, dataset_size, criterion,
                 as per the LBFGS algorithm"""
                 optimizer.zero_grad()
                 output = model(input_data)
+                sys.exit()
                 loss = criterion(output, scaled_target)
                 loss.backward()
                 return loss

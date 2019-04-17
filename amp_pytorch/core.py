@@ -70,7 +70,8 @@ class AMPtorch:
             self.log("Training Data = %d" % self.dataset_size)
             self.atoms_dataloader = DataLoader(
                 self.training_data,
-                self.data_size,
+                1,
+                # self.data_size,
                 collate_fn=collate_amp,
                 shuffle=False,
             )
