@@ -9,6 +9,7 @@ import torch.nn as nn
 from torch.nn import init
 from torch.nn import Tanh, Softplus, LeakyReLU
 from torch.nn.init import xavier_uniform_, kaiming_uniform_
+from torch.autograd import grad
 from amp.utilities import Logger
 
 __author__ = "Muhammed Shuaibi"
@@ -128,4 +129,8 @@ class FullNN(nn.Module):
             )
             element_pred = torch.sum(atomwise_outputs, 1).reshape(batch_size, 1)
             energy_pred += element_pred
+
+            k=grad(energy_pred, model_inputs, grad_outputs=torch.ones_like(energy_pred))
+            print(k[0][0])
+            sys.exit()
         return energy_pred
