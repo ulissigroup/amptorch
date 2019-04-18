@@ -35,13 +35,15 @@ class Dense(nn.Linear):
 
     def reset_parameters(self):
         """Weight initialization scheme"""
+        init.uniform_(self.weight, 1)
+        init.uniform_(self.bias, 1)
 
         # xavier_uniform_(self.weight,gain=5.0/3)
-        kaiming_uniform_(self.weight, nonlinearity="tanh")
-        if self.bias is not None:
-            fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
-            bound = 1 / np.sqrt(fan_in)
-            init.uniform_(self.bias, -bound, bound)
+        # kaiming_uniform_(self.weight, nonlinearity="tanh")
+        # if self.bias is not None:
+            # fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
+            # bound = 1 / np.sqrt(fan_in)
+            # init.uniform_(self.bias, -bound, bound)
 
     def forward(self, inputs):
         neuron_output = super(Dense, self).forward(inputs)
@@ -98,12 +100,13 @@ class FullNN(nn.Module):
 
     """
 
-    def __init__(self, unique_atoms, device):
+    def __init__(self, unique_atoms, device, require_grd=True):
         log = Logger("results/results-log.txt")
 
         super(FullNN, self).__init__()
         self.device = device
         self.unique_atoms = unique_atoms
+        self.req_grad = require_grd
         n_unique_atoms = len(unique_atoms)
         elementwise_models = nn.ModuleList()
         for n_models in range(n_unique_atoms):
@@ -115,6 +118,7 @@ class FullNN(nn.Module):
         batch_size = len(set(list(input_data.values())[0][1]))
         energy_pred = torch.zeros(batch_size, 1)
         energy_pred = energy_pred.to(self.device)
+        dE_dFP = {}
         for index, element in enumerate(self.unique_atoms):
             model_inputs = input_data[element][0]
             contribution_index = input_data[element][1]
@@ -129,8 +133,10 @@ class FullNN(nn.Module):
             )
             element_pred = torch.sum(atomwise_outputs, 1).reshape(batch_size, 1)
             energy_pred += element_pred
-
-            k=grad(energy_pred, model_inputs, grad_outputs=torch.ones_like(energy_pred))
-            print(k[0][0])
-            sys.exit()
+        for element in self.unique_atoms:
+            model_inputs = input_data[element][0]
+            if self.req_grad:
+                dE_dFP[element] = grad(energy_pred, model_inputs,
+                                       grad_outputs=torch.ones_like(energy_pred))[0]
+        print(dE_dFP)
         return energy_pred
