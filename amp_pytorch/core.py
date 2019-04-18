@@ -36,7 +36,7 @@ class AMPtorch:
         self.log("Filename: %s" % self.filename)
 
         self.training_data = AtomsDataset(self.filename, descriptor=Gaussian())
-        self.unique_atoms, _, _, _ = factorize_data(self.training_data)
+        self.unique_atoms, _, _, _, _ = factorize_data(self.training_data)
 
         self.data_size = len(self.training_data)
         self.validation_frac = val_frac
@@ -70,7 +70,7 @@ class AMPtorch:
             self.log("Training Data = %d" % self.dataset_size)
             self.atoms_dataloader = DataLoader(
                 self.training_data,
-                1,
+                2,
                 # self.data_size,
                 collate_fn=collate_amp,
                 shuffle=False,
