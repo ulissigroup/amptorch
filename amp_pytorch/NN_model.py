@@ -133,10 +133,12 @@ class FullNN(nn.Module):
             )
             element_pred = torch.sum(atomwise_outputs, 1).reshape(batch_size, 1)
             energy_pred += element_pred
+
         for element in self.unique_atoms:
             model_inputs = input_data[element][0]
             if self.req_grad:
                 dE_dFP[element] = grad(energy_pred, model_inputs,
-                                       grad_outputs=torch.ones_like(energy_pred))[0]
+                                       grad_outputs=torch.ones_like(energy_pred),retain_graph=True)
         print(dE_dFP)
+        sys.exit()
         return energy_pred

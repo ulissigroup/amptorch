@@ -104,22 +104,20 @@ def train_model(model, device, unique_atoms, dataset_size, criterion,
                 as per the LBFGS algorithm"""
                 optimizer.zero_grad()
                 output = model(input_data)
-                sys.exit()
                 loss = criterion(output, scaled_target)
                 loss.backward()
                 return loss
 
-            optimizer.step(closure)
-
+            loss=optimizer.step(closure)
             # Perform predictions and compute loss
-            with torch.no_grad():
-                scaled_preds = model(input_data)
-                raw_preds = pred_scaling(
-                    scaled_preds, target, method='standardize')
-                raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
-                target_per_atom = torch.div(target, num_of_atoms)
-                loss = criterion(raw_preds_per_atom, target_per_atom)
-                mse += loss.item()*batch_size
+            # with torch.no_grad():
+                # scaled_preds = model(input_data)
+                # raw_preds = pred_scaling(
+                    # scaled_preds, target, method='standardize')
+                # raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
+                # target_per_atom = torch.div(target, num_of_atoms)
+                # loss = criterion(raw_preds_per_atom, target_per_atom)
+            mse += loss.item()*batch_size
 
         mse = mse/dataset_size
         rmse = np.sqrt(mse)

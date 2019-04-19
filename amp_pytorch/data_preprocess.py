@@ -115,7 +115,7 @@ def factorize_data(training_data):
             element = atom[0]
             if element not in unique_atoms:
                 unique_atoms.append(element)
-        fingerprintprimes.append(torch.sparse.FloatTensor(image_primes).transpose(0,1))
+        fingerprintprimes.append(torch.sparse.FloatTensor(image_primes).transpose(0, 1))
     return unique_atoms, fingerprint_dataset, energy_dataset, num_of_atoms, fingerprintprimes
 
 
@@ -125,11 +125,9 @@ def collate_amp(training_data):
     specific datasets to be fed into the element specific Neural Nets.
     """
 
-    unique_atoms, fingerprint_dataset, energy_dataset, num_of_atoms, fp = factorize_data(
+    unique_atoms, fingerprint_dataset, energy_dataset, num_of_atoms, fprimes = factorize_data(
         training_data
     )
-    print(fp[0])
-    sys.exit()
     element_specific_fingerprints = {}
     model_input_data = []
     for element in unique_atoms:
@@ -149,4 +147,5 @@ def collate_amp(training_data):
     model_input_data.append(element_specific_fingerprints)
     model_input_data.append(torch.tensor(energy_dataset))
     model_input_data.append(torch.tensor(num_of_atoms))
+    model_input_data.append(fprimes)
     return model_input_data
