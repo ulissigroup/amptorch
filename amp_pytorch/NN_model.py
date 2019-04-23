@@ -41,9 +41,9 @@ class Dense(nn.Linear):
         # xavier_uniform_(self.weight,gain=5.0/3)
         # kaiming_uniform_(self.weight, nonlinearity="tanh")
         # if self.bias is not None:
-            # fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
-            # bound = 1 / np.sqrt(fan_in)
-            # init.uniform_(self.bias, -bound, bound)
+        # fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
+        # bound = 1 / np.sqrt(fan_in)
+        # init.uniform_(self.bias, -bound, bound)
 
     def forward(self, inputs):
         neuron_output = super(Dense, self).forward(inputs)
@@ -78,10 +78,12 @@ class MLP(nn.Module):
         self.n_neurons = [n_input_nodes] + n_hidden_size + [n_output_nodes]
         self.activation = activation
         layers = [
-            Dense(self.n_neurons[i], self.n_neurons[i + 1], activation=activation)
+            Dense(self.n_neurons[i], self.n_neurons[i + 1],
+                  activation=activation)
             for i in range(n_layers - 1)
         ]
-        layers.append(Dense(self.n_neurons[-2], self.n_neurons[-1], activation=None))
+        layers.append(
+            Dense(self.n_neurons[-2], self.n_neurons[-1], activation=None))
         self.model_net = nn.Sequential(*layers)
 
     def forward(self, inputs):
@@ -118,27 +120,42 @@ class FullNN(nn.Module):
         batch_size = len(set(list(input_data.values())[0][1]))
         energy_pred = torch.zeros(batch_size, 1)
         energy_pred = energy_pred.to(self.device)
-        dE_dFP = {}
+        # dE_dFP = {}
+        dE_dFP = torch.tensor([])
         for index, element in enumerate(self.unique_atoms):
             model_inputs = input_data[element][0]
             contribution_index = input_data[element][1]
             contributions_per_atom = int(len(contribution_index) / batch_size)
-            contribution_index = torch.tensor(contribution_index)
-            contribution_index = contribution_index.reshape(
-                (batch_size, contributions_per_atom)
-            )
-            atomwise_outputs = self.elementwise_models[index].forward(model_inputs)
+            # contribution_index = torch.tensor(contribution_index)
+            # contribution_index = contribution_index.reshape(
+            # (batch_size, contributions_per_atom)
+            # )
+            atomwise_outputs = self.elementwise_models[index].forward(
+                model_inputs)
             atomwise_outputs = atomwise_outputs.reshape(
                 batch_size, contributions_per_atom
             )
-            element_pred = torch.sum(atomwise_outputs, 1).reshape(batch_size, 1)
+            element_pred = torch.sum(
+                atomwise_outputs, 1).reshape(batch_size, 1)
+            test = grad(
+                element_pred,
+                model_inputs,
+                grad_outputs=torch.ones_like(element_pred),
+                retain_graph=True,
+            )[0].reshape(batch_size, -1)
+            dE_dFP = torch.cat((dE_dFP, test), 1)
             energy_pred += element_pred
+        dE_dFP = dE_dFP.reshape(batch_size, 3, 20)
 
-        for element in self.unique_atoms:
-            model_inputs = input_data[element][0]
-            if self.req_grad:
-                dE_dFP[element] = grad(energy_pred, model_inputs,
-                                       grad_outputs=torch.ones_like(energy_pred),retain_graph=True)
+        # for element in self.unique_atoms:
+        # model_inputs = input_data[element][0]
+        # if self.req_grad:
+        # dE_dFP[element] = grad(
+            # energy_pred,
+            # model_inputs,
+            # grad_outputs=torch.ones_like(energy_pred),
+            # retain_graph=True,
+        # )
         print(dE_dFP)
         sys.exit()
         return energy_pred
