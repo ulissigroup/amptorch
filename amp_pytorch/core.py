@@ -21,6 +21,7 @@ from amp_pytorch.trainer import train_model, pred_scaling
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
 
+
 class AMPtorch:
     def __init__(self, datafile, device="cpu", val_frac=0):
 
@@ -36,6 +37,8 @@ class AMPtorch:
         self.log("Filename: %s" % self.filename)
 
         self.training_data = AtomsDataset(self.filename, descriptor=Gaussian())
+        test_data = AtomsDataset('../datasets/training.traj', Gaussian())
+        self.training_data = [self.training_data[0],test_data[0]]
         self.unique_atoms, _, _, _, _ = factorize_data(self.training_data)
 
         self.data_size = len(self.training_data)
@@ -124,7 +127,8 @@ class AMPtorch:
                 targets = sample[1]
                 targets = targets.to(device)
                 predictions = model(inputs)
-            scaled_pred = pred_scaling(predictions, targets, method="standardize")
+            scaled_pred = pred_scaling(
+                predictions, targets, method="standardize")
             targets = targets.reshape(len(targets), 1)
             data_min = min(targets)
             data_max = max(targets)
