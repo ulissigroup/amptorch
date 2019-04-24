@@ -97,12 +97,13 @@ class FullNN(nn.Module):
 
     """
 
-    def __init__(self, unique_atoms, device):
+    def __init__(self, unique_atoms, batch_size, device):
         log = Logger("results/results-log.txt")
 
         super(FullNN, self).__init__()
         self.device = device
         self.unique_atoms = unique_atoms
+        self.batch_size = batch_size
         n_unique_atoms = len(unique_atoms)
         elementwise_models = nn.ModuleList()
         for n_models in range(n_unique_atoms):
@@ -111,21 +112,11 @@ class FullNN(nn.Module):
         log("Activation Function = %s" % elementwise_models[0].activation)
 
     def forward(self, input_data):
-        batch_size = len(set(list(input_data.values())[0][1]))
-        energy_pred = torch.zeros(batch_size, 1)
-        energy_pred = energy_pred.to(self.device)
+        batch_size = self.batch_size
+        energy_pred = torch.zeros(batch_size, 1).to(self.device)
         for index, element in enumerate(self.unique_atoms):
             model_inputs = input_data[element][0]
-            contribution_index = input_data[element][1]
-            contributions_per_atom = int(len(contribution_index) / batch_size)
-            contribution_index = torch.tensor(contribution_index)
-            contribution_index = contribution_index.reshape(
-                (batch_size, contributions_per_atom)
-            )
+            contribution_index = torch.tensor(input_data[element][1])
             atomwise_outputs = self.elementwise_models[index].forward(model_inputs)
-            atomwise_outputs = atomwise_outputs.reshape(
-                batch_size, contributions_per_atom
-            )
-            element_pred = torch.sum(atomwise_outputs, 1).reshape(batch_size, 1)
-            energy_pred += element_pred
+            energy_pred.index_add_(0, contribution_index, atomwise_outputs)
         return energy_pred
