@@ -23,7 +23,7 @@ __email__ = "mshuaibi@andrew.cmu.edu"
 
 
 class AMPtorch:
-    def __init__(self, datafile, device="cpu", val_frac=0):
+    def __init__(self, datafile, device="cpu", batch_size=None, val_frac=0):
 
         if not os.path.exists("results"):
             os.mkdir("results")
@@ -32,17 +32,21 @@ class AMPtorch:
         self.log(time.asctime())
         self.device = device
         self.filename = datafile
+        self.batch_size = batch_size
 
         self.log("-" * 50)
         self.log("Filename: %s" % self.filename)
 
         self.training_data = AtomsDataset(self.filename, descriptor=Gaussian())
         test_data = AtomsDataset('../datasets/training.traj', Gaussian())
-        self.training_data = [self.training_data[0],test_data[0]]
+        self.training_data = [self.training_data[0], test_data[0]]
         self.unique_atoms, _, _, _, _ = factorize_data(self.training_data)
 
-        self.data_size = len(self.training_data)
+        self.dataset_size = len(self.training_data)
         self.validation_frac = val_frac
+
+        if self.batch_size is None:
+            self.batch_size = self.dataset_size
 
         if self.validation_frac != 0:
             samplers = self.training_data.create_splits(
@@ -61,7 +65,7 @@ class AMPtorch:
             self.atoms_dataloader = {
                 x: DataLoader(
                     self.training_data,
-                    self.data_size,
+                    self.batch_size,
                     collate_fn=collate_amp,
                     sampler=samplers[x],
                 )
@@ -73,13 +77,12 @@ class AMPtorch:
             self.log("Training Data = %d" % self.dataset_size)
             self.atoms_dataloader = DataLoader(
                 self.training_data,
-                2,
-                # self.data_size,
+                self.batch_size,
                 collate_fn=collate_amp,
                 shuffle=False,
             )
 
-        self.model = FullNN(self.unique_atoms, self.device)
+        self.model = FullNN(self.unique_atoms, self.batch_size, self.device)
         self.model = self.model.to(self.device)
 
     def train(

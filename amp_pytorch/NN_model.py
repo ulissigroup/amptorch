@@ -4,6 +4,7 @@ constructed based off the unique number of atoms in the dataset."""
 
 import sys
 import numpy as np
+from collections import defaultdict, OrderedDict
 import torch
 import torch.nn as nn
 from torch.nn import init
@@ -35,15 +36,15 @@ class Dense(nn.Linear):
 
     def reset_parameters(self):
         """Weight initialization scheme"""
-        init.uniform_(self.weight, 1)
-        init.uniform_(self.bias, 1)
+        # init.uniform_(self.weight, 1)
+        # init.uniform_(self.bias, 1)
 
         # xavier_uniform_(self.weight,gain=5.0/3)
-        # kaiming_uniform_(self.weight, nonlinearity="tanh")
-        # if self.bias is not None:
-        # fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
-        # bound = 1 / np.sqrt(fan_in)
-        # init.uniform_(self.bias, -bound, bound)
+        kaiming_uniform_(self.weight, nonlinearity="tanh")
+        if self.bias is not None:
+            fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
+            bound = 1 / np.sqrt(fan_in)
+            init.uniform_(self.bias, -bound, bound)
 
     def forward(self, inputs):
         neuron_output = super(Dense, self).forward(inputs)
@@ -78,12 +79,10 @@ class MLP(nn.Module):
         self.n_neurons = [n_input_nodes] + n_hidden_size + [n_output_nodes]
         self.activation = activation
         layers = [
-            Dense(self.n_neurons[i], self.n_neurons[i + 1],
-                  activation=activation)
+            Dense(self.n_neurons[i], self.n_neurons[i + 1], activation=activation)
             for i in range(n_layers - 1)
         ]
-        layers.append(
-            Dense(self.n_neurons[-2], self.n_neurons[-1], activation=None))
+        layers.append(Dense(self.n_neurons[-2], self.n_neurons[-1], activation=None))
         self.model_net = nn.Sequential(*layers)
 
     def forward(self, inputs):
@@ -102,13 +101,14 @@ class FullNN(nn.Module):
 
     """
 
-    def __init__(self, unique_atoms, device, require_grd=True):
+    def __init__(self, unique_atoms, batch_size, device, require_grd=True):
         log = Logger("results/results-log.txt")
 
         super(FullNN, self).__init__()
         self.device = device
         self.unique_atoms = unique_atoms
         self.req_grad = require_grd
+        self.batch_size = batch_size
         n_unique_atoms = len(unique_atoms)
         elementwise_models = nn.ModuleList()
         for n_models in range(n_unique_atoms):
@@ -116,46 +116,28 @@ class FullNN(nn.Module):
         self.elementwise_models = elementwise_models
         log("Activation Function = %s" % elementwise_models[0].activation)
 
-    def forward(self, input_data):
-        batch_size = len(set(list(input_data.values())[0][1]))
-        energy_pred = torch.zeros(batch_size, 1)
-        energy_pred = energy_pred.to(self.device)
-        # dE_dFP = {}
-        dE_dFP = torch.tensor([])
+    def forward(self, input_data, fprimes):
+        batch_size = self.batch_size
+        energy_pred = torch.zeros(batch_size, 1).to(self.device)
+        dE_dFP = defaultdict(list)
         for index, element in enumerate(self.unique_atoms):
             model_inputs = input_data[element][0]
-            contribution_index = input_data[element][1]
-            contributions_per_atom = int(len(contribution_index) / batch_size)
-            # contribution_index = torch.tensor(contribution_index)
-            # contribution_index = contribution_index.reshape(
-            # (batch_size, contributions_per_atom)
-            # )
-            atomwise_outputs = self.elementwise_models[index].forward(
-                model_inputs)
-            atomwise_outputs = atomwise_outputs.reshape(
-                batch_size, contributions_per_atom
-            )
-            element_pred = torch.sum(
-                atomwise_outputs, 1).reshape(batch_size, 1)
+            contribution_index = torch.tensor(input_data[element][1])
+            atomwise_outputs = self.elementwise_models[index].forward(model_inputs)
+            energy_pred.index_add_(0, contribution_index, atomwise_outputs)
             test = grad(
-                element_pred,
+                energy_pred,
                 model_inputs,
-                grad_outputs=torch.ones_like(element_pred),
+                grad_outputs=torch.ones_like(energy_pred),
                 retain_graph=True,
-            )[0].reshape(batch_size, -1)
-            dE_dFP = torch.cat((dE_dFP, test), 1)
-            energy_pred += element_pred
-        dE_dFP = dE_dFP.reshape(batch_size, 3, 20)
-
-        # for element in self.unique_atoms:
-        # model_inputs = input_data[element][0]
-        # if self.req_grad:
-        # dE_dFP[element] = grad(
-            # energy_pred,
-            # model_inputs,
-            # grad_outputs=torch.ones_like(energy_pred),
-            # retain_graph=True,
-        # )
-        print(dE_dFP)
+            )[0]
+            for fprime, con in zip(test, contribution_index):
+                dE_dFP[int(con)].append(fprime)
+        dE_dFP_ordered = torch.tensor([])
+        for i in list(dE_dFP.keys()):
+            dE_dFP_ordered = torch.cat((dE_dFP_ordered, torch.stack(dE_dFP[i])), 0)
+        dE_dFP_ordered = dE_dFP_ordered.reshape(12, 1, 20)
+        fprimes = fprimes.reshape(12, 20, 3)
+        print(fprimes)
         sys.exit()
         return energy_pred
