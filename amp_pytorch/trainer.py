@@ -89,6 +89,7 @@ def train_model(model, device, unique_atoms, dataset_size, criterion,
 
         for data_sample in atoms_dataloader:
             input_data = data_sample[0]
+            fprimes = data_sample[3]
             target = data_sample[1].requires_grad_(False)
             batch_size = len(target)
             target = target.reshape(batch_size, 1).to(device)
@@ -103,7 +104,7 @@ def train_model(model, device, unique_atoms, dataset_size, criterion,
                 """Allows optimizer to reevaluate the function multiple times
                 as per the LBFGS algorithm"""
                 optimizer.zero_grad()
-                output = model(input_data)
+                output = model(input_data, fprimes)
                 loss = criterion(output, scaled_target)
                 loss.backward()
                 return loss

@@ -5,6 +5,7 @@ Functions are included to factorize the data and organize it accordingly in
 
 import sys
 import copy
+import time
 import os
 import numpy as np
 import torch
@@ -102,11 +103,16 @@ def factorize_data(training_data):
     fingerprint_dataset = []
     energy_dataset = []
     num_of_atoms = []
-    fingerprintprimes=[]
+    fingerprintprimes = torch.sparse.FloatTensor([])
+    sum_idx = torch.tensor([]) 
+    image_forces = []
     for image_sample in training_data:
         image_primes = list(image_sample[2].values())
         image_fingerprint = image_sample[0]
+        image_forces.append(image_sample[3])
         num_atom = float(len(image_fingerprint))
+        sum_order = torch.tensor([num_atom]*int((3*num_atom)))
+        sum_idx = torch.cat((sum_idx, sum_order),0)
         fingerprint_dataset.append(image_fingerprint)
         image_potential_energy = image_sample[1]
         energy_dataset.append(image_potential_energy)
@@ -115,8 +121,20 @@ def factorize_data(training_data):
             element = atom[0]
             if element not in unique_atoms:
                 unique_atoms.append(element)
-        fingerprintprimes.append(torch.sparse.FloatTensor(image_primes).transpose(0, 1))
-    return unique_atoms, fingerprint_dataset, energy_dataset, num_of_atoms, fingerprintprimes
+        fingerprintprimes = torch.cat((fingerprintprimes, torch.sparse.FloatTensor(image_primes)), 0)
+    factored_fingerprints = torch.sparse.FloatTensor([])
+    idx = 0
+    for val in sum_idx:
+        val = int(val)
+        sum_fp = sum(fingerprintprimes[idx:idx+val])
+        factored_fingerprints = torch.cat((factored_fingerprints, sum_fp), 0)
+        idx += val
+    atoms_batch = int(sum(num_of_atoms))
+    factored_fingerprints = factored_fingerprints.reshape(3*atoms_batch,20).transpose(0,1)
+    print(factored_fingerprints)
+    print(factored_fingerprints.reshape(12,20,3))
+    sys.exit()
+    return unique_atoms, fingerprint_dataset, energy_dataset, num_of_atoms, factored_fingerprints
 
 
 def collate_amp(training_data):
@@ -149,3 +167,5 @@ def collate_amp(training_data):
     model_input_data.append(torch.tensor(num_of_atoms))
     model_input_data.append(fprimes)
     return model_input_data
+
+
