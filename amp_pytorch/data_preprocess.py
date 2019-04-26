@@ -5,8 +5,8 @@ Functions are included to factorize the data and organize it accordingly in
 
 import sys
 import copy
-import time
 import os
+import time
 import numpy as np
 import torch
 from torch.utils.data import Dataset, SubsetRandomSampler
@@ -94,47 +94,70 @@ def factorize_data(training_data):
     Reads in dataset and factors it into 3 lists:
 
     1. unique_atoms = Identifies the unique elements in the dataset
+
     2. fingerprint_dataset = Extracts the fingerprints for each hashed data
     sample in the dataset
+
     3. energy_dataset = Extracts the potential energy for a given hashed data
     sample in the dataset
+
+    4. num_of atoms = Number of atoms per image
+
+    5. factored_fingerprints = fingerprint derivatives for each atom across all
+    images. Dimensions of said tensor is QxPx3:
+        Q - Atoms in batch
+        P - Length of fingerprints
+        3 - x,y,z components of the fingerprint derivatives. It should be noted
+        that for each image containing N atoms, there are 3N directional
+        components for each atom. For each atom, N contributions are summed for
+        each directional component to arrive at a dimension of 3 for each atom.
+
     """
     unique_atoms = []
     fingerprint_dataset = []
     energy_dataset = []
     num_of_atoms = []
     fingerprintprimes = torch.sparse.FloatTensor([])
-    sum_idx = torch.tensor([]) 
+    grouped_fp_idxs = torch.tensor([])
     image_forces = []
     for image_sample in training_data:
-        image_primes = list(image_sample[2].values())
         image_fingerprint = image_sample[0]
-        image_forces.append(image_sample[3])
-        num_atom = float(len(image_fingerprint))
-        sum_order = torch.tensor([num_atom]*int((3*num_atom)))
-        sum_idx = torch.cat((sum_idx, sum_order),0)
         fingerprint_dataset.append(image_fingerprint)
         image_potential_energy = image_sample[1]
         energy_dataset.append(image_potential_energy)
+        num_atom = float(len(image_fingerprint))
         num_of_atoms.append(num_atom)
+        image_primes = list(image_sample[2].values())
+        fingerprintprimes = torch.cat(
+            (fingerprintprimes, torch.sparse.FloatTensor(image_primes)), 0
+        )
+        image_forces.append(torch.from_numpy(image_sample[3]))
+        grouped_idx = torch.tensor([num_atom] * int((3 * num_atom)))
+        grouped_fp_idxs = torch.cat((grouped_fp_idxs, grouped_idx), 0)
         for atom in image_fingerprint:
             element = atom[0]
             if element not in unique_atoms:
                 unique_atoms.append(element)
-        fingerprintprimes = torch.cat((fingerprintprimes, torch.sparse.FloatTensor(image_primes)), 0)
-    factored_fingerprints = torch.sparse.FloatTensor([])
-    idx = 0
-    for val in sum_idx:
-        val = int(val)
-        sum_fp = sum(fingerprintprimes[idx:idx+val])
-        factored_fingerprints = torch.cat((factored_fingerprints, sum_fp), 0)
-        idx += val
-    atoms_batch = int(sum(num_of_atoms))
-    factored_fingerprints = factored_fingerprints.reshape(3*atoms_batch,20).transpose(0,1)
-    print(factored_fingerprints)
-    print(factored_fingerprints.reshape(12,20,3))
-    sys.exit()
-    return unique_atoms, fingerprint_dataset, energy_dataset, num_of_atoms, factored_fingerprints
+
+    image_forces = torch.cat(image_forces)
+    atoms_in_batch = int(sum(num_of_atoms))
+    fp_groupings = copy.deepcopy(grouped_fp_idxs)
+    fp_groupings = [int(i) for i in fp_groupings]
+    fp_groupings = [
+        idx.repeat(times)
+        for idx, times in zip(torch.arange(len(fp_groupings)), fp_groupings)
+    ]
+    fp_groupings = torch.cat(fp_groupings)
+
+    factored_fingerprints = torch.zeros(len(grouped_fp_idxs), 20)
+    factored_fingerprints.index_add_(0, fp_groupings, fingerprintprimes)
+    factored_fingerprintprimes = factored_fingerprints.reshape(
+        atoms_in_batch, 3, 20
+    ).transpose(1, 2)
+    # factored_fingerprintprimes is of dimensionality QxPx3 with each column
+    # representing: dFP/dx dFP/dy dFP/dz
+
+    return unique_atoms, fingerprint_dataset, energy_dataset, num_of_atoms, factored_fingerprintprimes, image_forces
 
 
 def collate_amp(training_data):
@@ -143,7 +166,7 @@ def collate_amp(training_data):
     specific datasets to be fed into the element specific Neural Nets.
     """
 
-    unique_atoms, fingerprint_dataset, energy_dataset, num_of_atoms, fprimes = factorize_data(
+    unique_atoms, fingerprint_dataset, energy_dataset, num_of_atoms, fp_primes, image_forces = factorize_data(
         training_data
     )
     element_specific_fingerprints = {}
@@ -165,7 +188,6 @@ def collate_amp(training_data):
     model_input_data.append(element_specific_fingerprints)
     model_input_data.append(torch.tensor(energy_dataset))
     model_input_data.append(torch.tensor(num_of_atoms))
-    model_input_data.append(fprimes)
+    model_input_data.append(fp_primes)
+    model_input_data.append(image_forces)
     return model_input_data
-
-
