@@ -40,7 +40,7 @@ class AMPtorch:
         self.training_data = AtomsDataset(self.filename, descriptor=Gaussian())
         test_data = AtomsDataset('../datasets/training.traj', Gaussian())
         self.training_data = [self.training_data[0], test_data[0]]
-        self.unique_atoms, _, _, _, _ = factorize_data(self.training_data)
+        self.unique_atoms, _, _, _, _,_ = factorize_data(self.training_data)
 
         self.dataset_size = len(self.training_data)
         self.validation_frac = val_frac
