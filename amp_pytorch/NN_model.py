@@ -117,27 +117,41 @@ class FullNN(nn.Module):
         log("Activation Function = %s" % elementwise_models[0].activation)
 
     def forward(self, input_data, fprimes):
+        """Forward pass through the model - predicting energy and forces
+        accordingly.
+
+        N - Number of training images
+        Q - Atoms in batch
+        P - Length of fingerprint"""
+
         batch_size = self.batch_size
         energy_pred = torch.zeros(batch_size, 1).to(self.device)
-        dE_dFP = defaultdict(list)
+        # Constructs an Nx1 empty tensor to store element energy contributions
+        dE_dFP_ = defaultdict(list)
+        num_atoms = len(fprimes)
         for index, element in enumerate(self.unique_atoms):
             model_inputs = input_data[element][0]
             contribution_index = torch.tensor(input_data[element][1])
             atomwise_outputs = self.elementwise_models[index].forward(model_inputs)
             energy_pred.index_add_(0, contribution_index, atomwise_outputs)
-            test = grad(
+            gradients = grad(
                 energy_pred,
                 model_inputs,
                 grad_outputs=torch.ones_like(energy_pred),
                 retain_graph=True,
             )[0]
-            for fprime, con in zip(test, contribution_index):
-                dE_dFP[int(con)].append(fprime)
-        dE_dFP_ordered = torch.tensor([])
-        for i in list(dE_dFP.keys()):
-            dE_dFP_ordered = torch.cat((dE_dFP_ordered, torch.stack(dE_dFP[i])), 0)
-        dE_dFP_ordered = dE_dFP_ordered.reshape(12, 1, 20)
-        fprimes = fprimes.reshape(12, 20, 3)
-        print(fprimes)
-        sys.exit()
-        return energy_pred
+            for fprime, con in zip(gradients, contribution_index):
+                dE_dFP_[int(con)].append(fprime)
+        dE_dFP = torch.tensor([])
+        for i in list(dE_dFP_.keys()):
+            dE_dFP = torch.cat((dE_dFP, torch.stack(dE_dFP_[i])), 0)
+        dE_dFP = dE_dFP.reshape(num_atoms, 1, 20)
+        # Constructs a Qx1xP tensor that contains the derivatives with respect to
+        # each atom's fingerprint'
+        force_pred = torch.bmm(dE_dFP, fprimes)
+        # Multiplies a Qx1xP tensor with a QxPx3 tensor to return a Qx1x3 tensor
+        # containing the x,y,z directional forces for each atom
+        force_pred = force_pred.reshape(num_atoms, 3)
+        # Reshapes the force tensor into a Qx3 matrix containing all the force
+        # predictions in the same order and shape as the target forces calculated from AMP.
+        return energy_pred, force_pred
