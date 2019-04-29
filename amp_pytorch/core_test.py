@@ -23,7 +23,8 @@ __email__ = "mshuaibi@andrew.cmu.edu"
 
 
 class AMPtorch:
-    def __init__(self, datafile, device="cpu", batch_size=None, val_frac=0):
+    def __init__(self, datafile, device="cpu", batch_size=None,
+            val_frac=0, descriptor=Gaussian()):
 
         if not os.path.exists("results"):
             os.mkdir("results")
@@ -33,11 +34,12 @@ class AMPtorch:
         self.device = device
         self.filename = datafile
         self.batch_size = batch_size
+        self.descriptor = descriptor
 
         self.log("-" * 50)
         self.log("Filename: %s" % self.filename)
 
-        self.training_data = AtomsDataset(self.filename, descriptor=Gaussian())
+        self.training_data = AtomsDataset(self.filename, descriptor)
         # test_data = AtomsDataset('../datasets/training.traj', Gaussian())
         # self.training_data = [self.training_data[0], test_data[0]]
         self.unique_atoms, _, _, _, _,_ = factorize_data(self.training_data)

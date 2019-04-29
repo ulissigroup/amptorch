@@ -7,6 +7,7 @@ import copy
 from amp.utilities import Logger
 import matplotlib.pyplot as plt
 import torch.nn
+from amp_pytorch.NN_model import ForceLossFunction
 import torch
 import numpy as np
 
@@ -69,6 +70,7 @@ def train_model(model, device, unique_atoms, dataset_size, criterion,
     log('Model: %s' % model)
 
     model.train()
+    print(list(model.parameters()))
 
     since = time.time()
     log_epoch('-'*50)
@@ -106,16 +108,19 @@ def train_model(model, device, unique_atoms, dataset_size, criterion,
                 as per the LBFGS algorithm"""
                 optimizer.zero_grad()
                 energy_pred, force_pred = model(input_data, fp_primes)
-                print(image_forces)
+                print(energy_pred)
                 print(force_pred)
-                test=force_pred-image_forces
-                print(test)
                 sys.exit()
-                loss = criterion(output, scaled_target)
-                loss.backward()
-                return loss
+                # loss = criterion(energy_pred, scaled_target)
+                # loss.backward()
+                test = ForceLossFunction()
+                loss_test = test(energy_pred, scaled_target, force_pred,
+                                 image_forces, num_of_atoms)
+                loss_test.backward()
+                return loss_test
+                # return loss
 
-            loss=optimizer.step(closure)
+            loss = optimizer.step(closure)
             # Perform predictions and compute loss
             # with torch.no_grad():
                 # scaled_preds = model(input_data)
@@ -127,10 +132,10 @@ def train_model(model, device, unique_atoms, dataset_size, criterion,
             mse += loss.item()*batch_size
 
         mse = mse/dataset_size
-        rmse = np.sqrt(mse)
-        epoch_loss = rmse
+        # rmse = np.sqrt(mse)
+        epoch_loss = mse
         print (epoch_loss)
-        plot_loss_y.append(np.log10(rmse))
+        plot_loss_y.append(np.log10(mse))
 
         log_epoch('{} Loss: {:.4f}'.format(time.asctime(), epoch_loss))
         log_epoch('')

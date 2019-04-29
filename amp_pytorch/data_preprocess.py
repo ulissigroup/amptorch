@@ -38,8 +38,8 @@ class AtomsDataset(Dataset):
             extension = os.path.splitext(images)[1]
             if extension != (".traj" or ".db"):
                 self.atom_images = ase.io.read(images, ":")
-            else:
-                self.atom_images = self.images
+        else:
+            self.atom_images = self.images
         self.hashed_images = hash_images(self.atom_images)
         self.descriptor.calculate_fingerprints(
             self.hashed_images, calculate_derivatives=True
@@ -117,9 +117,10 @@ def factorize_data(training_data):
     fingerprint_dataset = []
     energy_dataset = []
     num_of_atoms = []
-    fingerprintprimes = torch.sparse.FloatTensor([])
+    fingerprintprimes = torch.tensor([])
     grouped_fp_idxs = torch.tensor([])
     image_forces = []
+    fp_length = len(training_data[0][0][0][1])
     for image_sample in training_data:
         image_fingerprint = image_sample[0]
         fingerprint_dataset.append(image_fingerprint)
@@ -129,7 +130,7 @@ def factorize_data(training_data):
         num_of_atoms.append(num_atom)
         image_primes = list(image_sample[2].values())
         fingerprintprimes = torch.cat(
-            (fingerprintprimes, torch.sparse.FloatTensor(image_primes)), 0
+            (fingerprintprimes, torch.tensor(image_primes)), 0
         )
         image_forces.append(torch.from_numpy(image_sample[3]))
         grouped_idx = torch.tensor([num_atom] * int((3 * num_atom)))
@@ -138,7 +139,6 @@ def factorize_data(training_data):
             element = atom[0]
             if element not in unique_atoms:
                 unique_atoms.append(element)
-
     image_forces = torch.cat(image_forces)
     atoms_in_batch = int(sum(num_of_atoms))
     fp_groupings = copy.deepcopy(grouped_fp_idxs)
@@ -148,15 +148,13 @@ def factorize_data(training_data):
         for idx, times in zip(torch.arange(len(fp_groupings)), fp_groupings)
     ]
     fp_groupings = torch.cat(fp_groupings)
-
-    factored_fingerprints = torch.zeros(len(grouped_fp_idxs), 20)
+    factored_fingerprints = torch.zeros(len(grouped_fp_idxs), fp_length)
     factored_fingerprints.index_add_(0, fp_groupings, fingerprintprimes)
     factored_fingerprintprimes = factored_fingerprints.reshape(
-        atoms_in_batch, 3, 20
+        atoms_in_batch, 3, fp_length 
     ).transpose(1, 2)
     # factored_fingerprintprimes is of dimensionality QxPx3 with each column
     # representing: dFP/dx dFP/dy dFP/dz
-
     return unique_atoms, fingerprint_dataset, energy_dataset, num_of_atoms, factored_fingerprintprimes, image_forces
 
 
