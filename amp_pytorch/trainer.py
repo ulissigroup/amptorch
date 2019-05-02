@@ -70,7 +70,6 @@ def train_model(model, device, unique_atoms, dataset_size, criterion,
     log('Model: %s' % model)
 
     model.train()
-    print(list(model.parameters()))
 
     since = time.time()
     log_epoch('-'*50)
