@@ -37,8 +37,8 @@ class Dense(nn.Linear):
 
     def reset_parameters(self):
         """Weight initialization scheme"""
-        init.constant_(self.weight, .5)
-        init.constant_(self.bias, .5)
+        init.constant_(self.weight, 0.5)
+        init.constant_(self.bias, 0.5)
 
         # xavier_uniform_(self.weight,gain=5.0/3)
         # kaiming_uniform_(self.weight, nonlinearity="tanh")
@@ -68,7 +68,7 @@ class MLP(nn.Module):
 
     def __init__(
         self,
-        n_input_nodes=20,
+        n_input_nodes=3,
         n_output_nodes=1,
         n_layers=2,
         n_hidden_size=2,
@@ -83,7 +83,8 @@ class MLP(nn.Module):
             Dense(self.n_neurons[i], self.n_neurons[i + 1], activation=activation)
             for i in range(n_layers - 1)
         ]
-        layers.append(Dense(self.n_neurons[-2], self.n_neurons[-1], activation=None))
+        layers.append(Dense(self.n_neurons[-2], self.n_neurons[-1],
+                            activation=activation))
         self.model_net = nn.Sequential(*layers)
 
     def forward(self, inputs):
@@ -148,17 +149,14 @@ class FullNN(nn.Module):
         dE_dFP = dE_dFP.reshape(1, -1)
         # Constructs a 1xPQ tensor that contains the derivatives with respect to
         # each atom's fingerprint
-        force_pred = torch.sparse.mm(fprimes.t(), dE_dFP.t())
-        print(force_pred)
-        print(force_pred.reshape(3, -1).t())
+        force_pred = -1*torch.sparse.mm(fprimes.t(), dE_dFP.t())
         # Sparse multiplication requires the first matrix to be sparse
         # Multiplies a 3QxPQ tensor with a PQx1 tensor to return a 3Qx1 tensor
         # containing the x,y,z directional forces for each atom
-        # force_pred = force_pred.reshape(num_atoms, 3)
+        force_pred = force_pred.reshape(3, -1).t()
         # Reshapes the force tensor into a Qx3 matrix containing all the force
         # predictions in the same order and shape as the target forces calculated from AMP.
-        sys.exit()
-        return energy_pred, force_pred
+        return energy_pred, force_pred, dE_dFP
 
 
 class ForceLossFunction(nn.Module):
@@ -166,7 +164,7 @@ class ForceLossFunction(nn.Module):
         super(ForceLossFunction, self).__init__()
 
     def forward(
-            self, energy_pred, energy_targets, force_pred, force_targets, num_atoms
+        self, energy_pred, energy_targets, force_pred, force_targets, num_atoms
     ):
         energy_per_atom = torch.div(energy_pred, num_atoms)
         targets_per_atom = torch.div(energy_targets, num_atoms)
@@ -174,7 +172,7 @@ class ForceLossFunction(nn.Module):
         num_atoms_force = torch.sqrt(num_atoms_force.reshape(len(num_atoms_force), 1))
         force_pred_per_atom = torch.div(force_pred, num_atoms_force)
         force_targets_per_atom = torch.div(force_targets, num_atoms_force)
-        alpha = 0
+        alpha = 0.4
         MSE_loss = nn.MSELoss()
         loss = MSE_loss(energy_per_atom, targets_per_atom) + (alpha / 3) * MSE_loss(
             force_pred_per_atom, force_targets_per_atom

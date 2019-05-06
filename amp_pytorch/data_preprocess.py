@@ -71,6 +71,18 @@ class AtomsDataset(Dataset):
                 apply_constraint=False
             )
             image_primes = self.descriptor.fingerprintprimes[hash_name]
+            # fingerprint derivative scaling to [0,1]
+            _image_primes = copy.copy(image_primes)
+            for _, key in enumerate(list(image_primes.keys())):
+                base_atom = key[3]
+                fprange_atom = fprange[base_atom]
+                fprime = image_primes[key]
+                for i in range(len(fprime)):
+                    if (fprange_atom[i][1] - fprange_atom[i][0]) > (10.**(-8.)):
+                       fprime[i] = 2.0 * (
+                           fprime[i] / (fprange_atom[i][1] - fprange_atom[i][0]))
+                _image_primes[key] = fprime
+
         except NotImplementedError:
             print("Atoms object has no claculator set!")
         return image_fingerprint, image_potential_energy, image_primes, image_forces
@@ -116,11 +128,14 @@ def factorize_data(training_data):
     fingerprint_dataset = []
     energy_dataset = []
     num_of_atoms = []
-    # fingerprintprimes = torch.sparse.FloatTensor(2,3)
-    fingerprintprimes = torch.zeros(20*12, 3*12)
-    # grouped_fp_idxs = torch.tensor([])
     image_forces = []
     fp_length = len(training_data[0][0][0][1])
+    for image in training_data:
+        num_atom = float(len(image[3]))
+        num_of_atoms.append(num_atom)
+    atoms_in_batch = int(sum(num_of_atoms))
+    fingerprintprimes = torch.zeros(fp_length * atoms_in_batch, 3 * atoms_in_batch)
+    # Construct a sparse matrix with dimensions PQx3Q
     idx_shift = 0
     for idx, image_sample in enumerate(training_data):
         image_fingerprint = image_sample[0]
@@ -131,44 +146,30 @@ def factorize_data(training_data):
                 unique_atoms.append(element)
         image_potential_energy = image_sample[1]
         energy_dataset.append(image_potential_energy)
-        num_atom = float(len(image_fingerprint))
-        num_of_atoms.append(num_atom)
         image_forces.append(torch.from_numpy(image_sample[3]))
 
         image_primes = list(image_sample[2].values())
         image_prime_keys = list(image_sample[2].keys())
         for index, fp_key in enumerate(image_prime_keys):
             image_prime = torch.tensor(image_primes[index])
-            base_atom = fp_key[0] + idx_shift
-            wrt_atom = fp_key[2] + idx_shift
+            base_atom = fp_key[2] + idx_shift
+            wrt_atom = fp_key[0] + idx_shift
             coord = fp_key[4]
-            fingerprintprimes[base_atom*fp_length:base_atom*fp_length+fp_length, wrt_atom+12*coord] = image_prime
+            fingerprintprimes[
+                base_atom * fp_length : base_atom * fp_length + fp_length,
+                wrt_atom + atoms_in_batch * coord,
+            ] = image_prime
         idx_shift += int(num_of_atoms[idx])
     image_forces = torch.cat(image_forces)
     sparse_fprimes = fingerprintprimes.to_sparse()
-        # fingerprintprimes = torch.cat(
-            # (fingerprintprimes, torch.tensor(image_primes)), 0
-        # )
-        # image_forces.append(torch.from_numpy(image_sample[3]))
-        # grouped_idx = torch.tensor([num_atom] * int((3 * num_atom)))
-        # grouped_fp_idxs = torch.cat((grouped_fp_idxs, grouped_idx), 0)
-    # image_forces = torch.cat(image_forces)
-    # atoms_in_batch = int(sum(num_of_atoms))
-    # fp_groupings = copy.deepcopy(grouped_fp_idxs)
-    # fp_groupings = [int(i) for i in fp_groupings]
-    # fp_groupings = [
-        # idx.repeat(times)
-        # for idx, times in zip(torch.arange(len(fp_groupings)), fp_groupings)
-    # ]
-    # fp_groupings = torch.cat(fp_groupings)
-    # factored_fingerprints = torch.zeros(len(grouped_fp_idxs), fp_length)
-    # factored_fingerprints.index_add_(0, fp_groupings, fingerprintprimes)
-    # factored_fingerprintprimes = factored_fingerprints.reshape(
-        # atoms_in_batch, 3, fp_length 
-    # ).transpose(1, 2)
-    # factored_fingerprintprimes is of dimensionality QxPx3 with each column
-    # representing: dFP/dx dFP/dy dFP/dz
-    return unique_atoms, fingerprint_dataset, energy_dataset, num_of_atoms, sparse_fprimes, image_forces
+    return (
+        unique_atoms,
+        fingerprint_dataset,
+        energy_dataset,
+        num_of_atoms,
+        sparse_fprimes,
+        image_forces,
+    )
 
 
 def collate_amp(training_data):
