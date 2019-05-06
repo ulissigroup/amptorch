@@ -107,9 +107,6 @@ def train_model(model, device, unique_atoms, dataset_size, criterion,
                 as per the LBFGS algorithm"""
                 optimizer.zero_grad()
                 energy_pred, force_pred = model(input_data, fp_primes)
-                print(energy_pred)
-                print(force_pred)
-                sys.exit()
                 # loss = criterion(energy_pred, scaled_target)
                 # loss.backward()
                 test = ForceLossFunction()
