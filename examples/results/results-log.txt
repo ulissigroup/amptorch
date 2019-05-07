@@ -22682,3 +22682,2500 @@ Model: FullNN(
     )
   )
 )
+Tue May  7 13:55:25 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=2, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=2, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 14:01:42 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 14:02:05 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 14:10:46 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 14:11:05 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 14:11:29 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 5s
+Training complete in 5 steps
+Best training loss: 0.001263
+
+Tue May  7 14:13:28 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Tue May  7 14:16:43 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Tue May  7 14:17:02 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Tue May  7 14:19:43 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Tue May  7 14:19:58 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Tue May  7 14:20:21 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Tue May  7 14:23:02 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Tue May  7 14:23:04 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Tue May  7 14:23:10 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Tue May  7 14:38:48 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Tue May  7 14:38:54 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Tue May  7 14:39:33 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Tue May  7 14:42:51 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Tue May  7 14:50:32 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Tue May  7 14:50:36 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Tue May  7 14:50:37 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Tue May  7 14:50:50 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Tue May  7 14:51:56 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 7s
+Training complete in 8 steps
+Best training loss: 0.001843
+
+Tue May  7 14:52:43 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Tue May  7 14:52:55 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Tue May  7 14:53:36 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Tue May  7 14:53:47 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Tue May  7 14:54:35 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Tue May  7 14:56:13 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Tue May  7 14:57:39 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Tue May  7 14:57:46 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 15:20:19 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 15:21:19 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 15:21:36 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 15:24:19 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Tue May  7 15:24:42 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Tue May  7 15:25:08 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Tue May  7 15:25:35 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Tue May  7 15:25:45 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Tue May  7 15:25:53 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Tue May  7 15:26:29 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Tue May  7 15:27:47 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Tue May  7 15:30:36 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Tue May  7 15:30:48 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 15:31:09 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=2, bias=True)
+        (1): Dense(in_features=2, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 3s
+Training complete in 4 steps
+Best training loss: 0.001681
+
+Tue May  7 15:34:30 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 3s
+Training complete in 4 steps
+Best training loss: 0.001190
+
+Tue May  7 15:34:59 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 3s
+Training complete in 3 steps
+Best training loss: 0.001892
+
+Tue May  7 15:39:35 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 15:40:37 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 15:40:48 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 15:41:14 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 15:41:32 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 0s
+Training complete in 2 steps
+Best training loss: 0.000210
+
+Tue May  7 15:41:52 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 0s
+Training complete in 2 steps
+Best training loss: 0.000209
+
+Tue May  7 15:57:59 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:06:51 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:06:59 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+
+Training complete in 0m 0s
+Training complete in 2 steps
+Best training loss: 0.000211
+
+Tue May  7 16:07:10 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:07:15 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:07:20 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:36:10 2019
+--------------------------------------------------
+Filename: ../datasets/water.extxyz
+Training Data = 400
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=20, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:39:26 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:39:29 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:39:32 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:40:00 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:40:27 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:41:37 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:43:43 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:43:53 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:44:04 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:44:12 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:44:20 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:45:09 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:45:17 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:45:40 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:45:42 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:45:47 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:46:03 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:46:05 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:46:13 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:46:17 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:46:20 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:46:27 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:46:28 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:46:30 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:46:36 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:46:42 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 16:47:33 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Tue May  7 17:13:06 2019
+--------------------------------------------------
+Filename: [Atoms(symbols='PdOPd', pbc=[True, False, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='PdO', pbc=[True, True, False], cell=[2.0, 2.0, 2.0], calculator=EMT(...)), Atoms(symbols='Cu', pbc=[True, True, False], cell=[1.8, 1.8, 1.8], calculator=EMT(...))]
+Training Data = 3
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Loss Function: MSELoss()
+Optimizer Info:
+ LBFGS (
+Parameter Group 0
+    history_size: 100
+    line_search_fn: None
+    lr: 0.8
+    max_eval: 25
+    max_iter: 20
+    tolerance_change: 1e-09
+    tolerance_grad: 1e-05
+)
+RMSE criteria = 0.002
+
+Model: FullNN(
+  (elementwise_models): ModuleList(
+    (0): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (1): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+    (2): MLP(
+      (model_net): Sequential(
+        (0): Dense(in_features=36, out_features=3, bias=True)
+        (1): Dense(in_features=3, out_features=3, bias=True)
+        (2): Dense(in_features=3, out_features=1, bias=True)
+      )
+    )
+  )
+)
