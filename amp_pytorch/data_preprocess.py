@@ -87,6 +87,12 @@ class AtomsDataset(Dataset):
             print("Atoms object has no claculator set!")
         return image_fingerprint, image_potential_energy, image_primes, image_forces
 
+    def unique(self):
+        return list(self.fprange.keys())
+
+    def fp_length(self):
+        return len(list(self.fprange.values())[0])
+
     def create_splits(self, training_data, val_frac):
         dataset_size = len(training_data)
         indices = np.random.permutation(dataset_size)
