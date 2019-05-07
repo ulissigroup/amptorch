@@ -37,15 +37,15 @@ class Dense(nn.Linear):
 
     def reset_parameters(self):
         """Weight initialization scheme"""
-        init.constant_(self.weight, 0.5)
-        init.constant_(self.bias, 0.5)
+        # init.constant_(self.weight, 0.5)
+        # init.constant_(self.bias, 0.5)
 
         # xavier_uniform_(self.weight,gain=5.0/3)
-        # kaiming_uniform_(self.weight, nonlinearity="tanh")
-        # if self.bias is not None:
-            # fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
-            # bound = 1 / np.sqrt(fan_in)
-            # init.uniform_(self.bias, -bound, bound)
+        kaiming_uniform_(self.weight, nonlinearity="tanh")
+        if self.bias is not None:
+            fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
+            bound = 1 / np.sqrt(fan_in)
+            init.uniform_(self.bias, -bound, bound)
 
     def forward(self, inputs):
         neuron_output = super(Dense, self).forward(inputs)
@@ -68,7 +68,7 @@ class MLP(nn.Module):
 
     def __init__(
         self,
-        n_input_nodes=3,
+        n_input_nodes=20,
         n_output_nodes=1,
         n_layers=2,
         n_hidden_size=2,
@@ -84,7 +84,7 @@ class MLP(nn.Module):
             for i in range(n_layers - 1)
         ]
         layers.append(Dense(self.n_neurons[-2], self.n_neurons[-1],
-                            activation=activation))
+                            activation=None))
         self.model_net = nn.Sequential(*layers)
 
     def forward(self, inputs):
@@ -103,7 +103,7 @@ class FullNN(nn.Module):
 
     """
 
-    def __init__(self, unique_atoms, batch_size, device, require_grd=True):
+    def __init__(self, unique_atoms, batch_size, architecture, device, require_grd=True):
         log = Logger("results/results-log.txt")
 
         super(FullNN, self).__init__()
@@ -112,9 +112,13 @@ class FullNN(nn.Module):
         self.req_grad = require_grd
         self.batch_size = batch_size
         n_unique_atoms = len(unique_atoms)
+
+        input_length = architecture[0]
+        n_layers = architecture[1]
+        n_hidden_size = architecture[2]
         elementwise_models = nn.ModuleList()
         for n_models in range(n_unique_atoms):
-            elementwise_models.append(MLP())
+            elementwise_models.append(MLP(n_input_nodes=input_length, n_layers=n_layers, n_hidden_size=n_hidden_size))
         self.elementwise_models = elementwise_models
         log("Activation Function = %s" % elementwise_models[0].activation)
 
@@ -156,7 +160,7 @@ class FullNN(nn.Module):
         force_pred = force_pred.reshape(3, -1).t()
         # Reshapes the force tensor into a Qx3 matrix containing all the force
         # predictions in the same order and shape as the target forces calculated from AMP.
-        return energy_pred, force_pred, dE_dFP
+        return energy_pred, force_pred
 
 
 class ForceLossFunction(nn.Module):

@@ -23,7 +23,9 @@ __email__ = "mshuaibi@andrew.cmu.edu"
 
 
 class AMPtorch:
-    def __init__(self, datafile, device="cpu", batch_size=None, val_frac=0):
+    def __init__(
+        self, datafile, device="cpu", batch_size=None, structure=[2, 2], val_frac=0
+    ):
 
         if not os.path.exists("results"):
             os.mkdir("results")
@@ -38,9 +40,8 @@ class AMPtorch:
         self.log("Filename: %s" % self.filename)
 
         self.training_data = AtomsDataset(self.filename, descriptor=Gaussian())
-        # test_data = AtomsDataset('../datasets/training.traj', Gaussian())
-        # self.training_data = [self.training_data[0], test_data[0]]
-        self.unique_atoms, _, _, _, _,_ = factorize_data(self.training_data)
+        self.unique_atoms = self.training_data.unique()
+        self.fp_length = self.training_data.fp_length()
 
         self.dataset_size = len(self.training_data)
         self.validation_frac = val_frac
@@ -73,7 +74,6 @@ class AMPtorch:
             }
 
         else:
-            self.dataset_size = len(self.training_data)
             self.log("Training Data = %d" % self.dataset_size)
             self.atoms_dataloader = DataLoader(
                 self.training_data,
@@ -81,8 +81,11 @@ class AMPtorch:
                 collate_fn=collate_amp,
                 shuffle=False,
             )
-
-        self.model = FullNN(self.unique_atoms, self.batch_size, self.device)
+        self.architecture = structure
+        self.architecture.insert(0, self.fp_length)
+        self.model = FullNN(
+            self.unique_atoms, self.batch_size, self.architecture, self.device
+        )
         self.model = self.model.to(self.device)
 
     def train(
@@ -125,13 +128,13 @@ class AMPtorch:
         with torch.no_grad():
             for sample in self.atoms_dataloader:
                 inputs = sample[0]
+                fp_primes = sample[3]
                 for element in self.unique_atoms:
                     inputs[element][0] = inputs[element][0].to(device)
                 targets = sample[1]
                 targets = targets.to(device)
-                predictions = model(inputs)
-            scaled_pred = pred_scaling(
-                predictions, targets, method="standardize")
+                predictions = model(inputs, fp_primes)
+            scaled_pred = pred_scaling(predictions, targets, method="standardize")
             targets = targets.reshape(len(targets), 1)
             data_min = min(targets)
             data_max = max(targets)
