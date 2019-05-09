@@ -10630,3 +10630,3307 @@ Calculating fingerprint derivatives...
  0 new calculations needed.
 ...fingerprint derivatives calculated. 0.0 min.
 ...forces calculated. 0.0 min.
+
+   oo      o       o   oooooo
+  o  o     oo     oo   o     o
+ o    o    o o   o o   o     o
+o      o   o  o o  o   o     o
+oooooooo   o   o   o   oooooo
+o      o   o       o   o
+o      o   o       o   o
+o      o   o       o   o
+
+Amp: Atomistic Machine-learning Package
+Developed by Andrew Peterson, Alireza Khorshidi, and others,
+Brown University.
+PI Website: http://brown.edu/go/catalyst
+Official repository: http://bitbucket.org/andrewpeterson/amp
+Official documentation: http://amp.readthedocs.org/
+Citation:
+  Alireza Khorshidi & Andrew A. Peterson,
+  Computer Physics Communications 207: 310-324 (2016).
+  http://doi.org/10.1016/j.cpc.2016.05.010
+======================================================================
+User: mshuaibi
+Hostname: ulissigroup-Alienware-Shuaibi
+Date: 2019-05-08T11:22:56 (2019-05-08T15:22:56 UTC)
+Architecture: x86_64
+PID: 8047
+Amp version: 0.6.1
+Amp directory: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/amp
+ Last commit: b'unknown hash'
+ Last commit date: b'unknown date'
+Python: v3.7.1: /home/mshuaibi/miniconda3/bin/python
+ASE v3.17.0: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/ase
+NumPy v1.16.2: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/numpy
+SciPy v1.2.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/scipy
+ZMQ/PyZMQ v4.3.1/v18.0.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/zmq
+pxssh: Not available from pxssh.
+pxssh (via pexpect v4.7.0): /home/mshuaibi/miniconda3/lib/python3.7/site-packages/pexpect/pxssh.py
+======================================================================
+No queuing system detected; single machine assumed.
+Parallel configuration determined from environment for <single machine>:
+  localhost: 12
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+
+   oo      o       o   oooooo
+  o  o     oo     oo   o     o
+ o    o    o o   o o   o     o
+o      o   o  o o  o   o     o
+oooooooo   o   o   o   oooooo
+o      o   o       o   o
+o      o   o       o   o
+o      o   o       o   o
+
+Amp: Atomistic Machine-learning Package
+Developed by Andrew Peterson, Alireza Khorshidi, and others,
+Brown University.
+PI Website: http://brown.edu/go/catalyst
+Official repository: http://bitbucket.org/andrewpeterson/amp
+Official documentation: http://amp.readthedocs.org/
+Citation:
+  Alireza Khorshidi & Andrew A. Peterson,
+  Computer Physics Communications 207: 310-324 (2016).
+  http://doi.org/10.1016/j.cpc.2016.05.010
+======================================================================
+User: mshuaibi
+Hostname: ulissigroup-Alienware-Shuaibi
+Date: 2019-05-08T11:23:14 (2019-05-08T15:23:14 UTC)
+Architecture: x86_64
+PID: 8094
+Amp version: 0.6.1
+Amp directory: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/amp
+ Last commit: b'unknown hash'
+ Last commit date: b'unknown date'
+Python: v3.7.1: /home/mshuaibi/miniconda3/bin/python
+ASE v3.17.0: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/ase
+NumPy v1.16.2: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/numpy
+SciPy v1.2.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/scipy
+ZMQ/PyZMQ v4.3.1/v18.0.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/zmq
+pxssh: Not available from pxssh.
+pxssh (via pexpect v4.7.0): /home/mshuaibi/miniconda3/lib/python3.7/site-packages/pexpect/pxssh.py
+======================================================================
+No queuing system detected; single machine assumed.
+Parallel configuration determined from environment for <single machine>:
+  localhost: 12
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+
+   oo      o       o   oooooo
+  o  o     oo     oo   o     o
+ o    o    o o   o o   o     o
+o      o   o  o o  o   o     o
+oooooooo   o   o   o   oooooo
+o      o   o       o   o
+o      o   o       o   o
+o      o   o       o   o
+
+Amp: Atomistic Machine-learning Package
+Developed by Andrew Peterson, Alireza Khorshidi, and others,
+Brown University.
+PI Website: http://brown.edu/go/catalyst
+Official repository: http://bitbucket.org/andrewpeterson/amp
+Official documentation: http://amp.readthedocs.org/
+Citation:
+  Alireza Khorshidi & Andrew A. Peterson,
+  Computer Physics Communications 207: 310-324 (2016).
+  http://doi.org/10.1016/j.cpc.2016.05.010
+======================================================================
+User: mshuaibi
+Hostname: ulissigroup-Alienware-Shuaibi
+Date: 2019-05-08T11:24:22 (2019-05-08T15:24:22 UTC)
+Architecture: x86_64
+PID: 8247
+Amp version: 0.6.1
+Amp directory: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/amp
+ Last commit: b'unknown hash'
+ Last commit date: b'unknown date'
+Python: v3.7.1: /home/mshuaibi/miniconda3/bin/python
+ASE v3.17.0: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/ase
+NumPy v1.16.2: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/numpy
+SciPy v1.2.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/scipy
+ZMQ/PyZMQ v4.3.1/v18.0.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/zmq
+pxssh: Not available from pxssh.
+pxssh (via pexpect v4.7.0): /home/mshuaibi/miniconda3/lib/python3.7/site-packages/pexpect/pxssh.py
+======================================================================
+No queuing system detected; single machine assumed.
+Parallel configuration determined from environment for <single machine>:
+  localhost: 12
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+
+   oo      o       o   oooooo
+  o  o     oo     oo   o     o
+ o    o    o o   o o   o     o
+o      o   o  o o  o   o     o
+oooooooo   o   o   o   oooooo
+o      o   o       o   o
+o      o   o       o   o
+o      o   o       o   o
+
+Amp: Atomistic Machine-learning Package
+Developed by Andrew Peterson, Alireza Khorshidi, and others,
+Brown University.
+PI Website: http://brown.edu/go/catalyst
+Official repository: http://bitbucket.org/andrewpeterson/amp
+Official documentation: http://amp.readthedocs.org/
+Citation:
+  Alireza Khorshidi & Andrew A. Peterson,
+  Computer Physics Communications 207: 310-324 (2016).
+  http://doi.org/10.1016/j.cpc.2016.05.010
+======================================================================
+User: mshuaibi
+Hostname: ulissigroup-Alienware-Shuaibi
+Date: 2019-05-08T11:24:22 (2019-05-08T15:24:22 UTC)
+Architecture: x86_64
+PID: 8247
+Amp version: 0.6.1
+Amp directory: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/amp
+ Last commit: b'unknown hash'
+ Last commit date: b'unknown date'
+Python: v3.7.1: /home/mshuaibi/miniconda3/bin/python
+ASE v3.17.0: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/ase
+NumPy v1.16.2: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/numpy
+SciPy v1.2.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/scipy
+ZMQ/PyZMQ v4.3.1/v18.0.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/zmq
+pxssh: Not available from pxssh.
+pxssh (via pexpect v4.7.0): /home/mshuaibi/miniconda3/lib/python3.7/site-packages/pexpect/pxssh.py
+======================================================================
+No queuing system detected; single machine assumed.
+Parallel configuration determined from environment for <single machine>:
+  localhost: 12
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=4.000 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 2
+ Pd: 2
+ Cu: 2
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=4.000 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 2
+ Pd: 2
+ Cu: 2
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=4.000 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 2
+ Pd: 2
+ Cu: 2
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=4.000 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 2
+ Pd: 2
+ Cu: 2
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=4.000 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 2
+ Pd: 2
+ Cu: 2
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=4.000 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 2
+ Pd: 2
+ Cu: 2
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+
+   oo      o       o   oooooo
+  o  o     oo     oo   o     o
+ o    o    o o   o o   o     o
+o      o   o  o o  o   o     o
+oooooooo   o   o   o   oooooo
+o      o   o       o   o
+o      o   o       o   o
+o      o   o       o   o
+
+Amp: Atomistic Machine-learning Package
+Developed by Andrew Peterson, Alireza Khorshidi, and others,
+Brown University.
+PI Website: http://brown.edu/go/catalyst
+Official repository: http://bitbucket.org/andrewpeterson/amp
+Official documentation: http://amp.readthedocs.org/
+Citation:
+  Alireza Khorshidi & Andrew A. Peterson,
+  Computer Physics Communications 207: 310-324 (2016).
+  http://doi.org/10.1016/j.cpc.2016.05.010
+======================================================================
+User: mshuaibi
+Hostname: ulissigroup-Alienware-Shuaibi
+Date: 2019-05-08T11:24:29 (2019-05-08T15:24:29 UTC)
+Architecture: x86_64
+PID: 8283
+Amp version: 0.6.1
+Amp directory: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/amp
+ Last commit: b'unknown hash'
+ Last commit date: b'unknown date'
+Python: v3.7.1: /home/mshuaibi/miniconda3/bin/python
+ASE v3.17.0: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/ase
+NumPy v1.16.2: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/numpy
+SciPy v1.2.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/scipy
+ZMQ/PyZMQ v4.3.1/v18.0.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/zmq
+pxssh: Not available from pxssh.
+pxssh (via pexpect v4.7.0): /home/mshuaibi/miniconda3/lib/python3.7/site-packages/pexpect/pxssh.py
+======================================================================
+No queuing system detected; single machine assumed.
+Parallel configuration determined from environment for <single machine>:
+  localhost: 12
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+
+   oo      o       o   oooooo
+  o  o     oo     oo   o     o
+ o    o    o o   o o   o     o
+o      o   o  o o  o   o     o
+oooooooo   o   o   o   oooooo
+o      o   o       o   o
+o      o   o       o   o
+o      o   o       o   o
+
+Amp: Atomistic Machine-learning Package
+Developed by Andrew Peterson, Alireza Khorshidi, and others,
+Brown University.
+PI Website: http://brown.edu/go/catalyst
+Official repository: http://bitbucket.org/andrewpeterson/amp
+Official documentation: http://amp.readthedocs.org/
+Citation:
+  Alireza Khorshidi & Andrew A. Peterson,
+  Computer Physics Communications 207: 310-324 (2016).
+  http://doi.org/10.1016/j.cpc.2016.05.010
+======================================================================
+User: mshuaibi
+Hostname: ulissigroup-Alienware-Shuaibi
+Date: 2019-05-08T11:24:29 (2019-05-08T15:24:29 UTC)
+Architecture: x86_64
+PID: 8283
+Amp version: 0.6.1
+Amp directory: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/amp
+ Last commit: b'unknown hash'
+ Last commit date: b'unknown date'
+Python: v3.7.1: /home/mshuaibi/miniconda3/bin/python
+ASE v3.17.0: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/ase
+NumPy v1.16.2: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/numpy
+SciPy v1.2.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/scipy
+ZMQ/PyZMQ v4.3.1/v18.0.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/zmq
+pxssh: Not available from pxssh.
+pxssh (via pexpect v4.7.0): /home/mshuaibi/miniconda3/lib/python3.7/site-packages/pexpect/pxssh.py
+======================================================================
+No queuing system detected; single machine assumed.
+Parallel configuration determined from environment for <single machine>:
+  localhost: 12
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=4.000 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 2
+ Pd: 2
+ Cu: 2
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=4.000 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 2
+ Pd: 2
+ Cu: 2
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=4.000 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 2
+ Pd: 2
+ Cu: 2
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=4.000 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 2
+ Pd: 2
+ Cu: 2
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=4.000 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 2
+ Pd: 2
+ Cu: 2
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=4.000 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 2
+ Pd: 2
+ Cu: 2
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+
+   oo      o       o   oooooo
+  o  o     oo     oo   o     o
+ o    o    o o   o o   o     o
+o      o   o  o o  o   o     o
+oooooooo   o   o   o   oooooo
+o      o   o       o   o
+o      o   o       o   o
+o      o   o       o   o
+
+Amp: Atomistic Machine-learning Package
+Developed by Andrew Peterson, Alireza Khorshidi, and others,
+Brown University.
+PI Website: http://brown.edu/go/catalyst
+Official repository: http://bitbucket.org/andrewpeterson/amp
+Official documentation: http://amp.readthedocs.org/
+Citation:
+  Alireza Khorshidi & Andrew A. Peterson,
+  Computer Physics Communications 207: 310-324 (2016).
+  http://doi.org/10.1016/j.cpc.2016.05.010
+======================================================================
+User: mshuaibi
+Hostname: ulissigroup-Alienware-Shuaibi
+Date: 2019-05-08T13:30:52 (2019-05-08T17:30:52 UTC)
+Architecture: x86_64
+PID: 18349
+Amp version: 0.6.1
+Amp directory: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/amp
+ Last commit: b'unknown hash'
+ Last commit date: b'unknown date'
+Python: v3.7.1: /home/mshuaibi/miniconda3/bin/python
+ASE v3.17.0: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/ase
+NumPy v1.16.2: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/numpy
+SciPy v1.2.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/scipy
+ZMQ/PyZMQ v4.3.1/v18.0.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/zmq
+pxssh: Not available from pxssh.
+pxssh (via pexpect v4.7.0): /home/mshuaibi/miniconda3/lib/python3.7/site-packages/pexpect/pxssh.py
+======================================================================
+No queuing system detected; single machine assumed.
+Parallel configuration determined from environment for <single machine>:
+  localhost: 12
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+
+   oo      o       o   oooooo
+  o  o     oo     oo   o     o
+ o    o    o o   o o   o     o
+o      o   o  o o  o   o     o
+oooooooo   o   o   o   oooooo
+o      o   o       o   o
+o      o   o       o   o
+o      o   o       o   o
+
+Amp: Atomistic Machine-learning Package
+Developed by Andrew Peterson, Alireza Khorshidi, and others,
+Brown University.
+PI Website: http://brown.edu/go/catalyst
+Official repository: http://bitbucket.org/andrewpeterson/amp
+Official documentation: http://amp.readthedocs.org/
+Citation:
+  Alireza Khorshidi & Andrew A. Peterson,
+  Computer Physics Communications 207: 310-324 (2016).
+  http://doi.org/10.1016/j.cpc.2016.05.010
+======================================================================
+User: mshuaibi
+Hostname: ulissigroup-Alienware-Shuaibi
+Date: 2019-05-08T13:31:01 (2019-05-08T17:31:01 UTC)
+Architecture: x86_64
+PID: 18441
+Amp version: 0.6.1
+Amp directory: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/amp
+ Last commit: b'unknown hash'
+ Last commit date: b'unknown date'
+Python: v3.7.1: /home/mshuaibi/miniconda3/bin/python
+ASE v3.17.0: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/ase
+NumPy v1.16.2: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/numpy
+SciPy v1.2.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/scipy
+ZMQ/PyZMQ v4.3.1/v18.0.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/zmq
+pxssh: Not available from pxssh.
+pxssh (via pexpect v4.7.0): /home/mshuaibi/miniconda3/lib/python3.7/site-packages/pexpect/pxssh.py
+======================================================================
+No queuing system detected; single machine assumed.
+Parallel configuration determined from environment for <single machine>:
+  localhost: 12
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+
+   oo      o       o   oooooo
+  o  o     oo     oo   o     o
+ o    o    o o   o o   o     o
+o      o   o  o o  o   o     o
+oooooooo   o   o   o   oooooo
+o      o   o       o   o
+o      o   o       o   o
+o      o   o       o   o
+
+Amp: Atomistic Machine-learning Package
+Developed by Andrew Peterson, Alireza Khorshidi, and others,
+Brown University.
+PI Website: http://brown.edu/go/catalyst
+Official repository: http://bitbucket.org/andrewpeterson/amp
+Official documentation: http://amp.readthedocs.org/
+Citation:
+  Alireza Khorshidi & Andrew A. Peterson,
+  Computer Physics Communications 207: 310-324 (2016).
+  http://doi.org/10.1016/j.cpc.2016.05.010
+======================================================================
+User: mshuaibi
+Hostname: ulissigroup-Alienware-Shuaibi
+Date: 2019-05-08T13:31:01 (2019-05-08T17:31:01 UTC)
+Architecture: x86_64
+PID: 18441
+Amp version: 0.6.1
+Amp directory: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/amp
+ Last commit: b'unknown hash'
+ Last commit date: b'unknown date'
+Python: v3.7.1: /home/mshuaibi/miniconda3/bin/python
+ASE v3.17.0: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/ase
+NumPy v1.16.2: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/numpy
+SciPy v1.2.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/scipy
+ZMQ/PyZMQ v4.3.1/v18.0.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/zmq
+pxssh: Not available from pxssh.
+pxssh (via pexpect v4.7.0): /home/mshuaibi/miniconda3/lib/python3.7/site-packages/pexpect/pxssh.py
+======================================================================
+No queuing system detected; single machine assumed.
+Parallel configuration determined from environment for <single machine>:
+  localhost: 12
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=4.000 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 2
+ Pd: 2
+ Cu: 2
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=4.000 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 2
+ Pd: 2
+ Cu: 2
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=4.000 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 2
+ Pd: 2
+ Cu: 2
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=4.000 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 2
+ Pd: 2
+ Cu: 2
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=4.000 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 2
+ Pd: 2
+ Cu: 2
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=4.000 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 2
+ Pd: 2
+ Cu: 2
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+
+   oo      o       o   oooooo
+  o  o     oo     oo   o     o
+ o    o    o o   o o   o     o
+o      o   o  o o  o   o     o
+oooooooo   o   o   o   oooooo
+o      o   o       o   o
+o      o   o       o   o
+o      o   o       o   o
+
+Amp: Atomistic Machine-learning Package
+Developed by Andrew Peterson, Alireza Khorshidi, and others,
+Brown University.
+PI Website: http://brown.edu/go/catalyst
+Official repository: http://bitbucket.org/andrewpeterson/amp
+Official documentation: http://amp.readthedocs.org/
+Citation:
+  Alireza Khorshidi & Andrew A. Peterson,
+  Computer Physics Communications 207: 310-324 (2016).
+  http://doi.org/10.1016/j.cpc.2016.05.010
+======================================================================
+User: mshuaibi
+Hostname: ulissigroup-Alienware-Shuaibi
+Date: 2019-05-08T13:31:14 (2019-05-08T17:31:14 UTC)
+Architecture: x86_64
+PID: 18493
+Amp version: 0.6.1
+Amp directory: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/amp
+ Last commit: b'unknown hash'
+ Last commit date: b'unknown date'
+Python: v3.7.1: /home/mshuaibi/miniconda3/bin/python
+ASE v3.17.0: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/ase
+NumPy v1.16.2: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/numpy
+SciPy v1.2.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/scipy
+ZMQ/PyZMQ v4.3.1/v18.0.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/zmq
+pxssh: Not available from pxssh.
+pxssh (via pexpect v4.7.0): /home/mshuaibi/miniconda3/lib/python3.7/site-packages/pexpect/pxssh.py
+======================================================================
+No queuing system detected; single machine assumed.
+Parallel configuration determined from environment for <single machine>:
+  localhost: 12
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating potential energy...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+...potential energy calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
+Calculation requested.
+Calculating forces...
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+3 unique elements included: Cu, O, Pd
+Number of symmetry functions for each element:
+  O: 3
+ Pd: 3
+ Cu: 3
+O feature vector functions:
+ 0: G2, Pd, eta = 0.8
+ 1: G4, (Pd, Pd), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (O, Pd), eta=0.3, gamma=0.6, zeta=0.5
+Pd feature vector functions:
+ 0: G2, Pd, eta = 0.2
+ 1: G4, (Pd, Pd), eta=0.9, gamma=0.75, zeta=1.5
+ 2: G4, (O, Pd), eta=0.4, gamma=0.3, zeta=4
+Cu feature vector functions:
+ 0: G2, Cu, eta = 0.8
+ 1: G4, (Cu, O), eta=0.2, gamma=0.3, zeta=1
+ 2: G4, (Cu, Cu), eta=0.3, gamma=0.6, zeta=0.5
+Calculating neighborlists...
+ Data stored in file amp-data-neighborlists.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file amp-data-fingerprints.
+ File exists with 413 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file amp-data-fingerprint-primes.
+ File exists with 410 total images, 1 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+...forces calculated. 0.0 min.
