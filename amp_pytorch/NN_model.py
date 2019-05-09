@@ -6,7 +6,7 @@ import sys
 import time
 import numpy as np
 from collections import defaultdict, OrderedDict
-import torch
+import torch 
 import torch.nn as nn
 from torch.nn import init
 from torch.nn import Tanh, Softplus, LeakyReLU
@@ -37,8 +37,8 @@ class Dense(nn.Linear):
 
     def reset_parameters(self):
         """Weight initialization scheme"""
-        # init.constant_(self.weight, 0.5)
-        # init.constant_(self.bias, 0.5)
+        # init.constant_(self.weight, 0.005)
+        # init.constant_(self.bias, 1)
 
         # xavier_uniform_(self.weight,gain=5.0/3)
         kaiming_uniform_(self.weight, nonlinearity="tanh")
@@ -103,14 +103,13 @@ class FullNN(nn.Module):
 
     """
 
-    def __init__(self, unique_atoms, batch_size, architecture, device, require_grd=True):
+    def __init__(self, unique_atoms, architecture, device, require_grd=True):
         log = Logger("results/results-log.txt")
 
         super(FullNN, self).__init__()
         self.device = device
         self.unique_atoms = unique_atoms
         self.req_grad = require_grd
-        self.batch_size = batch_size
         n_unique_atoms = len(unique_atoms)
 
         input_length = architecture[0]
@@ -122,7 +121,7 @@ class FullNN(nn.Module):
         self.elementwise_models = elementwise_models
         log("Activation Function = %s" % elementwise_models[0].activation)
 
-    def forward(self, input_data, fprimes):
+    def forward(self, inputs, fprimes):
         """Forward pass through the model - predicting energy and forces
         accordingly.
 
@@ -130,7 +129,8 @@ class FullNN(nn.Module):
         Q - Atoms in batch
         P - Length of fingerprint"""
 
-        batch_size = self.batch_size
+        input_data = inputs[0]
+        batch_size = inputs[1]
         energy_pred = torch.zeros(batch_size, 1).to(self.device)
         # Constructs an Nx1 empty tensor to store element energy contributions
         dE_dFP_ = defaultdict(list)
@@ -143,7 +143,8 @@ class FullNN(nn.Module):
                 energy_pred,
                 model_inputs,
                 grad_outputs=torch.ones_like(energy_pred),
-                retain_graph=True,
+                create_graph=True,
+                # retain_graph=True,
             )[0]
             for fprime, con in zip(gradients, contribution_index):
                 dE_dFP_[int(con)].append(fprime)
@@ -153,7 +154,8 @@ class FullNN(nn.Module):
         dE_dFP = dE_dFP.reshape(1, -1)
         # Constructs a 1xPQ tensor that contains the derivatives with respect to
         # each atom's fingerprint
-        force_pred = -1*torch.sparse.mm(fprimes.t(), dE_dFP.t())
+        # force_pred = -1*torch.sparse.mm(fprimes.t(), dE_dFP.t())
+        force_pred = -1*torch.mm(dE_dFP, fprimes)
         # Sparse multiplication requires the first matrix to be sparse
         # Multiplies a 3QxPQ tensor with a PQx1 tensor to return a 3Qx1 tensor
         # containing the x,y,z directional forces for each atom
@@ -176,8 +178,8 @@ class ForceLossFunction(nn.Module):
         num_atoms_force = torch.sqrt(num_atoms_force.reshape(len(num_atoms_force), 1))
         force_pred_per_atom = torch.div(force_pred, num_atoms_force)
         force_targets_per_atom = torch.div(force_targets, num_atoms_force)
-        alpha = 0.4
-        MSE_loss = nn.MSELoss()
+        alpha = 0.01
+        MSE_loss = nn.MSELoss(reduction='sum')
         loss = MSE_loss(energy_per_atom, targets_per_atom) + (alpha / 3) * MSE_loss(
             force_pred_per_atom, force_targets_per_atom
         )

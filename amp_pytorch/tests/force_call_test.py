@@ -4,6 +4,9 @@ configurations and three different periodic configurations have been calculated
 in Mathematica, and are given below.  This script checks the values calculated
 by the code with and without fortran modules.
 
+
+FullNN weights must be initialized to 0.5
+Output Layer must be Tanh instead of Linear
 """
 
 import sys
