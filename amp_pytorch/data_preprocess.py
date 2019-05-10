@@ -78,14 +78,15 @@ class AtomsDataset(Dataset):
                 fprange_atom = fprange[base_atom]
                 fprime = image_primes[key]
                 for i in range(len(fprime)):
-                    if (fprange_atom[i][1] - fprange_atom[i][0]) > (10.**(-8.)):
-                       fprime[i] = 2.0 * (
-                           fprime[i] / (fprange_atom[i][1] - fprange_atom[i][0]))
+                    if (fprange_atom[i][1] - fprange_atom[i][0]) > (10.0 ** (-8.0)):
+                        fprime[i] = 2.0 * (
+                            fprime[i] / (fprange_atom[i][1] - fprange_atom[i][0])
+                        )
                 _image_primes[key] = fprime
 
         except NotImplementedError:
             print("Atoms object has no claculator set!")
-        return image_fingerprint, image_potential_energy, image_primes, image_forces
+        return image_fingerprint, image_potential_energy, _image_primes, image_forces
 
     def unique(self):
         return list(self.fprange.keys())
@@ -140,7 +141,8 @@ def factorize_data(training_data):
         num_atom = float(len(image[3]))
         num_of_atoms.append(num_atom)
     atoms_in_batch = int(sum(num_of_atoms))
-    fingerprintprimes = torch.zeros(fp_length * atoms_in_batch, 3 * atoms_in_batch)
+    fingerprintprimes = torch.zeros(
+        fp_length * atoms_in_batch, 3 * atoms_in_batch)
     # Construct a sparse matrix with dimensions PQx3Q
     idx_shift = 0
     for idx, image_sample in enumerate(training_data):
@@ -166,7 +168,7 @@ def factorize_data(training_data):
                 wrt_atom + atoms_in_batch * coord,
             ] = image_prime
         idx_shift += int(num_of_atoms[idx])
-    image_forces = torch.cat(image_forces)
+    image_forces = torch.cat(image_forces).float()
     # sparse_fprimes = fingerprintprimes.to_sparse()
     sparse_fprimes = fingerprintprimes
     return (
