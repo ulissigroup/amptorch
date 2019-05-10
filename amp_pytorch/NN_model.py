@@ -37,8 +37,8 @@ class Dense(nn.Linear):
 
     def reset_parameters(self):
         """Weight initialization scheme"""
-        # init.constant_(self.weight, 0.005)
-        # init.constant_(self.bias, 1)
+        # init.constant_(self.weight, 0.5)
+        # init.constant_(self.bias, 0.5)
 
         # xavier_uniform_(self.weight,gain=5.0/3)
         kaiming_uniform_(self.weight, nonlinearity="tanh")
@@ -132,11 +132,12 @@ class FullNN(nn.Module):
         input_data = inputs[0]
         batch_size = inputs[1]
         energy_pred = torch.zeros(batch_size, 1).to(self.device)
+        fprimes = fprimes.to(self.device)
         # Constructs an Nx1 empty tensor to store element energy contributions
         dE_dFP_ = defaultdict(list)
         for index, element in enumerate(self.unique_atoms):
             model_inputs = input_data[element][0]
-            contribution_index = torch.tensor(input_data[element][1])
+            contribution_index = torch.tensor(input_data[element][1]).to(self.device)
             atomwise_outputs = self.elementwise_models[index].forward(model_inputs)
             energy_pred.index_add_(0, contribution_index, atomwise_outputs)
             gradients = grad(
@@ -148,7 +149,7 @@ class FullNN(nn.Module):
             )[0]
             for fprime, con in zip(gradients, contribution_index):
                 dE_dFP_[int(con)].append(fprime)
-        dE_dFP = torch.tensor([])
+        dE_dFP = torch.tensor([]).to(self.device)
         for i in list(dE_dFP_.keys()):
             dE_dFP = torch.cat((dE_dFP, torch.stack(dE_dFP_[i])), 0)
         dE_dFP = dE_dFP.reshape(1, -1)
@@ -178,10 +179,9 @@ class ForceLossFunction(nn.Module):
         num_atoms_force = torch.sqrt(num_atoms_force.reshape(len(num_atoms_force), 1))
         force_pred_per_atom = torch.div(force_pred, num_atoms_force)
         force_targets_per_atom = torch.div(force_targets, num_atoms_force)
-        alpha = 0.01
+        alpha = 0.04
         MSE_loss = nn.MSELoss(reduction='sum')
         loss = MSE_loss(energy_per_atom, targets_per_atom) + (alpha / 3) * MSE_loss(
             force_pred_per_atom, force_targets_per_atom
         )
-
         return loss

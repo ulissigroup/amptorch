@@ -105,6 +105,9 @@ def train_model(
             batch_size = len(target)
             target = target.reshape(batch_size, 1).to(device)
             scaled_target = target_scaling(target, method="standardize")
+            scaled_forces = target_scaling(image_forces, method='standardize')
+            print(scaled_forces)
+            sys.exit()
             num_of_atoms = data_sample[2].reshape(batch_size, 1).to(device)
             # Send inputs and labels to the corresponding device (cpu or gpu)
             for element in unique_atoms:

@@ -1,9 +1,11 @@
 """An example of how to utilize the package to train a model utilizing a LBFGS
 optimizer"""
 
+import sys
 import numpy as np
 from ase import Atoms
 from ase.calculators.emt import EMT
+import ase
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -12,6 +14,10 @@ from amp_pytorch.NN_model import ForceLossFunction
 
 # locate training images
 IMAGES = "../datasets/water.extxyz"
+images = ase.io.read(IMAGES,":")
+IMAGES = []
+for i in range(10):
+    IMAGES.append(images[i])
 # IMAGES = [Atoms(symbols='PdOPd',
                         # pbc=np.array([True, False, False], dtype=bool),
                         # calculator=EMT(),
@@ -51,7 +57,7 @@ DEVICE = "cpu"
 # representing the number of layers, and the second number representing the
 # number of nodes in each hidden layer. i.e. [3,3] = 3 layers (2 hidden layers,
 # 1 output layer) and 3 nodes in each hidden layer.
-ARCHITECTURE = [3, 3]
+ARCHITECTURE = [5, 5]
 
 # define model
 MODEL = core.AMPtorch(IMAGES, DEVICE, batch_size=None, structure=ARCHITECTURE, val_frac=0)
