@@ -179,7 +179,7 @@ def train_model(
             for data_sample in atoms_dataloader:
                 input_data = [data_sample[0], len(data_sample[1])]
                 fp_primes = data_sample[3]
-                image_forces = data_sample[4].type(torch.FloatTensor)
+                image_forces = data_sample[4].to(device)
                 target = data_sample[1].requires_grad_(False)
                 batch_size = len(target)
                 target = target.reshape(batch_size, 1).to(device)
@@ -238,8 +238,6 @@ def train_model(
             print("force: %s" % rmse_f)
             print("")
             # print(epoch_loss)
-            # print(rmse_f)
-
             plot_loss_y[phase].append(np.log10(rmse))
 
             if epoch_loss < best_loss:
@@ -250,6 +248,10 @@ def train_model(
             log_epoch("")
 
         epoch += 1
+    print(target)
+    print(raw_preds)
+    print(image_forces)
+    print(force_pred)
 
     time_elapsed = time.time() - since
     print("Training complete in {} steps".format(epoch))
