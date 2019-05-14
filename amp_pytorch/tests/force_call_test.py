@@ -21,6 +21,7 @@ from collections import OrderedDict
 from amp import Amp
 from amp.descriptor.gaussian import Gaussian
 from amp.model.neuralnetwork import NeuralNetwork
+from amp.model.neuralnetwork import get_random_scalings 
 from amp.utilities import hash_images
 from amp.model import calculate_fingerprints_range
 from amp_pytorch import core
@@ -232,7 +233,7 @@ def test_non_periodic():
         # for idx_d, value in enumerate(sample):
             # predict = force_pred.tolist()[idx][idx_d]
             # assert abs(value - predict) < 0.00001, (
-                assert round(value, 4)round(force_pred.tolist()[idx][idx_d], 4), (
+                # assert round(value, 4)round(force_pred.tolist()[idx][idx_d], 4), (
                 # "The predicted force of image % i, direction % i is wrong! Values: %s vs %s"
                 # % (idx + 1, idx_d, value, force_pred.tolist()[idx][idx_d])
             # )
@@ -345,10 +346,12 @@ def test_periodic():
         ]
     )
 
+
     hashed_images = hash_images(images)
     descriptor = Gaussian(cutoff=4, Gs=Gs, fortran=False)
     descriptor.calculate_fingerprints(hashed_images, calculate_derivatives=True)
     fingerprints_range = calculate_fingerprints_range(descriptor, hashed_images)
+
 
     # Testing pure-python and fortran versions of Gaussian-neural force call
     device = "cpu"
