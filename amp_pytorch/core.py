@@ -15,7 +15,7 @@ from amp.descriptor.gaussian import Gaussian
 import matplotlib.pyplot as plt
 from amp_pytorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
 from amp_pytorch.NN_model import FullNN
-from amp_pytorch.trainer_core import train_model, pred_scaling
+from amp_pytorch.trainer import train_model, pred_scaling
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
@@ -165,32 +165,68 @@ class AMPtorch:
         fig.savefig("results/parity_plot.pdf")
         plt.show()
 
+    def parity_plot_forces(self, model):
+
+        model.eval()
+        targets = []
+        device = self.device
+        model = model.to(device)
+        for sample in self.atoms_dataloader:
+            inputs = sample[0]
+            fp_primes = sample[3]
+            for element in self.unique_atoms:
+                inputs[element][0] = inputs[element][0].to(device).requires_grad_(True)
+            targets = sample[1]
+            force_targets = sample[4]
+            targets = targets.to(device)
+            force_targets = force_targets.to(device)
+            inputs = [inputs, len(targets)]
+            energy_pred, force_pred = model(inputs, fp_primes)
+        force_pred = force_pred.reshape(-1, 1)
+        force_targets = force_targets.reshape(-1, 1)
+        data_min = min(force_targets)
+        data_max = max(force_targets)
+        fig = plt.figure(figsize=(7.0, 7.0))
+        ax = fig.add_subplot(111)
+        force_targets = force_targets.detach().cpu().numpy()
+        force_pred = force_pred.detach().cpu().numpy()
+        ax.plot(force_targets, force_pred, "bo", markersize=3)
+        ax.plot([data_min, data_max], [data_min, data_max], "r-", lw=0.3)
+        ax.set_xlabel("ab initio forces, eV/A")
+        ax.set_ylabel("PyTorch forces, eV/A")
+        ax.set_title("Forces")
+        fig.savefig("results/parity_plot_forces.pdf")
+        plt.show()
+
     def plot_residuals(self, model):
         """Plots model residuals"""
 
         model.eval()
-        predictions = []
         targets = []
         device = self.device
         model = model.to(device)
-        with torch.no_grad():
-            for sample in self.atoms_dataloader:
-                inputs = sample[0]
-                for element in self.unique_atoms:
-                    inputs[element][0] = inputs[element][0].to(device)
-                targets = sample[1]
-                targets = targets.to(device)
-                predictions = model(inputs)
-        scaled_pred = pred_scaling(predictions, targets, method="standardize")
-        targets = targets.reshape(len(targets), 1)
-        residuals = targets - scaled_pred
+        for sample in self.atoms_dataloader:
+            inputs = sample[0]
+            fp_primes = sample[3]
+            for element in self.unique_atoms:
+                inputs[element][0] = inputs[element][0].to(device).requires_grad_(True)
+            targets = sample[1]
+            force_targets = sample[4]
+            targets = targets.to(device)
+            force_targets = force_targets.to(device)
+            inputs = [inputs, len(targets)]
+            energy_pred, force_pred = model(inputs, fp_primes)
+        force_pred = force_pred.reshape(-1, 1)
+        force_targets = force_targets.reshape(-1, 1)
+        residual = abs(force_targets-force_pred)
         fig = plt.figure(figsize=(7.0, 7.0))
         ax = fig.add_subplot(111)
-        scaled_pred = scaled_pred.detach().cpu().numpy()
-        residuals = residuals.detach().cpu().numpy()
-        ax.plot(scaled_pred, residuals, "bo", markersize=3)
-        ax.set_xlabel("PyTorch energy, eV")
-        ax.set_ylabel("residual, eV")
-        ax.set_title("Energies")
-        fig.savefig("results/residuals_plot.pdf")
+        force_targets = force_targets.detach().cpu().numpy()
+        force_pred = force_pred.detach().cpu().numpy()
+        residual = residual.detach().cpu().numpy()
+        ax.plot(force_targets, residual, "bo", markersize=3)
+        ax.set_xlabel("DFT force, eV/A")
+        ax.set_ylabel("|DFT force - PyTorch force|, eV/A")
+        ax.set_title("Forces")
+        fig.savefig("results/residual_plot_forces.pdf")
         plt.show()

@@ -14,9 +14,9 @@ from amp_pytorch.NN_model import ForceLossFunction
 
 # locate training images
 IMAGES = "../datasets/water.extxyz"
-images = ase.io.read(IMAGES,":")
+images = ase.io.read(IMAGES, ":")
 IMAGES = []
-for i in range(10):
+for i in range(300):
     IMAGES.append(images[i])
 # IMAGES = [Atoms(symbols='PdOPd',
                         # pbc=np.array([True, False, False], dtype=bool),
@@ -55,9 +55,9 @@ DEVICE = "cpu"
 
 # NN architectures across different atoms are identical with the first index
 # representing the number of layers, and the second number representing the
-# number of nodes in each hidden layer. i.e. [3,3] = 3 layers (2 hidden layers,
-# 1 output layer) and 3 nodes in each hidden layer.
-ARCHITECTURE = [5, 5]
+# number of nodes in each hidden layer. i.e. [3,5] = 3 layers (2 hidden layers,
+# 1 output layer) and 5 nodes in each hidden layer.
+ARCHITECTURE = [3, 5]
 
 # define model
 MODEL = core.AMPtorch(IMAGES, DEVICE, batch_size=None, structure=ARCHITECTURE, val_frac=0)
@@ -66,11 +66,12 @@ MODEL = core.AMPtorch(IMAGES, DEVICE, batch_size=None, structure=ARCHITECTURE, v
 CRITERION = nn.MSELoss(reduction='sum')
 OPTIMIZER = optim.LBFGS
 # OPTIMIZER = optim.Adam
-RMSE_CRITERIA = 0.02
+RMSE_CRITERIA = 2e-2
 LR = 1
 
 # train the model
-TRAINED_MODEL = MODEL.train(CRITERION, OPTIMIZER,lr=LR, rmse_criteria=RMSE_CRITERIA)
+TRAINED_MODEL = MODEL.train(CRITERION, OPTIMIZER, lr=LR, rmse_criteria=RMSE_CRITERIA)
 # plotting
 MODEL.parity_plot(TRAINED_MODEL)
+MODEL.parity_plot_forces(TRAINED_MODEL)
 # MODEL.plot_residuals(TRAINED_MODEL)
