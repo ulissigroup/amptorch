@@ -370,6 +370,7 @@ def test_periodic():
         fp_primes = batch[3]
         energy_pred, force_pred = model(input_data, fp_primes)
 
+
     calc = Amp(
         descriptor,
         model=NeuralNetwork(
@@ -402,3 +403,4 @@ def test_periodic():
 if __name__ == "__main__":
     test_non_periodic()
     test_periodic()
+    print("All tests passed!")

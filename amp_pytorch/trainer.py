@@ -32,7 +32,7 @@ def target_scaling(data, method=None):
         data_mean = torch.mean(data_)
         data_sd = torch.std(data_, dim=0)
         data = (data - data_mean) / data_sd
-    return data
+    return data, data_sd
 
 
 def pred_scaling(data, target, method=None):
@@ -158,6 +158,7 @@ def train_model(
 
         else:
             phase = "train"
+            t=time.time()
 
             if scheduler:
                 scheduler.step()
@@ -173,9 +174,8 @@ def train_model(
                 target = data_sample[1].requires_grad_(False)
                 batch_size = len(target)
                 target = target.reshape(batch_size, 1).to(device)
-                scaled_target = target_scaling(target, method="standardize")
-                scaled_forces = target_scaling(image_forces,
-                                               method="standardize")
+                scaled_target, scaling_factor = target_scaling(target, method="standardize")
+                scaled_forces = image_forces/scaling_factor
                 num_of_atoms = data_sample[2].reshape(batch_size, 1).to(device)
                 for element in unique_atoms:
                     input_data[0][element][0] = (
@@ -186,15 +186,12 @@ def train_model(
                 def closure():
                     optimizer.zero_grad()
                     energy_pred, force_pred = model(input_data, fp_primes)
-                    # loss = criterion(energy_pred, scaled_target)
-                    # loss = criterion(force_pred, image_forces)
                     CustomLoss = ForceLossFunction()
                     loss = CustomLoss(
                         energy_pred,
                         scaled_target,
                         force_pred,
-                        # scaled_forces,
-                        image_forces,
+                        scaled_forces,
                         num_of_atoms,
                     )
                     loss.backward()
@@ -206,7 +203,7 @@ def train_model(
                 target_per_atom = torch.div(target, num_of_atoms)
                 actual_loss = criterion(raw_preds_per_atom, target_per_atom)
 
-                # force_pred = pred_scaling(force_pred, image_forces, method="standardize")
+                force_pred = force_pred*scaling_factor
                 num_atoms_force = torch.cat(
                     [idx.repeat(int(idx)) for idx in num_of_atoms]
                 )
@@ -230,7 +227,6 @@ def train_model(
             print("energy: %s" % rmse)
             print("force: %s" % rmse_f)
             print("")
-            # print(epoch_loss)
             plot_loss_y[phase].append(np.log10(rmse))
 
             if epoch_loss < best_loss:
@@ -241,10 +237,7 @@ def train_model(
             log_epoch("")
 
         epoch += 1
-    # print(target)
-    # print(raw_preds)
-    # print(image_forces)
-    # print(force_pred)
+        # print(time.time()-t)
 
     time_elapsed = time.time() - since
     print("Training complete in {} steps".format(epoch))

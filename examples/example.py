@@ -13,6 +13,7 @@ from amp_pytorch import core
 from amp_pytorch.NN_model import ForceLossFunction
 
 # locate training images
+# IMAGES = "../datasets/reaxff_data/3.traj"
 IMAGES = "../datasets/water.extxyz"
 images = ase.io.read(IMAGES, ":")
 IMAGES = []
