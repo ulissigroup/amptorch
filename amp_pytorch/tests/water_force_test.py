@@ -36,7 +36,10 @@ def test_data():
     """
 
     # Making the list of non-periodic images
-    images = ase.io.read("water.extxyz", ":")
+    IMAGES = ase.io.read("water.extxyz", ":")
+    images = []
+    for i in IMAGES[:400]:
+        images.append(i)
 
     # Parameters
     Gs = {
@@ -134,6 +137,8 @@ def test_data():
             )
         fp_primes = batch[3]
         energy_pred, force_pred = model(input_data, fp_primes)
+        # print(energy_pred)
+        # print(force_pred)
 
     calc = Amp(
         descriptor,
@@ -151,6 +156,8 @@ def test_data():
     amp_energies = [calc.get_potential_energy(image) for image in images]
     amp_forces = [calc.get_forces(image) for image in images]
     amp_forces = np.concatenate(amp_forces)
+    # print(amp_energies)
+    # print(force_pred)
 
     for idx, i in enumerate(amp_energies):
         assert round(i, 4) == round(
@@ -159,7 +166,7 @@ def test_data():
     for idx, sample in enumerate(amp_forces):
         for idx_d, value in enumerate(sample):
             prediction = force_pred.tolist()[idx][idx_d]
-            assert abs(value - prediction) < 0.0001, (
+            assert abs(value - prediction) <= 0.001 , (
                 "The predicted force of image % i, direction %i is wrong: %s vs %s!"
                 % (idx + 1, idx_d, value, force_pred.tolist()[idx][idx_d])
             )

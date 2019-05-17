@@ -77,11 +77,11 @@ class AtomsDataset(Dataset):
                 base_atom = key[3]
                 fprange_atom = fprange[base_atom]
                 fprime = image_primes[key]
-                # for i in range(len(fprime)):
-                    # if (fprange_atom[i][1] - fprange_atom[i][0]) > (10.0 ** (-8.0)):
-                        # fprime[i] = 2.0 * (
-                            # fprime[i] / (fprange_atom[i][1] - fprange_atom[i][0])
-                        # )
+                for i in range(len(fprime)):
+                    if (fprange_atom[i][1] - fprange_atom[i][0]) > (10.0 ** (-8.0)):
+                        fprime[i] = 2.0 * (
+                            fprime[i] / (fprange_atom[i][1] - fprange_atom[i][0])
+                        )
                 _image_primes[key] = fprime
 
         except NotImplementedError:

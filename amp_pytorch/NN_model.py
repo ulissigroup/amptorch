@@ -38,14 +38,14 @@ class Dense(nn.Linear):
     def reset_parameters(self):
         """Weight initialization scheme"""
         # init.constant_(self.weight, 0.5)
-        init.constant_(self.bias, 0)
+        # init.constant_(self.bias, 0.5)
 
         # xavier_uniform_(self.weight, gain=np.sqrt(1/2))
         kaiming_uniform_(self.weight, nonlinearity="tanh")
-        # if self.bias is not None:
-            # fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
-            # bound = 1 / np.sqrt(fan_in)
-            # init.uniform_(self.bias, -bound, bound)
+        if self.bias is not None:
+            fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
+            bound = 1 / np.sqrt(fan_in)
+            init.uniform_(self.bias, -bound, bound)
 
     def forward(self, inputs):
         neuron_output = super(Dense, self).forward(inputs)
@@ -141,8 +141,8 @@ class FullNN(nn.Module):
         energy_pred = torch.zeros(batch_size, 1).to(self.device)
         fprimes = fprimes.to(self.device)
         # Constructs an Nx1 empty tensor to store element energy contributions
-        dE_dFP_ = defaultdict(list)
-        x = torch.tensor([])
+        dE_dFP = torch.tensor([]).to(self.device)
+        idx = torch.tensor([]).to(self.device)
         for index, element in enumerate(self.unique_atoms):
             model_inputs = input_data[element][0]
             contribution_index = torch.tensor(input_data[element][1]).to(self.device)
@@ -154,23 +154,21 @@ class FullNN(nn.Module):
                 grad_outputs=torch.ones_like(energy_pred),
                 create_graph=True,
             )[0]
-            for fprime, con in zip(gradients, contribution_index):
-                dE_dFP_[int(con)].append(fprime)
-        dE_dFP = torch.tensor([]).to(self.device)
-        for i in list(dE_dFP_.keys()):
-            dE_dFP = torch.cat((dE_dFP, torch.stack(dE_dFP_[i])), 0)
-        dE_dFP = dE_dFP.reshape(1, -1)
+            dE_dFP = torch.cat((dE_dFP, gradients))
+            idx = torch.cat((idx, contribution_index.float()))
+        idx = idx.cpu()
+        ordered_idx = np.argsort(idx, kind='mergesort').to(self.device)
+        dE_dFP = torch.index_select(dE_dFP, 0, ordered_idx).reshape(1, -1)
         # Constructs a 1xPQ tensor that contains the derivatives with respect to
         # each atom's fingerprint
         # force_pred = -1 * torch.sparse.mm(fprimes.t(), dE_dFP.t())
-        force_pred = -1 * torch.mm(dE_dFP, fprimes)
+        force_pred = -1 * torch.matmul(dE_dFP, fprimes)
         # Sparse multiplication requires the first matrix to be sparse
         # Multiplies a 3QxPQ tensor with a PQx1 tensor to return a 3Qx1 tensor
         # containing the x,y,z directional forces for each atom
         force_pred = force_pred.reshape(3, -1).t()
         # Reshapes the force tensor into a Qx3 matrix containing all the force
         # predictions in the same order and shape as the target forces calculated from AMP.
-        # force_pred=0
         return energy_pred, force_pred
 
 
@@ -187,7 +185,7 @@ class ForceLossFunction(nn.Module):
         num_atoms_force = torch.sqrt(num_atoms_force.reshape(len(num_atoms_force), 1))
         force_pred_per_atom = torch.div(force_pred, num_atoms_force)
         force_targets_per_atom = torch.div(force_targets, num_atoms_force)
-        alpha = 0.04
+        alpha = 0.9
         MSE_loss = nn.MSELoss(reduction="sum")
         energy_loss = MSE_loss(energy_per_atom, targets_per_atom)
         force_loss = (alpha/3)*MSE_loss(force_pred_per_atom, force_targets_per_atom)

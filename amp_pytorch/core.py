@@ -15,7 +15,7 @@ from amp.descriptor.gaussian import Gaussian
 import matplotlib.pyplot as plt
 from amp_pytorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
 from amp_pytorch.NN_model import FullNN
-from amp_pytorch.trainer import train_model, pred_scaling
+from amp_pytorch.trainer import train_model, target_scaling, pred_scaling
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
@@ -182,7 +182,9 @@ class AMPtorch:
             force_targets = force_targets.to(device)
             inputs = [inputs, len(targets)]
             energy_pred, force_pred = model(inputs, fp_primes)
+        _, scaling_factor = target_scaling(targets, method="standardize")
         force_pred = force_pred.reshape(-1, 1)
+        force_pred *= scaling_factor
         force_targets = force_targets.reshape(-1, 1)
         data_min = min(force_targets)
         data_max = max(force_targets)
@@ -216,7 +218,9 @@ class AMPtorch:
             force_targets = force_targets.to(device)
             inputs = [inputs, len(targets)]
             energy_pred, force_pred = model(inputs, fp_primes)
+        _, scaling_factor = target_scaling(targets, method="standardize")
         force_pred = force_pred.reshape(-1, 1)
+        force_pred *= scaling_factor
         force_targets = force_targets.reshape(-1, 1)
         residual = abs(force_targets-force_pred)
         fig = plt.figure(figsize=(7.0, 7.0))
