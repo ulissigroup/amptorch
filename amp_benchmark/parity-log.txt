@@ -462,3 +462,119 @@ Calculating fingerprint derivatives...
  0 new calculations needed.
 ...fingerprint derivatives calculated. 0.0 min.
 Calculating potential energies...
+
+   oo      o       o   oooooo
+  o  o     oo     oo   o     o
+ o    o    o o   o o   o     o
+o      o   o  o o  o   o     o
+oooooooo   o   o   o   oooooo
+o      o   o       o   o
+o      o   o       o   o
+o      o   o       o   o
+
+Amp: Atomistic Machine-learning Package
+Developed by Andrew Peterson, Alireza Khorshidi, and others,
+Brown University.
+PI Website: http://brown.edu/go/catalyst
+Official repository: http://bitbucket.org/andrewpeterson/amp
+Official documentation: http://amp.readthedocs.org/
+Citation:
+  Alireza Khorshidi & Andrew A. Peterson,
+  Computer Physics Communications 207: 310-324 (2016).
+  http://doi.org/10.1016/j.cpc.2016.05.010
+======================================================================
+User: mshuaibi
+Hostname: ulissigroup-Alienware-Shuaibi
+Date: 2019-05-17T11:05:39 (2019-05-17T15:05:39 UTC)
+Architecture: x86_64
+PID: 27938
+Amp version: 0.6.1
+Amp directory: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/amp
+ Last commit: b'unknown hash'
+ Last commit date: b'unknown date'
+Python: v3.7.1: /home/mshuaibi/miniconda3/bin/python
+ASE v3.17.0: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/ase
+NumPy v1.16.2: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/numpy
+SciPy v1.2.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/scipy
+ZMQ/PyZMQ v4.3.1/v18.0.1: /home/mshuaibi/miniconda3/lib/python3.7/site-packages/zmq
+pxssh: Not available from pxssh.
+pxssh (via pexpect v4.7.0): /home/mshuaibi/miniconda3/lib/python3.7/site-packages/pexpect/pxssh.py
+======================================================================
+No queuing system detected; single machine assumed.
+Parallel configuration determined from environment for <single machine>:
+  localhost: 12
+Loaded file: calc.amp
+
+Amp parity plot started. 2019-05-17T11:05:39
+
+Descriptor: Gaussian
+Model: NeuralNetwork
+Hashing images...
+ 300 unique images after hashing.
+...hashing completed. 0.0 min.
+
+Descriptor
+==========
+Cutoff function: <Cosine cutoff with Rc=6.500 from amp.descriptor.cutoffs>
+2 unique elements included: H, O
+Number of symmetry functions for each element:
+  H: 20
+  O: 20
+H feature vector functions:
+ 0: G2, H, eta = 0.05
+ 1: G2, O, eta = 0.05
+ 2: G2, H, eta = 4.0
+ 3: G2, O, eta = 4.0
+ 4: G2, H, eta = 20.0
+ 5: G2, O, eta = 20.0
+ 6: G2, H, eta = 80.0
+ 7: G2, O, eta = 80.0
+ 8: G4, (H, H), eta=0.005, gamma=1.0, zeta=1.0
+ 9: G4, (H, O), eta=0.005, gamma=1.0, zeta=1.0
+ 10: G4, (O, O), eta=0.005, gamma=1.0, zeta=1.0
+ 11: G4, (H, H), eta=0.005, gamma=-1.0, zeta=1.0
+ 12: G4, (H, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 13: G4, (O, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 14: G4, (H, H), eta=0.005, gamma=1.0, zeta=4.0
+ 15: G4, (H, O), eta=0.005, gamma=1.0, zeta=4.0
+ 16: G4, (O, O), eta=0.005, gamma=1.0, zeta=4.0
+ 17: G4, (H, H), eta=0.005, gamma=-1.0, zeta=4.0
+ 18: G4, (H, O), eta=0.005, gamma=-1.0, zeta=4.0
+ 19: G4, (O, O), eta=0.005, gamma=-1.0, zeta=4.0
+O feature vector functions:
+ 0: G2, H, eta = 0.05
+ 1: G2, O, eta = 0.05
+ 2: G2, H, eta = 4.0
+ 3: G2, O, eta = 4.0
+ 4: G2, H, eta = 20.0
+ 5: G2, O, eta = 20.0
+ 6: G2, H, eta = 80.0
+ 7: G2, O, eta = 80.0
+ 8: G4, (H, H), eta=0.005, gamma=1.0, zeta=1.0
+ 9: G4, (H, O), eta=0.005, gamma=1.0, zeta=1.0
+ 10: G4, (O, O), eta=0.005, gamma=1.0, zeta=1.0
+ 11: G4, (H, H), eta=0.005, gamma=-1.0, zeta=1.0
+ 12: G4, (H, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 13: G4, (O, O), eta=0.005, gamma=-1.0, zeta=1.0
+ 14: G4, (H, H), eta=0.005, gamma=1.0, zeta=4.0
+ 15: G4, (H, O), eta=0.005, gamma=1.0, zeta=4.0
+ 16: G4, (O, O), eta=0.005, gamma=1.0, zeta=4.0
+ 17: G4, (H, H), eta=0.005, gamma=-1.0, zeta=4.0
+ 18: G4, (H, O), eta=0.005, gamma=-1.0, zeta=4.0
+ 19: G4, (O, O), eta=0.005, gamma=-1.0, zeta=4.0
+Calculating neighborlists...
+ Data stored in file parity-neighborlists.
+ File exists with 400 total images, 300 of which are needed.
+ 0 new calculations needed.
+...neighborlists calculated. 0.0 min.
+Fingerprinting images...
+ Data stored in file parity-fingerprints.
+ File exists with 400 total images, 300 of which are needed.
+ 0 new calculations needed.
+...fingerprints calculated. 0.0 min.
+Calculating fingerprint derivatives...
+ Data stored in file parity-fingerprint-primes.
+ File exists with 400 total images, 300 of which are needed.
+ 0 new calculations needed.
+...fingerprint derivatives calculated. 0.0 min.
+Calculating potential energies...
