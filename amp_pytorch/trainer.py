@@ -80,8 +80,8 @@ def train_model(
     plot_loss_y = {"train": [], "val": []}
 
     epoch = 0
-    while best_loss >= rmse_criteria:
-    # while epoch <= 30:
+    # while best_loss >= rmse_criteria:
+    while epoch <= 100:
         log_epoch("{} Epoch {}".format(time.asctime(), epoch + 1))
         log_epoch("-" * 30)
 

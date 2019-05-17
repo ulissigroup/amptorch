@@ -17,7 +17,7 @@ from amp_pytorch.NN_model import ForceLossFunction
 IMAGES = "../datasets/water.extxyz"
 images = ase.io.read(IMAGES, ":")
 IMAGES = []
-for i in range(300):
+for i in range(100):
     IMAGES.append(images[i])
 # IMAGES = [Atoms(symbols='PdOPd',
                         # pbc=np.array([True, False, False], dtype=bool),
