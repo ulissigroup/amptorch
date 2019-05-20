@@ -38,14 +38,14 @@ class Dense(nn.Linear):
     def reset_parameters(self):
         """Weight initialization scheme"""
         # init.constant_(self.weight, 0.5)
-        # init.constant_(self.bias, 0.5)
+        init.constant_(self.bias, 0)
 
-        # xavier_uniform_(self.weight, gain=np.sqrt(1/2))
-        kaiming_uniform_(self.weight, nonlinearity="tanh")
-        if self.bias is not None:
-            fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
-            bound = 1 / np.sqrt(fan_in)
-            init.uniform_(self.bias, -bound, bound)
+        xavier_uniform_(self.weight, gain=np.sqrt(1/2))
+        # kaiming_uniform_(self.weight, nonlinearity="tanh")
+        # if self.bias is not None:
+            # fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
+            # bound = 1 / np.sqrt(fan_in)
+            # init.uniform_(self.bias, -bound, bound)
 
     def forward(self, inputs):
         neuron_output = super(Dense, self).forward(inputs)
@@ -184,7 +184,7 @@ class ForceLossFunction(nn.Module):
         num_atoms_force = torch.sqrt(num_atoms_force.reshape(len(num_atoms_force), 1))
         force_pred_per_atom = torch.div(force_pred, num_atoms_force)
         force_targets_per_atom = torch.div(force_targets, num_atoms_force)
-        alpha = 0.4
+        alpha = 0.5
         MSE_loss = nn.MSELoss(reduction="sum")
         energy_loss = MSE_loss(energy_per_atom, targets_per_atom)
         force_loss = (alpha/3)*MSE_loss(force_pred_per_atom, force_targets_per_atom)
