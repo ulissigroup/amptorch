@@ -170,7 +170,6 @@ def factorize_data(training_data):
         idx_shift += int(num_of_atoms[idx])
     image_forces = torch.cat(image_forces).float()
     sparse_fprimes = fingerprintprimes.to_sparse()
-    # sparse_fprimes = fingerprintprimes
     return (
         unique_atoms,
         fingerprint_dataset,
