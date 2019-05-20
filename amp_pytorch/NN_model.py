@@ -11,7 +11,7 @@ import torch.nn as nn
 from torch.nn import init
 from torch.nn import Tanh, Softplus, LeakyReLU
 from torch.nn.init import xavier_uniform_, kaiming_uniform_
-from torch.autograd import grad
+from torch.autograd import grad 
 from amp.utilities import Logger
 
 __author__ = "Muhammed Shuaibi"
@@ -162,7 +162,6 @@ class FullNN(nn.Module):
         # Constructs a 1xPQ tensor that contains the derivatives with respect to
         # each atom's fingerprint
         force_pred = -1 * torch.sparse.mm(fprimes.t(), dE_dFP.t())
-        # force_pred = -1 * torch.matmul(dE_dFP, fprimes)
         # Sparse multiplication requires the first matrix to be sparse
         # Multiplies a 3QxPQ tensor with a PQx1 tensor to return a 3Qx1 tensor
         # containing the x,y,z directional forces for each atom
@@ -185,7 +184,7 @@ class ForceLossFunction(nn.Module):
         num_atoms_force = torch.sqrt(num_atoms_force.reshape(len(num_atoms_force), 1))
         force_pred_per_atom = torch.div(force_pred, num_atoms_force)
         force_targets_per_atom = torch.div(force_targets, num_atoms_force)
-        alpha = 0.5
+        alpha = 0.4
         MSE_loss = nn.MSELoss(reduction="sum")
         energy_loss = MSE_loss(energy_per_atom, targets_per_atom)
         force_loss = (alpha/3)*MSE_loss(force_pred_per_atom, force_targets_per_atom)
