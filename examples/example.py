@@ -12,7 +12,7 @@ from amp_pytorch.NN_model import ForceLossFunction
 IMAGES = "../datasets/water.extxyz"
 images = ase.io.read(IMAGES, ":")
 IMAGES = []
-for i in range(100):
+for i in range(300):
     IMAGES.append(images[i])
 
 # specify whether a GPU is to be utilized
@@ -40,4 +40,4 @@ TRAINED_MODEL = MODEL.train(CRITERION, OPTIMIZER, lr=LR, rmse_criteria=RMSE_CRIT
 # plotting
 MODEL.parity_plot(TRAINED_MODEL)
 MODEL.parity_plot_forces(TRAINED_MODEL)
-MODEL.plot_residuals(TRAINED_MODEL)
+# MODEL.plot_residuals(TRAINED_MODEL)

@@ -224,18 +224,18 @@ def train_model(
                 raw_preds = pred_scaling(energy_pred, target, method="standardize")
                 raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
                 target_per_atom = torch.div(target, num_of_atoms)
-                actual_loss = criterion(raw_preds_per_atom, target_per_atom)
+                actual_loss = torch.sum(criterion(raw_preds_per_atom, target_per_atom))
 
                 force_pred = force_pred * scaling_factor
                 num_atoms_force = torch.cat(
                     [idx.repeat(int(idx)) for idx in num_of_atoms]
                 )
-                num_atoms_force = torch.sqrt(
-                    num_atoms_force.reshape(len(num_atoms_force), 1)
-                )
+                num_atoms_force = torch.sqrt(num_atoms_force).reshape(len(num_atoms_force), 1)
                 force_pred_per_atom = torch.div(force_pred, num_atoms_force)
                 force_targets_per_atom = torch.div(image_forces, num_atoms_force)
                 force_loss = criterion(force_pred_per_atom, force_targets_per_atom)
+                # mean over image
+                force_loss /= 3
 
                 optimizer.step(closure)
 
