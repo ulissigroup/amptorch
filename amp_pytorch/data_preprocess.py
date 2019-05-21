@@ -77,16 +77,31 @@ class AtomsDataset(Dataset):
                 base_atom = key[3]
                 fprange_atom = fprange[base_atom]
                 fprime = image_primes[key]
-                # for i in range(len(fprime)):
-                    # if (fprange_atom[i][1] - fprange_atom[i][0]) > (10.0 ** (-8.0)):
-                        # fprime[i] = 2.0 * (
-                            # fprime[i] / (fprange_atom[i][1] - fprange_atom[i][0])
-                        # )
+                for i in range(len(fprime)):
+                    if (fprange_atom[i][1] - fprange_atom[i][0]) > (10.0 ** (-8.0)):
+                        fprime[i] = 2.0 * (
+                        fprime[i] / (fprange_atom[i][1] - fprange_atom[i][0])
+                        )
                 _image_primes[key] = fprime
+
+            image_prime_values = list(_image_primes.values())
+            image_prime_keys = list(_image_primes.keys())
+            fp_length = len(image_fingerprint[0][1])
+            num_atoms = len(image_fingerprint)
+            fingerprintprimes = torch.zeros(fp_length * num_atoms, 3 * num_atoms)
+            for idx, fp_key in enumerate(image_prime_keys):
+                image_prime = torch.tensor(image_prime_values[idx])
+                base_atom = fp_key[2]
+                wrt_atom = fp_key[0]
+                coord = fp_key[4]
+                fingerprintprimes[
+                    base_atom * fp_length : base_atom * fp_length + fp_length,
+                    wrt_atom * 3 + coord
+                ] = image_prime
 
         except NotImplementedError:
             print("Atoms object has no claculator set!")
-        return image_fingerprint, image_potential_energy, _image_primes, image_forces
+        return image_fingerprint, image_potential_energy, _image_primes, image_forces, fingerprintprimes
 
     def unique(self):
         return list(self.fprange.keys())
@@ -141,8 +156,18 @@ def factorize_data(training_data):
         num_atom = float(len(image[3]))
         num_of_atoms.append(num_atom)
     atoms_in_batch = int(sum(num_of_atoms))
-    fingerprintprimes = torch.zeros(
-        fp_length * atoms_in_batch, 3 * atoms_in_batch)
+    fingerprintprimes = torch.zeros(fp_length * atoms_in_batch, 3 * atoms_in_batch)
+    test = torch.zeros(fp_length * atoms_in_batch, 3 * atoms_in_batch)
+    dim1_start = 0
+    dim2_start = 0
+    for idx, image in enumerate(training_data):
+        fprime = image[4]
+        dim1 = fprime.shape[0]
+        dim2 = fprime.shape[1]
+        test[dim1_start :  dim1+dim1_start, dim2_start:dim2+dim2_start] = fprime
+        dim1_start += dim1
+        dim2_start += dim2
+    test = test.to_sparse()
     # Construct a sparse matrix with dimensions PQx3Q
     idx_shift = 0
     for idx, image_sample in enumerate(training_data):
@@ -165,7 +190,7 @@ def factorize_data(training_data):
             coord = fp_key[4]
             fingerprintprimes[
                 base_atom * fp_length : base_atom * fp_length + fp_length,
-                wrt_atom + atoms_in_batch * coord,
+                wrt_atom + atoms_in_batch * coord
             ] = image_prime
         idx_shift += int(num_of_atoms[idx])
     image_forces = torch.cat(image_forces).float()
@@ -175,7 +200,8 @@ def factorize_data(training_data):
         fingerprint_dataset,
         energy_dataset,
         num_of_atoms,
-        sparse_fprimes,
+        test,
+        # sparse_fprimes,
         image_forces,
     )
 
