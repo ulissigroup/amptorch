@@ -5065,3 +5065,6 @@ Activation Function = <class 'torch.nn.modules.activation.Tanh'>
 Activation Function = <class 'torch.nn.modules.activation.Tanh'>
 Activation Function = <class 'torch.nn.modules.activation.Tanh'>
 Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
+Activation Function = <class 'torch.nn.modules.activation.Tanh'>
