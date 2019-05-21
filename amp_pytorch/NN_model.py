@@ -156,8 +156,8 @@ class FullNN(nn.Module):
             )[0]
             dE_dFP = torch.cat((dE_dFP, gradients))
             idx = torch.cat((idx, contribution_index.float()))
-        idx = idx.cpu()
-        ordered_idx = np.argsort(idx, kind='mergesort').to(self.device)
+        boolean = idx[:, None] == torch.unique(idx)
+        ordered_idx = torch.nonzero(boolean.t())[:, -1]
         dE_dFP = torch.index_select(dE_dFP, 0, ordered_idx).reshape(1, -1)
         # Constructs a 1xPQ tensor that contains the derivatives with respect to
         # each atom's fingerprint
