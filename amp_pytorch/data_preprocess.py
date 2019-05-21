@@ -77,11 +77,11 @@ class AtomsDataset(Dataset):
                 base_atom = key[3]
                 fprange_atom = fprange[base_atom]
                 fprime = image_primes[key]
-                for i in range(len(fprime)):
-                    if (fprange_atom[i][1] - fprange_atom[i][0]) > (10.0 ** (-8.0)):
-                        fprime[i] = 2.0 * (
-                        fprime[i] / (fprange_atom[i][1] - fprange_atom[i][0])
-                        )
+                # for i in range(len(fprime)):
+                    # if (fprange_atom[i][1] - fprange_atom[i][0]) > (10.0 ** (-8.0)):
+                        # fprime[i] = 2.0 * (
+                        # fprime[i] / (fprange_atom[i][1] - fprange_atom[i][0])
+                        # )
                 _image_primes[key] = fprime
 
             image_prime_values = list(_image_primes.values())
@@ -156,52 +156,36 @@ def factorize_data(training_data):
         num_atom = float(len(image[3]))
         num_of_atoms.append(num_atom)
     atoms_in_batch = int(sum(num_of_atoms))
-    fingerprintprimes = torch.zeros(fp_length * atoms_in_batch, 3 * atoms_in_batch)
-    test = torch.zeros(fp_length * atoms_in_batch, 3 * atoms_in_batch)
+    # Construct a sparse matrix with dimensions PQx3Q
+    fprimes = torch.zeros(fp_length * atoms_in_batch, 3 * atoms_in_batch)
     dim1_start = 0
     dim2_start = 0
     for idx, image in enumerate(training_data):
         fprime = image[4]
         dim1 = fprime.shape[0]
         dim2 = fprime.shape[1]
-        test[dim1_start :  dim1+dim1_start, dim2_start:dim2+dim2_start] = fprime
+        fprimes[dim1_start: dim1+dim1_start, dim2_start:dim2+dim2_start] = fprime
         dim1_start += dim1
         dim2_start += dim2
-    test = test.to_sparse()
-    # Construct a sparse matrix with dimensions PQx3Q
-    idx_shift = 0
-    for idx, image_sample in enumerate(training_data):
-        image_fingerprint = image_sample[0]
+
+        image_fingerprint = image[0]
         fingerprint_dataset.append(image_fingerprint)
         for atom in image_fingerprint:
             element = atom[0]
             if element not in unique_atoms:
                 unique_atoms.append(element)
-        image_potential_energy = image_sample[1]
+        image_potential_energy = image[1]
         energy_dataset.append(image_potential_energy)
-        image_forces.append(torch.from_numpy(image_sample[3]))
-
-        image_primes = list(image_sample[2].values())
-        image_prime_keys = list(image_sample[2].keys())
-        for index, fp_key in enumerate(image_prime_keys):
-            image_prime = torch.tensor(image_primes[index])
-            base_atom = fp_key[2] + idx_shift
-            wrt_atom = fp_key[0] + idx_shift
-            coord = fp_key[4]
-            fingerprintprimes[
-                base_atom * fp_length : base_atom * fp_length + fp_length,
-                wrt_atom + atoms_in_batch * coord
-            ] = image_prime
-        idx_shift += int(num_of_atoms[idx])
+        image_forces.append(torch.from_numpy(image[3]))
+    sparse_fprimes = fprimes.to_sparse()
     image_forces = torch.cat(image_forces).float()
-    sparse_fprimes = fingerprintprimes.to_sparse()
+
     return (
         unique_atoms,
         fingerprint_dataset,
         energy_dataset,
         num_of_atoms,
-        test,
-        # sparse_fprimes,
+        sparse_fprimes,
         image_forces,
     )
 
