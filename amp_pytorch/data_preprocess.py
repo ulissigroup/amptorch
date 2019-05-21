@@ -196,9 +196,11 @@ def collate_amp(training_data):
     specific datasets to be fed into the element specific Neural Nets.
     """
 
+    factorize = time.time()
     unique_atoms, fingerprint_dataset, energy_dataset, num_of_atoms, fp_primes, image_forces = factorize_data(
         training_data
     )
+    print('factorize data: %s' % (time.time()-factorize))
     element_specific_fingerprints = {}
     model_input_data = []
     for element in unique_atoms:
