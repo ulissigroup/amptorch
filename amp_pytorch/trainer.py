@@ -81,6 +81,7 @@ def train_model(
 
     epoch = 0
     while best_loss >= rmse_criteria:
+        epoch_timer=time.time()
         # while epoch <= 100:
         log_epoch("{} Epoch {}".format(time.asctime(), epoch + 1))
         log_epoch("-" * 30)
@@ -188,7 +189,9 @@ def train_model(
             mse = 0.0
             mse_f = 0.0
 
+            loading_timer = time.time()
             for data_sample in atoms_dataloader:
+                print('data_loading: %s' % (time.time()-loading_timer))
                 input_data = [data_sample[0], len(data_sample[1])]
                 fp_primes = data_sample[3]
                 image_forces = data_sample[4].to(device)
@@ -237,7 +240,9 @@ def train_model(
                 # mean over image
                 force_loss /= 3
 
+                optimizer_time = time.time()
                 optimizer.step(closure)
+                print('optimizer.step(): %s' %(time.time()-optimizer_time))
 
                 mse += actual_loss.item()
                 mse_f += force_loss.item()
@@ -260,6 +265,8 @@ def train_model(
             log_epoch("")
 
         epoch += 1
+        print('epoch time: %s' %(time.time()-epoch_timer))
+        sys.exit()
 
     time_elapsed = time.time() - since
     print("Training complete in {} steps".format(epoch))
