@@ -159,15 +159,17 @@ class FullNN(nn.Module):
         boolean = idx[:, None] == torch.unique(idx)
         ordered_idx = torch.nonzero(boolean.t())[:, -1]
         dE_dFP = torch.index_select(dE_dFP, 0, ordered_idx).reshape(1, -1)
-        # Constructs a 1xPQ tensor that contains the derivatives with respect to
-        # each atom's fingerprint
+        """Constructs a 1xPQ tensor that contains the derivatives with respect to
+        each atom's fingerprint"""
         force_pred = -1 * torch.sparse.mm(fprimes.t(), dE_dFP.t())
-        # Sparse multiplication requires the first matrix to be sparse
-        # Multiplies a 3QxPQ tensor with a PQx1 tensor to return a 3Qx1 tensor
-        # containing the x,y,z directional forces for each atom
+        '''Sparse multiplication requires the first matrix to be sparse
+        Multiplies a 3QxPQ tensor with a PQx1 tensor to return a 3Qx1 tensor
+        containing the x,y,z directional forces for each atom'''
         force_pred = force_pred.reshape(-1, 3)
-        # Reshapes the force tensor into a Qx3 matrix containing all the force
-        # predictions in the same order and shape as the target forces calculated from AMP.
+        """Reshapes the force tensor into a Qx3 matrix containing all the force
+        predictions in the same order and shape as the target forces calculated
+        from AMP."""
+        # force_pred=0
         return energy_pred, force_pred
 
 
@@ -184,7 +186,7 @@ class ForceLossFunction(nn.Module):
         num_atoms_force = torch.sqrt(num_atoms_force.reshape(len(num_atoms_force), 1))
         force_pred_per_atom = torch.div(force_pred, num_atoms_force)
         force_targets_per_atom = torch.div(force_targets, num_atoms_force)
-        alpha = 0.5
+        alpha = 0.04
         MSE_loss = nn.MSELoss(reduction="sum")
         energy_loss = MSE_loss(energy_per_atom, targets_per_atom)
         force_loss = (alpha/3)*MSE_loss(force_pred_per_atom, force_targets_per_atom)

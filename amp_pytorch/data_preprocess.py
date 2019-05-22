@@ -77,11 +77,11 @@ class AtomsDataset(Dataset):
                 base_atom = key[3]
                 fprange_atom = fprange[base_atom]
                 fprime = image_primes[key]
-                # for i in range(len(fprime)):
-                    # if (fprange_atom[i][1] - fprange_atom[i][0]) > (10.0 ** (-8.0)):
-                        # fprime[i] = 2.0 * (
-                        # fprime[i] / (fprange_atom[i][1] - fprange_atom[i][0])
-                        # )
+                for i in range(len(fprime)):
+                    if (fprange_atom[i][1] - fprange_atom[i][0]) > (10.0 ** (-8.0)):
+                        fprime[i] = 2.0 * (
+                        fprime[i] / (fprange_atom[i][1] - fprange_atom[i][0])
+                        )
                 _image_primes[key] = fprime
 
             image_prime_values = list(_image_primes.values())
@@ -200,7 +200,7 @@ def collate_amp(training_data):
     unique_atoms, fingerprint_dataset, energy_dataset, num_of_atoms, fp_primes, image_forces = factorize_data(
         training_data
     )
-    print('factorize data: %s' % (time.time()-factorize))
+    # print('factorize data: %s' % (time.time()-factorize))
     element_specific_fingerprints = {}
     model_input_data = []
     for element in unique_atoms:

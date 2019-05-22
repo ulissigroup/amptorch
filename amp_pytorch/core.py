@@ -40,7 +40,7 @@ class AMPtorch:
 
         dataset_timer=time.time()
         self.training_data = AtomsDataset(self.filename, descriptor=Gaussian())
-        print('dataset: %s' %(time.time()-dataset_timer))
+        # print('dataset: %s' %(time.time()-dataset_timer))
         # self.training_data = [self.training_data[0], self.training_data[1]]
         # self.unique_atoms = ['O','H']
         # self.fp_length = 20
