@@ -9,7 +9,6 @@ from amp.utilities import Logger
 import matplotlib.pyplot as plt
 import torch.nn as nn
 import torch
-import numpy as np
 from amp_pytorch.NN_model import ForceLossFunction
 
 __author__ = "Muhammed Shuaibi"
@@ -157,10 +156,10 @@ def train_model(
 
                 mse = mse / dataset_size[phase]
                 mse_f = mse_f / dataset_size[phase]
-                rmse = np.sqrt(mse)
-                rmse_f = np.sqrt(mse_f)
+                rmse = torch.sqrt(mse)
+                rmse_f = torch.sqrt(mse_f)
                 epoch_loss = rmse_f
-                plot_loss_y[phase].append(np.log10(rmse))
+                plot_loss_y[phase].append(torch.log10(rmse))
 
                 print(
                     "{} energy loss: {:.4f} force loss: {:.4f}".format(
@@ -191,9 +190,9 @@ def train_model(
 
             loading_timer = time.time()
             for data_sample in atoms_dataloader:
-                print('data_loading: %s' % (time.time()-loading_timer))
+                # print('data_loading: %s' % (time.time()-loading_timer))
                 input_data = [data_sample[0], len(data_sample[1])]
-                fp_primes = data_sample[3]
+                fp_primes = data_sample[3].to(device)
                 image_forces = data_sample[4].to(device)
                 target = data_sample[1].requires_grad_(False)
                 batch_size = len(target)
@@ -227,7 +226,7 @@ def train_model(
                 raw_preds = pred_scaling(energy_pred, target, method="standardize")
                 raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
                 target_per_atom = torch.div(target, num_of_atoms)
-                actual_loss = torch.sum(criterion(raw_preds_per_atom, target_per_atom))
+                actual_loss = criterion(raw_preds_per_atom, target_per_atom)
 
                 force_pred = force_pred * scaling_factor
                 num_atoms_force = torch.cat(
@@ -242,20 +241,20 @@ def train_model(
 
                 optimizer_time = time.time()
                 optimizer.step(closure)
-                print('optimizer.step(): %s' %(time.time()-optimizer_time))
+                # print('optimizer.step(): %s' %(time.time()-optimizer_time))
 
-                mse += actual_loss.item()
-                mse_f += force_loss.item()
+                mse += torch.tensor(actual_loss.item())
+                mse_f += torch.tensor(force_loss.item())
 
             mse = mse / dataset_size
             mse_f = mse_f / dataset_size
-            rmse = np.sqrt(mse)
-            rmse_f = np.sqrt(mse_f)
+            rmse = torch.sqrt(mse)
+            rmse_f = torch.sqrt(mse_f)
             epoch_loss = rmse_f
-            print("energy: %s" % rmse)
-            print("force: %s" % rmse_f)
+            print("energy: %s" % float(rmse))
+            print("force: %s" % float(rmse_f))
             print("")
-            plot_loss_y[phase].append(np.log10(rmse))
+            plot_loss_y[phase].append(torch.log10(rmse))
 
             if epoch_loss < best_loss:
                 best_loss = epoch_loss
@@ -265,8 +264,8 @@ def train_model(
             log_epoch("")
 
         epoch += 1
-        print('epoch time: %s' %(time.time()-epoch_timer))
-        sys.exit()
+        # print('epoch time: %s' %(time.time()-epoch_timer))
+        # sys.exit()
 
     time_elapsed = time.time() - since
     print("Training complete in {} steps".format(epoch))
