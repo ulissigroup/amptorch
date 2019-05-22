@@ -1,5 +1,6 @@
 """An example of how to utilize the package to train on energies and forces"""
 
+import torch
 from ase import Atoms
 from ase.calculators.emt import EMT
 import ase
@@ -10,6 +11,7 @@ from amp_pytorch.NN_model import ForceLossFunction
 
 # define training images
 IMAGES = "../datasets/water.extxyz"
+# IMAGES = "../datasets/reaxff_data/15.traj"
 images = ase.io.read(IMAGES, ":")
 IMAGES = []
 for i in range(300):
