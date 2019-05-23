@@ -37,7 +37,7 @@ class Dense(nn.Linear):
 
     def reset_parameters(self):
         """Weight initialization scheme"""
-        # init.constant_(self.weight, 0.5)
+        # init.constant_(self.weight, 0.05)
         init.constant_(self.bias, 0)
 
         # xavier_uniform_(self.weight, gain=np.sqrt(1/2))
@@ -173,9 +173,10 @@ class FullNN(nn.Module):
         return energy_pred, force_pred
 
 
-class ForceLossFunction(nn.Module):
-    def __init__(self):
-        super(ForceLossFunction, self).__init__()
+class CustomLoss(nn.Module):
+    def __init__(self, force_coefficient):
+        super(CustomLoss, self).__init__()
+        self.alpha = force_coefficient
 
     def forward(
         self, energy_pred, energy_targets, force_pred, force_targets, num_atoms
@@ -186,9 +187,9 @@ class ForceLossFunction(nn.Module):
         num_atoms_force = torch.sqrt(num_atoms_force.reshape(len(num_atoms_force), 1))
         force_pred_per_atom = torch.div(force_pred, num_atoms_force)
         force_targets_per_atom = torch.div(force_targets, num_atoms_force)
-        alpha = 0.04
+        # self.alpha = 0.04
         MSE_loss = nn.MSELoss(reduction="sum")
         energy_loss = MSE_loss(energy_per_atom, targets_per_atom)
-        force_loss = (alpha/3)*MSE_loss(force_pred_per_atom, force_targets_per_atom)
+        force_loss = (self.alpha/3)*MSE_loss(force_pred_per_atom, force_targets_per_atom)
         loss = energy_loss + force_loss
         return loss

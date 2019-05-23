@@ -15,3 +15,4 @@ for i in range(300):
     IMAGES.append(images[i])
 calc.train(IMAGES)
 analysis.plot_parity("calc.amp", IMAGES)
+

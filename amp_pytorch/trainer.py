@@ -9,7 +9,8 @@ from amp.utilities import Logger
 import matplotlib.pyplot as plt
 import torch.nn as nn
 import torch
-from amp_pytorch.NN_model import ForceLossFunction
+
+# from amp_pytorch.NN_model import ForceLossFunction
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
@@ -63,6 +64,11 @@ def train_model(
     rmse_criteria,
 ):
 
+    forcetraining = False
+    if criterion.alpha > 0:
+        forcetraining = True
+    best_force_loss = 1e8
+    best_energy_loss = 1e8
     log = Logger("results/results-log.txt")
     log_epoch = Logger("results/epoch-log.txt")
     log("Model: %s" % model)
@@ -70,18 +76,20 @@ def train_model(
     since = time.time()
     log_epoch("-" * 50)
     print("Training Initiated!")
-    log_epoch("%s Training Initiated!" % time.asctime())
-    log_epoch("")
+    log_epoch("%s Training Initiated!\n" % time.asctime())
 
     best_model_wts = copy.deepcopy(model.state_dict())
-    best_loss = 1e8
 
-    plot_loss_y = {"train": [], "val": []}
+    plot_energy_loss = {"train": [], "val": []}
+    if forcetraining:
+        plot_force_loss = {"train": [], "val": []}
 
     epoch = 0
-    while best_loss >= rmse_criteria:
-        epoch_timer=time.time()
-        # while epoch <= 100:
+    while epoch <= 10:
+    # while (best_energy_loss >= rmse_criteria["energy"]) and (
+        # (best_force_loss >= rmse_criteria["force"]) or (best_force_loss == 1e8)
+    # ):
+        # epoch_timer = time.time()
         log_epoch("{} Epoch {}".format(time.asctime(), epoch + 1))
         log_epoch("-" * 30)
 
@@ -96,8 +104,10 @@ def train_model(
                 else:
                     model.eval()
 
-                mse = 0.0
-                mse_f = 0.0
+                energy_mse = 0.0
+                force_mse = "N/A"
+                if forcetraining:
+                    force_mse = 0.0
 
                 for data_sample in atoms_dataloader[phase]:
                     input_data = [data_sample[0], len(data_sample[1])]
@@ -120,8 +130,7 @@ def train_model(
                     def closure():
                         optimizer.zero_grad()
                         energy_pred, force_pred = model(input_data, fp_primes)
-                        CustomLoss = ForceLossFunction()
-                        loss = CustomLoss(
+                        loss = criterion(
                             energy_pred,
                             scaled_target,
                             force_pred,
@@ -135,48 +144,61 @@ def train_model(
                     raw_preds = pred_scaling(energy_pred, target, method="standardize")
                     raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
                     target_per_atom = torch.div(target, num_of_atoms)
-                    actual_loss = criterion(raw_preds_per_atom, target_per_atom)
+                    energy_loss = criterion(raw_preds_per_atom, target_per_atom)
+                    energy_mse += energy_loss.item()
 
-                    force_pred = force_pred * scaling_factor
-                    num_atoms_force = torch.cat(
-                        [idx.repeat(int(idx)) for idx in num_of_atoms]
-                    )
-                    num_atoms_force = torch.sqrt(
-                        num_atoms_force.reshape(len(num_atoms_force), 1)
-                    )
-                    force_pred_per_atom = torch.div(force_pred, num_atoms_force)
-                    force_targets_per_atom = torch.div(image_forces, num_atoms_force)
-                    force_loss = criterion(force_pred_per_atom, force_targets_per_atom)
-
-                    mse += actual_loss.item()
-                    mse_f += force_loss.item()
+                    if forcetraining:
+                        force_pred = force_pred * scaling_factor
+                        num_atoms_force = torch.cat(
+                            [idx.repeat(int(idx)) for idx in num_of_atoms]
+                        )
+                        num_atoms_force = torch.sqrt(
+                            num_atoms_force.reshape(len(num_atoms_force), 1)
+                        )
+                        force_pred_per_atom = torch.div(force_pred, num_atoms_force)
+                        force_targets_per_atom = torch.div(
+                            image_forces, num_atoms_force
+                        )
+                        force_loss = criterion(
+                            force_pred_per_atom, force_targets_per_atom
+                        )
+                        force_mse += force_loss.item()
 
                     if phase == "train":
                         optimizer.step(closure)
 
-                mse = mse / dataset_size[phase]
-                mse_f = mse_f / dataset_size[phase]
-                rmse = torch.sqrt(mse)
-                rmse_f = torch.sqrt(mse_f)
-                epoch_loss = rmse_f
-                plot_loss_y[phase].append(torch.log10(rmse))
+                energy_mse /= dataset_size[phase]
+                energy_rmse = torch.sqrt(energy_mse)
+                plot_energy_loss[phase].append(torch.log10(energy_rmse))
+                if forcetraining:
+                    force_mse /= dataset_size[phase]
+                    force_rmse = torch.sqrt(force_mse)
+                    plot_force_loss[phase].append(torch.log10(force_rmse))
 
                 print(
-                    "{} energy loss: {:.4f} force loss: {:.4f}".format(
-                        phase, rmse, rmse_f
+                    "{} energy loss: {:.4f} force loss: {:.4f}\n".format(
+                        phase, energy_rmse, force_rmse
                     )
                 )
 
                 log_epoch(
-                    "{} {} Loss: {:.4f}".format(time.asctime(), phase, epoch_loss)
+                    "{} energy loss: {:.4f} force loss: {:.4f}\n".format(
+                        phase, energy_rmse, force_rmse
+                    )
                 )
 
-                if phase == "val" and epoch_loss < best_loss:
-                    best_loss = epoch_loss
-                    best_model_wts = copy.deepcopy(model.state_dict())
+                if forcetraining:
+                    if phase == "val" and (
+                        (energy_rmse < best_energy_loss)
+                        & (force_rmse < best_force_loss)
+                    ):
+                        best_energy_loss = energy_rmse
+                        best_force_loss = force_rmse
+                        best_model_wts = copy.deepcopy(model.state_dict())
 
-                log_epoch("")
-            print("")
+                if phase == "val" and energy_rmse < best_energy_loss:
+                    best_energy_loss = energy_rmse
+                    best_model_wts = copy.deepcopy(model.state_dict())
 
         else:
             phase = "train"
@@ -185,10 +207,12 @@ def train_model(
                 scheduler.step()
             model.train()
 
-            mse = 0.0
-            mse_f = 0.0
+            energy_mse = 0.0
+            force_mse = "N/A"
+            if forcetraining:
+                force_mse = 0.0
 
-            loading_timer = time.time()
+            # loading_timer = time.time()
             for data_sample in atoms_dataloader:
                 # print('data_loading: %s' % (time.time()-loading_timer))
                 input_data = [data_sample[0], len(data_sample[1])]
@@ -211,8 +235,7 @@ def train_model(
                 def closure():
                     optimizer.zero_grad()
                     energy_pred, force_pred = model(input_data, fp_primes)
-                    CustomLoss = ForceLossFunction()
-                    loss = CustomLoss(
+                    loss = criterion(
                         energy_pred,
                         scaled_target,
                         force_pred,
@@ -222,46 +245,59 @@ def train_model(
                     loss.backward()
                     return loss
 
+
+                mse_loss = nn.MSELoss(reduction="sum")
                 energy_pred, force_pred = model(input_data, fp_primes)
                 raw_preds = pred_scaling(energy_pred, target, method="standardize")
                 raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
                 target_per_atom = torch.div(target, num_of_atoms)
-                actual_loss = criterion(raw_preds_per_atom, target_per_atom)
+                energy_loss = mse_loss(raw_preds_per_atom, target_per_atom)
+                energy_mse += torch.tensor(energy_loss.item())
 
-                force_pred = force_pred * scaling_factor
-                num_atoms_force = torch.cat(
-                    [idx.repeat(int(idx)) for idx in num_of_atoms]
-                )
-                num_atoms_force = torch.sqrt(num_atoms_force).reshape(len(num_atoms_force), 1)
-                force_pred_per_atom = torch.div(force_pred, num_atoms_force)
-                force_targets_per_atom = torch.div(image_forces, num_atoms_force)
-                force_loss = criterion(force_pred_per_atom, force_targets_per_atom)
-                # mean over image
-                force_loss /= 3
+                if forcetraining:
+                    force_pred = force_pred * scaling_factor
+                    num_atoms_force = torch.cat(
+                        [idx.repeat(int(idx)) for idx in num_of_atoms]
+                    )
+                    num_atoms_force = torch.sqrt(num_atoms_force).reshape(
+                        len(num_atoms_force), 1
+                    )
+                    force_pred_per_atom = torch.div(force_pred, num_atoms_force)
+                    force_targets_per_atom = torch.div(image_forces, num_atoms_force)
+                    force_loss = mse_loss(force_pred_per_atom, force_targets_per_atom)
+                    # mean over image
+                    force_loss /= 3
+                    force_mse += torch.tensor(force_loss.item())
 
-                optimizer_time = time.time()
+                # optimizer_time = time.time()
                 optimizer.step(closure)
                 # print('optimizer.step(): %s' %(time.time()-optimizer_time))
 
-                mse += torch.tensor(actual_loss.item())
-                mse_f += torch.tensor(force_loss.item())
+            energy_mse /= dataset_size
+            energy_rmse = torch.sqrt(energy_mse)
+            plot_energy_loss[phase].append(torch.log10(energy_rmse))
+            print("energy loss: %s" % float(energy_rmse))
+            if forcetraining:
+                force_mse /= dataset_size
+                force_rmse = torch.sqrt(force_mse)
+                plot_force_loss[phase].append(torch.log10(force_rmse))
+                print("force loss: %s\n" % float(force_rmse))
 
-            mse = mse / dataset_size
-            mse_f = mse_f / dataset_size
-            rmse = torch.sqrt(mse)
-            rmse_f = torch.sqrt(mse_f)
-            epoch_loss = rmse_f
-            print("energy: %s" % float(rmse))
-            print("force: %s" % float(rmse_f))
-            print("")
-            plot_loss_y[phase].append(torch.log10(rmse))
+            log_epoch(
+                "{} energy loss: {:.4f} force loss: {:.4f}\n".format(
+                    phase, energy_rmse, force_rmse
+                )
+            )
 
-            if epoch_loss < best_loss:
-                best_loss = epoch_loss
+            if forcetraining:
+                if (energy_rmse < best_energy_loss) and (force_rmse < best_force_loss):
+                    best_energy_loss = energy_rmse
+                    best_force_loss = force_rmse
+                    best_model_wts = copy.deepcopy(model.state_dict())
+
+            if energy_rmse < best_energy_loss:
+                best_energy_loss = energy_rmse
                 best_model_wts = copy.deepcopy(model.state_dict())
-
-            log_epoch("{} {} Loss: {:.4f}".format(time.asctime(), phase, epoch_loss))
-            log_epoch("")
 
         epoch += 1
         # print('epoch time: %s' %(time.time()-epoch_timer))
@@ -276,14 +312,17 @@ def train_model(
     )
 
     log("Training complete in {} steps".format(epoch))
-    log("Best training loss: {:4f}".format(best_loss))
-    log("")
+    log("Best training energy loss: {:4f}\n".format(best_energy_loss))
+    if forcetraining:
+        log("Best training force loss: {:4f}\n".format(best_force_loss))
 
     plt.title("RMSE vs. Epoch")
     plt.xlabel("Epoch #")
     plt.ylabel("log(RMSE)")
     plot_epoch_x = list(range(1, epoch + 1))
-    plt.plot(plot_epoch_x, plot_loss_y[phase], label="train")
+    plt.plot(plot_epoch_x, plot_energy_loss[phase], label="energy train")
+    if forcetraining:
+        plt.plot(plot_epoch_x, plot_force_loss[phase], label='force train')
     plt.legend()
     plt.show()
     model.load_state_dict(best_model_wts)
