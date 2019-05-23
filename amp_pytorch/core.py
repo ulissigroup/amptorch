@@ -14,7 +14,7 @@ from amp.utilities import Logger
 from amp.descriptor.gaussian import Gaussian
 import matplotlib.pyplot as plt
 from amp_pytorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
-from amp_pytorch.NN_model import FullNN
+from amp_pytorch.NN_model import FullNN, CustomLoss 
 from amp_pytorch.trainer import train_model, target_scaling, pred_scaling
 
 __author__ = "Muhammed Shuaibi"
@@ -23,7 +23,18 @@ __email__ = "mshuaibi@andrew.cmu.edu"
 
 class AMPtorch:
     def __init__(
-        self, datafile, device="cpu", batch_size=None, structure=[2, 2], val_frac=0
+        self,
+        datafile,
+        device="cpu",
+        batch_size=None,
+        structure=[3, 5],
+        val_frac=0,
+        descriptor=Gaussian(),
+        criterion=CustomLoss(force_coefficient=.04),
+        optimizer=optim.LBFGS,
+        scheduler=None,
+        lr=1,
+        criteria={"energy": 0.02, "force": 0.02},
     ):
 
         if not os.path.exists("results"):
@@ -31,19 +42,23 @@ class AMPtorch:
         self.log = Logger("results/results-log.txt")
         self.log_epoch = Logger("results/epoch-log.txt")
         self.log(time.asctime())
+
         self.device = device
         self.filename = datafile
         self.batch_size = batch_size
+        self.lossfunction = criterion
+        self.optimizer = optimizer
+        self.scheduler = scheduler
+        self.lr = lr
+        self.convergence = criteria
+        self.structure = structure
 
         self.log("-" * 50)
         self.log("Filename: %s" % self.filename)
 
-        dataset_timer=time.time()
-        self.training_data = AtomsDataset(self.filename, descriptor=Gaussian())
+        dataset_timer = time.time()
+        self.training_data = AtomsDataset(self.filename, descriptor=descriptor)
         # print('dataset: %s' %(time.time()-dataset_timer))
-        # self.training_data = [self.training_data[0], self.training_data[1]]
-        # self.unique_atoms = ['O','H']
-        # self.fp_length = 20
         self.unique_atoms = self.training_data.unique()
         self.fp_length = self.training_data.fp_length()
 
@@ -89,34 +104,27 @@ class AMPtorch:
                 collate_fn=collate_amp,
                 shuffle=False,
             )
-        self.architecture = structure
+        self.architecture = self.structure
         self.architecture.insert(0, self.fp_length)
         self.model = FullNN(self.unique_atoms, self.architecture, self.device)
         self.model = self.model.to(self.device)
 
     def train(
         self,
-        criterion=nn.MSELoss(),
-        optimizer_ft=optim.LBFGS,
-        scheduler=None,
-        lr=1,
-        rmse_criteria=2e-3,
     ):
         """Trains the model under the provided optimizer conditions until
         convergence is reached as specified by the rmse_critieria."""
 
-        criterion = criterion
-        self.log("Loss Function: %s" % criterion)
+        self.log("Loss Function: %s" % self.lossfunction)
         # Define the optimizer and implement any optimization settings
-        optimizer_ft = optimizer_ft(self.model.parameters(), lr)
-        self.log("Optimizer Info:\n %s" % optimizer_ft)
+        self.optimizer = self.optimizer(self.model.parameters(), self.lr)
+        self.log("Optimizer Info:\n %s" % self.optimizer)
 
-        if scheduler:
-            scheduler = scheduler(optimizer_ft, step_size=7, gamma=0.1)
-        self.log("Scheduler Info: \n %s" % scheduler)
+        if self.scheduler:
+            self.scheduler = self.scheduler(self.optimizer, step_size=7, gamma=0.1)
+        self.log("Scheduler Info: \n %s" % self.scheduler)
 
-        rmse_criteria = rmse_criteria
-        self.log("RMSE criteria = {}".format(rmse_criteria))
+        self.log("RMSE criteria = {}".format(self.convergence))
         self.log("")
 
         self.model = train_model(
@@ -124,11 +132,11 @@ class AMPtorch:
             self.device,
             self.unique_atoms,
             self.dataset_size,
-            criterion,
-            optimizer_ft,
-            scheduler,
+            self.lossfunction,
+            self.optimizer,
+            self.scheduler,
             self.atoms_dataloader,
-            rmse_criteria,
+            self.convergence
         )
         torch.save(self.model.state_dict(), "results/best_model.pt")
         return self.model
@@ -224,7 +232,7 @@ class AMPtorch:
         force_pred = force_pred.reshape(-1, 1)
         force_pred *= scaling_factor
         force_targets = force_targets.reshape(-1, 1)
-        residual = abs(force_targets-force_pred)
+        residual = abs(force_targets - force_pred)
         fig = plt.figure(figsize=(7.0, 7.0))
         ax = fig.add_subplot(111)
         force_targets = force_targets.detach().cpu().numpy()
