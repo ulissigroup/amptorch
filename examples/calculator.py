@@ -1,13 +1,15 @@
 """An example of how to utilize the package to train on energies and forces"""
 
+import sys
 import torch
 from ase import Atoms
 from ase.calculators.emt import EMT
 import ase
 import torch.nn as nn
 import torch.optim as optim
-from amp_pytorch import core
-from amp_pytorch.NN_model import ForceLossFunction
+from amp_pytorch.NN_model import CustomLoss
+from amp_pytorch import AMPCalc
+from amp_pytorch.core import AMPtorch
 from amp.descriptor.gaussian import Gaussian
 
 # define training images
@@ -26,21 +28,14 @@ DEVICE = "cpu"
 # representing the number of layers, and the second number representing the
 # number of nodes in each hidden layer. i.e. [3,5] = 3 layers (2 hidden layers,
 # 1 output layer) and 5 nodes in each hidden layer.
-ARCHITECTURE = [3, 5]
 
 # define model
-MODEL = core.AMPtorch(IMAGES, DEVICE, batch_size=None, structure=ARCHITECTURE,
-        val_frac=0, descriptor=Gaussian())
-
-# define training parameters
-CRITERION = nn.MSELoss(reduction='sum')
-OPTIMIZER = optim.LBFGS
-RMSE_CRITERIA = 2e-2
-LR = 1
+calc = AMPCalc(model=AMPtorch(IMAGES, descriptor=Gaussian()))
 
 # train the model
-TRAINED_MODEL = MODEL.train(CRITERION, OPTIMIZER, lr=LR, rmse_criteria=RMSE_CRITERIA)
+TRAINED_MODEL = calc.train()
+# calc.train(CRITERION, OPTIMIZER, lr=LR, rmse_criteria=RMSE_CRITERIA)
 # plotting
-MODEL.parity_plot(TRAINED_MODEL)
-MODEL.parity_plot_forces(TRAINED_MODEL)
+calc.model.parity_plot(TRAINED_MODEL)
+calc.model.parity_plot_forces(TRAINED_MODEL)
 # MODEL.plot_residuals(TRAINED_MODEL)
