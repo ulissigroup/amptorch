@@ -85,10 +85,9 @@ def train_model(
         plot_force_loss = {"train": [], "val": []}
 
     epoch = 0
-    while epoch <= 10:
-    # while (best_energy_loss >= rmse_criteria["energy"]) and (
-        # (best_force_loss >= rmse_criteria["force"]) or (best_force_loss == 1e8)
-    # ):
+    convergence = False
+    # while epoch <= 10:
+    while not convergence:
         # epoch_timer = time.time()
         log_epoch("{} Epoch {}".format(time.asctime(), epoch + 1))
         log_epoch("-" * 30)
@@ -140,12 +139,13 @@ def train_model(
                         loss.backward()
                         return loss
 
+                    mse_loss = nn.MSELoss(reduction="sum")
                     energy_pred, force_pred = model(input_data, fp_primes)
                     raw_preds = pred_scaling(energy_pred, target, method="standardize")
                     raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
                     target_per_atom = torch.div(target, num_of_atoms)
-                    energy_loss = criterion(raw_preds_per_atom, target_per_atom)
-                    energy_mse += energy_loss.item()
+                    energy_loss = mse_loss(raw_preds_per_atom, target_per_atom)
+                    energy_mse += torch.tensor(energy_loss.item())
 
                     if forcetraining:
                         force_pred = force_pred * scaling_factor
@@ -159,10 +159,10 @@ def train_model(
                         force_targets_per_atom = torch.div(
                             image_forces, num_atoms_force
                         )
-                        force_loss = criterion(
+                        force_loss = mse_loss(
                             force_pred_per_atom, force_targets_per_atom
                         )
-                        force_mse += force_loss.item()
+                        force_mse += torch.tensor(force_loss.item())
 
                     if phase == "train":
                         optimizer.step(closure)
@@ -170,24 +170,14 @@ def train_model(
                 energy_mse /= dataset_size[phase]
                 energy_rmse = torch.sqrt(energy_mse)
                 plot_energy_loss[phase].append(torch.log10(energy_rmse))
+                print('%s energy loss: %f' % (phase, energy_rmse))
+                log_epoch('%s energy loss: %f' % (phase, energy_rmse))
                 if forcetraining:
                     force_mse /= dataset_size[phase]
                     force_rmse = torch.sqrt(force_mse)
                     plot_force_loss[phase].append(torch.log10(force_rmse))
-
-                print(
-                    "{} energy loss: {:.4f} force loss: {:.4f}\n".format(
-                        phase, energy_rmse, force_rmse
-                    )
-                )
-
-                log_epoch(
-                    "{} energy loss: {:.4f} force loss: {:.4f}\n".format(
-                        phase, energy_rmse, force_rmse
-                    )
-                )
-
-                if forcetraining:
+                    print('%s force loss: %f' % (phase, force_rmse))
+                    log_epoch('%s force loss: %f' % (phase, force_rmse))
                     if phase == "val" and (
                         (energy_rmse < best_energy_loss)
                         & (force_rmse < best_force_loss)
@@ -195,10 +185,14 @@ def train_model(
                         best_energy_loss = energy_rmse
                         best_force_loss = force_rmse
                         best_model_wts = copy.deepcopy(model.state_dict())
-
-                if phase == "val" and energy_rmse < best_energy_loss:
-                    best_energy_loss = energy_rmse
-                    best_model_wts = copy.deepcopy(model.state_dict())
+                    energy_convergence = best_energy_loss <= rmse_criteria["energy"]
+                    force_convergence = best_force_loss <= rmse_criteria["force"]
+                else:
+                    if phase == "val" and energy_rmse < best_energy_loss:
+                        best_energy_loss = energy_rmse
+                        best_model_wts = copy.deepcopy(model.state_dict())
+                convergence = best_energy_loss <= rmse_criteria["energy"]
+            print()
 
         else:
             phase = "train"
@@ -245,7 +239,6 @@ def train_model(
                     loss.backward()
                     return loss
 
-
                 mse_loss = nn.MSELoss(reduction="sum")
                 energy_pred, force_pred = model(input_data, fp_primes)
                 raw_preds = pred_scaling(energy_pred, target, method="standardize")
@@ -276,28 +269,26 @@ def train_model(
             energy_mse /= dataset_size
             energy_rmse = torch.sqrt(energy_mse)
             plot_energy_loss[phase].append(torch.log10(energy_rmse))
-            print("energy loss: %s" % float(energy_rmse))
+            print("energy loss: %f" % energy_rmse)
+            log_epoch("energy loss: %f" % (energy_rmse))
             if forcetraining:
                 force_mse /= dataset_size
                 force_rmse = torch.sqrt(force_mse)
                 plot_force_loss[phase].append(torch.log10(force_rmse))
-                print("force loss: %s\n" % float(force_rmse))
-
-            log_epoch(
-                "{} energy loss: {:.4f} force loss: {:.4f}\n".format(
-                    phase, energy_rmse, force_rmse
-                )
-            )
-
-            if forcetraining:
+                print("force loss: %f\n" % force_rmse)
+                log_epoch("force loss: %f\n" %(force_rmse))
                 if (energy_rmse < best_energy_loss) and (force_rmse < best_force_loss):
                     best_energy_loss = energy_rmse
                     best_force_loss = force_rmse
                     best_model_wts = copy.deepcopy(model.state_dict())
-
-            if energy_rmse < best_energy_loss:
-                best_energy_loss = energy_rmse
-                best_model_wts = copy.deepcopy(model.state_dict())
+                energy_convergence = best_energy_loss <= rmse_criteria["energy"]
+                force_convergence = best_force_loss <= rmse_criteria["force"]
+                convergence = energy_convergence and force_convergence
+            else:
+                if energy_rmse < best_energy_loss:
+                    best_energy_loss = energy_rmse
+                    best_model_wts = copy.deepcopy(model.state_dict())
+                convergence = best_energy_loss <= rmse_criteria["energy"]
 
         epoch += 1
         # print('epoch time: %s' %(time.time()-epoch_timer))
@@ -322,7 +313,7 @@ def train_model(
     plot_epoch_x = list(range(1, epoch + 1))
     plt.plot(plot_epoch_x, plot_energy_loss[phase], label="energy train")
     if forcetraining:
-        plt.plot(plot_epoch_x, plot_force_loss[phase], label='force train')
+        plt.plot(plot_epoch_x, plot_force_loss[phase], label="force train")
     plt.legend()
     plt.show()
     model.load_state_dict(best_model_wts)
