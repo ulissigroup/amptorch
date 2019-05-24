@@ -14,7 +14,7 @@ from amp.utilities import Logger
 from amp.descriptor.gaussian import Gaussian
 import matplotlib.pyplot as plt
 from amp_pytorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
-from amp_pytorch.NN_model import FullNN, CustomLoss 
+from amp_pytorch.NN_model import FullNN, CustomLoss
 from amp_pytorch.trainer import train_model, target_scaling, pred_scaling
 
 __author__ = "Muhammed Shuaibi"
@@ -30,65 +30,65 @@ class AMPtorch:
         structure=[3, 5],
         val_frac=0,
         descriptor=Gaussian(),
-        criterion=CustomLoss(force_coefficient=.04),
+        criterion=CustomLoss(force_coefficient=0),
         optimizer=optim.LBFGS,
         scheduler=None,
         lr=1,
         criteria={"energy": 0.02, "force": 0.02},
     ):
-
         if not os.path.exists("results"):
             os.mkdir("results")
         self.log = Logger("results/results-log.txt")
         self.log_epoch = Logger("results/epoch-log.txt")
         self.log(time.asctime())
 
-        self.device = device
         self.filename = datafile
+        self.device = device
         self.batch_size = batch_size
+        self.structure = structure
+        self.val_frac = val_frac
+        self.descriptor = descriptor
         self.lossfunction = criterion
         self.optimizer = optimizer
         self.scheduler = scheduler
         self.lr = lr
         self.convergence = criteria
-        self.structure = structure
 
         self.log("-" * 50)
         self.log("Filename: %s" % self.filename)
 
-        dataset_timer = time.time()
-        self.training_data = AtomsDataset(self.filename, descriptor=descriptor)
-        # print('dataset: %s' %(time.time()-dataset_timer))
-        self.unique_atoms = self.training_data.unique()
-        self.fp_length = self.training_data.fp_length()
+    def train(self):
+        """Trains the model under the provided optimizer conditions until
+        convergence is reached as specified by the rmse_critieria."""
 
-        self.dataset_size = len(self.training_data)
-        self.validation_frac = val_frac
+        training_data = AtomsDataset(self.filename, descriptor=self.descriptor)
+        # print('dataset: %s' %(time.time()-dataset_timer))
+        self.unique_atoms = training_data.unique()
+        fp_length = training_data.fp_length()
+
+        dataset_size = len(training_data)
 
         if self.batch_size is None:
-            self.batch_size = self.dataset_size
+            self.batch_size = dataset_size
 
-        if self.validation_frac != 0:
-            samplers = self.training_data.create_splits(
-                self.training_data, self.validation_frac
-            )
-            self.dataset_size = {
-                "train": self.dataset_size
-                - int(self.validation_frac * self.dataset_size),
-                "val": int(self.validation_frac * self.dataset_size),
+        if self.val_frac != 0:
+            samplers = training_data.create_splits(training_data, self.val_frac)
+            dataset_size = {
+                "train": dataset_size - int(self.val_frac * dataset_size),
+                "val": int(self.val_frac * dataset_size),
             }
 
             self.log(
                 "Training Data = %d Validation Data = %d"
-                % (self.dataset_size["train"], self.dataset_size["val"])
+                % (dataset_size["train"], dataset_size["val"])
             )
 
             if self.batch_size is None:
-                self.batch_size = {x: self.dataset_size[x] for x in ["train", "val"]}
+                self.batch_size = {x: dataset_size[x] for x in ["train", "val"]}
 
             self.atoms_dataloader = {
                 x: DataLoader(
-                    self.training_data,
+                    training_data,
                     self.batch_size,
                     collate_fn=collate_amp,
                     sampler=samplers[x],
@@ -97,53 +97,39 @@ class AMPtorch:
             }
 
         else:
-            self.log("Training Data = %d" % self.dataset_size)
+            self.log("Training Data = %d" % dataset_size)
             self.atoms_dataloader = DataLoader(
-                self.training_data,
-                self.batch_size,
-                collate_fn=collate_amp,
-                shuffle=False,
+                training_data, self.batch_size, collate_fn=collate_amp, shuffle=False
             )
-        self.architecture = self.structure
-        self.architecture.insert(0, self.fp_length)
-        self.model = FullNN(self.unique_atoms, self.architecture, self.device)
-        self.model = self.model.to(self.device)
-
-    def train(
-        self,
-    ):
-        """Trains the model under the provided optimizer conditions until
-        convergence is reached as specified by the rmse_critieria."""
+        self.structure.insert(0, fp_length)
+        model = FullNN(self.unique_atoms, self.structure, self.device).to(self.device)
 
         self.log("Loss Function: %s" % self.lossfunction)
         # Define the optimizer and implement any optimization settings
-        self.optimizer = self.optimizer(self.model.parameters(), self.lr)
-        self.log("Optimizer Info:\n %s" % self.optimizer)
+        optimizer = self.optimizer(model.parameters(), self.lr)
+        self.log("Optimizer Info:\n %s" % optimizer)
 
         if self.scheduler:
-            self.scheduler = self.scheduler(self.optimizer, step_size=7, gamma=0.1)
+            self.scheduler = self.scheduler(optimizer, step_size=7, gamma=0.1)
         self.log("Scheduler Info: \n %s" % self.scheduler)
 
-        self.log("RMSE criteria = {}".format(self.convergence))
-        self.log("")
+        self.log("RMSE criteria = {}\n".format(self.convergence))
 
-        self.model = train_model(
-            self.model,
+        model = train_model(
+            model,
             self.device,
             self.unique_atoms,
-            self.dataset_size,
+            dataset_size,
             self.lossfunction,
-            self.optimizer,
+            optimizer,
             self.scheduler,
             self.atoms_dataloader,
-            self.convergence
+            self.convergence,
         )
-        torch.save(self.model.state_dict(), "results/best_model.pt")
-        return self.model
+        return model
 
     def parity_plot(self, model):
-        """Constructs a parity plot"""
-
+        """Constructs an energy parity plot"""
         model.eval()
         targets = []
         device = self.device
@@ -176,7 +162,7 @@ class AMPtorch:
         plt.show()
 
     def parity_plot_forces(self, model):
-
+        """Constructs a forces parity plot"""
         model.eval()
         targets = []
         device = self.device
@@ -211,8 +197,7 @@ class AMPtorch:
         plt.show()
 
     def plot_residuals(self, model):
-        """Plots model residuals"""
-
+        """Plots force residuals"""
         model.eval()
         targets = []
         device = self.device
