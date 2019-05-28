@@ -15,7 +15,7 @@ IMAGES = "../datasets/water.extxyz"
 # IMAGES = "../datasets/reaxff_data/15.traj"
 images = ase.io.read(IMAGES, ":")
 IMAGES = []
-for i in range(400):
+for i in range(2):
     IMAGES.append(images[i])
 
 # define model
@@ -52,12 +52,14 @@ calc = AMPCalc(model=AMPtorch(IMAGES, descriptor=Gaussian()))
    default: {'energy':0.02, 'force': 0.02}
 
 """
-calc.model.lossfunction = CustomLoss(force_coefficient=0)
-calc.model.convergence = {'energy':1e-3, 'force':0.02}
+calc.model.lossfunction = CustomLoss(force_coefficient=0.4)
+calc.model.convergence = {'energy':0.02, 'force':0.02}
 # train the model
-calc.train(overwrite=True)
-# calc.train(CRITERION, OPTIMIZER, lr=LR, rmse_criteria=RMSE_CRITERIA)
+# calc.train(overwrite=True)
+k = calc.get_potential_energy([images[0], images[1]])
+# k = calc.get_forces(IMAGES)
+print(k)
 # plotting
-calc.model.parity_plot(TRAINED_MODEL)
+# calc.model.parity_plot(TRAINED_MODEL)
 # calc.model.parity_plot_forces(TRAINED_MODEL)
 # MODEL.plot_residuals(TRAINED_MODEL)
