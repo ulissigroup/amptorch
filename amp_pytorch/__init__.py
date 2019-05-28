@@ -5,15 +5,14 @@ plotting methods."""
 
 import sys
 import time
+import numpy as np
 import os
-import tempfile
-import shutil
 from torch.utils.data import DataLoader
 from amp.utilities import Logger
 from amp.descriptor.gaussian import Gaussian
 from amp_pytorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
 from amp_pytorch.NN_model import FullNN, CustomLoss
-from amp_pytorch.trainer import train_model, target_scaling, pred_scaling
+from amp_pytorch.trainer import Trainer
 from ase.calculators.calculator import Calculator, Parameters
 import torch
 
@@ -22,7 +21,6 @@ __email__ = "mshuaibi@andrew.cmu.edu"
 
 
 class AMPCalc(Calculator):
-
     implemented_properties = ["energy", "forces"]
 
     def __init__(self, model, label="amptorch.pt"):
@@ -33,15 +31,42 @@ class AMPCalc(Calculator):
 
     def train(self, overwrite=False):
 
-        trained_model = self.model.train()
+        self.trained_model = self.model.train()
+        self.target_sd = self.model.trainer.target_sd
+        self.target_mean = self.model.trainer.target_mean
         if os.path.exists(self.label):
             if overwrite is False:
                 print('Could not save! File already exists')
             else:
-                torch.save(trained_model.state_dict(), self.label)
+                torch.save(self.trained_model.state_dict(), self.label)
         else:
-            torch.save(trained_model.state_dict(), self.label)
+            torch.save(self.trained_model.state_dict(), self.label)
 
-        return trained_model
 
-    def calculate(self)
+    def calculate(self, atoms, properties, system_changes):
+        Calculator.calculate(self, atoms, properties, system_changes)
+
+        fp_scaling = self.model.training_data.fprange
+        dataset = AtomsDataset(atoms, self.model.descriptor)
+        fp_length = dataset.fp_length()
+        unique_atoms = dataset.unique()
+        architecture = self.model.structure
+        architecture.insert(0, fp_length)
+        batch_size = len(dataset)
+        dataloader = DataLoader(dataset, batch_size, collate_fn=collate_amp,
+                shuffle=False)
+        model = FullNN(unique_atoms, architecture, 'cpu')
+        model.load_state_dict(torch.load('amptorch.pt'))
+
+
+        for batch in dataloader:
+            input_data = [batch[0], len(batch[1])]
+            for element in unique_atoms:
+                input_data[0][element][0] = input_data[0][element][0].requires_grad_(True)
+            fp_primes = batch[3]
+            energy, forces = model(input_data, fp_primes)
+        energy = (energy*self.target_sd)+self.target_mean
+        forces = (forces*self.target_sd)
+
+        self.results['energy'] = np.concatenate(energy.detach().numpy())
+        self.results['forces'] = forces.detach().numpy()

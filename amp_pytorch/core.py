@@ -6,6 +6,7 @@ plotting methods."""
 import sys
 import time
 import os
+import copy
 import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
@@ -15,7 +16,7 @@ from amp.descriptor.gaussian import Gaussian
 import matplotlib.pyplot as plt
 from amp_pytorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
 from amp_pytorch.NN_model import FullNN, CustomLoss
-from amp_pytorch.trainer import train_model, target_scaling, pred_scaling
+from amp_pytorch.trainer import Trainer
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
@@ -54,6 +55,8 @@ class AMPtorch:
         self.lr = lr
         self.convergence = criteria
 
+        self.training_data = AtomsDataset(self.filename, descriptor=self.descriptor)
+
         self.log("-" * 50)
         self.log("Filename: %s" % self.filename)
 
@@ -61,7 +64,7 @@ class AMPtorch:
         """Trains the model under the provided optimizer conditions until
         convergence is reached as specified by the rmse_critieria."""
 
-        training_data = AtomsDataset(self.filename, descriptor=self.descriptor)
+        training_data = self.training_data
         # print('dataset: %s' %(time.time()-dataset_timer))
         self.unique_atoms = training_data.unique()
         fp_length = training_data.fp_length()
@@ -101,8 +104,9 @@ class AMPtorch:
             self.atoms_dataloader = DataLoader(
                 training_data, self.batch_size, collate_fn=collate_amp, shuffle=False
             )
-        self.structure.insert(0, fp_length)
-        model = FullNN(self.unique_atoms, self.structure, self.device).to(self.device)
+        architecture = copy.copy(self.structure)
+        architecture.insert(0, fp_length)
+        model = FullNN(self.unique_atoms, architecture, self.device).to(self.device)
 
         self.log("Loss Function: %s" % self.lossfunction)
         # Define the optimizer and implement any optimization settings
@@ -115,7 +119,7 @@ class AMPtorch:
 
         self.log("RMSE criteria = {}\n".format(self.convergence))
 
-        model = train_model(
+        self.trainer = Trainer(
             model,
             self.device,
             self.unique_atoms,
@@ -126,7 +130,9 @@ class AMPtorch:
             self.atoms_dataloader,
             self.convergence,
         )
-        return model
+
+        trained_model = self.trainer.train_model()
+        return trained_model
 
     def parity_plot(self, model):
         """Constructs an energy parity plot"""
