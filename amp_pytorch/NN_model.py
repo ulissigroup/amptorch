@@ -11,7 +11,7 @@ import torch.nn as nn
 from torch.nn import init
 from torch.nn import Tanh, Softplus, LeakyReLU
 from torch.nn.init import xavier_uniform_, kaiming_uniform_
-from torch.autograd import grad 
+from torch.autograd import grad
 from amp.utilities import Logger
 
 __author__ = "Muhammed Shuaibi"
