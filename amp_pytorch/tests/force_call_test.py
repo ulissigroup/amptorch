@@ -21,12 +21,14 @@ from collections import OrderedDict
 from amp import Amp
 from amp.descriptor.gaussian import Gaussian
 from amp.model.neuralnetwork import NeuralNetwork
-from amp.model.neuralnetwork import get_random_scalings 
+from amp.model.neuralnetwork import get_random_scalings
 from amp.utilities import hash_images
 from amp.model import calculate_fingerprints_range
 from amp_pytorch import core
 from amp_pytorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
 from amp_pytorch.NN_model import FullNN
+from amp_pytorch import AMPCalc
+from amp_pytorch.core import AMPtorch
 
 
 def test_non_periodic():
