@@ -28,6 +28,7 @@ class Trainer:
         scheduler,
         atoms_dataloader,
         rmse_criteria,
+        scalings,
     ):
 
         self.model = model
@@ -39,6 +40,8 @@ class Trainer:
         self.scheduler = scheduler
         self.atoms_dataloader = atoms_dataloader
         self.rmse_criteria = rmse_criteria
+        self.sd_scaling = scalings[0]
+        self.mean_scaling = scalings[1]
 
     def train_model(self):
         "trains the model"
@@ -93,10 +96,8 @@ class Trainer:
                         target = data_sample[1].requires_grad_(False)
                         batch_size = len(target)
                         target = target.reshape(batch_size, 1).to(self.device)
-                        scaled_target = self.target_scaling(
-                            target, method="standardize"
-                        )
-                        scaled_forces = image_forces / self.target_sd
+                        scaled_target = (target - self.mean_scaling) / self.sd_scaling
+                        scaled_forces = image_forces / self.sd_scaling
                         num_of_atoms = (
                             data_sample[2].reshape(batch_size, 1).to(self.device)
                         )
@@ -121,18 +122,18 @@ class Trainer:
                             loss.backward()
                             return loss
 
-                        mse_loss = nn.MSELoss(reduction="sum")
                         energy_pred, force_pred = self.model(input_data, fp_primes)
-                        raw_preds = self.pred_scaling(
-                            energy_pred, method="standardize"
-                        )
+                        if phase == "train":
+                            self.optimizer.step(closure)
+                        mse_loss = nn.MSELoss(reduction="sum")
+                        raw_preds = (energy_pred * self.sd_scaling) + self.mean_scaling
                         raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
                         target_per_atom = torch.div(target, num_of_atoms)
                         energy_loss = mse_loss(raw_preds_per_atom, target_per_atom)
                         energy_mse += torch.tensor(energy_loss.item())
 
                         if forcetraining:
-                            force_pred = force_pred * self.target_sd
+                            force_pred = force_pred * self.sd_scaling
                             num_atoms_force = torch.cat(
                                 [idx.repeat(int(idx)) for idx in num_of_atoms]
                             )
@@ -147,9 +148,6 @@ class Trainer:
                                 force_pred_per_atom, force_targets_per_atom
                             )
                             force_mse += torch.tensor(force_loss.item())
-
-                        if phase == "train":
-                            self.optimizer.step(closure)
 
                     energy_mse /= self.dataset_size[phase]
                     energy_rmse = torch.sqrt(energy_mse)
@@ -203,10 +201,8 @@ class Trainer:
                     target = data_sample[1].requires_grad_(False)
                     batch_size = len(target)
                     target = target.reshape(batch_size, 1).to(self.device)
-                    scaled_target = self.target_scaling(
-                        target, method="standardize"
-                    )
-                    scaled_forces = image_forces / self.target_sd
+                    scaled_target = (target - self.mean_scaling) / self.sd_scaling
+                    scaled_forces = image_forces / self.sd_scaling
                     num_of_atoms = data_sample[2].reshape(batch_size, 1).to(self.device)
                     for element in self.unique_atoms:
                         input_data[0][element][0] = (
@@ -229,18 +225,20 @@ class Trainer:
                         loss.backward()
                         return loss
 
+                    # optimizer_time = time.time()
+                    self.optimizer.step(closure)
+                    # print('optimizer.step(): %s' %(time.time()-optimizer_time))
+
                     mse_loss = nn.MSELoss(reduction="sum")
                     energy_pred, force_pred = self.model(input_data, fp_primes)
-                    raw_preds = self.pred_scaling(
-                        energy_pred, method="standardize"
-                    )
+                    raw_preds = (energy_pred * self.sd_scaling) + self.mean_scaling
                     raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
                     target_per_atom = torch.div(target, num_of_atoms)
                     energy_loss = mse_loss(raw_preds_per_atom, target_per_atom)
                     energy_mse += torch.tensor(energy_loss.item())
 
                     if forcetraining:
-                        force_pred = force_pred * self.target_sd
+                        force_pred = force_pred * self.sd_scaling
                         num_atoms_force = torch.cat(
                             [idx.repeat(int(idx)) for idx in num_of_atoms]
                         )
@@ -257,10 +255,6 @@ class Trainer:
                         # mean over image
                         force_loss /= 3
                         force_mse += torch.tensor(force_loss.item())
-
-                    # optimizer_time = time.time()
-                    self.optimizer.step(closure)
-                    # print('optimizer.step(): %s' %(time.time()-optimizer_time))
 
                 energy_mse /= self.dataset_size
                 energy_rmse = torch.sqrt(energy_mse)
@@ -291,8 +285,6 @@ class Trainer:
                     convergence = best_energy_loss <= self.rmse_criteria["energy"]
 
             epoch += 1
-            # print('epoch time: %s' %(time.time()-epoch_timer))
-            # sys.exit()
 
         time_elapsed = time.time() - since
         print("Training complete in {} steps".format(epoch))
@@ -318,31 +310,3 @@ class Trainer:
         plt.show()
         self.model.load_state_dict(best_model_wts)
         return self.model
-
-    def target_scaling(self, data, method=None):
-        """Scales the target values through a specified method:
-
-            method: 'minmax' = scales values to between[0,1]
-                    'standardize' = scales values to have a mean of 0 and standard
-                    deviation of 1
-            """
-        data_ = data.reshape(-1, 1)
-        if method == "minmax":
-            self.target_max = max(data_)
-            self.target_min = min(data_)
-            data = (data - self.target_min) / (self.target_max - self.target_min)
-        elif method == "standardize":
-            self.target_mean = torch.mean(data_)
-            self.target_sd = torch.std(data_, dim=0)
-            data = (data - self.target_mean) / self.target_sd
-        return data
-
-    def pred_scaling(self, data, method=None):
-        """Unscales model predictions based off the previous scaling method.
-        Unscaling is necessary in order to compute RMSE values off the raw targets
-        """
-        if method == "minmax":
-            data = (data * (self.target_max - self.target_min)) + self.target_min
-        elif method == "standardize":
-            data = (data * self.target_sd) + self.target_mean
-        return data

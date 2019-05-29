@@ -37,7 +37,7 @@ class Dense(nn.Linear):
 
     def reset_parameters(self):
         """Weight initialization scheme"""
-        # init.constant_(self.weight, 0.05)
+        # init.constant_(self.weight, 0.5)
         init.constant_(self.bias, 0)
 
         # xavier_uniform_(self.weight, gain=np.sqrt(1/2))
