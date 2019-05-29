@@ -44,6 +44,19 @@ class AtomsDataset(Dataset):
             self.hashed_images, calculate_derivatives=True
         )
         self.fprange = calculate_fingerprints_range(self.descriptor, self.hashed_images)
+        self.energy_dataset = []
+        try:
+            for image in self.hashed_images.keys():
+                self.energy_dataset.append(
+                    self.hashed_images[image].get_potential_energy(
+                        apply_constraint=False
+                    )
+                )
+            self.energy_dataset = torch.tensor(self.energy_dataset)
+            self.scaling_mean = torch.mean(self.energy_dataset)
+            self.scaling_sd = torch.std(self.energy_dataset, dim=0)
+        except NotImplementedError:
+            print("Atoms object has no calculator set!")
 
     def __len__(self):
         return len(self.hashed_images)
@@ -80,7 +93,7 @@ class AtomsDataset(Dataset):
                 for i in range(len(fprime)):
                     if (fprange_atom[i][1] - fprange_atom[i][0]) > (10.0 ** (-8.0)):
                         fprime[i] = 2.0 * (
-                        fprime[i] / (fprange_atom[i][1] - fprange_atom[i][0])
+                            fprime[i] / (fprange_atom[i][1] - fprange_atom[i][0])
                         )
                 _image_primes[key] = fprime
 
@@ -96,12 +109,18 @@ class AtomsDataset(Dataset):
                 coord = fp_key[4]
                 fingerprintprimes[
                     base_atom * fp_length : base_atom * fp_length + fp_length,
-                    wrt_atom * 3 + coord
+                    wrt_atom * 3 + coord,
                 ] = image_prime
 
         except NotImplementedError:
             print("Atoms object has no claculator set!")
-        return image_fingerprint, image_potential_energy, _image_primes, image_forces, fingerprintprimes
+        return (
+            image_fingerprint,
+            image_potential_energy,
+            _image_primes,
+            image_forces,
+            fingerprintprimes,
+        )
 
     def unique(self):
         return list(self.fprange.keys())
@@ -120,6 +139,141 @@ class AtomsDataset(Dataset):
         samplers = {"train": train_sampler, "val": val_sampler}
 
         return samplers
+
+class TestDataset(Dataset):
+    """
+    Test Dataset
+
+    Parameters:
+    images: input training images (list, trajectory file, or database)
+    descriptor: descriptor to be utilized for fingerprinting scheme
+
+    Output: Returns, for a given index, the image_fingerprint and
+    image_potential energy
+    """
+
+    def __init__(self, images, descriptor, fprange):
+        self.images = images
+        self.descriptor = descriptor
+        self.atom_images = self.images
+        if isinstance(images, str):
+            extension = os.path.splitext(images)[1]
+            if extension != (".traj" or ".db"):
+                self.atom_images = ase.io.read(images, ":")
+        self.hashed_images = hash_images(self.atom_images)
+        self.descriptor.calculate_fingerprints(
+            self.hashed_images, calculate_derivatives=True
+        )
+        self.fprange = fprange
+
+    def __len__(self):
+        return len(self.hashed_images)
+
+    def __getitem__(self, index):
+        hash_name = list(self.hashed_images.keys())[index]
+        image_fingerprint = self.descriptor.fingerprints[hash_name]
+        fprange = self.fprange
+        # fingerprint scaling to [-1,1]
+        for i, (atom, afp) in enumerate(image_fingerprint):
+            _afp = copy.copy(afp)
+            fprange_atom = fprange[atom]
+            for _ in range(np.shape(_afp)[0]):
+                if (fprange_atom[_][1] - fprange_atom[_][0]) > (10.0 ** (-8.0)):
+                    _afp[_] = -1 + 2.0 * (
+                        (_afp[_] - fprange_atom[_][0])
+                        / (fprange_atom[_][1] - fprange_atom[_][0])
+                    )
+            image_fingerprint[i] = (atom, _afp)
+        image_primes = self.descriptor.fingerprintprimes[hash_name]
+        # fingerprint derivative scaling to [0,1]
+        _image_primes = copy.copy(image_primes)
+        for _, key in enumerate(list(image_primes.keys())):
+            base_atom = key[3]
+            fprange_atom = fprange[base_atom]
+            fprime = image_primes[key]
+            for i in range(len(fprime)):
+                if (fprange_atom[i][1] - fprange_atom[i][0]) > (10.0 ** (-8.0)):
+                    fprime[i] = 2.0 * (
+                        fprime[i] / (fprange_atom[i][1] - fprange_atom[i][0])
+                    )
+            _image_primes[key] = fprime
+
+        image_prime_values = list(_image_primes.values())
+        image_prime_keys = list(_image_primes.keys())
+        fp_length = len(image_fingerprint[0][1])
+        num_atoms = len(image_fingerprint)
+        fingerprintprimes = torch.zeros(fp_length * num_atoms, 3 * num_atoms)
+        for idx, fp_key in enumerate(image_prime_keys):
+            image_prime = torch.tensor(image_prime_values[idx])
+            base_atom = fp_key[2]
+            wrt_atom = fp_key[0]
+            coord = fp_key[4]
+            fingerprintprimes[
+                base_atom * fp_length : base_atom * fp_length + fp_length,
+                wrt_atom * 3 + coord,
+            ] = image_prime
+
+        return (
+            image_fingerprint,
+            fingerprintprimes,
+            num_atoms,
+        )
+
+    def unique(self):
+        self.unique_atoms = list(self.fprange.keys())
+        return self.unique_atoms
+
+    def fp_length(self):
+        self.fp_length = len(list(self.fprange.values())[0])
+        return len(list(self.fprange.values())[0])
+
+    def collate_test(self, training_data):
+        """
+        Reshuffling scheme that reads in raw data and organizes it into element
+        specific datasets to be fed into the element specific Neural Nets.
+        """
+        fingerprint_dataset = []
+        num_of_atoms = []
+        fp_length = self.fp_length
+        for image in training_data:
+            num_of_atoms.append(image[2])
+        atoms_in_batch = int(sum(num_of_atoms))
+        # Construct a sparse matrix with dimensions PQx3Q
+        fprimes = torch.zeros(fp_length * atoms_in_batch, 3 * atoms_in_batch)
+        dim1_start = 0
+        dim2_start = 0
+        for idx, image in enumerate(training_data):
+            fprime = image[1]
+            dim1 = fprime.shape[0]
+            dim2 = fprime.shape[1]
+            fprimes[dim1_start : dim1 + dim1_start, dim2_start : dim2 + dim2_start] = fprime
+            dim1_start += dim1
+            dim2_start += dim2
+            image_fingerprint = image[0]
+            fingerprint_dataset.append(image_fingerprint)
+        sparse_fprimes = fprimes.to_sparse()
+
+        element_specific_fingerprints = {}
+        model_input_data = []
+        for element in self.unique_atoms:
+            element_specific_fingerprints[element] = [[], []]
+        for fp_index, sample_fingerprints in enumerate(fingerprint_dataset):
+            for fingerprint in sample_fingerprints:
+                atom_element = fingerprint[0]
+                atom_fingerprint = fingerprint[1]
+                element_specific_fingerprints[atom_element][0].append(
+                    torch.tensor(atom_fingerprint)
+                )
+                element_specific_fingerprints[atom_element][1].append(fp_index)
+        for element in self.unique_atoms:
+            element_specific_fingerprints[element][0] = torch.stack(
+                element_specific_fingerprints[element][0]
+            )
+        model_input_data.append(element_specific_fingerprints)
+        model_input_data.append(num_of_atoms)
+        model_input_data.append(sparse_fprimes)
+
+        return model_input_data
 
 
 def factorize_data(training_data):
@@ -164,7 +318,7 @@ def factorize_data(training_data):
         fprime = image[4]
         dim1 = fprime.shape[0]
         dim2 = fprime.shape[1]
-        fprimes[dim1_start: dim1+dim1_start, dim2_start:dim2+dim2_start] = fprime
+        fprimes[dim1_start : dim1 + dim1_start, dim2_start : dim2 + dim2_start] = fprime
         dim1_start += dim1
         dim2_start += dim2
 
