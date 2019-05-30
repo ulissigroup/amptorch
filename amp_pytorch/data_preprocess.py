@@ -153,7 +153,7 @@ class TestDataset(Dataset):
     """
 
     def __init__(self, images, descriptor, fprange):
-        self.images = images
+        self.images = [images]
         self.descriptor = descriptor
         self.atom_images = self.images
         if isinstance(images, str):

@@ -3,11 +3,9 @@ training images, GPU utilization, and validation data usage. An AMPtorch
 instance contains the ability to call forth a 'train' method and subsequent
 plotting methods."""
 
-import sys
 import time
 import os
 import copy
-import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
 import torch.nn as nn
@@ -22,7 +20,50 @@ __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
 
 
-class AMPtorch:
+class AMPModel:
+    """Model class used to define the Neural Network architecture and regression
+    training scheme
+
+    Parameters
+    ----------
+    datafile : trajectory file, list, or database
+        Training data to be utilized for the regression model.
+    device : str
+        Hardware to be utilized for training - CPU or GPU.
+        default: 'cpu'
+    batch_size: int
+        Number of images in a training batch. None represents no batching,
+        treating the entire dataset as one batch. default: None
+    structure: list
+        Neural Network architecture. First index represents number of layers,
+        including the output layer. Second index represents the number of nodes
+        in each hidden layer. i.e. [3,5] = 3 layeres (2 hidden layers, 1 output
+        layer) and 5 nodes in each hidden layer. default: [3,5]
+    val_frac: float
+        Proportion of dataset to be used as a validation test set for training
+        purposes. default: 0
+    descriptor: object
+        Descriptor to be utilized to calculate fingerprints and
+        fingerprintprimes. default: Gaussian()
+    criterion: object
+        Specify the loss function to be optimized. Force training can be turned
+        on/off here directly
+        default: CustomLoss(force_coefficient=0)
+    optimizer: object
+        Define the training optimizer to be utilized for the regression.
+        default: optim.LBFGS
+    scheduler: object
+        Specify whether a learning rate decay scheme is to be utilized during
+        training.
+        default: None
+    lr: float
+        Define the model learning rate. default:1
+    criteria: dict
+        Define the training convergence criteria.
+        default: {'energy':0.02, "force":0.02}
+
+    """
+
     def __init__(
         self,
         datafile,
@@ -188,6 +229,7 @@ class AMPtorch:
         plt.show()
 
     def plot_residuals(self, data='energy'):
+        '''Constructs a residual plot'''
         model = self.trained_model
         model.eval()
         targets = []
