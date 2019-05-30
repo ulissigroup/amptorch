@@ -1,6 +1,5 @@
-"""GD_trainer.py: Trains a provided model utilizing GD based algorithms
-including SGD, Adam, etc. Model convergence is achieved upon reaching the
-specified rmse convergence criteria."""
+"""Trainer class used to train a specified model in accordance with the trainer
+arguments"""
 
 import sys
 import time
@@ -10,13 +9,41 @@ import matplotlib.pyplot as plt
 import torch.nn as nn
 import torch
 
-# from amp_pytorch.NN_model import ForceLossFunction
-
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
 
 
 class Trainer:
+    """Class utilized to train a given model through a training loop method.
+
+    Parameters
+    ----------
+
+    model: object
+        NeuralNetwork model to be trained
+    device: str
+        Hardware to be utilized for training - CPU or GPU
+    unique_atoms: list
+        List of unique atoms contained in the training dataset.
+    dataset_size: int
+        Size of the training dataset
+    criterion: object
+        Loss function to be optimized.
+    Optimizer: object
+        Training optimizer to be utilized for the regression
+    scheduler: object
+        Learning rate decay scheme to be utilized in training
+    atoms_dataloader: object
+        PyTorch DataLoader object that tells the trainer how to load data for
+        training
+    rmse_criteria: dict
+        Training convergence criteria
+    scalings: list
+        Scalings applied to the dataset to normalize the energy targets.
+        Training scalings will be utilized for calculating predicted
+        properities.
+    """
+
     def __init__(
         self,
         model,
@@ -44,7 +71,7 @@ class Trainer:
         self.mean_scaling = scalings[1]
 
     def train_model(self):
-        "trains the model"
+        "Training loop"
         forcetraining = False
         if self.criterion.alpha > 0:
             forcetraining = True
