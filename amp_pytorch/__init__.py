@@ -1,10 +1,6 @@
-"""core.py: Defines an AMPtorch instance that allows users to specify the
-training images, GPU utilization, and validation data usage. An AMPtorch
-instance contains the ability to call forth a 'train' method and subsequent
-plotting methods."""
+"""Base AMP calculator class to be utilized similiar to other ASE calculators"""
 
-import sys
-import time
+import copy
 import numpy as np
 import os
 from torch.utils.data import DataLoader
@@ -25,7 +21,19 @@ __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
 
 
-class AMPCalc(Calculator):
+class AMP(Calculator):
+    """Atomistics Machine-Learning Potential (AMP) ASE calculator
+   Parameters
+   ----------
+    model : object
+    Class representing the regression model. Input arguments include training
+    images and descriptor type. Model structure and training schemes can be
+    modified directly within the class.
+
+    label : str
+    Location to save trained the trained model.
+
+    """
     implemented_properties = ["energy", "forces"]
 
     def __init__(self, model, label="amptorch.pt"):
@@ -54,7 +62,7 @@ class AMPCalc(Calculator):
         dataset = TestDataset(atoms, self.model.descriptor, self.fp_scaling)
         fp_length = dataset.fp_length()
         unique_atoms = dataset.unique()
-        architecture = self.model.structure
+        architecture = copy.copy(self.model.structure)
         architecture.insert(0, fp_length)
         batch_size = len(dataset)
         dataloader = DataLoader(
