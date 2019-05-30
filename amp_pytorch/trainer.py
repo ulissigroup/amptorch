@@ -1,156 +1,339 @@
-"""trainer.py: Trains a provided model utilizing an LBFGS algorithm. Model
-convergence is achieved upon reaching a specific rmse convergence criteria."""
+"""Trainer class used to train a specified model in accordance with the trainer
+arguments"""
 
+import sys
 import time
 import copy
 from amp.utilities import Logger
 import matplotlib.pyplot as plt
-import torch.nn
+import torch.nn as nn
 import torch
-import numpy as np
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
 
 
-def target_scaling(data, method=None):
-    """Scales the target values through a specified method:
+class Trainer:
+    """Class utilized to train a given model through a training loop method.
 
-        method: 'minmax' = scales values to between[0,1]
-                'standardize' = scales values to have a mean of 0 and standard
-                deviation of 1
-        """
+    Parameters
+    ----------
 
-    if method == 'minmax':
-        data_max = max(data)
-        data_min = min(data)
-        scale = []
-        for value in data:
-            scale.append((value-data_min)/(data_max-data_min))
-        return torch.stack(scale)
-    elif method == 'standardize':
-        data_mean = torch.mean(data)
-        data_sd = torch.std(data, dim=0)
-        scale = []
-        for value in data:
-            scale.append((value-data_mean)/data_sd)
-        return torch.stack(scale)
-    return data
-
-
-def pred_scaling(data, target, method=None):
-    """Unscales model predictions based off the previous scaling method.
-    Unscaling is necessary in order to compute RMSE values off the raw targets
+    model: object
+        NeuralNetwork model to be trained
+    device: str
+        Hardware to be utilized for training - CPU or GPU
+    unique_atoms: list
+        List of unique atoms contained in the training dataset.
+    dataset_size: int
+        Size of the training dataset
+    criterion: object
+        Loss function to be optimized.
+    Optimizer: object
+        Training optimizer to be utilized for the regression
+    scheduler: object
+        Learning rate decay scheme to be utilized in training
+    atoms_dataloader: object
+        PyTorch DataLoader object that tells the trainer how to load data for
+        training
+    rmse_criteria: dict
+        Training convergence criteria
+    scalings: list
+        Scalings applied to the dataset to normalize the energy targets.
+        Training scalings will be utilized for calculating predicted
+        properities.
     """
 
-    if method == 'minmax':
-        target_max = max(target)
-        target_min = min(target)
-        scale = []
-        for value in data:
-            scale.append((value*(target_max-target_min))+target_min)
-        return torch.stack(scale)
-    elif method == 'standardize':
-        target_mean = torch.mean(target)
-        target_sd = torch.std(target, dim=0)
-        scale = []
-        for value in data:
-            scale.append((value*target_sd)+target_mean)
-        return torch.stack(scale)
-    return data
+    def __init__(
+        self,
+        model,
+        device,
+        unique_atoms,
+        dataset_size,
+        criterion,
+        optimizer,
+        scheduler,
+        atoms_dataloader,
+        rmse_criteria,
+        scalings,
+    ):
 
+        self.model = model
+        self.device = device
+        self.unique_atoms = unique_atoms
+        self.dataset_size = dataset_size
+        self.criterion = criterion
+        self.optimizer = optimizer
+        self.scheduler = scheduler
+        self.atoms_dataloader = atoms_dataloader
+        self.rmse_criteria = rmse_criteria
+        self.sd_scaling = scalings[0]
+        self.mean_scaling = scalings[1]
 
-def train_model(model, device, unique_atoms, dataset_size, criterion,
-                optimizer, atoms_dataloader, rmse_criteria):
+    def train_model(self):
+        "Training loop"
+        forcetraining = False
+        if self.criterion.alpha > 0:
+            forcetraining = True
+        best_force_loss = 1e8
+        best_energy_loss = 1e8
+        log = Logger("results/results-log.txt")
+        log_epoch = Logger("results/epoch-log.txt")
+        log("Model: %s" % self.model)
 
-    log = Logger('results/results-log.txt')
-    log_epoch = Logger('results/epoch-log.txt')
-    log('Model: %s' % model)
+        since = time.time()
+        log_epoch("-" * 50)
+        print("Training Initiated!")
+        log_epoch("%s Training Initiated!\n" % time.asctime())
 
-    model.train()
+        best_model_wts = copy.deepcopy(self.model.state_dict())
 
-    since = time.time()
-    log_epoch('-'*50)
-    print ('Training Initiated!')
-    log_epoch('%s Training Initiated!' % time.asctime())
-    log_epoch('-'*50)
-    best_model_wts = copy.deepcopy(model.state_dict())
-    best_loss = 1e8
+        plot_energy_loss = {"train": [], "val": []}
+        if forcetraining:
+            plot_force_loss = {"train": [], "val": []}
 
-    plot_loss_y = []
+        epoch = 0
+        convergence = False
+        # while epoch <= 10:
+        while not convergence:
+            # epoch_timer = time.time()
+            log_epoch("{} Epoch {}".format(time.asctime(), epoch + 1))
+            log_epoch("-" * 30)
 
-    epoch = 0
-    while best_loss >= rmse_criteria:
-        log_epoch('{} Epoch {}'.format(time.asctime(), epoch+1))
-        log_epoch('-'*40)
+            if isinstance(self.atoms_dataloader, dict):
 
-        mse = 0.0
+                for phase in ["train", "val"]:
 
-        for data_sample in atoms_dataloader:
-            input_data = data_sample[0]
-            target = data_sample[1].requires_grad_(False)
-            batch_size = len(target)
-            target = target.reshape(batch_size, 1).to(device)
-            scaled_target = target_scaling(target, method='standardize')
-            num_of_atoms = data_sample[2].reshape(batch_size, 1).to(device)
-            # Send inputs and labels to the corresponding device (cpu or gpu)
-            for element in unique_atoms:
-                input_data[element][0] = input_data[element][0].to(device)
-            scaled_target = scaled_target.to(device)
+                    if phase == "train":
+                        if self.scheduler:
+                            self.scheduler.step()
+                        self.model.train()
+                    else:
+                        self.model.eval()
 
-            def closure():
-                """Allows optimizer to reevaluate the function multiple times
-                as per the LBFGS algorithm"""
-                optimizer.zero_grad()
-                output = model(input_data)
-                loss = criterion(output, scaled_target)
-                loss.backward()
-                return loss
+                    energy_mse = 0.0
+                    force_mse = "N/A"
+                    if forcetraining:
+                        force_mse = 0.0
 
-            optimizer.step(closure)
+                    for data_sample in self.atoms_dataloader[phase]:
+                        input_data = [data_sample[0], len(data_sample[1])]
+                        fp_primes = data_sample[3]
+                        image_forces = data_sample[4].to(self.device)
+                        target = data_sample[1].requires_grad_(False)
+                        batch_size = len(target)
+                        target = target.reshape(batch_size, 1).to(self.device)
+                        scaled_target = (target - self.mean_scaling) / self.sd_scaling
+                        scaled_forces = image_forces / self.sd_scaling
+                        num_of_atoms = (
+                            data_sample[2].reshape(batch_size, 1).to(self.device)
+                        )
+                        for element in self.unique_atoms:
+                            input_data[0][element][0] = (
+                                input_data[0][element][0]
+                                .to(self.device)
+                                .requires_grad_(True)
+                            )
+                        scaled_target = scaled_target.to(self.device)
 
-            # Perform predictions and compute loss
-            with torch.no_grad():
-                scaled_preds = model(input_data)
-                raw_preds = pred_scaling(
-                    scaled_preds, target, method='standardize')
-                raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
-                target_per_atom = torch.div(target, num_of_atoms)
-                loss = criterion(raw_preds_per_atom, target_per_atom)
-                mse += loss.item()*batch_size
+                        def closure():
+                            self.optimizer.zero_grad()
+                            energy_pred, force_pred = self.model(input_data, fp_primes)
+                            loss = self.criterion(
+                                energy_pred,
+                                scaled_target,
+                                force_pred,
+                                scaled_forces,
+                                num_of_atoms,
+                            )
+                            loss.backward()
+                            return loss
 
-        mse = mse/dataset_size
-        rmse = np.sqrt(mse)
-        epoch_loss = rmse
-        print (epoch_loss)
-        plot_loss_y.append(np.log10(rmse))
+                        energy_pred, force_pred = self.model(input_data, fp_primes)
+                        if phase == "train":
+                            self.optimizer.step(closure)
+                        mse_loss = nn.MSELoss(reduction="sum")
+                        raw_preds = (energy_pred * self.sd_scaling) + self.mean_scaling
+                        raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
+                        target_per_atom = torch.div(target, num_of_atoms)
+                        energy_loss = mse_loss(raw_preds_per_atom, target_per_atom)
+                        energy_mse += torch.tensor(energy_loss.item())
 
-        log_epoch('{} Loss: {:.4f}'.format(time.asctime(), epoch_loss))
-        log_epoch('')
+                        if forcetraining:
+                            force_pred = force_pred * self.sd_scaling
+                            num_atoms_force = torch.cat(
+                                [idx.repeat(int(idx)) for idx in num_of_atoms]
+                            )
+                            num_atoms_force = torch.sqrt(
+                                num_atoms_force.reshape(len(num_atoms_force), 1)
+                            )
+                            force_pred_per_atom = torch.div(force_pred, num_atoms_force)
+                            force_targets_per_atom = torch.div(
+                                image_forces, num_atoms_force
+                            )
+                            force_loss = mse_loss(
+                                force_pred_per_atom, force_targets_per_atom
+                            )
+                            force_mse += torch.tensor(force_loss.item())
 
-        if epoch_loss < best_loss:
-            best_loss = epoch_loss
-            best_model_wts = copy.deepcopy(model.state_dict())
-        epoch += 1
+                    energy_mse /= self.dataset_size[phase]
+                    energy_rmse = torch.sqrt(energy_mse)
+                    plot_energy_loss[phase].append(torch.log10(energy_rmse))
+                    print("%s energy loss: %f" % (phase, energy_rmse))
+                    log_epoch("%s energy loss: %f" % (phase, energy_rmse))
+                    if forcetraining:
+                        force_mse /= self.dataset_size[phase]
+                        force_rmse = torch.sqrt(force_mse)
+                        plot_force_loss[phase].append(torch.log10(force_rmse))
+                        print("%s force loss: %f" % (phase, force_rmse))
+                        log_epoch("%s force loss: %f" % (phase, force_rmse))
+                        if phase == "val" and (
+                            (energy_rmse < best_energy_loss)
+                            & (force_rmse < best_force_loss)
+                        ):
+                            best_energy_loss = energy_rmse
+                            best_force_loss = force_rmse
+                            best_model_wts = copy.deepcopy(self.model.state_dict())
+                        energy_convergence = (
+                            best_energy_loss <= self.rmse_criteria["energy"]
+                        )
+                        force_convergence = (
+                            best_force_loss <= self.rmse_criteria["force"]
+                        )
+                    else:
+                        if phase == "val" and energy_rmse < best_energy_loss:
+                            best_energy_loss = energy_rmse
+                            best_model_wts = copy.deepcopy(self.model.state_dict())
+                    convergence = best_energy_loss <= self.rmse_criteria["energy"]
+                print()
 
-    time_elapsed = time.time()-since
-    print ('Training complete in {} steps'.format(epoch))
-    print('Training complete in {:.0f}m {:.0f}s'.format
-          (time_elapsed//60, time_elapsed % 60))
+            else:
+                phase = "train"
 
-    log('')
-    log('Training complete in {:.0f}m {:.0f}s'.format
-        (time_elapsed//60, time_elapsed % 60))
-    log('Training complete in {} steps'.format(epoch))
-    log('Best training loss: {:4f}'.format(best_loss))
-    log('')
+                if self.scheduler:
+                    self.scheduler.step()
+                self.model.train()
 
-    plt.title('RMSE vs. Epoch')
-    plt.xlabel('Epoch #')
-    plt.ylabel('log(RMSE)')
-    plot_epoch_x = list(range(1, epoch+1))
-    plt.plot(plot_epoch_x, plot_loss_y, label='train')
-    plt.legend()
-    plt.show()
-    model.load_state_dict(best_model_wts)
-    return model
+                energy_mse = 0.0
+                force_mse = "N/A"
+                if forcetraining:
+                    force_mse = 0.0
+
+                # loading_timer = time.time()
+                for data_sample in self.atoms_dataloader:
+                    # print('data_loading: %s' % (time.time()-loading_timer))
+                    input_data = [data_sample[0], len(data_sample[1])]
+                    fp_primes = data_sample[3].to(self.device)
+                    image_forces = data_sample[4].to(self.device)
+                    target = data_sample[1].requires_grad_(False)
+                    batch_size = len(target)
+                    target = target.reshape(batch_size, 1).to(self.device)
+                    scaled_target = (target - self.mean_scaling) / self.sd_scaling
+                    scaled_forces = image_forces / self.sd_scaling
+                    num_of_atoms = data_sample[2].reshape(batch_size, 1).to(self.device)
+                    for element in self.unique_atoms:
+                        input_data[0][element][0] = (
+                            input_data[0][element][0]
+                            .to(self.device)
+                            .requires_grad_(True)
+                        )
+                    scaled_target = scaled_target.to(self.device)
+
+                    def closure():
+                        self.optimizer.zero_grad()
+                        energy_pred, force_pred = self.model(input_data, fp_primes)
+                        loss = self.criterion(
+                            energy_pred,
+                            scaled_target,
+                            force_pred,
+                            scaled_forces,
+                            num_of_atoms,
+                        )
+                        loss.backward()
+                        return loss
+
+                    # optimizer_time = time.time()
+                    self.optimizer.step(closure)
+                    # print('optimizer.step(): %s' %(time.time()-optimizer_time))
+
+                    mse_loss = nn.MSELoss(reduction="sum")
+                    energy_pred, force_pred = self.model(input_data, fp_primes)
+                    raw_preds = (energy_pred * self.sd_scaling) + self.mean_scaling
+                    raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
+                    target_per_atom = torch.div(target, num_of_atoms)
+                    energy_loss = mse_loss(raw_preds_per_atom, target_per_atom)
+                    energy_mse += torch.tensor(energy_loss.item())
+
+                    if forcetraining:
+                        force_pred = force_pred * self.sd_scaling
+                        num_atoms_force = torch.cat(
+                            [idx.repeat(int(idx)) for idx in num_of_atoms]
+                        )
+                        num_atoms_force = torch.sqrt(num_atoms_force).reshape(
+                            len(num_atoms_force), 1
+                        )
+                        force_pred_per_atom = torch.div(force_pred, num_atoms_force)
+                        force_targets_per_atom = torch.div(
+                            image_forces, num_atoms_force
+                        )
+                        force_loss = mse_loss(
+                            force_pred_per_atom, force_targets_per_atom
+                        )
+                        # mean over image
+                        force_loss /= 3
+                        force_mse += torch.tensor(force_loss.item())
+
+                energy_mse /= self.dataset_size
+                energy_rmse = torch.sqrt(energy_mse)
+                plot_energy_loss[phase].append(torch.log10(energy_rmse))
+                print("energy loss: %f" % energy_rmse)
+                log_epoch("energy loss: %f" % (energy_rmse))
+                if forcetraining:
+                    force_mse /= self.dataset_size
+                    force_rmse = torch.sqrt(force_mse)
+                    plot_force_loss[phase].append(torch.log10(force_rmse))
+                    print("force loss: %f\n" % force_rmse)
+                    log_epoch("force loss: %f\n" % (force_rmse))
+                    if (energy_rmse < best_energy_loss) and (
+                        force_rmse < best_force_loss
+                    ):
+                        best_energy_loss = energy_rmse
+                        best_force_loss = force_rmse
+                        best_model_wts = copy.deepcopy(self.model.state_dict())
+                    energy_convergence = (
+                        best_energy_loss <= self.rmse_criteria["energy"]
+                    )
+                    force_convergence = best_force_loss <= self.rmse_criteria["force"]
+                    convergence = energy_convergence and force_convergence
+                else:
+                    if energy_rmse < best_energy_loss:
+                        best_energy_loss = energy_rmse
+                        best_model_wts = copy.deepcopy(self.model.state_dict())
+                    convergence = best_energy_loss <= self.rmse_criteria["energy"]
+
+            epoch += 1
+
+        time_elapsed = time.time() - since
+        print("Training complete in {} steps".format(epoch))
+        print(
+            "Training complete in {:.0f}m {:.0f}s".format(
+                time_elapsed // 60, time_elapsed % 60
+            )
+        )
+
+        log("Training complete in {} steps".format(epoch))
+        log("Best training energy loss: {:4f}\n".format(best_energy_loss))
+        if forcetraining:
+            log("Best training force loss: {:4f}\n".format(best_force_loss))
+
+        plt.title("RMSE vs. Epoch")
+        plt.xlabel("Epoch #")
+        plt.ylabel("log(RMSE)")
+        plot_epoch_x = list(range(1, epoch + 1))
+        plt.plot(plot_epoch_x, plot_energy_loss[phase], label="energy train")
+        if forcetraining:
+            plt.plot(plot_epoch_x, plot_force_loss[phase], label="force train")
+        plt.legend()
+        plt.show()
+        self.model.load_state_dict(best_model_wts)
+        return self.model
