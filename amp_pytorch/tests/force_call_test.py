@@ -10,6 +10,7 @@ Output Layer must be Tanh instead of Linear
 """
 
 import sys
+import os
 import numpy as np
 import torch
 import torch.nn as nn
@@ -27,9 +28,12 @@ from amp.model import calculate_fingerprints_range
 from amp_pytorch import core
 from amp_pytorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
 from amp_pytorch.NN_model import FullNN
-from amp_pytorch import AMPCalc
-from amp_pytorch.core import AMPtorch
+from amp_pytorch import AMP
+from amp_pytorch.core import AMPModel
 
+
+if not os.path.exists('results'):
+    os.mkdir('results')
 
 def test_non_periodic():
     """Gaussian/Neural non-periodic standard.
@@ -38,7 +42,7 @@ def test_non_periodic():
     calculations.
     """
 
-    # Making the list of non-periodic images
+    #: Making the list of non-periodic images
     images = [
         Atoms(
             symbols="PdOPd2",
@@ -194,13 +198,13 @@ def test_non_periodic():
 
     # Testing pure-python and fortran versions of Gaussian-neural force call
     device = "cpu"
-    dataset = AtomsDataset(images, descriptor)
+    dataset = AtomsDataset(images, descriptor, forcetraining=True)
     fp_length = dataset.fp_length()
     unique_atoms = dataset.unique()
 
     batch_size = len(dataset)
     dataloader = DataLoader(dataset, batch_size, collate_fn=collate_amp, shuffle=False)
-    model = FullNN(unique_atoms, [fp_length, 2, 2], device)
+    model = FullNN(unique_atoms, [fp_length, 2, 2], device, forcetraining=True)
     for batch in dataloader:
         input_data = [batch[0], len(batch[1])]
         for element in unique_atoms:
@@ -357,12 +361,12 @@ def test_periodic():
 
     # Testing pure-python and fortran versions of Gaussian-neural force call
     device = "cpu"
-    dataset = AtomsDataset(images, descriptor)
+    dataset = AtomsDataset(images, descriptor, forcetraining=True)
     fp_length = dataset.fp_length()
     unique_atoms = dataset.unique()
     batch_size = len(dataset)
     dataloader = DataLoader(dataset, batch_size, collate_fn=collate_amp, shuffle=False)
-    model = FullNN(unique_atoms, [fp_length, 2, 2], device)
+    model = FullNN(unique_atoms, [fp_length, 2, 2], device, forcetraining=True)
     for batch in dataloader:
         input_data = [batch[0], len(batch[1])]
         for element in unique_atoms:
@@ -406,3 +410,4 @@ if __name__ == "__main__":
     test_non_periodic()
     test_periodic()
     print("All tests passed!")
+

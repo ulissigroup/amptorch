@@ -26,12 +26,12 @@ class AMP(Calculator):
    Parameters
    ----------
     model : object
-    Class representing the regression model. Input arguments include training
-    images and descriptor type. Model structure and training schemes can be
-    modified directly within the class.
+        Class representing the regression model. Input arguments include training
+        images, descriptor type, and force_coefficient. Model structure and training schemes can be
+        modified directly within the class.
 
     label : str
-    Location to save trained the trained model.
+        Location to save the trained model.
 
     """
     implemented_properties = ["energy", "forces"]
@@ -42,8 +42,8 @@ class AMP(Calculator):
         self.model = model
         self.label = label
         self.fp_scaling = self.model.training_data.fprange
-        self.target_sd = self.model.training_data.scaling_sd
-        self.target_mean = self.model.training_data.scaling_mean
+        self.target_sd = self.model.scalings[0]
+        self.target_mean = self.model.scalings[1]
 
     def train(self, overwrite=False):
 
@@ -68,7 +68,8 @@ class AMP(Calculator):
         dataloader = DataLoader(
             dataset, batch_size, collate_fn=dataset.collate_test, shuffle=False
         )
-        model = FullNN(unique_atoms, architecture, "cpu")
+        model = FullNN(unique_atoms, architecture, "cpu", forcetraining=True
+                )
         model.load_state_dict(torch.load("amptorch.pt"))
 
         for batch in dataloader:
