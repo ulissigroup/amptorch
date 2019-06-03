@@ -1,9 +1,11 @@
-"""core.py: Defines an AMPtorch instance that allows users to specify the
-training images, GPU utilization, and validation data usage. An AMPtorch
-instance contains the ability to call forth a 'train' method and subsequent
-plotting methods."""
+"""
+core.py: AMPModel defines the core backbone to the training scheme. Model
+parameters are defined, a train method carrys out the training, and plotting
+methods allow the visualization of the results.
+"""
 
 import time
+import sys
 import os
 import copy
 import torch.optim as optim
@@ -45,10 +47,13 @@ class AMPModel:
     descriptor: object
         Descriptor to be utilized to calculate fingerprints and
         fingerprintprimes. default: Gaussian()
+    force_coefficient: float
+        Define the force coefficient to be utilized in the loss function. A
+        coefficient > 0 indicates force training is turned on.
+        default: 0
     criterion: object
-        Specify the loss function to be optimized. Force training can be turned
-        on/off here directly
-        default: CustomLoss(force_coefficient=0)
+        Specify the loss function to be optimized.
+        default: CustomLoss
     optimizer: object
         Define the training optimizer to be utilized for the regression.
         default: optim.LBFGS
@@ -72,7 +77,8 @@ class AMPModel:
         structure=[3, 5],
         val_frac=0,
         descriptor=Gaussian(),
-        criterion=CustomLoss(force_coefficient=0),
+        force_coefficient=0,
+        criterion=CustomLoss,
         optimizer=optim.LBFGS,
         scheduler=None,
         lr=1,
@@ -91,16 +97,23 @@ class AMPModel:
         self.structure = structure
         self.val_frac = val_frac
         self.descriptor = descriptor
+        self.force_coefficient = force_coefficient
         self.lossfunction = criterion
         self.optimizer = optimizer
         self.scheduler = scheduler
         self.lr = lr
         self.convergence = criteria
 
-        self.training_data = AtomsDataset(self.filename, descriptor=self.descriptor)
-        self.mean_scaling = self.training_data.scaling_mean
-        self.sd_scaling = self.training_data.scaling_sd
-        self.scalings = [self.sd_scaling, self.mean_scaling]
+        self.forcetraining = False
+        if force_coefficient > 0:
+            self.forcetraining = True
+
+        self.training_data = AtomsDataset(
+            self.filename, descriptor=self.descriptor, forcetraining=self.forcetraining
+        )
+        self.scalings = self.training_data.scalings()
+        self.sd_scaling = self.scalings[0]
+        self.mean_scaling = self.scalings[1]
 
         self.log("-" * 50)
         self.log("Filename: %s" % self.filename)
@@ -110,7 +123,6 @@ class AMPModel:
         convergence is reached as specified by the rmse_critieria."""
 
         training_data = self.training_data
-        # print('dataset: %s' %(time.time()-dataset_timer))
         self.unique_atoms = training_data.unique()
         fp_length = training_data.fp_length()
         dataset_size = len(training_data)
@@ -150,7 +162,9 @@ class AMPModel:
             )
         architecture = copy.copy(self.structure)
         architecture.insert(0, fp_length)
-        model = FullNN(self.unique_atoms, architecture, self.device).to(self.device)
+        model = FullNN(
+            self.unique_atoms, architecture, self.device, self.forcetraining
+        ).to(self.device)
 
         self.log("Loss Function: %s" % self.lossfunction)
         # Define the optimizer and implement any optimization settings
@@ -168,7 +182,7 @@ class AMPModel:
             self.device,
             self.unique_atoms,
             dataset_size,
-            self.lossfunction,
+            self.lossfunction(force_coefficient=self.force_coefficient),
             optimizer,
             self.scheduler,
             self.atoms_dataloader,
@@ -192,9 +206,10 @@ class AMPModel:
             for element in self.unique_atoms:
                 inputs[element][0] = inputs[element][0].to(device).requires_grad_(True)
             targets = sample[1]
-            force_targets = sample[4]
             targets = targets.to(device)
-            force_targets = force_targets.to(device)
+            force_targets = sample[4]
+            if self.forcetraining:
+                force_targets = force_targets.to(device)
             inputs = [inputs, len(targets)]
             energy_pred, force_pred = model(inputs, fp_primes)
         fig = plt.figure(figsize=(7.0, 7.0))
@@ -243,7 +258,8 @@ class AMPModel:
             targets = sample[1]
             force_targets = sample[4]
             targets = targets.to(device)
-            force_targets = force_targets.to(device)
+            if self.forcetraining:
+                force_targets = force_targets.to(device)
             inputs = [inputs, len(targets)]
             energy_pred, force_pred = model(inputs, fp_primes)
         fig = plt.figure(figsize=(7.0, 7.0))

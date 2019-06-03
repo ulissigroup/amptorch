@@ -3,8 +3,6 @@ Networks as understood from Behler and Parrinello's works. A model instance is
 constructed based off the unique number of atoms in the dataset."""
 
 import sys
-import time
-import numpy as np
 from collections import defaultdict, OrderedDict
 import torch
 import torch.nn as nn
@@ -43,9 +41,9 @@ class Dense(nn.Linear):
         # xavier_uniform_(self.weight, gain=np.sqrt(1/2))
         kaiming_uniform_(self.weight, nonlinearity="tanh")
         # if self.bias is not None:
-        # fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
-        # bound = 1 / np.sqrt(fan_in)
-        # init.uniform_(self.bias, -bound, bound)
+            # fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
+            # bound = 1 / np.sqrt(fan_in)
+            # init.uniform_(self.bias, -bound, bound)
 
     def forward(self, inputs):
         neuron_output = super(Dense, self).forward(inputs)
@@ -83,7 +81,9 @@ class MLP(nn.Module):
             Dense(self.n_neurons[i], self.n_neurons[i + 1], activation=activation)
             for i in range(n_layers - 1)
         ]
-        layers.append(Dense(self.n_neurons[-2], self.n_neurons[-1], activation=None))
+        layers.append(
+            Dense(self.n_neurons[-2], self.n_neurons[-1], activation=None)
+        )
         self.model_net = nn.Sequential(*layers)
 
     def forward(self, inputs):
@@ -102,13 +102,16 @@ class FullNN(nn.Module):
 
     """
 
-    def __init__(self, unique_atoms, architecture, device, require_grd=True):
+    def __init__(
+        self, unique_atoms, architecture, device, forcetraining, require_grd=True
+    ):
         log = Logger("results/results-log.txt")
 
         super(FullNN, self).__init__()
         self.device = device
         self.unique_atoms = unique_atoms
         self.req_grad = require_grd
+        self.forcetraining = forcetraining
         n_unique_atoms = len(unique_atoms)
 
         input_length = architecture[0]
@@ -126,7 +129,7 @@ class FullNN(nn.Module):
         self.elementwise_models = elementwise_models
         log("Activation Function = %s" % elementwise_models[0].activation)
 
-    def forward(self, inputs, fprimes):
+    def forward(self, inputs, fprimes=None):
         """Forward pass through the model - predicting energy and forces
         accordingly.
 
@@ -137,59 +140,76 @@ class FullNN(nn.Module):
         input_data = inputs[0]
         batch_size = inputs[1]
         energy_pred = torch.zeros(batch_size, 1).to(self.device)
-        fprimes = fprimes.to(self.device)
+        force_pred = None
         # Constructs an Nx1 empty tensor to store element energy contributions
-        dE_dFP = torch.tensor([]).to(self.device)
-        idx = torch.tensor([]).to(self.device)
+        if self.forcetraining:
+            fprimes = fprimes.to(self.device)
+            dE_dFP = torch.tensor([]).to(self.device)
+            idx = torch.tensor([]).to(self.device)
         for index, element in enumerate(self.unique_atoms):
             model_inputs = input_data[element][0]
             contribution_index = torch.tensor(input_data[element][1]).to(self.device)
             atomwise_outputs = self.elementwise_models[index].forward(model_inputs)
             energy_pred.index_add_(0, contribution_index, atomwise_outputs)
-            gradients = grad(
-                energy_pred,
-                model_inputs,
-                grad_outputs=torch.ones_like(energy_pred),
-                create_graph=True,
-            )[0]
-            dE_dFP = torch.cat((dE_dFP, gradients))
-            idx = torch.cat((idx, contribution_index.float()))
-        boolean = idx[:, None] == torch.unique(idx)
-        ordered_idx = torch.nonzero(boolean.t())[:, -1]
-        dE_dFP = torch.index_select(dE_dFP, 0, ordered_idx).reshape(1, -1)
-        """Constructs a 1xPQ tensor that contains the derivatives with respect to
-        each atom's fingerprint"""
-        force_pred = -1 * torch.sparse.mm(fprimes.t(), dE_dFP.t())
-        """Sparse multiplication requires the first matrix to be sparse
-        Multiplies a 3QxPQ tensor with a PQx1 tensor to return a 3Qx1 tensor
-        containing the x,y,z directional forces for each atom"""
-        force_pred = force_pred.reshape(-1, 3)
-        """Reshapes the force tensor into a Qx3 matrix containing all the force
-        predictions in the same order and shape as the target forces calculated
-        from AMP."""
-        # force_pred=0
+            if self.forcetraining:
+                gradients = grad(
+                    energy_pred,
+                    model_inputs,
+                    grad_outputs=torch.ones_like(energy_pred),
+                    create_graph=True,
+                )[0]
+                dE_dFP = torch.cat((dE_dFP, gradients))
+                idx = torch.cat((idx, contribution_index.float()))
+        if self.forcetraining:
+            boolean = idx[:, None] == torch.unique(idx)
+            ordered_idx = torch.nonzero(boolean.t())[:, -1]
+            dE_dFP = torch.index_select(dE_dFP, 0, ordered_idx).reshape(1, -1)
+            """Constructs a 1xPQ tensor that contains the derivatives with respect to
+            each atom's fingerprint"""
+            force_pred = -1 * torch.sparse.mm(fprimes.t(), dE_dFP.t())
+            """Sparse multiplication requires the first matrix to be sparse
+            Multiplies a 3QxPQ tensor with a PQx1 tensor to return a 3Qx1 tensor
+            containing the x,y,z directional forces for each atom"""
+            force_pred = force_pred.reshape(-1, 3)
+            """Reshapes the force tensor into a Qx3 matrix containing all the force
+            predictions in the same order and shape as the target forces calculated
+            from AMP."""
         return energy_pred, force_pred
 
 
 class CustomLoss(nn.Module):
-    def __init__(self, force_coefficient):
+    """Custom loss function to be optimized by the regression. Includes aotmic
+    energy and force contributions.
+
+    Eq. (26) in A. Khorshidi, A.A. Peterson /
+    Computer Physics Communications 207 (2016) 310-324"""
+
+    def __init__(self, force_coefficient=0):
         super(CustomLoss, self).__init__()
         self.alpha = force_coefficient
 
     def forward(
-        self, energy_pred, energy_targets, force_pred, force_targets, num_atoms
+        self,
+        energy_pred,
+        energy_targets,
+        num_atoms,
+        force_pred=None,
+        force_targets=None,
     ):
+        MSE_loss = nn.MSELoss(reduction="sum")
         energy_per_atom = torch.div(energy_pred, num_atoms)
         targets_per_atom = torch.div(energy_targets, num_atoms)
-        num_atoms_force = torch.cat([idx.repeat(int(idx)) for idx in num_atoms])
-        num_atoms_force = torch.sqrt(num_atoms_force.reshape(len(num_atoms_force), 1))
-        force_pred_per_atom = torch.div(force_pred, num_atoms_force)
-        force_targets_per_atom = torch.div(force_targets, num_atoms_force)
-        # self.alpha = 0.04
-        MSE_loss = nn.MSELoss(reduction="sum")
         energy_loss = MSE_loss(energy_per_atom, targets_per_atom)
-        force_loss = (self.alpha / 3) * MSE_loss(
-            force_pred_per_atom, force_targets_per_atom
-        )
-        loss = energy_loss + force_loss
-        return loss
+
+        if self.alpha > 0:
+            num_atoms_force = torch.cat([idx.repeat(int(idx)) for idx in num_atoms])
+            num_atoms_force = torch.sqrt(
+                num_atoms_force.reshape(len(num_atoms_force), 1)
+            )
+            force_pred_per_atom = torch.div(force_pred, num_atoms_force)
+            force_targets_per_atom = torch.div(force_targets, num_atoms_force)
+            force_loss = (self.alpha / 3) * MSE_loss(
+                force_pred_per_atom, force_targets_per_atom
+            )
+            loss = energy_loss + force_loss
+        return loss if self.alpha > 0 else energy_loss
