@@ -10,6 +10,7 @@ Output Layer must be Tanh instead of Linear
 """
 
 import sys
+import os
 import numpy as np
 import torch
 import torch.nn as nn
@@ -27,6 +28,9 @@ from amp_pytorch import core
 from amp_pytorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
 from amp_pytorch.NN_model import FullNN
 
+
+if not os.path.exists('results'):
+    os.mkdir('results')
 
 def test_data():
     """Gaussian/Neural non-periodic standard.
@@ -87,7 +91,7 @@ def test_data():
     fingerprints_range = calculate_fingerprints_range(descriptor, hashed_images)
 
     device = "cpu"
-    dataset = AtomsDataset(images, descriptor)
+    dataset = AtomsDataset(images, descriptor, forcetraining=True)
     fp_length = dataset.fp_length()
 
     weights = OrderedDict(
@@ -122,13 +126,13 @@ def test_data():
 
     # Testing pure-python and fortran versions of Gaussian-neural force call
     device = "cpu"
-    dataset = AtomsDataset(images, descriptor)
+    dataset = AtomsDataset(images, descriptor, forcetraining=True)
     fp_length = dataset.fp_length()
     unique_atoms = dataset.unique()
 
     batch_size = len(dataset)
     dataloader = DataLoader(dataset, batch_size, collate_fn=collate_amp, shuffle=False)
-    model = FullNN(unique_atoms, [fp_length, 2, 2], device)
+    model = FullNN(unique_atoms, [fp_length, 2, 2], device, forcetraining=True)
     for batch in dataloader:
         input_data = [batch[0], len(batch[1])]
         for element in unique_atoms:

@@ -94,9 +94,7 @@ class Trainer:
 
         epoch = 0
         convergence = False
-        # while epoch <= 10:
         while not convergence:
-            # epoch_timer = time.time()
             log_epoch("{} Epoch {}".format(time.asctime(), epoch + 1))
             log_epoch("-" * 30)
 
@@ -118,13 +116,10 @@ class Trainer:
 
                     for data_sample in self.atoms_dataloader[phase]:
                         input_data = [data_sample[0], len(data_sample[1])]
-                        fp_primes = data_sample[3]
-                        image_forces = data_sample[4].to(self.device)
                         target = data_sample[1].requires_grad_(False)
                         batch_size = len(target)
                         target = target.reshape(batch_size, 1).to(self.device)
                         scaled_target = (target - self.mean_scaling) / self.sd_scaling
-                        scaled_forces = image_forces / self.sd_scaling
                         num_of_atoms = (
                             data_sample[2].reshape(batch_size, 1).to(self.device)
                         )
@@ -136,22 +131,36 @@ class Trainer:
                             )
                         scaled_target = scaled_target.to(self.device)
 
+                        if forcetraining:
+                            fp_primes = data_sample[3]
+                            image_forces = data_sample[4].to(self.device)
+                            scaled_forces = image_forces / self.sd_scaling
+
                         def closure():
                             self.optimizer.zero_grad()
-                            energy_pred, force_pred = self.model(input_data, fp_primes)
-                            loss = self.criterion(
-                                energy_pred,
-                                scaled_target,
-                                force_pred,
-                                scaled_forces,
-                                num_of_atoms,
-                            )
+                            if forcetraining:
+                                energy_pred, force_pred = self.model(
+                                    input_data, fp_primes
+                                )
+                                loss = self.criterion(
+                                    energy_pred,
+                                    scaled_target,
+                                    force_pred,
+                                    scaled_forces,
+                                    num_of_atoms,
+                                )
+                            else:
+                                energy_pred, _ = self.model(input_data)
+                                loss = self.criterion(
+                                    energy_pred, scaled_target, num_of_atoms
+                                )
                             loss.backward()
                             return loss
 
-                        energy_pred, force_pred = self.model(input_data, fp_primes)
                         if phase == "train":
                             self.optimizer.step(closure)
+
+                        energy_pred, force_pred = self.model(input_data, fp_primes)
                         mse_loss = nn.MSELoss(reduction="sum")
                         raw_preds = (energy_pred * self.sd_scaling) + self.mean_scaling
                         raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
@@ -219,18 +228,19 @@ class Trainer:
                 if forcetraining:
                     force_mse = 0.0
 
-                # loading_timer = time.time()
                 for data_sample in self.atoms_dataloader:
-                    # print('data_loading: %s' % (time.time()-loading_timer))
                     input_data = [data_sample[0], len(data_sample[1])]
-                    fp_primes = data_sample[3].to(self.device)
-                    image_forces = data_sample[4].to(self.device)
                     target = data_sample[1].requires_grad_(False)
                     batch_size = len(target)
                     target = target.reshape(batch_size, 1).to(self.device)
                     scaled_target = (target - self.mean_scaling) / self.sd_scaling
-                    scaled_forces = image_forces / self.sd_scaling
                     num_of_atoms = data_sample[2].reshape(batch_size, 1).to(self.device)
+                    fp_primes = data_sample[3]
+
+                    if forcetraining:
+                        fp_primes = fp_primes.to(self.device)
+                        image_forces = data_sample[4].to(self.device)
+                        scaled_forces = image_forces / self.sd_scaling
                     for element in self.unique_atoms:
                         input_data[0][element][0] = (
                             input_data[0][element][0]
@@ -241,20 +251,23 @@ class Trainer:
 
                     def closure():
                         self.optimizer.zero_grad()
-                        energy_pred, force_pred = self.model(input_data, fp_primes)
-                        loss = self.criterion(
-                            energy_pred,
-                            scaled_target,
-                            force_pred,
-                            scaled_forces,
-                            num_of_atoms,
-                        )
+                        if forcetraining:
+                            energy_pred, force_pred = self.model(input_data, fp_primes)
+                            loss = self.criterion(
+                                energy_pred,
+                                scaled_target,
+                                num_of_atoms,
+                                force_pred,
+                                scaled_forces
+                            )
+                        else:
+                            energy_pred, _ = self.model(input_data)
+                            loss = self.criterion(energy_pred, scaled_target,
+                                    num_of_atoms)
                         loss.backward()
                         return loss
 
-                    # optimizer_time = time.time()
                     self.optimizer.step(closure)
-                    # print('optimizer.step(): %s' %(time.time()-optimizer_time))
 
                     mse_loss = nn.MSELoss(reduction="sum")
                     energy_pred, force_pred = self.model(input_data, fp_primes)
