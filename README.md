@@ -14,6 +14,8 @@ In addition to the package requirements of *Amp*, PyTorch v1.1 must be installed
 
 As the AMP - PyTorch implementation is a work in progress, please feel free to report any issues/suggestions/feedback/questions and we'll try to address them or get back to you as soon as possible.
 
+*Amp* documentation can be found at: https://amp.readthedocs.io/.
+
 ## Acknowledgements 
 - Funded by the Department of Energy's Basic Enenergy Science, Computational Chemical Sciences Program Office. Award # DE-SC0019441
 - *Amp*: Atomistic Machine-Learning Package, https://bitbucket.org/andrewpeterson/amp
