@@ -44,6 +44,7 @@ class AMP(Calculator):
         self.fp_scaling = self.model.training_data.fprange
         self.target_sd = self.model.scalings[0]
         self.target_mean = self.model.scalings[1]
+        self.parallel = self.model.training_data.parallel
 
     def train(self, overwrite=False):
 
@@ -59,7 +60,9 @@ class AMP(Calculator):
     def calculate(self, atoms, properties, system_changes):
         Calculator.calculate(self, atoms, properties, system_changes)
 
-        dataset = TestDataset(atoms, self.model.descriptor, self.fp_scaling)
+        dataset = TestDataset(atoms,
+                              self.model.descriptor, self.fp_scaling,
+                              self.parallel)
         fp_length = dataset.fp_length()
         unique_atoms = dataset.unique()
         architecture = copy.copy(self.model.structure)
@@ -69,7 +72,7 @@ class AMP(Calculator):
             dataset, batch_size, collate_fn=dataset.collate_test, shuffle=False
         )
         model = FullNN(unique_atoms, architecture, "cpu", forcetraining=True
-                )
+                       )
         model.load_state_dict(torch.load("amptorch.pt"))
 
         for batch in dataloader:

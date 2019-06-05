@@ -5,11 +5,12 @@ Functions are included to factorize the data and organize it accordingly in
 
 import sys
 import copy
+import time
 import os
 import numpy as np
 import torch
 from torch.utils.data import Dataset, SubsetRandomSampler
-from amp.utilities import hash_images
+from amp.utilities import hash_images, assign_cores
 from amp.model import calculate_fingerprints_range
 from amp.descriptor.gaussian import Gaussian
 import ase
@@ -31,14 +32,24 @@ class AtomsDataset(Dataset):
     descriptor: object
         Scheme to be utilized for computing fingerprints
 
+    cores: int
+        Specify the number of cores to use for parallelization of fingerprint
+        calculations
+
     forcetraining: float
         Flag to specify whether force training is to be performed - dataset
         will then compute the necessary information - fingerprint derivatives,
         etc.
 
+    envcommand: string
+        For parallel processing across nodes, a command can be supplied here to
+        load the appropriate environment before starting workers.
+        default: None
+
+
     """
 
-    def __init__(self, images, descriptor, forcetraining):
+    def __init__(self, images, descriptor, cores, forcetraining, envcommand=None):
         self.images = images
         self.descriptor = descriptor
         self.atom_images = self.images
@@ -49,10 +60,16 @@ class AtomsDataset(Dataset):
             if extension != (".traj" or ".db"):
                 self.atom_images = ase.io.read(images, ":")
         self.hashed_images = hash_images(self.atom_images)
+        self.parallel = {'cores':cores}
+        if cores > 1:
+            self.parallel = {"cores": assign_cores(cores), "envcommand": envcommand}
+        print("Calculating fingerprints...")
         self.descriptor.calculate_fingerprints(
-            self.hashed_images, calculate_derivatives=forcetraining
+            self.hashed_images, parallel=self.parallel, calculate_derivatives=forcetraining
         )
-        self.fprange = calculate_fingerprints_range(self.descriptor, self.hashed_images)
+        print("Fingerprints Calculated!")
+        self.fprange = calculate_fingerprints_range(
+            self.descriptor, self.hashed_images)
 
     def __len__(self):
         return len(self.hashed_images)
@@ -90,7 +107,8 @@ class AtomsDataset(Dataset):
                     for i in range(len(fprime)):
                         if (fprange_atom[i][1] - fprange_atom[i][0]) > (10.0 ** (-8.0)):
                             fprime[i] = 2.0 * (
-                                fprime[i] / (fprange_atom[i][1] - fprange_atom[i][0])
+                                fprime[i] / (fprange_atom[i][1] -
+                                             fprange_atom[i][0])
                             )
                     _image_primes[key] = fprime
 
@@ -98,14 +116,15 @@ class AtomsDataset(Dataset):
                 image_prime_keys = list(_image_primes.keys())
                 fp_length = len(image_fingerprint[0][1])
                 num_atoms = len(image_fingerprint)
-                fingerprintprimes = torch.zeros(fp_length * num_atoms, 3 * num_atoms)
+                fingerprintprimes = torch.zeros(
+                    fp_length * num_atoms, 3 * num_atoms)
                 for idx, fp_key in enumerate(image_prime_keys):
                     image_prime = torch.tensor(image_prime_values[idx])
                     base_atom = fp_key[2]
                     wrt_atom = fp_key[0]
                     coord = fp_key[4]
                     fingerprintprimes[
-                        base_atom * fp_length : base_atom * fp_length + fp_length,
+                        base_atom * fp_length: base_atom * fp_length + fp_length,
                         wrt_atom * 3 + coord,
                     ] = image_prime
 
@@ -131,7 +150,8 @@ class AtomsDataset(Dataset):
         energy_dataset = []
         for image in self.hashed_images.keys():
             energy_dataset.append(
-                self.hashed_images[image].get_potential_energy(apply_constraint=False)
+                self.hashed_images[image].get_potential_energy(
+                    apply_constraint=False)
             )
         energy_dataset = torch.tensor(energy_dataset)
         scaling_mean = torch.mean(energy_dataset)
@@ -159,6 +179,7 @@ class AtomsDataset(Dataset):
         samplers = {"train": train_sampler, "val": val_sampler}
 
         return samplers
+
 
 def factorize_data(training_data):
     """
@@ -219,7 +240,7 @@ def factorize_data(training_data):
             dim1 = fprime.shape[0]
             dim2 = fprime.shape[1]
             fprimes[
-                dim1_start : dim1 + dim1_start, dim2_start : dim2 + dim2_start
+                dim1_start: dim1 + dim1_start, dim2_start: dim2 + dim2_start
             ] = fprime
             dim1_start += dim1
             dim2_start += dim2
@@ -229,13 +250,14 @@ def factorize_data(training_data):
         image_forces = torch.cat(image_forces).float()
 
     return (
-            unique_atoms,
-            fingerprint_dataset,
-            energy_dataset,
-            num_of_atoms,
-            sparse_fprimes,
-            image_forces
-        )
+        unique_atoms,
+        fingerprint_dataset,
+        energy_dataset,
+        num_of_atoms,
+        sparse_fprimes,
+        image_forces,
+    )
+
 
 def collate_amp(training_data):
     """
@@ -269,6 +291,7 @@ def collate_amp(training_data):
     model_input_data.append(image_forces)
     return model_input_data
 
+
 class TestDataset(Dataset):
     """
     PyTorch inherited abstract class that specifies how testing data is to be preprocessed and
@@ -285,9 +308,23 @@ class TestDataset(Dataset):
     fprange: Dict
         Fingerprint ranges of the training dataset to be used to scale the test
         dataset fingerprints in the same manner.
+
     """
 
-    def __init__(self, images, descriptor, fprange):
+    # def __init__(self, images, descriptor, fprange):
+    # self.images = [images]
+    # self.descriptor = descriptor
+    # self.atom_images = self.images
+    # if isinstance(images, str):
+    # extension = os.path.splitext(images)[1]
+    # if extension != (".traj" or ".db"):
+    # self.atom_images = ase.io.read(images, ":")
+    # self.hashed_images = hash_images(self.atom_images)
+    # self.descriptor.calculate_fingerprints(
+    # self.hashed_images, calculate_derivatives=True
+    # )
+    # self.fprange = fprange
+    def __init__(self, images, descriptor, fprange, parallel, envcommand=None):
         self.images = [images]
         self.descriptor = descriptor
         self.atom_images = self.images
@@ -297,8 +334,8 @@ class TestDataset(Dataset):
                 self.atom_images = ase.io.read(images, ":")
         self.hashed_images = hash_images(self.atom_images)
         self.descriptor.calculate_fingerprints(
-            self.hashed_images, calculate_derivatives=True
-        )
+            self.hashed_images, parallel=parallel,
+            calculate_derivatives=True)
         self.fprange = fprange
 
     def __len__(self):
@@ -344,7 +381,7 @@ class TestDataset(Dataset):
             wrt_atom = fp_key[0]
             coord = fp_key[4]
             fingerprintprimes[
-                base_atom * fp_length : base_atom * fp_length + fp_length,
+                base_atom * fp_length: base_atom * fp_length + fp_length,
                 wrt_atom * 3 + coord,
             ] = image_prime
 
@@ -378,7 +415,7 @@ class TestDataset(Dataset):
             dim1 = fprime.shape[0]
             dim2 = fprime.shape[1]
             fprimes[
-                dim1_start : dim1 + dim1_start, dim2_start : dim2 + dim2_start
+                dim1_start: dim1 + dim1_start, dim2_start: dim2 + dim2_start
             ] = fprime
             dim1_start += dim1
             dim2_start += dim2
@@ -407,4 +444,3 @@ class TestDataset(Dataset):
         model_input_data.append(sparse_fprimes)
 
         return model_input_data
-
