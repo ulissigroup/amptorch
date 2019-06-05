@@ -33,6 +33,14 @@ class AMPModel:
     device : str
         Hardware to be utilized for training - CPU or GPU.
         default: 'cpu'
+    cores : int
+        Specify the number of cores to use for parallelization of fingerprint
+        calculations. NOTE - To be replaced with PyTorch's parallelization
+        scheme upon fingerprint implementation
+    envommand: string
+        For parallel processing across nodes, a command can be supplied here to
+        load the appropriate environment before starting workers.
+        default=None. NOTE - See Above.
     batch_size: int
         Number of images in a training batch. None represents no batching,
         treating the entire dataset as one batch. default: None
@@ -73,6 +81,8 @@ class AMPModel:
         self,
         datafile,
         device="cpu",
+        cores=1,
+        envcommand=None,
         batch_size=None,
         structure=[3, 5],
         val_frac=0,
@@ -109,7 +119,8 @@ class AMPModel:
             self.forcetraining = True
 
         self.training_data = AtomsDataset(
-            self.filename, descriptor=self.descriptor, forcetraining=self.forcetraining
+            self.filename, descriptor=self.descriptor, cores=cores,
+            forcetraining=self.forcetraining, envcommand=envcommand
         )
         self.scalings = self.training_data.scalings()
         self.sd_scaling = self.scalings[0]
