@@ -73,18 +73,58 @@ class Trainer:
     def train_model(self):
         "Training loop"
         forcetraining = False
+        validation = False
         if self.criterion.alpha > 0:
             forcetraining = True
+        if isinstance(self.atoms_dataloader, dict):
+            validation = True
         best_force_loss = 1e8
         best_energy_loss = 1e8
-        log = Logger("results/results-log.txt")
-        log_epoch = Logger("results/epoch-log.txt")
-        log("Model: %s" % self.model)
+        log = Logger("results/calc-log.txt")
+        log("force_coefficient: %s" % self.criterion.alpha)
+        log("Model: %s \n" % self.model)
+        log('Training initiated... \n')
 
-        since = time.time()
-        log_epoch("-" * 50)
-        print("Training Initiated!")
-        log_epoch("%s Training Initiated!\n" % time.asctime())
+        if validation:
+            if forcetraining:
+                header = "%5s %24s %12s %12s %12s %7s"
+                log(
+                    header
+                    % (
+                        "Epoch",
+                        "Time",
+                        "Loss",
+                        "EnergyRMSE",
+                        "ForceRMSE",
+                        "Phase",
+                    )
+                )
+                log(
+                    header
+                    % (
+                        "=" * 5,
+                        "=" * 24,
+                        "=" * 12,
+                        "=" * 12,
+                        "=" * 12,
+                        "=" * 7,
+                    )
+                )
+            else:
+                header = "%5s %24s %12s %12s %7s"
+                log(header % ("Epoch", "Time", "Loss", "EnergyRMSE",
+                              "Phase"))
+                log(header % ("=" * 5, "=" * 24, "=" * 12, "=" * 12, "=" * 7))
+        else:
+            if forcetraining:
+                header = "%5s %24s %12s %12s %12s"
+                log(header %
+                    ("Epoch", "Time", "Loss", "EnergyRMSE", "ForceRMSE"))
+                log(header % ("=" * 5, "=" * 24, "=" * 12, "=" * 12, "=" * 12))
+            else:
+                header = "%5s %24s %12s %12s"
+                log(header % ("Epoch", "Time", "Loss", "EnergyRMSE"))
+                log(header % ("=" * 5, "=" * 24, "=" * 12, "=" * 12))
 
         best_model_wts = copy.deepcopy(self.model.state_dict())
 
@@ -94,11 +134,11 @@ class Trainer:
 
         epoch = 0
         convergence = False
+        since = time.time()
+        print('Training Initiated!')
         while not convergence:
-            log_epoch("{} Epoch {}".format(time.asctime(), epoch + 1))
-            log_epoch("-" * 30)
 
-            if isinstance(self.atoms_dataloader, dict):
+            if validation:
 
                 for phase in ["train", "val"]:
 
@@ -119,10 +159,13 @@ class Trainer:
                         target = data_sample[1].requires_grad_(False)
                         batch_size = len(target)
                         target = target.reshape(batch_size, 1).to(self.device)
-                        scaled_target = (target - self.mean_scaling) / self.sd_scaling
+                        scaled_target = (
+                            target - self.mean_scaling) / self.sd_scaling
                         num_of_atoms = (
-                            data_sample[2].reshape(batch_size, 1).to(self.device)
+                            data_sample[2].reshape(
+                                batch_size, 1).to(self.device)
                         )
+                        fp_primes = data_sample[3]
                         for element in self.unique_atoms:
                             input_data[0][element][0] = (
                                 input_data[0][element][0]
@@ -132,7 +175,7 @@ class Trainer:
                         scaled_target = scaled_target.to(self.device)
 
                         if forcetraining:
-                            fp_primes = data_sample[3]
+                            fp_primes = fp_primes.to(self.device)
                             image_forces = data_sample[4].to(self.device)
                             scaled_forces = image_forces / self.sd_scaling
 
@@ -145,9 +188,9 @@ class Trainer:
                                 loss = self.criterion(
                                     energy_pred,
                                     scaled_target,
+                                    num_of_atoms,
                                     force_pred,
                                     scaled_forces,
-                                    num_of_atoms,
                                 )
                             else:
                                 energy_pred, _ = self.model(input_data)
@@ -158,14 +201,18 @@ class Trainer:
                             return loss
 
                         if phase == "train":
-                            self.optimizer.step(closure)
+                            loss = self.optimizer.step(closure)
+                        now = time.asctime()
 
-                        energy_pred, force_pred = self.model(input_data, fp_primes)
+                        energy_pred, force_pred = self.model(
+                            input_data, fp_primes)
                         mse_loss = nn.MSELoss(reduction="sum")
-                        raw_preds = (energy_pred * self.sd_scaling) + self.mean_scaling
+                        raw_preds = (energy_pred * self.sd_scaling) + \
+                            self.mean_scaling
                         raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
                         target_per_atom = torch.div(target, num_of_atoms)
-                        energy_loss = mse_loss(raw_preds_per_atom, target_per_atom)
+                        energy_loss = mse_loss(
+                            raw_preds_per_atom, target_per_atom)
                         energy_mse += torch.tensor(energy_loss.item())
 
                         if forcetraining:
@@ -174,9 +221,11 @@ class Trainer:
                                 [idx.repeat(int(idx)) for idx in num_of_atoms]
                             )
                             num_atoms_force = torch.sqrt(
-                                num_atoms_force.reshape(len(num_atoms_force), 1)
+                                num_atoms_force.reshape(
+                                    len(num_atoms_force), 1)
                             )
-                            force_pred_per_atom = torch.div(force_pred, num_atoms_force)
+                            force_pred_per_atom = torch.div(
+                                force_pred, num_atoms_force)
                             force_targets_per_atom = torch.div(
                                 image_forces, num_atoms_force
                             )
@@ -189,31 +238,52 @@ class Trainer:
                     energy_rmse = torch.sqrt(energy_mse)
                     plot_energy_loss[phase].append(torch.log10(energy_rmse))
                     print("%s energy loss: %f" % (phase, energy_rmse))
-                    log_epoch("%s energy loss: %f" % (phase, energy_rmse))
                     if forcetraining:
                         force_mse /= self.dataset_size[phase]
                         force_rmse = torch.sqrt(force_mse)
                         plot_force_loss[phase].append(torch.log10(force_rmse))
                         print("%s force loss: %f" % (phase, force_rmse))
-                        log_epoch("%s force loss: %f" % (phase, force_rmse))
+                        if phase == 'train':
+                            log(
+                                "%5i %19s %12.4e %12.4e %12.4e %7s"
+                                % (epoch, now, loss, energy_rmse, force_rmse, phase)
+                            )
+                        else:
+                            log(
+                                "%5i %19s %12.4s %12.4e %12.4e %7s"
+                                % (epoch, now, '', energy_rmse, force_rmse, phase)
+                            )
                         if phase == "val" and (
                             (energy_rmse < best_energy_loss)
                             & (force_rmse < best_force_loss)
                         ):
                             best_energy_loss = energy_rmse
                             best_force_loss = force_rmse
-                            best_model_wts = copy.deepcopy(self.model.state_dict())
+                            best_model_wts = copy.deepcopy(
+                                self.model.state_dict())
                         energy_convergence = (
                             best_energy_loss <= self.rmse_criteria["energy"]
                         )
                         force_convergence = (
                             best_force_loss <= self.rmse_criteria["force"]
                         )
+                        convergence = energy_convergence and force_convergence
                     else:
+                        if phase == 'train':
+                            log(
+                                "%5i %19s %12.4e %12.4e %7s"
+                                % (epoch, now, loss, energy_rmse, phase)
+                            )
+                        else:
+                            log(
+                                "%5i %19s %12.4s %12.4e %7s"
+                                % (epoch, now, '', energy_rmse, phase)
+                            )
                         if phase == "val" and energy_rmse < best_energy_loss:
                             best_energy_loss = energy_rmse
-                            best_model_wts = copy.deepcopy(self.model.state_dict())
-                    convergence = best_energy_loss <= self.rmse_criteria["energy"]
+                            best_model_wts = copy.deepcopy(
+                                self.model.state_dict())
+                        convergence = best_energy_loss <= self.rmse_criteria["energy"]
                 print()
 
             else:
@@ -233,8 +303,10 @@ class Trainer:
                     target = data_sample[1].requires_grad_(False)
                     batch_size = len(target)
                     target = target.reshape(batch_size, 1).to(self.device)
-                    scaled_target = (target - self.mean_scaling) / self.sd_scaling
-                    num_of_atoms = data_sample[2].reshape(batch_size, 1).to(self.device)
+                    scaled_target = (
+                        target - self.mean_scaling) / self.sd_scaling
+                    num_of_atoms = data_sample[2].reshape(
+                        batch_size, 1).to(self.device)
                     fp_primes = data_sample[3]
 
                     if forcetraining:
@@ -252,26 +324,30 @@ class Trainer:
                     def closure():
                         self.optimizer.zero_grad()
                         if forcetraining:
-                            energy_pred, force_pred = self.model(input_data, fp_primes)
+                            energy_pred, force_pred = self.model(
+                                input_data, fp_primes)
                             loss = self.criterion(
                                 energy_pred,
                                 scaled_target,
                                 num_of_atoms,
                                 force_pred,
-                                scaled_forces
+                                scaled_forces,
                             )
                         else:
                             energy_pred, _ = self.model(input_data)
-                            loss = self.criterion(energy_pred, scaled_target,
-                                    num_of_atoms)
+                            loss = self.criterion(
+                                energy_pred, scaled_target, num_of_atoms
+                            )
                         loss.backward()
                         return loss
 
-                    self.optimizer.step(closure)
+                    loss = self.optimizer.step(closure)
+                    now = time.asctime()
 
                     mse_loss = nn.MSELoss(reduction="sum")
                     energy_pred, force_pred = self.model(input_data, fp_primes)
-                    raw_preds = (energy_pred * self.sd_scaling) + self.mean_scaling
+                    raw_preds = (energy_pred * self.sd_scaling) + \
+                        self.mean_scaling
                     raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
                     target_per_atom = torch.div(target, num_of_atoms)
                     energy_loss = mse_loss(raw_preds_per_atom, target_per_atom)
@@ -285,7 +361,8 @@ class Trainer:
                         num_atoms_force = torch.sqrt(num_atoms_force).reshape(
                             len(num_atoms_force), 1
                         )
-                        force_pred_per_atom = torch.div(force_pred, num_atoms_force)
+                        force_pred_per_atom = torch.div(
+                            force_pred, num_atoms_force)
                         force_targets_per_atom = torch.div(
                             image_forces, num_atoms_force
                         )
@@ -300,13 +377,15 @@ class Trainer:
                 energy_rmse = torch.sqrt(energy_mse)
                 plot_energy_loss[phase].append(torch.log10(energy_rmse))
                 print("energy loss: %f" % energy_rmse)
-                log_epoch("energy loss: %f" % (energy_rmse))
                 if forcetraining:
                     force_mse /= self.dataset_size
                     force_rmse = torch.sqrt(force_mse)
                     plot_force_loss[phase].append(torch.log10(force_rmse))
                     print("force loss: %f\n" % force_rmse)
-                    log_epoch("force loss: %f\n" % (force_rmse))
+                    log(
+                        "%5i %19s %12.4e %12.4e %12.4e"
+                        % (epoch, now, loss, energy_rmse, force_rmse)
+                    )
                     if (energy_rmse < best_energy_loss) and (
                         force_rmse < best_force_loss
                     ):
@@ -319,6 +398,8 @@ class Trainer:
                     force_convergence = best_force_loss <= self.rmse_criteria["force"]
                     convergence = energy_convergence and force_convergence
                 else:
+                    log("%5i %19s %12.4e %12.4e" %
+                        (epoch, now, loss, energy_rmse))
                     if energy_rmse < best_energy_loss:
                         best_energy_loss = energy_rmse
                         best_model_wts = copy.deepcopy(self.model.state_dict())
@@ -327,17 +408,26 @@ class Trainer:
             epoch += 1
 
         time_elapsed = time.time() - since
-        print("Training complete in {} steps".format(epoch))
+
         print(
-            "Training complete in {:.0f}m {:.0f}s".format(
-                time_elapsed // 60, time_elapsed % 60
+            "Training complete in {} steps in {:.0f}m {:.0f}s".format(
+                epoch, time_elapsed // 60, time_elapsed % 60
             )
         )
 
-        log("Training complete in {} steps".format(epoch))
-        log("Best training energy loss: {:4f}\n".format(best_energy_loss))
-        if forcetraining:
-            log("Best training force loss: {:4f}\n".format(best_force_loss))
+        log(
+            "Training complete in {} steps in {:.0f}m {:.0f}s".format(
+                epoch, time_elapsed // 60, time_elapsed % 60
+            )
+        )
+        if validation:
+            log("Best validation energy loss: {:4f}".format(best_energy_loss))
+            if forcetraining:
+                log("Best validation force loss: {:4f}".format(best_force_loss))
+        else:
+            log("Best training energy loss: {:4f}".format(best_energy_loss))
+            if forcetraining:
+                log("Best training force loss: {:4f}".format(best_force_loss))
 
         plt.title("RMSE vs. Epoch")
         plt.xlabel("Epoch #")
@@ -349,4 +439,5 @@ class Trainer:
         plt.legend()
         plt.show()
         self.model.load_state_dict(best_model_wts)
+        log("Model successfully trained.\n")
         return self.model
