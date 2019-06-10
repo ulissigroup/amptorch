@@ -96,9 +96,7 @@ class AMPModel:
     ):
         if not os.path.exists("results"):
             os.mkdir("results")
-        self.log = Logger("results/results-log.txt")
-        self.log_epoch = Logger("results/epoch-log.txt")
-        self.log(time.asctime())
+        self.log = Logger("results/calc-log.txt")
 
         self.filename = datafile
         self.batch_size = batch_size
@@ -119,27 +117,37 @@ class AMPModel:
             self.forcetraining = True
 
         self.training_data = AtomsDataset(
-            self.filename, descriptor=self.descriptor, cores=cores,
-            forcetraining=self.forcetraining, envcommand=envcommand
+            self.filename,
+            descriptor=self.descriptor,
+            cores=cores,
+            forcetraining=self.forcetraining,
+            envcommand=envcommand,
         )
         self.scalings = self.training_data.scalings()
         self.sd_scaling = self.scalings[0]
         self.mean_scaling = self.scalings[1]
-
-        self.log("-" * 50)
-        self.log("Filename: %s" % self.filename)
 
     def train(self):
         """Trains the model under the provided optimizer conditions until
         convergence is reached as specified by the rmse_critieria."""
 
         training_data = self.training_data
+        self.log("Fingerprint parallel configuration: %s" % training_data.parallel)
+        self.log("Descriptor: %s" % training_data.descriptor)
+        self.log(
+            "Descriptor cutoff: %s"
+            % training_data.descriptor.parameters["cutoff"]["kwargs"]
+        )
         self.unique_atoms = training_data.unique()
+        self.log("Unique set of elements in training data: %s" % self.unique_atoms)
         fp_length = training_data.fp_length()
         dataset_size = len(training_data)
 
         if self.batch_size is None:
             self.batch_size = dataset_size
+
+        self.test_dataloader = DataLoader(training_data, dataset_size,
+                collate_fn=collate_amp, shuffle=False)
 
         if self.val_frac != 0:
             samplers = training_data.create_splits(training_data, self.val_frac)
@@ -177,14 +185,15 @@ class AMPModel:
             self.unique_atoms, architecture, self.device, self.forcetraining
         ).to(self.device)
 
+        self.log("Activation Function: %s" % model.activation_fn)
         self.log("Loss Function: %s" % self.lossfunction)
         # Define the optimizer and implement any optimization settings
         optimizer = self.optimizer(model.parameters(), self.lr)
-        self.log("Optimizer Info:\n %s" % optimizer)
+        self.log("Optimizer Info: %s" % optimizer)
 
         if self.scheduler:
             self.scheduler = self.scheduler(optimizer, step_size=7, gamma=0.1)
-        self.log("Scheduler Info: \n %s" % self.scheduler)
+        self.log("Scheduler Info: %s" % self.scheduler)
 
         self.log("RMSE criteria = {}\n".format(self.convergence))
 
@@ -211,7 +220,7 @@ class AMPModel:
         targets = []
         device = self.device
         model = model.to(device)
-        for sample in self.atoms_dataloader:
+        for sample in self.test_dataloader:
             inputs = sample[0]
             fp_primes = sample[3]
             for element in self.unique_atoms:
@@ -261,7 +270,7 @@ class AMPModel:
         targets = []
         device = self.device
         model = model.to(device)
-        for sample in self.atoms_dataloader:
+        for sample in self.test_dataloader:
             inputs = sample[0]
             fp_primes = sample[3]
             for element in self.unique_atoms:

@@ -10,7 +10,6 @@ from torch.nn import init
 from torch.nn import Tanh, Softplus, LeakyReLU
 from torch.nn.init import xavier_uniform_, kaiming_uniform_
 from torch.autograd import grad
-from amp.utilities import Logger
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
@@ -105,7 +104,6 @@ class FullNN(nn.Module):
     def __init__(
         self, unique_atoms, architecture, device, forcetraining, require_grd=True
     ):
-        log = Logger("results/results-log.txt")
 
         super(FullNN, self).__init__()
         self.device = device
@@ -127,7 +125,7 @@ class FullNN(nn.Module):
                 )
             )
         self.elementwise_models = elementwise_models
-        log("Activation Function = %s" % elementwise_models[0].activation)
+        self.activation_fn = elementwise_models[0].activation
 
     def forward(self, inputs, fprimes=None):
         """Forward pass through the model - predicting energy and forces

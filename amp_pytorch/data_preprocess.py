@@ -59,10 +59,10 @@ class AtomsDataset(Dataset):
             extension = os.path.splitext(images)[1]
             if extension != (".traj" or ".db"):
                 self.atom_images = ase.io.read(images, ":")
-        self.hashed_images = hash_images(self.atom_images)
-        self.parallel = {'cores':cores}
+        self.parallel = {'cores': cores}
         if cores > 1:
             self.parallel = {"cores": assign_cores(cores), "envcommand": envcommand}
+        self.hashed_images = hash_images(self.atom_images)
         print("Calculating fingerprints...")
         self.descriptor.calculate_fingerprints(
             self.hashed_images, parallel=self.parallel, calculate_derivatives=forcetraining
