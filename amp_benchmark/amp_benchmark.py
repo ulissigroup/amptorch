@@ -8,10 +8,10 @@ from ase import io
 import sys
 
 calc = Amp(descriptor=Gaussian(), model=NeuralNetwork(), label="calc")
-calc.model.lossfunction = LossFunction(convergence={'energy_rmse':0.02,'force_rmse':0.02})
+calc.model.lossfunction = LossFunction(convergence={'energy_rmse':0.002,'force_rmse': None})
 images = ase.io.read("water.extxyz", ":")
 IMAGES =[]
-for i in range(300):
+for i in range(400):
     IMAGES.append(images[i])
 calc.train(IMAGES)
 analysis.plot_parity("calc.amp", IMAGES)

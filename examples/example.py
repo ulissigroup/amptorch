@@ -23,10 +23,11 @@ torch.set_num_threads(1)
 # define calculator, model, and descriptor
 # turn force training on by defining a force coefficient>0
 # define the number of cores to parallelize across for fingerprint calculations
-calc = AMP(model=AMPModel(IMAGES, descriptor=Gaussian(), cores=1, force_coefficient=0))
+calc = AMP(model=AMPModel(IMAGES, descriptor=Gaussian(), cores=1,
+    force_coefficient=0))
 
 # define the convergence criteria
-calc.model.convergence = {"energy": 0.02, "force": 0.02}
+calc.model.convergence = {"energy": 0.02, "force": None}
 
 # train the model
 calc.train(overwrite=True)
