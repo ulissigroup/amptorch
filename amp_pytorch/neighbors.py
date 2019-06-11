@@ -43,11 +43,11 @@ def get_distances(atoms, cutoff):
     distance_vec = neighbor_positions - first_atom_positions
     offsets = torch.mm(shift_vector, cell)
     distance_vec += offsets
-    distances = torch.norm(distance_vec, dim=1)
+    distances = torch.norm(distance_vec, dim=1).numpy().reshape(1, -1)
 
     pairs = torch.cat(
         (first_atom_idx.reshape(-1, 1), second_atom_idx.reshape(-1, 1)), 1
-    )
+    ).numpy()
 
     return pairs, distances
 
@@ -94,13 +94,13 @@ pairs, distances = get_distances(atoms, cutoff)
 	# n_batch = positions.size()[0]
 	# idx_m = torch.arange(n_batch, dtype=torch.long)[:,
 			# None, None]
-    Get atomic positions of all neighboring indices
+    # Get atomic positions of all neighboring indices
 	# pos_xyz = positions[idx_m, neighbors[:, :, :], :]
 
-    Subtract positions of central atoms to get distance vectors
+    # Subtract positions of central atoms to get distance vectors
 	# dist_vec = pos_xyz - positions[:, :, None, :]
 
-    add cell offset
+    # add cell offset
 	# if cell is not None:
 		# B, A, N, D = cell_offsets.size()
 		# cell_offsets = cell_offsets.view(B, A * N, D)
@@ -108,7 +108,7 @@ pairs, distances = get_distances(atoms, cutoff)
 		# offsets = offsets.view(B, A, N, D)
 		# dist_vec += offsets
 
-    Compute vector lengths
+    # Compute vector lengths
 	# distances = torch.norm(dist_vec, 2, 3)
 	# return distances
 
