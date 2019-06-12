@@ -3,66 +3,27 @@ import ase
 import numpy as np
 from ase import Atoms
 from ase.calculators.emt import EMT
+from ase.calculators.lj import LennardJones
+from ase.neighborlist import NeighborList
 from amp_pytorch.neighbors import get_distances
 from scipy.optimize import curve_fit, leastsq, fmin, minimize
 
-
 images = [
     Atoms(
-        symbols="PdOPd2",
+        symbols="PdOPd",
         pbc=np.array([False, False, False], dtype=bool),
-        calculator=EMT(),
-        cell=np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]),
-        positions=np.array(
-            [[0.0, 0.0, 0.0], [0.0, 2.0, 0.0], [0.0, 0.0, 3.0], [1.0, 0.0, 0.0]]
-        ),
-    ),
-    Atoms(
-        symbols="PdOPd2",
-        pbc=np.array([False, False, False], dtype=bool),
-        calculator=EMT(),
-        cell=np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]),
-        positions=np.array(
-            [[0.0, 1.0, 0.0], [1.0, 2.0, 1.0], [-1.0, 1.0, 2.0], [1.0, 3.0, 2.0]]
-        ),
+        calculator=LennardJones(),
+        cell=np.array([[2.0, 0.0, 0.0], [0.0, 2.0, 0.0], [0.0, 0.0, 2.0]]),
+        positions=np.array([[0.5, 1.0, 0.5], [1.0, 0.5, 1.0], [1.5, 1.5, 1.5]]),
     ),
     Atoms(
         symbols="PdO",
         pbc=np.array([False, False, False], dtype=bool),
-        calculator=EMT(),
+        calculator=LennardJones(),
         cell=np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]),
         positions=np.array([[2.0, 1.0, -1.0], [1.0, 2.0, 1.0]]),
     ),
-    Atoms(
-        symbols="Pd2O",
-        pbc=np.array([False, False, False], dtype=bool),
-        calculator=EMT(),
-        cell=np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]),
-        positions=np.array([[-2.0, -1.0, -1.0], [1.0, 2.0, 1.0], [3.0, 4.0, 4.0]]),
-    ),
-    Atoms(
-        symbols="Cu",
-        pbc=np.array([False, False, False], dtype=bool),
-        calculator=EMT(),
-        cell=np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]),
-        positions=np.array([[0.0, 0.0, 0.0]]),
-    ),
 ]
-
-cutoff = 3
-data = [images[0], images[1], images[-1]]
-energies = [atoms.get_potential_energy() for atoms in data]
-
-unique = set()
-for atoms in data:
-    symbols = atoms.get_chemical_symbols()
-    unique = unique | set(symbols)
-unique_elements = list(unique)
-num_lj_params = 2 * len(unique_elements)
-
-params_dict = {"Pd": [], "O": [], "Cu": []}
-p0 = [1, 1, 1, 1, 1, 1]
-
 
 def V_lj(params, data, params_dict):
     idx = 0
@@ -84,20 +45,50 @@ def V_lj(params, data, params_dict):
             # Combining Rules
             sig = (sig_i + sig_j) / 2
             eps = np.sqrt(eps_i * eps_j)
-            V_lj = 4 * eps * ((sig / r) ** 12 - (sig / r) ** 6)
+            c6 = (sig/r)**6
+            c12 = c6**2
+            V_lj = 4 * eps * (c12 - c6)
             V += V_lj
+        V /= 2
         predicted_energies.append(V)
-    return predicted_energies 
-
-V_lj(p0, data, params_dict)
-sys.exit()
+    predicted_energies = np.array(predicted_energies).reshape(1, -1)
+    return predicted_energies
 
 
-def obj(params, pairs, distances, params_dict):
-    known_energies = energies
-    err = known_energies - V_lj(params, pairs, distances, params_dict)
-    return np.mean(err ** 2)
+def objective_fn(params, data, params_dict, target_energies):
+    predicted_energies = V_lj(params, data, params_dict)
+    print(predicted_energies)
+    print(target_energies)
+    MSE = np.mean((target_energies - predicted_energies) ** 2)
+    return MSE
 
+cutoff = 3
+data = [images[1]]
+known_energies = np.array([atoms.get_potential_energy() for atoms in data]).reshape(
+    1, -1
+)
 
-lj = minimize(obj, p0, args=(pairs, distances, params_dict), method="Nelder-Mead")
-print(lj)
+unique = set()
+for atoms in data:
+    symbols = atoms.get_chemical_symbols()
+    unique = unique | set(symbols)
+unique_elements = list(unique)
+num_lj_params = 2 * len(unique_elements)
+
+# lj parameters initial conditions
+params_dict = {"Pd": [], "O": []}
+p0 = [1, 1, 1, 1]
+
+assert (len(p0) == num_lj_params), 'Number of initial conditions not equal to \
+the number of required LJ parameters'
+
+objective_fn(p0, data, params_dict, known_energies)
+# lj = minimize(objective_fn, p0, args=(
+    # data, params_dict, known_energies), method="Nelder-Mead")
+
+# idx = 0
+# for keys in list(params_dict.keys()):
+    # params_dict[keys] = lj.x[idx: idx + 2]
+    # idx += 2
+
+# print(params_dict)
