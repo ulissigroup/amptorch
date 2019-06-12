@@ -10,7 +10,7 @@ from amp.descriptor.gaussian import Gaussian
 images = [
     Atoms(
         symbols="PdOPd",
-        pbc=np.array([True, False, False], dtype=bool),
+        pbc=np.array([False, False, False], dtype=bool),
         cell=np.array([[2.0, 0.0, 0.0], [0.0, 2.0, 0.0], [0.0, 0.0, 2.0]]),
         positions=np.array([[0.5, 1.0, 0.5], [1.0, 0.5, 1.0], [1.5, 1.5, 1.5]]),
     ),
