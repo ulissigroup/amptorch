@@ -49,27 +49,44 @@ class AtomsDataset(Dataset):
 
     """
 
-    def __init__(self, images, descriptor, cores, forcetraining, envcommand=None):
+    def __init__(
+        self,
+        images,
+        descriptor,
+        cores,
+        forcetraining,
+        lj_data,
+        envcommand=None,
+    ):
         self.images = images
         self.descriptor = descriptor
         self.atom_images = self.images
         self.forcetraining = forcetraining
+        self.lj = False
+        if lj_data is not None:
+            self.lj_energies = np.squeeze(lj_data[0])
+            self.lj_forces = np.squeeze(lj_data[1])
+            self.num_atoms = np.array(lj_data[2])
+            self.lj = True
+        print(self.lj)
+        sys.exit()
 
         if isinstance(images, str):
             extension = os.path.splitext(images)[1]
             if extension != (".traj" or ".db"):
                 self.atom_images = ase.io.read(images, ":")
         self.hashed_images = hash_images(self.atom_images)
-        self.parallel = {'cores':cores}
+        self.parallel = {"cores": cores}
         if cores > 1:
             self.parallel = {"cores": assign_cores(cores), "envcommand": envcommand}
         print("Calculating fingerprints...")
         self.descriptor.calculate_fingerprints(
-            self.hashed_images, parallel=self.parallel, calculate_derivatives=forcetraining
+            self.hashed_images,
+            parallel=self.parallel,
+            calculate_derivatives=forcetraining,
         )
         print("Fingerprints Calculated!")
-        self.fprange = calculate_fingerprints_range(
-            self.descriptor, self.hashed_images)
+        self.fprange = calculate_fingerprints_range(self.descriptor, self.hashed_images)
 
     def __len__(self):
         return len(self.hashed_images)
@@ -93,10 +110,21 @@ class AtomsDataset(Dataset):
             image_potential_energy = self.hashed_images[hash_name].get_potential_energy(
                 apply_constraint=False
             )
+            # subtract off lj contribution
+            if self.lj:
+                lj_energy = self.lj_energies[index]
+                image_potential_energy -= lj_energy
             if self.forcetraining:
                 image_forces = self.hashed_images[hash_name].get_forces(
                     apply_constraint=False
                 )
+                #subtract off lj force contribution
+                if self.lj:
+                    idx_start = self.num_atoms[:index].sum()
+                    idx_end = idx_start + self.num_atoms[index]
+                    lj_forces = self.lj_forces[idx_start : idx_end]
+                    image_forces -= lj_forces
+
                 image_primes = self.descriptor.fingerprintprimes[hash_name]
                 # fingerprint derivative scaling to [0,1]
                 _image_primes = copy.copy(image_primes)
@@ -107,8 +135,7 @@ class AtomsDataset(Dataset):
                     for i in range(len(fprime)):
                         if (fprange_atom[i][1] - fprange_atom[i][0]) > (10.0 ** (-8.0)):
                             fprime[i] = 2.0 * (
-                                fprime[i] / (fprange_atom[i][1] -
-                                             fprange_atom[i][0])
+                                fprime[i] / (fprange_atom[i][1] - fprange_atom[i][0])
                             )
                     _image_primes[key] = fprime
 
@@ -116,8 +143,7 @@ class AtomsDataset(Dataset):
                 image_prime_keys = list(_image_primes.keys())
                 fp_length = len(image_fingerprint[0][1])
                 num_atoms = len(image_fingerprint)
-                fingerprintprimes = torch.zeros(
-                    fp_length * num_atoms, 3 * num_atoms)
+                fingerprintprimes = torch.zeros(fp_length * num_atoms, 3 * num_atoms)
                 for idx, fp_key in enumerate(image_prime_keys):
                     image_prime = torch.tensor(image_prime_values[idx])
                     base_atom = fp_key[2]
@@ -150,8 +176,7 @@ class AtomsDataset(Dataset):
         energy_dataset = []
         for image in self.hashed_images.keys():
             energy_dataset.append(
-                self.hashed_images[image].get_potential_energy(
-                    apply_constraint=False)
+                self.hashed_images[image].get_potential_energy(apply_constraint=False)
             )
         energy_dataset = torch.tensor(energy_dataset)
         scaling_mean = torch.mean(energy_dataset)
@@ -240,7 +265,7 @@ def factorize_data(training_data):
             dim1 = fprime.shape[0]
             dim2 = fprime.shape[1]
             fprimes[
-                dim1_start: dim1 + dim1_start, dim2_start: dim2 + dim2_start
+                dim1_start : dim1 + dim1_start, dim2_start : dim2 + dim2_start
             ] = fprime
             dim1_start += dim1
             dim2_start += dim2
@@ -334,8 +359,8 @@ class TestDataset(Dataset):
                 self.atom_images = ase.io.read(images, ":")
         self.hashed_images = hash_images(self.atom_images)
         self.descriptor.calculate_fingerprints(
-            self.hashed_images, parallel=parallel,
-            calculate_derivatives=True)
+            self.hashed_images, parallel=parallel, calculate_derivatives=True
+        )
         self.fprange = fprange
 
     def __len__(self):
@@ -381,7 +406,7 @@ class TestDataset(Dataset):
             wrt_atom = fp_key[0]
             coord = fp_key[4]
             fingerprintprimes[
-                base_atom * fp_length: base_atom * fp_length + fp_length,
+                base_atom * fp_length : base_atom * fp_length + fp_length,
                 wrt_atom * 3 + coord,
             ] = image_prime
 
@@ -415,7 +440,7 @@ class TestDataset(Dataset):
             dim1 = fprime.shape[0]
             dim2 = fprime.shape[1]
             fprimes[
-                dim1_start: dim1 + dim1_start, dim2_start: dim2 + dim2_start
+                dim1_start : dim1 + dim1_start, dim2_start : dim2 + dim2_start
             ] = fprime
             dim1_start += dim1
             dim2_start += dim2
