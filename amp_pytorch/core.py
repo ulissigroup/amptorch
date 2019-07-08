@@ -93,6 +93,7 @@ class AMPModel:
         scheduler=None,
         lr=1,
         criteria={"energy": 0.02, "force": 0.02},
+        lj_data=None,
     ):
         if not os.path.exists("results"):
             os.mkdir("results")
@@ -119,8 +120,12 @@ class AMPModel:
             self.forcetraining = True
 
         self.training_data = AtomsDataset(
-            self.filename, descriptor=self.descriptor, cores=cores,
-            forcetraining=self.forcetraining, envcommand=envcommand
+            self.filename,
+            descriptor=self.descriptor,
+            cores=cores,
+            forcetraining=self.forcetraining,
+            lj_data=lj_data,
+            envcommand=envcommand,
         )
         self.scalings = self.training_data.scalings()
         self.sd_scaling = self.scalings[0]
