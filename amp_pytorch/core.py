@@ -132,7 +132,8 @@ class AMPModel:
         self.mean_scaling = self.scalings[1]
 
         self.log("-" * 50)
-        self.log("Filename: %s" % self.filename)
+        # self.log("Filename: %s" % self.filename)
+        self.log("%s" % (True if lj_data is not None else None))
 
     def train(self):
         """Trains the model under the provided optimizer conditions until
