@@ -94,7 +94,8 @@ class Trainer:
 
         epoch = 0
         convergence = False
-        while not convergence:
+        # while not convergence:
+        while epoch <= 10:
             log_epoch("{} Epoch {}".format(time.asctime(), epoch + 1))
             log_epoch("-" * 30)
 
@@ -347,6 +348,6 @@ class Trainer:
         if forcetraining:
             plt.plot(plot_epoch_x, plot_force_loss[phase], label="force train")
         plt.legend()
-        plt.show()
+        # plt.show()
         self.model.load_state_dict(best_model_wts)
         return self.model
