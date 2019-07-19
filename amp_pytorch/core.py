@@ -114,6 +114,7 @@ class AMPModel:
         self.scheduler = scheduler
         self.lr = lr
         self.convergence = criteria
+        self.lj_data = lj_data
 
         self.forcetraining = False
         if force_coefficient > 0:
@@ -124,7 +125,7 @@ class AMPModel:
             descriptor=self.descriptor,
             cores=cores,
             forcetraining=self.forcetraining,
-            lj_data=lj_data,
+            lj_data=self.lj_data,
             envcommand=envcommand,
         )
         self.scalings = self.training_data.scalings()

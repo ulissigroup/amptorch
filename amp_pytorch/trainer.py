@@ -57,7 +57,6 @@ class Trainer:
         rmse_criteria,
         scalings,
     ):
-
         self.model = model
         self.device = device
         self.unique_atoms = unique_atoms
@@ -92,15 +91,19 @@ class Trainer:
         if forcetraining:
             plot_force_loss = {"train": [], "val": []}
 
+        if isinstance(self.atoms_dataloader, dict):
+            validation = True
+        else:
+            validation = False
+
         epoch = 0
         convergence = False
         # while not convergence:
-        while epoch <= 10:
+        while epoch <= 20:
             log_epoch("{} Epoch {}".format(time.asctime(), epoch + 1))
             log_epoch("-" * 30)
 
-            if isinstance(self.atoms_dataloader, dict):
-
+            if validation:
                 for phase in ["train", "val"]:
 
                     if phase == "train":
@@ -131,9 +134,10 @@ class Trainer:
                                 .requires_grad_(True)
                             )
                         scaled_target = scaled_target.to(self.device)
+                        fp_primes = data_sample[3]
 
                         if forcetraining:
-                            fp_primes = data_sample[3]
+                            fp_primes = fp_primes.to(self.device)
                             image_forces = data_sample[4].to(self.device)
                             scaled_forces = image_forces / self.sd_scaling
 
@@ -146,9 +150,9 @@ class Trainer:
                                 loss = self.criterion(
                                     energy_pred,
                                     scaled_target,
+                                    num_of_atoms,
                                     force_pred,
                                     scaled_forces,
-                                    num_of_atoms,
                                 )
                             else:
                                 energy_pred, _ = self.model(input_data)
@@ -197,24 +201,21 @@ class Trainer:
                         plot_force_loss[phase].append(torch.log10(force_rmse))
                         print("%s force loss: %f" % (phase, force_rmse))
                         log_epoch("%s force loss: %f" % (phase, force_rmse))
-                        if phase == "val" and (
-                            (energy_rmse < best_energy_loss)
-                            & (force_rmse < best_force_loss)
-                        ):
-                            best_energy_loss = energy_rmse
-                            best_force_loss = force_rmse
-                            best_model_wts = copy.deepcopy(self.model.state_dict())
-                        energy_convergence = (
-                            best_energy_loss <= self.rmse_criteria["energy"]
-                        )
-                        force_convergence = (
-                            best_force_loss <= self.rmse_criteria["force"]
-                        )
+                        if phase == "val":
+                            # force_rmse cutoff criteria
+                            if (force_rmse < best_force_loss):
+                                best_energy_loss = energy_rmse
+                                best_force_loss = force_rmse
+                                best_model_wts = copy.deepcopy(self.model.state_dict())
+                            else:
+                                convergence = True
                     else:
-                        if phase == "val" and energy_rmse < best_energy_loss:
-                            best_energy_loss = energy_rmse
-                            best_model_wts = copy.deepcopy(self.model.state_dict())
-                    convergence = best_energy_loss <= self.rmse_criteria["energy"]
+                        if phase == "val":
+                            if energy_rmse < best_energy_loss:
+                                best_energy_loss = energy_rmse
+                                best_model_wts = copy.deepcopy(self.model.state_dict())
+                            else:
+                                convergence = True
                 print()
 
             else:
@@ -340,14 +341,19 @@ class Trainer:
         if forcetraining:
             log("Best training force loss: {:4f}\n".format(best_force_loss))
 
-        plt.title("RMSE vs. Epoch")
-        plt.xlabel("Epoch #")
-        plt.ylabel("log(RMSE)")
-        plot_epoch_x = list(range(1, epoch + 1))
-        plt.plot(plot_epoch_x, plot_energy_loss[phase], label="energy train")
-        if forcetraining:
-            plt.plot(plot_epoch_x, plot_force_loss[phase], label="force train")
-        plt.legend()
+        # plt.title("RMSE vs. Epoch")
+        # plt.xlabel("Epoch #")
+        # plt.ylabel("log(RMSE)")
+        # plot_epoch_x = list(range(1, epoch + 1))
+        # plt.plot(plot_epoch_x, plot_energy_loss['train'], label="energy train")
+        # if validation:
+            # plt.plot(plot_epoch_x, plot_energy_loss['val'], label="energy val")
+        # if forcetraining:
+            # plt.plot(plot_epoch_x, plot_force_loss['train'], label="force train")
+            # if validation:
+                # plt.plot(plot_epoch_x, plot_force_loss['val'], label="force val")
+        # plt.legend()
+        # plt.savefig('results/error_epoch.pdf')
         # plt.show()
         self.model.load_state_dict(best_model_wts)
         return self.model
