@@ -336,19 +336,6 @@ class TestDataset(Dataset):
 
     """
 
-    # def __init__(self, images, descriptor, fprange):
-    # self.images = [images]
-    # self.descriptor = descriptor
-    # self.atom_images = self.images
-    # if isinstance(images, str):
-    # extension = os.path.splitext(images)[1]
-    # if extension != (".traj" or ".db"):
-    # self.atom_images = ase.io.read(images, ":")
-    # self.hashed_images = hash_images(self.atom_images)
-    # self.descriptor.calculate_fingerprints(
-    # self.hashed_images, calculate_derivatives=True
-    # )
-    # self.fprange = fprange
     def __init__(self, images, descriptor, fprange, parallel, envcommand=None):
         self.images = [images]
         self.descriptor = descriptor
