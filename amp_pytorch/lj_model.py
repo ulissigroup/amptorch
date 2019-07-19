@@ -20,8 +20,9 @@ class lj_optim:
             os.mkdir("results")
         self.data = data
         self.p0 = params
+        self.e0 = self.p0[2::3]
         self.params_dict = params_dict
-        # self.lj_param_check()
+        self.lj_param_check()
         self.cutoff = cutoff
 
     def fit(self, filename="results/lj_log.txt", method="Nelder-Mead"):
@@ -36,8 +37,10 @@ class lj_optim:
         s_time = time.time()
         lj_min = minimize(
             self.objective_fn,
+            # self.e0,
             self.p0,
             args=(self.target_energies, self.target_forces),
+            tol=1e-2,
             method=method,
         )
         optim_time = time.time() - s_time
@@ -49,63 +52,25 @@ class lj_optim:
             return lj_min.x
         else:
             print("Optimizer did not terminate successfully.")
+            return lj_min.x
 
-    def lj_pred(self, params):
-        params_dict = self.params_to_dict(params, self.params_dict)
+    def lj_pred(self, data, p0, params_dict):
+        params_dict = self.params_to_dict(p0, params_dict)
         predicted_energies = []
         predicted_forces = []
         num_atoms = []
-        for image in self.data:
-            natoms = len(image)
-            num_atoms.append(natoms)
-            elements = image.get_chemical_symbols()
-            pairs, distances = get_distances(
-                image, [(self.cutoff + 1e-10) / 2] * natoms
-            )
-            V = 0
-            forces = np.zeros((natoms, 3))
-            for pair, d in zip(pairs, distances):
-                atom_i = elements[pair[0]]
-                atom_j = elements[pair[1]]
-                sig_i = params_dict[atom_i][0]
-                sig_j = params_dict[atom_j][0]
-                eps_i = params_dict[atom_i][1]
-                eps_j = params_dict[atom_j][1]
-                offset_i = params_dict[atom_i][2]
-                offset_j = params_dict[atom_j][2]
-                # Combining Rules
-                r = np.sqrt((d ** 2).sum())
-                sig = (sig_i + sig_j) / 2
-                eps = np.sqrt(eps_i * eps_j)
-                c6 = (sig / r) ** 6
-                c12 = c6 ** 2
-                V_lj = 4 * eps * (c12 - c6)
-                V_lj += offset_i + offset_j
-                f = (24 * eps * (2 * c12 - c6) / r ** 2) * d
-                forces[pair[0]] -= f
-                forces[pair[1]] += f
-                V += V_lj
-            V /= 2
-            forces /= 2
-            predicted_energies.append(V)
-            predicted_forces.append(forces)
-        predicted_energies = np.array(predicted_energies).reshape(1, -1)
-        predicted_forces = np.concatenate(predicted_forces)
-        # num_atoms = np.concatenate(num_atoms).reshape(-1, 1)
-        return predicted_energies, predicted_forces, num_atoms
+        for image in data:
+            chemical_symbols = image.get_chemical_symbols()
+            params = []
+            for element in chemical_symbols:
+                sig = params_dict[element][0]
+                eps = params_dict[element][1]
+                offset = params_dict[element][2]
+                params.append(np.array([[sig, eps, offset]]))
+            params = np.vstack(np.array(params))
 
-    def lj_ase(self, p0):
-        predicted_energies = []
-        predicted_forces = []
-        num_atoms = []
-        for image in self.data:
             natoms = len(image)
             num_atoms.append(natoms)
-            params = np.array([np.array([p0[0:3]] * 27), np.array([p0[3:]] * 4)])
-            # params = np.array(
-            # [np.array([p0[0:3]] * 2), np.array([p0[3:]] * 1)]
-            # )
-            params = np.vstack(params)
 
             self.n1 = NeighborList([self.cutoff / 2] * natoms, self_interaction=False)
             self.n1.update(image)
@@ -122,12 +87,13 @@ class lj_optim:
                 o1 = params[a1][2]
                 neighbors, offsets = self.n1.get_neighbors(a1)
                 cells = np.dot(offsets, cell)
+                d = positions[neighbors] + cells - positions[a1]
+
                 sig_n = params[neighbors][:, 0]
                 eps_n = params[neighbors][:, 1]
                 sig = (sig_1 + sig_n) / 2
                 eps = np.sqrt(eps_1 * eps_n)
                 on = params[neighbors][:, 2]
-                d = positions[neighbors] + cells - positions[a1]
                 r2 = (d ** 2).sum(1)
                 c6 = (sig ** 2 / r2) ** 3
                 c6[r2 > self.cutoff ** 2] = 0.0
@@ -142,20 +108,28 @@ class lj_optim:
             predicted_forces.append(forces)
         predicted_energies = np.array(predicted_energies).reshape(1, -1)
         predicted_forces = np.concatenate(predicted_forces)
-        num_atoms = np.array(num_atoms).reshape(-1, 1)
         return predicted_energies, predicted_forces, num_atoms
 
     def objective_fn(self, params, target_energies, target_forces):
-        predicted_energies, predicted_forces, num_atoms = self.lj_ase(params)
-        MSE_energy = np.mean((target_energies - predicted_energies) ** 2)
-        MSE_forces = np.mean((target_forces - predicted_forces) ** 2)
+        predicted_energies, predicted_forces, num_atoms = self.lj_pred(
+            self.data, params, self.params_dict
+        )
+        data_size = target_energies.shape[1]
+        num_atoms_f = np.array([[i] * i for i in num_atoms]).reshape(-1, 1)
+        num_atoms = np.array(num_atoms)
+        MSE_energy = np.mean(((target_energies - predicted_energies) / num_atoms) ** 2)
+        MSE_energy = (1 / data_size) * (
+            ((target_energies - predicted_energies) / num_atoms) ** 2
+        ).sum()
+        MSE_forces = (1 / data_size) * (
+            ((target_forces - predicted_forces) / np.sqrt(3 * num_atoms_f)) ** 2
+        ).sum()
         MSE = MSE_energy + MSE_forces
         return MSE
 
     def lj_param_check(self):
         unique = set()
         for atoms in self.data:
-            # symbols = atoms.get_chemical_symbols()
             symbols = atoms.symbols
             unique = unique | set(symbols)
         unique_elements = list(unique)

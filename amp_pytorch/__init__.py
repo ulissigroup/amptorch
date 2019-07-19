@@ -1,6 +1,8 @@
 """Base AMP calculator class to be utilized similiar to other ASE calculators"""
 
 import copy
+import sys
+import time
 import numpy as np
 import os
 from torch.utils.data import DataLoader
@@ -34,6 +36,7 @@ class AMP(Calculator):
         Location to save the trained model.
 
     """
+
     implemented_properties = ["energy", "forces"]
 
     def __init__(self, model, label="amptorch.pt"):
@@ -45,6 +48,11 @@ class AMP(Calculator):
         self.target_sd = self.model.scalings[0]
         self.target_mean = self.model.scalings[1]
         self.parallel = self.model.training_data.parallel
+        self.lj = self.model.training_data.lj
+        if self.lj:
+            self.fitted_params = self.model.lj_data[3]
+            self.params_dict = self.model.lj_data[4]
+            self.lj_model = self.model.lj_data[5]
 
     def train(self, overwrite=False):
 
@@ -59,10 +67,9 @@ class AMP(Calculator):
 
     def calculate(self, atoms, properties, system_changes):
         Calculator.calculate(self, atoms, properties, system_changes)
-
-        dataset = TestDataset(atoms,
-                              self.model.descriptor, self.fp_scaling,
-                              self.parallel)
+        dataset = TestDataset(
+            atoms, self.model.descriptor, self.fp_scaling, self.parallel
+        )
         fp_length = dataset.fp_length()
         unique_atoms = dataset.unique()
         architecture = copy.copy(self.model.structure)
@@ -71,9 +78,8 @@ class AMP(Calculator):
         dataloader = DataLoader(
             dataset, batch_size, collate_fn=dataset.collate_test, shuffle=False
         )
-        model = FullNN(unique_atoms, architecture, "cpu", forcetraining=True
-                       )
-        model.load_state_dict(torch.load("amptorch.pt"))
+        model = FullNN(unique_atoms, architecture, "cpu", forcetraining=True)
+        model.load_state_dict(torch.load(self.label))
 
         for batch in dataloader:
             input_data = [batch[0], len(batch[1])]
@@ -84,7 +90,16 @@ class AMP(Calculator):
             fp_primes = batch[2]
             energy, forces = model(input_data, fp_primes)
         energy = (energy * self.target_sd) + self.target_mean
-        forces = forces * self.target_sd
+        energy = np.concatenate(energy.detach().numpy())
+        forces = (forces * self.target_sd).detach().numpy()
 
-        self.results["energy"] = np.concatenate(energy.detach().numpy())
-        self.results["forces"] = forces.detach().numpy()
+        if self.lj:
+            lj_energy, lj_forces, _ = self.lj_model.lj_pred(
+                [atoms], self.fitted_params, self.params_dict
+            )
+            lj_energy = np.squeeze(lj_energy)
+            energy += lj_energy
+            forces += lj_forces
+
+        self.results["energy"] = energy
+        self.results["forces"] = forces
