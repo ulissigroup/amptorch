@@ -4,6 +4,7 @@ constructed based off the unique number of atoms in the dataset."""
 
 import sys
 from collections import defaultdict, OrderedDict
+import numpy as np
 import torch
 import torch.nn as nn
 from torch.nn import init
