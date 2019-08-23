@@ -17,7 +17,7 @@ from ase.visualize import view
 IMAGES = "../datasets/water.extxyz"
 images = ase.io.read(IMAGES, ":")
 IMAGES = []
-for i in range(100):
+for i in range(300):
     IMAGES.append(images[i])
 
 # define the number of threads to parallelize training across
@@ -29,8 +29,8 @@ calc = AMP(model=AMPModel(IMAGES, descriptor=Gaussian(), cores=1,
     force_coefficient=0.3))
 
 # define the convergence criteria
-calc.model.val_frac = 0.3
-# calc.model.convergence = {"energy": 0.02, "force": 0.02}
+# calc.model.val_frac = 0.3
+calc.model.convergence = {"energy": 0.02, "force": 0.02}
 
 # train the model
 calc.train(overwrite=True)

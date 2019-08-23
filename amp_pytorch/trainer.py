@@ -98,8 +98,8 @@ class Trainer:
 
         epoch = 0
         convergence = False
-        # while not convergence:
-        while epoch <= 20:
+        while not convergence:
+        # while epoch <= 10:
             log_epoch("{} Epoch {}".format(time.asctime(), epoch + 1))
             log_epoch("-" * 30)
 
@@ -204,17 +204,16 @@ class Trainer:
                         if phase == "val":
                             # force_rmse cutoff criteria
                             if (force_rmse < best_force_loss):
-                                best_energy_loss = energy_rmse
                                 best_force_loss = force_rmse
                                 best_model_wts = copy.deepcopy(self.model.state_dict())
-                            else:
+                            if best_force_loss <= self.rmse_criteria['force']:
                                 convergence = True
                     else:
                         if phase == "val":
                             if energy_rmse < best_energy_loss:
                                 best_energy_loss = energy_rmse
                                 best_model_wts = copy.deepcopy(self.model.state_dict())
-                            else:
+                            if best_energy_loss <= self.rmse_criteria['energy']:
                                 convergence = True
                 print()
 
@@ -309,9 +308,10 @@ class Trainer:
                     plot_force_loss[phase].append(torch.log10(force_rmse))
                     print("force loss: %f\n" % force_rmse)
                     log_epoch("force loss: %f\n" % (force_rmse))
-                    if (energy_rmse < best_energy_loss) and (
-                        force_rmse < best_force_loss
-                    ):
+                    # if (energy_rmse < best_energy_loss) and (
+                        # force_rmse < best_force_loss
+                    # ):
+                    if force_rmse < best_force_loss:
                         best_energy_loss = energy_rmse
                         best_force_loss = force_rmse
                         best_model_wts = copy.deepcopy(self.model.state_dict())
