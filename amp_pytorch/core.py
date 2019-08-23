@@ -184,9 +184,11 @@ class AMPModel:
             self.unique_atoms, architecture, self.device, self.forcetraining
         ).to(self.device)
 
+        self.log("Activation Function: %s" % model.activation_fn)
         self.log("Loss Function: %s" % self.lossfunction)
         # Define the optimizer and implement any optimization settings
-        optimizer = self.optimizer(model.parameters(), self.lr)
+        optimizer = self.optimizer(model.parameters(), self.lr,
+                line_search_fn='strong_wolfe')
         self.log("Optimizer Info:\n %s" % optimizer)
 
         if self.scheduler:

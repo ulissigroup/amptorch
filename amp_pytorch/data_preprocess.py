@@ -174,8 +174,8 @@ class AtomsDataset(Dataset):
         energy_dataset = []
         for image in self.hashed_images.keys():
             energy_dataset.append(
-                self.hashed_images[image].get_potential_energy(apply_constraint=False)
-            )
+                np.float(self.hashed_images[image].get_potential_energy(apply_constraint=False)
+            ))
         if self.lj:
             energy_dataset -= self.lj_energies
         energy_dataset = torch.tensor(energy_dataset)

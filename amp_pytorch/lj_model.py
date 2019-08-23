@@ -2,7 +2,7 @@ import sys
 import os
 import time
 import numpy as np
-from scipy.optimize import minimize
+from scipy.optimize import minimize, shgo
 import ase
 from ase import Atoms
 from ase.build import molecule
@@ -20,9 +20,8 @@ class lj_optim:
             os.mkdir("results")
         self.data = data
         self.p0 = params
-        self.e0 = self.p0[2::3]
         self.params_dict = params_dict
-        self.lj_param_check()
+        # self.lj_param_check()
         self.cutoff = cutoff
 
     def fit(self, filename="results/lj_log.txt", method="Nelder-Mead"):
@@ -35,13 +34,16 @@ class lj_optim:
         )
         print("LJ optimization initiated...")
         s_time = time.time()
+        bounds = ((0, None), (None, None), (None, None), (0, None), (None,
+            None), (None, None), (0, None), (None, None), (None, None))
+        # bounds = ((0, None), (None, None), (None, None))
         lj_min = minimize(
             self.objective_fn,
-            # self.e0,
             self.p0,
             args=(self.target_energies, self.target_forces),
-            tol=1e-2,
+            # tol=1e-2,
             method=method,
+            bounds=bounds,
         )
         optim_time = time.time() - s_time
         self.logresults(
@@ -55,6 +57,7 @@ class lj_optim:
             return lj_min.x
 
     def lj_pred(self, data, p0, params_dict):
+        # p0 = np.concatenate([p0]*len(params_dict.keys()))
         params_dict = self.params_to_dict(p0, params_dict)
         predicted_energies = []
         predicted_forces = []
@@ -117,14 +120,16 @@ class lj_optim:
         data_size = target_energies.shape[1]
         num_atoms_f = np.array([[i] * i for i in num_atoms]).reshape(-1, 1)
         num_atoms = np.array(num_atoms)
-        MSE_energy = np.mean(((target_energies - predicted_energies) / num_atoms) ** 2)
-        MSE_energy = (1 / data_size) * (
-            ((target_energies - predicted_energies) / num_atoms) ** 2
-        ).sum()
-        MSE_forces = (1 / data_size) * (
-            ((target_forces - predicted_forces) / np.sqrt(3 * num_atoms_f)) ** 2
-        ).sum()
-        MSE = MSE_energy + MSE_forces
+        MSE_energy = np.mean((target_energies - predicted_energies) ** 2)
+        MSE_forces = (1 / data_size) * ((target_forces - predicted_forces) ** 2).sum()
+        # MSE_energy = np.mean(((target_energies - predicted_energies) / num_atoms) ** 2)
+        # MSE_energy = (1 / data_size) * (
+        # ((target_energies - predicted_energies) / num_atoms) ** 2
+        # ).sum()
+        # MSE_forces = (1 / data_size) * (
+        # ((target_forces - predicted_forces) / np.sqrt(3 * num_atoms_f)) ** 2
+        # ).sum()
+        MSE = MSE_energy + 0.3 * MSE_forces
         return MSE
 
     def lj_param_check(self):
