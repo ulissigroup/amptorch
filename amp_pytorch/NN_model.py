@@ -106,8 +106,6 @@ class FullNN(nn.Module):
     def __init__(
         self, unique_atoms, architecture, device, forcetraining, require_grd=True
     ):
-        log = Logger("results/results-log.txt")
-
         super(FullNN, self).__init__()
         self.device = device
         self.unique_atoms = unique_atoms
@@ -128,7 +126,7 @@ class FullNN(nn.Module):
                 )
             )
         self.elementwise_models = elementwise_models
-        log("Activation Function = %s" % elementwise_models[0].activation)
+        self.activation_fn = elementwise_models[0].activation
 
     def forward(self, inputs, fprimes=None):
         """Forward pass through the model - predicting energy and forces

@@ -24,7 +24,8 @@ import matplotlib.pyplot as plt
 
 
 # define training images
-IMAGES = "../datasets/COCu/COCu.traj"
+# IMAGES = "../datasets/COCu/COCu.traj"
+# IMAGES = "../datasets/COCu/COCu_pbc.traj"
 images = ase.io.read(IMAGES, ":")
 IMAGES = []
 for i in range(100):
@@ -32,24 +33,32 @@ for i in range(100):
 
 # lj optimization
 eV_kcalmol = 0.043372093
-# p0 = [3.495, 0.005 * eV_kcalmol, 1, 2.754, 0.080 * eV_kcalmol, 1]
-p0 = [3.851, 0.105 * eV_kcalmol, 0, 3.495, 0.005, 0]
+p0 = [
+    3.851,
+    0.105 * eV_kcalmol,
+    1e-5,
+    3.5,
+    0.060 * eV_kcalmol,
+    1e-5,
+    3.495,
+    0.005 * eV_kcalmol,
+    1e-5,
+]
 # p0 = [2.362, 0.056 * eV_kcalmol, 0]
-# params_dict = {"C": [], "O": [], "Cu": []}
+params_dict = {"C": [], "O": [], "Cu": []}
 # params_dict = {"Cu": [], "Pt": []}
-params_dict = {"C": [], "Cu": []}
+# params_dict = {"C": [], "Cu": []}
 # params_dict = {"He": []}
 cutoff = 5.876798323827276
 # cutoff = 6.5
-lj_model = lj_optim(IMAGES, p0, params_dict, cutoff)
-fitted_params = lj_model.fit()
+# lj_model = lj_optim(IMAGES, p0, params_dict, cutoff)
+# fitted_params = lj_model.fit()
 # fitted_offsets = lj_model.fit()
 # p0[2::3] = fitted_offsets
 # fitted_params = p0
-lj_energies, lj_forces, num_atoms = lj_model.lj_pred(IMAGES, fitted_params, params_dict)
-lj_data = [lj_energies, lj_forces, num_atoms, fitted_params, params_dict, lj_model]
+# lj_energies, lj_forces, num_atoms = lj_model.lj_pred(IMAGES, fitted_params, params_dict)
+# lj_data = [lj_energies, lj_forces, num_atoms, fitted_params, params_dict, lj_model]
 # lj_model.parity(lj_fitted_data[0], lj_fitted_data[1])
-# sys.exit()
 
 # define the number of threads to parallelize training across
 torch.set_num_threads(1)
@@ -61,8 +70,8 @@ calc = AMP(
         IMAGES,
         descriptor=Gaussian(cutoff=cutoff),
         cores=1,
-        force_coefficient=0.04,
-        lj_data=lj_data,
+        force_coefficient=0.3,
+        # lj_data=lj_data,
     ),
     label="test.pt",
 )
@@ -71,11 +80,14 @@ calc = AMP(
 # calc.model.convergence = {"energy": 0.02, "force": 0.02}
 # calc.model.optimizer = optim.Adam
 # calc.model.batch_size = 20
-# calc.model.lr = 0.8
+calc.model.lr = 0.1
 # calc.model.device = device
 
 # train the model
 calc.train(overwrite=True)
+calc.model.parity_plot()
+calc.model.parity_plot("forces")
+sys.exit()
 
 
 def generate_data(count, filename, cons_t=False):
@@ -94,7 +106,8 @@ def generate_data(count, filename, cons_t=False):
         dyn.run(50)
         traj.write(slab)
 
-generate_data(20, 'test_MLLJ.traj')
+
+generate_data(20, "test_MLLJ.traj")
 sys.exit()
 
 
