@@ -10,7 +10,7 @@ The AMP-Pytorch implementation has been made to be similar to *Amp* as to requir
 
 The implementation currently relies on *Amp* to carry out fingerprint/fingerprint derivative calculations. Such calculations will be directly implemented in the near future as to enhance the model's computational performance by taking advantage of PyTorch's ```autograd``` feature.
 
-In addition to the package requirements of *Amp*, PyTorch v1.1 must be installed as well. Ensure the repository is added to your PYTHONPATH.
+In addition to the package requirements of *Amp*, PyTorch v1.2 must be installed as well. Ensure the repository is added to your PYTHONPATH.
 
 As the AMP - PyTorch implementation is a work in progress, please feel free to report any issues/suggestions/feedback/questions and we'll try to address them or get back to you as soon as possible.
 
