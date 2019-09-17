@@ -2,6 +2,7 @@
 Networks as understood from Behler and Parrinello's works. A model instance is
 constructed based off the unique number of atoms in the dataset."""
 
+import time
 import sys
 from collections import defaultdict, OrderedDict
 import numpy as np

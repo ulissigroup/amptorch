@@ -133,8 +133,8 @@ class AMPModel:
         self.mean_scaling = self.scalings[1]
 
         self.log("-" * 50)
-        # self.log("Filename: %s" % self.filename)
-        self.log("%s" % (True if lj_data is not None else None))
+        self.log("LJ Data: %s" % (True if lj_data is not None else None))
+        self.log("Force Training: %s - %s" % (self.forcetraining, force_coefficient))
 
     def train(self):
         """Trains the model under the provided optimizer conditions until
@@ -187,15 +187,19 @@ class AMPModel:
         self.log("Activation Function: %s" % model.activation_fn)
         self.log("Loss Function: %s" % self.lossfunction)
         # Define the optimizer and implement any optimization settings
-        optimizer = self.optimizer(model.parameters(), self.lr,
-                line_search_fn='strong_wolfe')
+        if self.optimizer == optim.LBFGS:
+            optimizer = self.optimizer(
+                model.parameters(), self.lr, line_search_fn="strong_wolfe"
+            )
+        else:
+            optimizer = self.optimizer(model.parameters(), self.lr)
         self.log("Optimizer Info:\n %s" % optimizer)
 
         if self.scheduler:
             self.scheduler = self.scheduler(optimizer, step_size=7, gamma=0.1)
-        self.log("Scheduler Info: \n %s" % self.scheduler)
-
-        self.log("RMSE criteria = {}\n".format(self.convergence))
+        self.log("Scheduler Info: %s" % self.scheduler)
+        self.log("RMSE criteria = {}".format(self.convergence))
+        self.log("Model architecture: %s" % architecture)
 
         self.trainer = Trainer(
             model,

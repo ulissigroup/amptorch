@@ -12,16 +12,17 @@ from ase.neighborlist import NeighborList, NewPrimitiveNeighborList
 from amp_pytorch.neighbors import get_distances
 from amp.utilities import Logger
 import matplotlib.pyplot as plt
+from itertools import combinations, permutations, product
 
 
 class lj_optim:
-    def __init__(self, data, params, params_dict, cutoff):
+    def __init__(self, data, params, params_dict, cutoff, forcetraining=True):
         if not os.path.exists("results"):
             os.mkdir("results")
         self.data = data
         self.p0 = params
         self.params_dict = params_dict
-        # self.lj_param_check()
+        self.forcetraining = forcetraining
         self.cutoff = cutoff
 
     def fit(self, filename="results/lj_log.txt", method="Nelder-Mead"):
@@ -34,14 +35,22 @@ class lj_optim:
         )
         print("LJ optimization initiated...")
         s_time = time.time()
-        bounds = ((0, None), (None, None), (None, None), (0, None), (None,
-            None), (None, None), (0, None), (None, None), (None, None))
-        # bounds = ((0, None), (None, None), (None, None))
+        bounds = (
+            (0, None),
+            (None, None),
+            (None, None),
+            (0, None),
+            (None, None),
+            (None, None),
+            (0, None),
+            (None, None),
+            (None, None),
+        )
         lj_min = minimize(
             self.objective_fn,
             self.p0,
             args=(self.target_energies, self.target_forces),
-            # tol=1e-2,
+            tol=1e-2,
             method=method,
             bounds=bounds,
         )
@@ -57,19 +66,28 @@ class lj_optim:
             return lj_min.x
 
     def lj_pred(self, data, p0, params_dict):
-        # p0 = np.concatenate([p0]*len(params_dict.keys()))
         params_dict = self.params_to_dict(p0, params_dict)
         predicted_energies = []
         predicted_forces = []
         num_atoms = []
         for image in data:
-            chemical_symbols = image.get_chemical_symbols()
+            chemical_symbols = np.array(image.get_chemical_symbols())
+            unique_symbols = np.unique(chemical_symbols)
+            possible_pairs = product(unique_symbols, repeat=2)
+            possible_pairs = [list(elem) for elem in list(possible_pairs)]
+            e_offsets = {}
+            for pair in possible_pairs:
+                joint_pair = pair[0] + pair[1]
+                # offset_atoms = Atoms(pair, [(0, 0, 0), (0, 0, 1e6)])
+                # offset_atoms.set_calculator(EMT())
+                # e0 = offset_atoms.get_potential_energy()
+                e0 = 0.5 * (params_dict[pair[0]][2] + params_dict[pair[1]][2])
+                e_offsets[joint_pair] = e0
             params = []
             for element in chemical_symbols:
                 sig = params_dict[element][0]
                 eps = params_dict[element][1]
-                offset = params_dict[element][2]
-                params.append(np.array([[sig, eps, offset]]))
+                params.append(np.array([[sig, eps]]))
             params = np.vstack(np.array(params))
 
             natoms = len(image)
@@ -85,24 +103,26 @@ class lj_optim:
             forces = np.zeros((natoms, 3))
 
             for a1 in range(natoms):
-                sig_1 = params[a1][0]
+                base_element = chemical_symbols[a1]
+                sig_1 = np.abs(params[a1][0])
                 eps_1 = params[a1][1]
-                o1 = params[a1][2]
                 neighbors, offsets = self.n1.get_neighbors(a1)
+                neighbor_elements = chemical_symbols[neighbors]
+                e0 = np.array(
+                    [e_offsets[base_element + elem] for elem in neighbor_elements]
+                )
                 cells = np.dot(offsets, cell)
                 d = positions[neighbors] + cells - positions[a1]
 
-                sig_n = params[neighbors][:, 0]
+                sig_n = np.abs(params[neighbors][:, 0])
                 eps_n = params[neighbors][:, 1]
                 sig = (sig_1 + sig_n) / 2
                 eps = np.sqrt(eps_1 * eps_n)
-                on = params[neighbors][:, 2]
                 r2 = (d ** 2).sum(1)
                 c6 = (sig ** 2 / r2) ** 3
                 c6[r2 > self.cutoff ** 2] = 0.0
                 c12 = c6 ** 2
-                energy += (4 * eps * (c12 - c6)).sum() + o1 * len(on) + on.sum()
-                # energy += (4 * eps * (c12 - c6)).sum()
+                energy += (4 * eps * (c12 - c6)).sum() + e0.sum()
                 f = (24 * eps * (2 * c12 - c6) / r2)[:, np.newaxis] * d
                 forces[a1] -= f.sum(axis=0)
                 for a2, f2 in zip(neighbors, f):
@@ -114,22 +134,25 @@ class lj_optim:
         return predicted_energies, predicted_forces, num_atoms
 
     def objective_fn(self, params, target_energies, target_forces):
+        t = time.time()
         predicted_energies, predicted_forces, num_atoms = self.lj_pred(
-            self.data, params, self.params_dict
-        )
+            self.data, params, self.params_dict)
         data_size = target_energies.shape[1]
         num_atoms_f = np.array([[i] * i for i in num_atoms]).reshape(-1, 1)
         num_atoms = np.array(num_atoms)
-        MSE_energy = np.mean((target_energies - predicted_energies) ** 2)
-        MSE_forces = (1 / data_size) * ((target_forces - predicted_forces) ** 2).sum()
-        # MSE_energy = np.mean(((target_energies - predicted_energies) / num_atoms) ** 2)
-        # MSE_energy = (1 / data_size) * (
-        # ((target_energies - predicted_energies) / num_atoms) ** 2
-        # ).sum()
-        # MSE_forces = (1 / data_size) * (
-        # ((target_forces - predicted_forces) / np.sqrt(3 * num_atoms_f)) ** 2
-        # ).sum()
-        MSE = MSE_energy + 0.3 * MSE_forces
+        # MSE_energy = np.mean((target_energies - predicted_energies) ** 2)
+        # MSE_forces = (1 / (3*data_size)) * ((target_forces - predicted_forces) ** 2).sum()
+        MSE_energy = (1 / data_size) * (
+        ((target_energies - predicted_energies) / num_atoms) ** 2
+        ).sum()
+        MSE_forces = (1 / data_size) * (
+        ((target_forces - predicted_forces) / np.sqrt(3 * num_atoms_f)) ** 2
+        ).sum()
+        if self.forcetraining:
+            MSE = MSE_energy + 0.3 * MSE_forces
+        else:
+            MSE = MSE_energy
+        print(MSE)
         return MSE
 
     def lj_param_check(self):
@@ -138,7 +161,7 @@ class lj_optim:
             symbols = atoms.symbols
             unique = unique | set(symbols)
         unique_elements = list(unique)
-        num_lj_params = 3 * len(unique_elements)
+        num_lj_params = 2 * len(unique_elements)
         assert (
             len(self.p0) == num_lj_params
         ), "Number of initial conditions not equal to \
