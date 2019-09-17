@@ -42,8 +42,12 @@ class AMP(Calculator):
     def __init__(self, model, label="amptorch.pt"):
         Calculator.__init__(self)
 
+        if not os.path.exists("results/trained_models"):
+            os.mkdir("results/trained_models")
+        self.log = Logger("results/results-log.txt")
+        self.log("Filename: %s" % label)
         self.model = model
-        self.label = label
+        self.label = "".join(["results/trained_models/", label])
         self.fp_scaling = self.model.training_data.fprange
         self.target_sd = self.model.scalings[0]
         self.target_mean = self.model.scalings[1]
@@ -78,7 +82,12 @@ class AMP(Calculator):
         dataloader = DataLoader(
             dataset, batch_size, collate_fn=dataset.collate_test, shuffle=False
         )
-        model = FullNN(unique_atoms, architecture, "cpu", forcetraining=True)
+        if properties == ['energy']:
+            model = FullNN(unique_atoms, architecture, "cpu",
+                    forcetraining=False)
+        elif properties == ['forces']:
+            model = FullNN(unique_atoms, architecture, "cpu",
+                    forcetraining=True)
         model.load_state_dict(torch.load(self.label))
 
         for batch in dataloader:
@@ -91,7 +100,8 @@ class AMP(Calculator):
             energy, forces = model(input_data, fp_primes)
         energy = (energy * self.target_sd) + self.target_mean
         energy = np.concatenate(energy.detach().numpy())
-        forces = (forces * self.target_sd).detach().numpy()
+        if properties == ['forces']:
+            forces = (forces * self.target_sd).detach().numpy()
 
         if self.lj:
             lj_energy, lj_forces, _ = self.lj_model.lj_pred(
@@ -99,7 +109,8 @@ class AMP(Calculator):
             )
             lj_energy = np.squeeze(lj_energy)
             energy += lj_energy
-            forces += lj_forces
+            if properties == ['forces']:
+                forces += lj_forces
 
         self.results["energy"] = energy
         self.results["forces"] = forces

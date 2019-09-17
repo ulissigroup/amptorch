@@ -25,7 +25,7 @@ from amp.model.neuralnetwork import NeuralNetwork
 from amp.utilities import hash_images
 from amp.model import calculate_fingerprints_range
 from amp_pytorch import core
-from amp_pytorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
+from amp_pytorch.mdata import AtomsDataset, factorize_data, collate_amp
 from amp_pytorch.NN_model import FullNN
 
 
@@ -91,7 +91,7 @@ def test_data():
     fingerprints_range = calculate_fingerprints_range(descriptor, hashed_images)
 
     device = "cpu"
-    dataset = AtomsDataset(images, descriptor, forcetraining=True)
+    dataset = AtomsDataset(images, descriptor, forcetraining=True, cores=1, lj_data=None)
     fp_length = dataset.fp_length()
 
     weights = OrderedDict(
@@ -126,7 +126,8 @@ def test_data():
 
     # Testing pure-python and fortran versions of Gaussian-neural force call
     device = "cpu"
-    dataset = AtomsDataset(images, descriptor, forcetraining=True)
+    dataset = AtomsDataset(images, descriptor, forcetraining=True, cores=1,
+            lj_data=None)
     fp_length = dataset.fp_length()
     unique_atoms = dataset.unique()
 
