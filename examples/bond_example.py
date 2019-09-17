@@ -27,11 +27,11 @@ forces = []
 distances = np.linspace(1, 5, 100)
 images = []
 
-offset_atoms = Atoms("CuC", [(0, 0, 0), (0, 0, 1000000)])
+offset_atoms = Atoms("CuCu", [(0, 0, 0), (0, 0, 1000000)])
 offset_atoms.set_calculator(EMT())
 e0 = offset_atoms.get_potential_energy()
 for displacement in distances:
-    atoms = Atoms("CuC", [(0, 0, 0), (0, 0, displacement)])
+    atoms = Atoms("CuCu", [(0, 0, 0), (0, 0, displacement)])
     atoms.set_calculator(EMT())
     atoms.get_potential_energy()
     energy = atoms.get_potential_energy() - e0
@@ -79,7 +79,8 @@ def train(train_images, test_images, lj=False):
         cutoff = 10
         lj_model = lj_optim(train_images, p0, params_dict, cutoff)
         # fitted_params = lj_model.fit(method="L-BFGS-B")
-        fitted_params = p0
+        fitted_params = lj_model.fit()
+        # fitted_params = p0
         lj_energies, lj_forces, num_atoms = lj_model.lj_pred(
             train_images, fitted_params, params_dict
         )
@@ -108,7 +109,7 @@ def train(train_images, test_images, lj=False):
     )
     calc.model.convergence = {"energy": 0.001, "force": 0.001}
     calc.model.lr = 0.1
-    # calc.train(overwrite=True)
+    calc.train(overwrite=True)
     energy_pred = np.concatenate(
         [calc.get_potential_energy(image) - e0 for image in test_images]
     )
@@ -119,7 +120,7 @@ def train(train_images, test_images, lj=False):
     return energy_pred, force_pred
 
 
-ml_energy, ml_forces = train(training_images, images, lj=False)
+# ml_energy, ml_forces = train(training_images, images, lj=False)
 mllj_energy, mllj_forces = train(training_images, images, lj=True)
 kb = 8.617e-5
 T = 10000
@@ -162,5 +163,5 @@ def plot(name, ml_energy=None, lj_energy=None):
     plt.show()
 
 # plot('ml_only2.png')
-plot('demo/ml.png', ml_energy,  None)
-plot('demo/ml_lj.png', ml_energy, mllj_energy)
+# plot('demo/ml.png', ml_energy,  None)
+plot('demo/ml_lj.png', None, mllj_energy)

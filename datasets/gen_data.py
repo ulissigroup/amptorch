@@ -37,14 +37,12 @@ def generate_data(count, filename, temp, hook, cons_t=False):
         slab.set_constraint(cons)
     slab.center(vacuum=13., axis=2)
     slab.set_calculator(EMT())
-    # slab.set_pbc(True)
-    # dyn = QuasiNewton(slab, trajectory=(filename[:-5] + "_relax.traj"))
-    # dyn.run(fmax=0.05)
-    # traj.write(slab)
+    slab.set_pbc([True, True, False])
+    dyn = QuasiNewton(slab)
+    dyn.run(fmax=0.05)
+    traj.write(slab)
     if cons_t is True:
-        dyn = Langevin(slab, 5 * units.fs, temp * units.kB, 0.002)
-        # dyn = nvtberendsen.NVTBerendsen(slab, 1 * units.fs, temp * units.kB,
-                # taut=0.5*1000*units.fs)
+        dyn = Langevin(slab, 1.0 * units.fs, temp * units.kB, 0.002)
     else:
         dyn = VelocityVerlet(slab, dt=1.0 * units.fs)
     for step in range(count - 1):
@@ -52,10 +50,4 @@ def generate_data(count, filename, temp, hook, cons_t=False):
         traj.write(slab)
 
 
-generate_data(1000, "COCu/COCu_pbc_300.traj", temp=300.0, hook=False, cons_t=True)
-# generate_data(300, "COCu/COCu_pbc.traj", temp=300.0, hook=False, cons_t=False)
-# generate_data(300, "COCu/COCu_pbc_conT.traj", temp=300.0, hook=False, cons_t=True)
-# generate_data(300, "COCu/COCu_pbc_hook.traj", temp=300.0, hook=True, cons_t=False)
-# generate_data(300, "COCu/COCu_pbc_hook_conT.traj", temp=300.0, hook=True, cons_t=True)
-
-
+generate_data(500, "COCu/COCu_nopbc_300K.traj", temp=300.0, hook=False, cons_t=True)
