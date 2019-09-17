@@ -1,46 +1,47 @@
-import sys
+import sys, os
 from ase import io
 from ase.visualize import view
 from ase.build import add_adsorbate, molecule
 from ase import Atoms
 
 
-# data = io.read("../datasets/COCu/COCu_pbc.traj", ":")
-data = io.read("../datasets/COCu/COCu.traj", ":")
-# data  = io.read("MD_results/MLMD_COCu.traj", ":")
-# data = io.read("MD_results/MLMD_COCu_pbc.traj", ":")
-# data = io.read("MD_results/MLMD_LJ_COCu_pbc.traj", ":")
-# data = io.read("MD_results/MLMD_LJ_COCu.traj", ":")
-# f = io.read("../datasets/surface_water.traj", ":")
-# data = io.read("MD_results/C_Cu_distance.traj", ":")
-images = []
-for i in range(100):
-    images.append(data[i])
+def create_movie(location, destination, filename):
+    if not os.path.exists(destination):
+        os.mkdir(destination)
 
-# for i, image in enumerate(images):
-    # image = image.repeat((2, 2, 2))
-    # image.wrap()
-    # image.write('images/%04d.pov'%i, run_povray=True, transparent=False,
-            # pause=False, canvas_width=400, rotation='-45z, -70x',
-            # show_unit_cell=2)
-# !ffmpeg -i images/%04d.png output.gif -y
+    data = io.read(location+filename+".traj", ":")
+    images = [data[i] for i in range(100)]
 
-gif = []
-for i, s in enumerate(images):
-    # for k, v in enumerate(s):
-        # s[k].position[2] -= 10
-    s.rotate(-45, "z", rotate_cell=True)
-    # del s[[atom.index for atom in s if atom.position[1]>=15]]
-    s.rotate(-70, "x", rotate_cell=True)
-    s = s.repeat((3, 3, 1))
-    # s.extend(Atoms("CO", [(-17.690, 17, 40), (-17.690, 18.1, 40)]))
-    s.wrap()
-    # s.wrap(center=(1, 1, 1))
-    s.set_cell((0,0,0))
-    gif.append(s)
+    gif = []
+    for i, s in enumerate(images):
+        # for k, v in enumerate(s):
+            # s[k].position[2] -= 10
+        s.rotate(-45, "z", rotate_cell=True)
+        # del s[[atom.index for atom in s if atom.position[1]>=15]]
+        s.rotate(-70, "x", rotate_cell=True)
+        s = s.repeat((3, 3, 1))
+        # s.extend(Atoms("CO", [(-17.690, 17, 40), (-17.690, 18.1, 40)]))
+        s.wrap()
+        # s.wrap(center=(1, 1, 1))
+        s.set_cell((0, 0, 0))
+        gif.append(s)
 
-# for idx, image in enumerate(gif):
-    # name = str(idx)+'.pov'
-    # io.write(name, image)
-# io.write("MD_results/movies/COCu_ML_wrap.gif", gif, interval=100)
-# io.write("test.gif", f, interval=100)
+    io.write(destination+filename+'.gif', gif, interval=100)
+
+def retrieve_files(prefix, num_images):
+    files = []
+    for i in range(num_images):
+        file_ML = "".join([prefix, "_%s" % (i+1)])
+        file_LJ = "".join([prefix, "_LJ", "_%s" % (i+1)])
+        files.append(file_ML)
+        files.append(file_LJ)
+    return files
+
+# location = "MD_results/COCu/pbc_300K/"
+location = "../datasets/COCu/"
+destination = "MD_results/movies/COCu/pbc_300K/"
+# files = retrieve_files("MLMD_COCu_pbc_300K", 5)
+files = ["COCu_pbc_300K"]
+
+for file in files:
+    create_movie(location, destination, file)
