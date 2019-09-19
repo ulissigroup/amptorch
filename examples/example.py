@@ -17,21 +17,12 @@ from ase.build import molecule
 from ase.calculators.emt import EMT
 
 # define training images
-# IMAGES = "../datasets/water.extxyz"
-IMAGES = "../datasets/COCu/COCu_pbc_500.traj"
+IMAGES = "../datasets/water/water.extxyz"
+# IMAGES = "../datasets/COCu/COCu_pbc_500.traj"
 images = ase.io.read(IMAGES, ":")
 IMAGES = []
-for i in range(100):
+for i in range(400):
     IMAGES.append(images[i])
-
-# g2_etas = np.logspace(np.log10(0.05), np.log10(5.), num=4)
-# g2_rs_s = [0] * 4
-# g4_etas = [0.005]
-# g4_zetas = [1., 4.]
-# g4_gammas = [1., -1.]
-# make_amp_descriptors_simple_nn(IMAGES, g2_etas, g2_rs_s, g4_etas, g4_zetas,
-        # g4_gammas, 6.5)
-# sys.exit()
 
 # define the number of threads to parallelize training across
 torch.set_num_threads(1)
@@ -39,11 +30,13 @@ torch.set_num_threads(1)
 # turn force training on by defining a force coefficient>0
 # define the number of cores to parallelize across for fingerprint calculations
 calc = AMP(model=AMPModel(IMAGES, descriptor=Gaussian(), cores=1,
-    force_coefficient=.3))
+    force_coefficient=0.3))
 
-# define the convergence criteria
 # calc.model.val_frac = 0.3
-calc.model.convergence = {"energy": 0.002, "force": 0.02}
+calc.model.convergence = {"energy": 0.05, "force": 0.02}
+# calc.model.fine_tune = "results/trained_models/amptorch.pt"
+calc.model.structure = [20, 20, 20]
+calc.model.batch_size = 400
 
 # train the model
 calc.train(overwrite=True)
