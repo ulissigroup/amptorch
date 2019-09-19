@@ -5,3 +5,6 @@
 *.amp
 *.txt
 *.pdf
+*.OUTCAR
+*.pt
+
