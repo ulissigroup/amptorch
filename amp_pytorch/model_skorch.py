@@ -37,11 +37,11 @@ class Dense(nn.Linear):
 
     def reset_parameters(self):
         """Weight initialization scheme"""
-        init.constant_(self.weight, 0.05)
+        # init.constant_(self.weight, 0.05)
         init.constant_(self.bias, 0)
 
         # xavier_uniform_(self.weight, gain=np.sqrt(1/2))
-        # kaiming_uniform_(self.weight, nonlinearity="tanh")
+        kaiming_uniform_(self.weight, nonlinearity="tanh")
         # if self.bias is not None:
             # fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
             # bound = 1 / np.sqrt(fan_in)
@@ -129,7 +129,7 @@ class FullNN(nn.Module):
         self.elementwise_models = elementwise_models
         self.activation_fn = elementwise_models[0].activation
 
-    def forward(self, inputs, fprimes=None):
+    def forward(self, inputs):
         """Forward pass through the model - predicting energy and forces
         accordingly.
 
@@ -139,6 +139,8 @@ class FullNN(nn.Module):
 
         input_data = inputs[0]
         batch_size = inputs[1]
+        if self.forcetraining:
+            fprimes = inputs[-1]
         energy_pred = torch.zeros(batch_size, 1).to(self.device)
         force_pred = None
         # Constructs an Nx1 empty tensor to store element energy contributions
@@ -148,6 +150,7 @@ class FullNN(nn.Module):
             idx = torch.tensor([]).to(self.device)
         for index, element in enumerate(self.unique_atoms):
             model_inputs = input_data[element][0]
+            model_inputs.requires_grad = True
             contribution_index = torch.tensor(input_data[element][1]).to(self.device)
             atomwise_outputs = self.elementwise_models[index].forward(model_inputs)
             energy_pred.index_add_(0, contribution_index, atomwise_outputs)
@@ -190,18 +193,20 @@ class CustomLoss(nn.Module):
 
     def forward(
         self,
-        energy_pred,
-        energy_targets,
-        num_atoms,
-        force_pred=None,
-        force_targets=None,
-    ):
+        prediction,
+        target):
+
+        energy_pred = prediction[0]
+        energy_targets = target[0]
+        num_atoms = target[1]
         MSE_loss = nn.MSELoss(reduction="sum")
         energy_per_atom = torch.div(energy_pred, num_atoms)
         targets_per_atom = torch.div(energy_targets, num_atoms)
         energy_loss = MSE_loss(energy_per_atom, targets_per_atom)
 
         if self.alpha > 0:
+            force_pred = prediction[1]
+            force_targets = target[-1]
             num_atoms_force = torch.cat([idx.repeat(int(idx)) for idx in num_atoms])
             num_atoms_force = torch.sqrt(
                 num_atoms_force.reshape(len(num_atoms_force), 1)

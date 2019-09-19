@@ -17,10 +17,12 @@ from ase import units
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md import VelocityVerlet, Langevin
 from ase.calculators.emt import EMT
+from ase.visualize import view
 import os
 
 
-def ml_lj(IMAGES, filename, count, temp, dir="MD_results/", const_t=False, lj=False):
+def ml_lj(IMAGES, filename, count, temp, dir="MD_results/", const_t=False,
+        lj=False, fine_tune=None):
     if not os.path.exists(dir):
         os.mkdir(dir)
     elements = ['C', 'Cu', 'O']
@@ -48,6 +50,9 @@ def ml_lj(IMAGES, filename, count, temp, dir="MD_results/", const_t=False, lj=Fa
             5.559e-2,
             2.398e-2
         ]
+        p0 = [2.08022879, 1.89536258e-11, -5.47894512e-3, -2.10675310,
+                1.94943321e-3, 7.18881277e-3, 2.29444069, 1.00651095e-1,
+                3.624737e-2]
         params_dict = {"C": [], "O": [], "Cu": []}
         lj_model = lj_optim(IMAGES, p0, params_dict, cutoff)
         # fitted_params = lj_model.fit(method="L-BFGS-B")
@@ -83,9 +88,10 @@ def ml_lj(IMAGES, filename, count, temp, dir="MD_results/", const_t=False, lj=Fa
 
     # calc.model.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     calc.model.convergence = {"energy": 0.002, "force": 0.02}
-    calc.model.lr = 1e-1
+    calc.model.lr = 1e-2
+    # calc.model.fine_tune = fine_tune
     # calc.model.optimizer = optim.SGD
-    # calc.model.val_frac = 0.2
+    calc.model.val_frac = 0.2
     calc.model.structure = [20, 20, 20]
 
     # train the model
@@ -122,28 +128,38 @@ def multiple_runs(images, filename, dir, num_images, num_iters, temp):
 
 '''Runs multiple simulations of resampled LJ models and saves corresponding
 trajectory files'''
-def multiple_samples(images, sample_images, filename, dir, num_images, num_samples, num_iters, temp):
+def multiple_samples(images, sample_images, filename, dir, num_images,
+        num_samples, num_iters, temp, lj, fine_tune):
     sample_points = random.sample(range(100), num_samples)
     data = [images[idx] for idx in range(num_images)]
     for idx in sample_points:
         sample_images[idx].set_calculator(EMT())
         data.append(sample_images[idx])
     for i in range(num_iters):
-        ml_name = filename+"_%s_resample_%s" % (num_samples, str(i+1))
-        lj_name = filename+"_LJ_%s_resample_%s" % (num_samples, str(i+1))
-        ml_lj(data, ml_name, count=num_images, dir=dir, temp=temp, const_t=True, lj=False)
-        ml_lj(data, lj_name, count=num_images, dir=dir, temp=temp, const_t=True, lj=True)
+        name = filename+"_%s_resample_%s" % (num_samples, str(i+1))
+        if lj:
+            name = filename+"_LJ_%s_resample_%s" % (num_samples, str(i+1))
+        ml_lj(data, name, count=num_images, dir=dir, temp=temp, const_t=True,
+                lj=lj, fine_tune=fine_tune)
 
 
 # define training images
 images0 = ase.io.read("../datasets/COCu/COCu_pbc_300K.traj", ":")
-images1 = ase.io.read("MD_results/COCu/pbc_300K/MLMD_COCu_pbc_300K_LJ_1.traj", ":")
+images_LJ = ase.io.read("MD_results/COCu/pbc_300K/MLMD_COCu_pbc_300K_LJ_1.traj", ":")
+images_ML = ase.io.read("MD_results/COCu/pbc_300K/MLMD_COCu_pbc_300K_1.traj", ":")
 
-# multiple_runs(images0, filename="MLMD_COCu_pbc_300K",
-        # dir="MD_results/COCu/pbc_300K/", num_images=100, num_iters=5, temp=300)
+multiple_runs(images0, filename="MLMD_COCu_pbc_300K_val",
+        dir="MD_results/COCu/pbc_300K/", num_images=100, num_iters=2, temp=300)
 
-samples = [10, 20, 30]
-for i in samples:
-    multiple_samples(images0, images1, filename="MLMD_COCu_pbc_300K",
-            dir="MD_results/COCu/pbc_300K/", num_images=100, num_samples=i,
-            num_iters=2, temp=300)
+# samples = [10, 20, 30]
+# for i in samples:
+    # multiple_samples(images0, images_LJ, filename="MLMD_COCu_pbc_300K_ft",
+            # dir="MD_results/COCu/pbc_300K/", num_images=100, num_samples=i,
+            # num_iters=3, temp=300, lj=True,
+            # fine_tune="results/trained_models/MLMD_COCu_pbc_300K_LJ_1.pt")
+
+    # multiple_samples(images0, images_ML, filename="MLMD_COCu_pbc_300K_ft",
+                # dir="MD_results/COCu/pbc_300K/", num_images=100, num_samples=i,
+                # num_iters=3, temp=300, lj=False,
+                # fine_tune="results/trained_models/MLMD_COCu_pbc_300K_1.pt")
+

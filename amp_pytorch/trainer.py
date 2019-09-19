@@ -7,8 +7,7 @@ import copy
 from amp.utilities import Logger
 import matplotlib.pyplot as plt
 import torch.nn as nn
-import torch
-
+import torch 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
 
@@ -104,8 +103,8 @@ class Trainer:
 
         epoch = 0
         convergence = False
-        while not convergence:
-        # while epoch <= 3:
+        # while not convergence:
+        while epoch <= 1000:
             log_epoch("{} Epoch {}".format(time.asctime(), epoch + 1))
             log_epoch("-" * 30)
 

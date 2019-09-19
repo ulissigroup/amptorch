@@ -11,6 +11,7 @@ import copy
 import torch.optim as optim
 from torch.utils.data import DataLoader
 import torch.nn as nn
+import torch
 from amp.utilities import Logger
 from amp.descriptor.gaussian import Gaussian
 import matplotlib.pyplot as plt
@@ -94,6 +95,7 @@ class AMPModel:
         lr=1,
         criteria={"energy": 0.02, "force": 0.02},
         lj_data=None,
+        fine_tune=None
     ):
         if not os.path.exists("results"):
             os.mkdir("results")
@@ -115,6 +117,7 @@ class AMPModel:
         self.lr = lr
         self.convergence = criteria
         self.lj_data = lj_data
+        self.fine_tune = fine_tune
 
         self.forcetraining = False
         if force_coefficient > 0:
@@ -183,6 +186,8 @@ class AMPModel:
         model = FullNN(
             self.unique_atoms, architecture, self.device, self.forcetraining
         ).to(self.device)
+        if self.fine_tune is not None:
+            model.load_state_dict(torch.load(self.fine_tune))
 
         self.log("Activation Function: %s" % model.activation_fn)
         self.log("Loss Function: %s" % self.lossfunction)
