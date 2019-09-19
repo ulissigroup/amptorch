@@ -53,11 +53,11 @@ def kde_plots(data0, data1, data2, filename):
     plt.title("Force Distributions", fontsize=35)
     # plt.title("Force Dist. - EMT evaluated", fontsize=30)
     # plt.title("Force Dist.", fontsize=30)
-    plt.xlim(left=-3, right=4)
+    # plt.xlim(left=-3, right=4)
     # plt.xlim(left=0, right=100)
     plt.xticks(fontsize=25)
     plt.yticks(fontsize=25)
-    plt.ylim(0, 3)
+    # plt.ylim(0, 3)
     # plt.annotate('EMT (target)', (-2, .75), fontsize=30, color='steelblue')
     plt.annotate('EMT (target)', (0.3, 1.75), fontsize=30, color='steelblue')
     # plt.annotate('ML-apparent', (-2.1, .75), fontsize=30, color='r')
@@ -65,39 +65,18 @@ def kde_plots(data0, data1, data2, filename):
     # plt.annotate('ML-LJ-apparent', (-2.1, 2.5), fontsize=30, color='r')
     # plt.annotate('ML-LJ', (13, .35), fontsize=30, color='darkorange')
     # plt.annotate('ML-LJ-actual', (.8, 1.), fontsize=30, color='darkorange')
-    plt.savefig("MD_results/plots/" + filename + "_kde.png", dpi=300)
+    # plt.savefig("MD_results/plots/" + filename + "_kde.png", dpi=300)
     plt.show()
 
 
 # images_emt = ase.io.read("../datasets/COCu/COCu_pbc.traj", ":")
 images_emt = ase.io.read("../datasets/COCu/COCu.traj", ":")
 images0 = []
-for i in range(101):
+for i in range(100):
     images0.append(images_emt[i])
-for image in images0:
-    print('PE: %.3f, KE: %.3f, tot: %.3f, T: %3.0fK' %
-            (image.get_potential_energy(), image.get_kinetic_energy(),
-                (image.get_potential_energy()+image.get_kinetic_energy()),
-                image.get_kinetic_energy()/(1.5*units.kB)) )
-sys.exit()
-# images1 = ase.io.read("MD_results/MLMD_LJ_COCu_2.traj", ":")
-images1 = ase.io.read("MD_results/MLMD_COCu.traj", ":")
-# images1 = ase.io.read("MD_results/MLMD_LJ_COCu_pbc2.traj", ":")
-# images2 = ase.io.read("MD_results/MLMD_COCu_new.traj", ":")
-images2 = ase.io.read("MD_results/MLMD_COCu_pbc.traj", ":")
-# images2 = ase.io.read("MD_results/MLMD_COCu.traj", ":")
-images2_2 = ase.io.read("MD_results/MLMD_COCu.traj", ":")
 
-
-# j = images1[50]
-# j.rotate(-90, 'x', rotate_cell=True)
-# j.rotate(30, 'y', rotate_cell=True)
-# j.rotate(20, 'x', rotate_cell=True)
-# j = j.repeat((3, 3, 1))
-# j.wrap()
-# ase.io.write('emtmllj.png',j)
-# sys.exit()
-
+images1 = ase.io.read("MD_results/COCu/pbc_300K/MLMD_COCu_pbc_300K_1.traj", ":")
+images2 = ase.io.read("MD_results/COCu/pbc_300K/MLMD_COCu_pbc_300K_LJ_1.traj", ":")
 
 for image in images1:
     image.set_calculator(EMT())

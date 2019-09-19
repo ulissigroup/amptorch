@@ -1,0 +1,11663 @@
+LJ optimization initiated...
+0.01487245676194561
+0.014871043154742504
+0.014872323067517564
+0.014891294117152773
+0.01487298859465082
+0.014872653935311966
+0.01486391959153072
+0.03346432242448272
+0.016936749814528522
+0.012357371334670596
+0.014027296575803807
+0.012398388517407957
+0.01319066636819482
+0.012940455962709482
+0.012669092646118606
+0.012409218974484543
+0.012197924844878453
+0.012245118250151477
+0.01210136332981186
+0.012829955205323495
+0.012238513230286262
+0.012070114289794952
+0.01984090520132994
+0.011468872726925296
+0.011625776285246397
+0.011372010850776874
+0.011569351097779294
+0.011259828540359292
+0.011391891537652042
+0.011137958642918272
+0.011189753757166397
+0.011663354064498716
+0.01280163441371744
+0.011542035048123511
+0.0116034922254768
+0.011173685747745524
+0.012036812679952068
+0.011853517665193061
+0.012359145820889166
+0.011132573893267899
+0.011860093003223035
+0.011349547127886873
+0.011726681626756264
+0.011273680411609902
+0.011914486303971872
+0.011173137296036039
+0.011479947062335672
+0.011216144583740966
+0.011153907998275389
+0.011201892217483456
+0.01135780719657227
+0.011160091981786935
+0.011301853634989426
+0.011130588366292342
+0.011342020898963662
+0.011121459308174434
+0.011219568093729988
+0.011109774032683878
+0.011236478102651524
+0.011092545648475758
+0.011226387547032594
+0.011084616484823223
+0.01129397551453381
+0.011084072286695675
+0.011146454547483989
+0.011162354819735702
+0.011087568576465905
+0.011169616916577502
+0.011081776444323212
+0.011154328194175642
+0.011085977652220387
+0.011173347869225556
+0.011077281569658814
+0.011151029530289567
+0.01108411230422667
+0.01114959056901951
+0.011080842057378923
+0.011115432667290185
+0.011078766262345982
+0.01109293368414193
+0.01107381165265557
+0.011086454709578593
+0.011072426076495064
+0.011084358513514081
+0.01108048947249091
+0.011100980364232294
+0.01106939216378457
+0.011090978704013554
+0.011071137358284178
+0.011089749324204813
+0.011070975852769808
+0.011087742262709518
+0.01107010876218404
+0.011077591850327344
+0.011092162217426534
+0.011069439914613987
+0.011087314666682693
+0.011069336395830558
+0.011076194799448635
+0.011082369611946936
+0.011069009481567783
+0.01107495636141214
+0.011068768820904896
+0.011077369647083673
+0.011068356522654177
+0.011072983898091793
+0.01106836247545192
+0.011077837308839437
+0.011067504145236561
+Optimizer terminated successfully.
+Calculating fingerprints...
+Fingerprints Calculated!
+Training Initiated!
+energy loss: 1.956782
+force loss: 7.281087
+
+energy loss: 0.601123
+force loss: 2.871310
+
+energy loss: 0.088654
+force loss: 1.772087
+
+energy loss: 0.093047
+force loss: 1.161728
+
+energy loss: 0.125673
+force loss: 0.733470
+
+energy loss: 0.125639
+force loss: 0.509376
+
+energy loss: 0.128069
+force loss: 0.380388
+
+energy loss: 0.130755
+force loss: 0.303463
+
+energy loss: 0.127511
+force loss: 0.268829
+
+energy loss: 0.122218
+force loss: 0.246355
+
+energy loss: 0.116855
+force loss: 0.230099
+
+energy loss: 0.113955
+force loss: 0.219089
+
+energy loss: 0.110715
+force loss: 0.212516
+
+energy loss: 0.104466
+force loss: 0.211658
+
+energy loss: 0.099439
+force loss: 0.206110
+
+energy loss: 0.094819
+force loss: 0.200137
+
+energy loss: 0.091727
+force loss: 0.197915
+
+energy loss: 0.089062
+force loss: 0.192350
+
+energy loss: 0.081948
+force loss: 0.190815
+
+energy loss: 0.079200
+force loss: 0.189601
+
+energy loss: 0.074298
+force loss: 0.191859
+
+energy loss: 0.071297
+force loss: 0.190663
+
+energy loss: 0.067137
+force loss: 0.189638
+
+energy loss: 0.066194
+force loss: 0.187212
+
+energy loss: 0.062414
+force loss: 0.187120
+
+energy loss: 0.057960
+force loss: 0.185274
+
+energy loss: 0.055623
+force loss: 0.180488
+
+energy loss: 0.053126
+force loss: 0.177190
+
+energy loss: 0.050152
+force loss: 0.175787
+
+energy loss: 0.047865
+force loss: 0.175002
+
+energy loss: 0.045646
+force loss: 0.173290
+
+energy loss: 0.044973
+force loss: 0.171539
+
+energy loss: 0.043849
+force loss: 0.169318
+
+energy loss: 0.042164
+force loss: 0.167768
+
+energy loss: 0.040995
+force loss: 0.164899
+
+energy loss: 0.039919
+force loss: 0.163939
+
+energy loss: 0.039328
+force loss: 0.162030
+
+energy loss: 0.039072
+force loss: 0.159884
+
+energy loss: 0.038631
+force loss: 0.158600
+
+energy loss: 0.037207
+force loss: 0.157808
+
+energy loss: 0.036857
+force loss: 0.157030
+
+energy loss: 0.036549
+force loss: 0.155476
+
+energy loss: 0.036671
+force loss: 0.154079
+
+energy loss: 0.036109
+force loss: 0.153304
+
+energy loss: 0.036108
+force loss: 0.152375
+
+energy loss: 0.035970
+force loss: 0.151561
+
+energy loss: 0.035759
+force loss: 0.149963
+
+energy loss: 0.035713
+force loss: 0.148440
+
+energy loss: 0.035037
+force loss: 0.147970
+
+energy loss: 0.034818
+force loss: 0.147352
+
+energy loss: 0.034676
+force loss: 0.146965
+
+energy loss: 0.034563
+force loss: 0.146467
+
+energy loss: 0.034184
+force loss: 0.145892
+
+energy loss: 0.033786
+force loss: 0.145578
+
+energy loss: 0.033459
+force loss: 0.144918
+
+energy loss: 0.033228
+force loss: 0.144639
+
+energy loss: 0.032913
+force loss: 0.144281
+
+energy loss: 0.032674
+force loss: 0.144007
+
+energy loss: 0.032123
+force loss: 0.143753
+
+energy loss: 0.032110
+force loss: 0.143476
+
+energy loss: 0.031483
+force loss: 0.143210
+
+energy loss: 0.031064
+force loss: 0.142910
+
+energy loss: 0.030685
+force loss: 0.142668
+
+energy loss: 0.030386
+force loss: 0.142404
+
+energy loss: 0.030096
+force loss: 0.141691
+
+energy loss: 0.029648
+force loss: 0.141222
+
+energy loss: 0.029030
+force loss: 0.140786
+
+energy loss: 0.028953
+force loss: 0.140447
+
+energy loss: 0.028730
+force loss: 0.140212
+
+energy loss: 0.028431
+force loss: 0.140022
+
+energy loss: 0.028192
+force loss: 0.139594
+
+energy loss: 0.028066
+force loss: 0.139060
+
+energy loss: 0.027773
+force loss: 0.138645
+
+energy loss: 0.027516
+force loss: 0.138512
+
+energy loss: 0.027089
+force loss: 0.138313
+
+energy loss: 0.026971
+force loss: 0.137940
+
+energy loss: 0.026520
+force loss: 0.137585
+
+energy loss: 0.026038
+force loss: 0.137338
+
+energy loss: 0.025884
+force loss: 0.137111
+
+energy loss: 0.025734
+force loss: 0.136876
+
+energy loss: 0.025592
+force loss: 0.136498
+
+energy loss: 0.025393
+force loss: 0.136213
+
+energy loss: 0.025281
+force loss: 0.135917
+
+energy loss: 0.025009
+force loss: 0.135683
+
+energy loss: 0.025096
+force loss: 0.135314
+
+energy loss: 0.024950
+force loss: 0.135072
+
+energy loss: 0.024878
+force loss: 0.134968
+
+energy loss: 0.024768
+force loss: 0.134819
+
+energy loss: 0.024704
+force loss: 0.134642
+
+energy loss: 0.024609
+force loss: 0.134469
+
+energy loss: 0.024564
+force loss: 0.134249
+
+energy loss: 0.024499
+force loss: 0.134085
+
+energy loss: 0.024478
+force loss: 0.133877
+
+energy loss: 0.024392
+force loss: 0.133759
+
+energy loss: 0.024369
+force loss: 0.133524
+
+energy loss: 0.024317
+force loss: 0.133435
+
+energy loss: 0.024231
+force loss: 0.133317
+
+energy loss: 0.024216
+force loss: 0.133211
+
+energy loss: 0.024188
+force loss: 0.133127
+
+energy loss: 0.024231
+force loss: 0.132974
+
+energy loss: 0.024260
+force loss: 0.132840
+
+energy loss: 0.024179
+force loss: 0.132594
+
+energy loss: 0.024184
+force loss: 0.132423
+
+energy loss: 0.024244
+force loss: 0.132219
+
+energy loss: 0.024236
+force loss: 0.132134
+
+energy loss: 0.024253
+force loss: 0.132030
+
+energy loss: 0.024247
+force loss: 0.131895
+
+energy loss: 0.024276
+force loss: 0.131702
+
+energy loss: 0.024306
+force loss: 0.131585
+
+energy loss: 0.024283
+force loss: 0.131480
+
+energy loss: 0.024264
+force loss: 0.131378
+
+energy loss: 0.024259
+force loss: 0.131300
+
+energy loss: 0.024251
+force loss: 0.131244
+
+energy loss: 0.024161
+force loss: 0.131215
+
+energy loss: 0.024167
+force loss: 0.131113
+
+energy loss: 0.024159
+force loss: 0.131042
+
+energy loss: 0.024200
+force loss: 0.130896
+
+energy loss: 0.024158
+force loss: 0.130838
+
+energy loss: 0.024143
+force loss: 0.130768
+
+energy loss: 0.024184
+force loss: 0.130671
+
+energy loss: 0.024211
+force loss: 0.130576
+
+energy loss: 0.024186
+force loss: 0.130545
+
+energy loss: 0.024191
+force loss: 0.130504
+
+energy loss: 0.024195
+force loss: 0.130473
+
+energy loss: 0.024236
+force loss: 0.130395
+
+energy loss: 0.024234
+force loss: 0.130355
+
+energy loss: 0.024234
+force loss: 0.130290
+
+energy loss: 0.024262
+force loss: 0.130189
+
+energy loss: 0.024236
+force loss: 0.130124
+
+energy loss: 0.024258
+force loss: 0.130047
+
+energy loss: 0.024293
+force loss: 0.129907
+
+energy loss: 0.024293
+force loss: 0.129818
+
+energy loss: 0.024284
+force loss: 0.129784
+
+energy loss: 0.024299
+force loss: 0.129651
+
+energy loss: 0.024260
+force loss: 0.129598
+
+energy loss: 0.024238
+force loss: 0.129528
+
+energy loss: 0.024247
+force loss: 0.129441
+
+energy loss: 0.024227
+force loss: 0.129398
+
+energy loss: 0.024228
+force loss: 0.129378
+
+energy loss: 0.024205
+force loss: 0.129334
+
+energy loss: 0.024209
+force loss: 0.129301
+
+energy loss: 0.024183
+force loss: 0.129247
+
+energy loss: 0.024208
+force loss: 0.129181
+
+energy loss: 0.024213
+force loss: 0.129149
+
+energy loss: 0.024199
+force loss: 0.129129
+
+energy loss: 0.024176
+force loss: 0.129100
+
+energy loss: 0.024164
+force loss: 0.129056
+
+energy loss: 0.024191
+force loss: 0.128976
+
+energy loss: 0.024177
+force loss: 0.128904
+
+energy loss: 0.024166
+force loss: 0.128874
+
+energy loss: 0.024218
+force loss: 0.128773
+
+energy loss: 0.024215
+force loss: 0.128697
+
+energy loss: 0.024218
+force loss: 0.128618
+
+energy loss: 0.024250
+force loss: 0.128519
+
+energy loss: 0.024242
+force loss: 0.128459
+
+energy loss: 0.024297
+force loss: 0.128333
+
+energy loss: 0.024283
+force loss: 0.128275
+
+energy loss: 0.024272
+force loss: 0.128165
+
+energy loss: 0.024274
+force loss: 0.128134
+
+energy loss: 0.024265
+force loss: 0.128122
+
+energy loss: 0.024260
+force loss: 0.128079
+
+energy loss: 0.024243
+force loss: 0.128041
+
+energy loss: 0.024245
+force loss: 0.127979
+
+energy loss: 0.024243
+force loss: 0.127919
+
+energy loss: 0.024198
+force loss: 0.127843
+
+energy loss: 0.024218
+force loss: 0.127770
+
+energy loss: 0.024201
+force loss: 0.127692
+
+energy loss: 0.024218
+force loss: 0.127584
+
+energy loss: 0.024248
+force loss: 0.127466
+
+energy loss: 0.024285
+force loss: 0.127374
+
+energy loss: 0.024303
+force loss: 0.127281
+
+energy loss: 0.024305
+force loss: 0.127204
+
+energy loss: 0.024331
+force loss: 0.127067
+
+energy loss: 0.024350
+force loss: 0.126954
+
+energy loss: 0.024343
+force loss: 0.126935
+
+energy loss: 0.024369
+force loss: 0.126781
+
+energy loss: 0.024344
+force loss: 0.126704
+
+energy loss: 0.024360
+force loss: 0.126636
+
+energy loss: 0.024356
+force loss: 0.126585
+
+energy loss: 0.024390
+force loss: 0.126478
+
+energy loss: 0.024353
+force loss: 0.126435
+
+energy loss: 0.024321
+force loss: 0.126408
+
+energy loss: 0.024304
+force loss: 0.126342
+
+energy loss: 0.024262
+force loss: 0.126150
+
+energy loss: 0.024211
+force loss: 0.126057
+
+energy loss: 0.024155
+force loss: 0.125908
+
+energy loss: 0.024074
+force loss: 0.125805
+
+energy loss: 0.024013
+force loss: 0.125689
+
+energy loss: 0.023936
+force loss: 0.125583
+
+energy loss: 0.023927
+force loss: 0.125524
+
+energy loss: 0.023930
+force loss: 0.125428
+
+energy loss: 0.023940
+force loss: 0.125354
+
+energy loss: 0.023897
+force loss: 0.125219
+
+energy loss: 0.023877
+force loss: 0.125159
+
+energy loss: 0.023856
+force loss: 0.125004
+
+energy loss: 0.023855
+force loss: 0.124927
+
+energy loss: 0.023828
+force loss: 0.124863
+
+energy loss: 0.023827
+force loss: 0.124818
+
+energy loss: 0.023836
+force loss: 0.124762
+
+energy loss: 0.023857
+force loss: 0.124582
+
+energy loss: 0.023836
+force loss: 0.124533
+
+energy loss: 0.023819
+force loss: 0.124472
+
+energy loss: 0.023812
+force loss: 0.124439
+
+energy loss: 0.023835
+force loss: 0.124361
+
+energy loss: 0.023805
+force loss: 0.124318
+
+energy loss: 0.023777
+force loss: 0.124283
+
+energy loss: 0.023781
+force loss: 0.124195
+
+energy loss: 0.023774
+force loss: 0.124144
+
+energy loss: 0.023785
+force loss: 0.124094
+
+energy loss: 0.023775
+force loss: 0.124048
+
+energy loss: 0.023806
+force loss: 0.123978
+
+energy loss: 0.023788
+force loss: 0.123966
+
+energy loss: 0.023767
+force loss: 0.123912
+
+energy loss: 0.023759
+force loss: 0.123832
+
+energy loss: 0.023729
+force loss: 0.123804
+
+energy loss: 0.023742
+force loss: 0.123729
+
+energy loss: 0.023663
+force loss: 0.123669
+
+energy loss: 0.023646
+force loss: 0.123658
+
+energy loss: 0.023624
+force loss: 0.123638
+
+energy loss: 0.023593
+force loss: 0.123592
+
+energy loss: 0.023576
+force loss: 0.123564
+
+energy loss: 0.023554
+force loss: 0.123513
+
+energy loss: 0.023549
+force loss: 0.123461
+
+energy loss: 0.023538
+force loss: 0.123432
+
+energy loss: 0.023532
+force loss: 0.123409
+
+energy loss: 0.023562
+force loss: 0.123350
+
+energy loss: 0.023557
+force loss: 0.123325
+
+energy loss: 0.023571
+force loss: 0.123282
+
+energy loss: 0.023605
+force loss: 0.123202
+
+energy loss: 0.023629
+force loss: 0.123143
+
+energy loss: 0.023612
+force loss: 0.123119
+
+energy loss: 0.023588
+force loss: 0.123061
+
+energy loss: 0.023590
+force loss: 0.123016
+
+energy loss: 0.023588
+force loss: 0.122979
+
+energy loss: 0.023580
+force loss: 0.122931
+
+energy loss: 0.023581
+force loss: 0.122878
+
+energy loss: 0.023546
+force loss: 0.122846
+
+energy loss: 0.023531
+force loss: 0.122799
+
+energy loss: 0.023506
+force loss: 0.122739
+
+energy loss: 0.023514
+force loss: 0.122711
+
+energy loss: 0.023516
+force loss: 0.122683
+
+energy loss: 0.023519
+force loss: 0.122620
+
+energy loss: 0.023523
+force loss: 0.122510
+
+energy loss: 0.023501
+force loss: 0.122458
+
+energy loss: 0.023507
+force loss: 0.122404
+
+energy loss: 0.023529
+force loss: 0.122354
+
+energy loss: 0.023520
+force loss: 0.122278
+
+energy loss: 0.023519
+force loss: 0.122219
+
+energy loss: 0.023539
+force loss: 0.122099
+
+energy loss: 0.023538
+force loss: 0.122028
+
+energy loss: 0.023568
+force loss: 0.121933
+
+energy loss: 0.023568
+force loss: 0.121866
+
+energy loss: 0.023608
+force loss: 0.121784
+
+energy loss: 0.023655
+force loss: 0.121690
+
+energy loss: 0.023664
+force loss: 0.121650
+
+energy loss: 0.023694
+force loss: 0.121584
+
+energy loss: 0.023702
+force loss: 0.121554
+
+energy loss: 0.023710
+force loss: 0.121514
+
+energy loss: 0.023723
+force loss: 0.121450
+
+energy loss: 0.023783
+force loss: 0.121333
+
+energy loss: 0.023874
+force loss: 0.121192
+
+energy loss: 0.023894
+force loss: 0.121146
+
+energy loss: 0.023949
+force loss: 0.121053
+
+energy loss: 0.023975
+force loss: 0.120951
+
+energy loss: 0.024064
+force loss: 0.120809
+
+energy loss: 0.024060
+force loss: 0.120748
+
+energy loss: 0.024048
+force loss: 0.120712
+
+energy loss: 0.024080
+force loss: 0.120607
+
+energy loss: 0.024093
+force loss: 0.120513
+
+energy loss: 0.024099
+force loss: 0.120414
+
+energy loss: 0.024087
+force loss: 0.120343
+
+energy loss: 0.024107
+force loss: 0.120286
+
+energy loss: 0.024036
+force loss: 0.120265
+
+energy loss: 0.024029
+force loss: 0.120221
+
+energy loss: 0.024078
+force loss: 0.120152
+
+energy loss: 0.024069
+force loss: 0.120138
+
+energy loss: 0.024112
+force loss: 0.120080
+
+energy loss: 0.024107
+force loss: 0.120037
+
+energy loss: 0.024118
+force loss: 0.119995
+
+energy loss: 0.024117
+force loss: 0.119954
+
+energy loss: 0.024138
+force loss: 0.119906
+
+energy loss: 0.024121
+force loss: 0.119877
+
+energy loss: 0.024146
+force loss: 0.119831
+
+energy loss: 0.024141
+force loss: 0.119815
+
+energy loss: 0.024123
+force loss: 0.119799
+
+energy loss: 0.024129
+force loss: 0.119756
+
+energy loss: 0.024102
+force loss: 0.119732
+
+energy loss: 0.024102
+force loss: 0.119707
+
+energy loss: 0.024108
+force loss: 0.119665
+
+energy loss: 0.024115
+force loss: 0.119643
+
+energy loss: 0.024106
+force loss: 0.119638
+
+Training complete in 291 steps
+Training complete in 20m 53s
+LJ optimization initiated...
+0.01487245676194561
+0.014871043154742504
+0.014872323067517564
+0.014891294117152773
+0.01487298859465082
+0.014872653935311966
+0.01486391959153072
+0.03346432242448272
+0.016936749814528522
+0.012357371334670596
+0.014027296575803807
+0.012398388517407957
+0.01319066636819482
+0.012940455962709482
+0.012669092646118606
+0.012409218974484543
+0.012197924844878453
+0.012245118250151477
+0.01210136332981186
+0.012829955205323495
+0.012238513230286262
+0.012070114289794952
+0.01984090520132994
+0.011468872726925296
+0.011625776285246397
+0.011372010850776874
+0.011569351097779294
+0.011259828540359292
+0.011391891537652042
+0.011137958642918272
+0.011189753757166397
+0.011663354064498716
+0.01280163441371744
+0.011542035048123511
+0.0116034922254768
+0.011173685747745524
+0.012036812679952068
+0.011853517665193061
+0.012359145820889166
+0.011132573893267899
+0.011860093003223035
+0.011349547127886873
+0.011726681626756264
+0.011273680411609902
+0.011914486303971872
+0.011173137296036039
+0.011479947062335672
+0.011216144583740966
+0.011153907998275389
+0.011201892217483456
+0.01135780719657227
+0.011160091981786935
+0.011301853634989426
+0.011130588366292342
+0.011342020898963662
+0.011121459308174434
+0.011219568093729988
+0.011109774032683878
+0.011236478102651524
+0.011092545648475758
+0.011226387547032594
+0.011084616484823223
+0.01129397551453381
+0.011084072286695675
+0.011146454547483989
+0.011162354819735702
+0.011087568576465905
+0.011169616916577502
+0.011081776444323212
+0.011154328194175642
+0.011085977652220387
+0.011173347869225556
+0.011077281569658814
+0.011151029530289567
+0.01108411230422667
+0.01114959056901951
+0.011080842057378923
+0.011115432667290185
+0.011078766262345982
+0.01109293368414193
+0.01107381165265557
+0.011086454709578593
+0.011072426076495064
+0.011084358513514081
+0.01108048947249091
+0.011100980364232294
+0.01106939216378457
+0.011090978704013554
+0.011071137358284178
+0.011089749324204813
+0.011070975852769808
+0.011087742262709518
+0.01107010876218404
+0.011077591850327344
+0.011092162217426534
+0.011069439914613987
+0.011087314666682693
+0.011069336395830558
+0.011076194799448635
+0.011082369611946936
+0.011069009481567783
+0.01107495636141214
+0.011068768820904896
+0.011077369647083673
+0.011068356522654177
+0.011072983898091793
+0.01106836247545192
+0.011077837308839437
+0.011067504145236561
+Optimizer terminated successfully.
+Calculating fingerprints...
+Fingerprints Calculated!
+Training Initiated!
+energy loss: 0.895324
+force loss: 4.080294
+
+energy loss: 0.713146
+force loss: 2.854086
+
+energy loss: 0.297372
+force loss: 1.533076
+
+energy loss: 0.120545
+force loss: 1.097061
+
+energy loss: 0.075815
+force loss: 0.896869
+
+energy loss: 0.073972
+force loss: 0.746910
+
+energy loss: 0.070195
+force loss: 0.660288
+
+energy loss: 0.067810
+force loss: 0.559446
+
+energy loss: 0.072431
+force loss: 0.490508
+
+energy loss: 0.073099
+force loss: 0.456991
+
+energy loss: 0.068036
+force loss: 0.426612
+
+energy loss: 0.065953
+force loss: 0.404224
+
+energy loss: 0.065416
+force loss: 0.383174
+
+energy loss: 0.065236
+force loss: 0.369879
+
+energy loss: 0.065582
+force loss: 0.349920
+
+energy loss: 0.065326
+force loss: 0.335738
+
+energy loss: 0.065230
+force loss: 0.322444
+
+energy loss: 0.064968
+force loss: 0.311860
+
+energy loss: 0.064880
+force loss: 0.305952
+
+energy loss: 0.064626
+force loss: 0.295560
+
+energy loss: 0.064259
+force loss: 0.283571
+
+energy loss: 0.063830
+force loss: 0.275842
+
+energy loss: 0.063476
+force loss: 0.271787
+
+energy loss: 0.063501
+force loss: 0.262345
+
+energy loss: 0.063417
+force loss: 0.261298
+
+energy loss: 0.063151
+force loss: 0.253850
+
+energy loss: 0.063055
+force loss: 0.251468
+
+energy loss: 0.063127
+force loss: 0.245206
+
+energy loss: 0.062910
+force loss: 0.243959
+
+energy loss: 0.062857
+force loss: 0.242950
+
+energy loss: 0.062743
+force loss: 0.239756
+
+energy loss: 0.061944
+force loss: 0.236624
+
+energy loss: 0.061744
+force loss: 0.234528
+
+energy loss: 0.061444
+force loss: 0.233177
+
+energy loss: 0.060806
+force loss: 0.229104
+
+energy loss: 0.060585
+force loss: 0.226069
+
+energy loss: 0.060672
+force loss: 0.224386
+
+energy loss: 0.060095
+force loss: 0.221001
+
+energy loss: 0.059678
+force loss: 0.219701
+
+energy loss: 0.059766
+force loss: 0.218808
+
+energy loss: 0.059556
+force loss: 0.216307
+
+energy loss: 0.059120
+force loss: 0.212540
+
+energy loss: 0.058850
+force loss: 0.211952
+
+energy loss: 0.058481
+force loss: 0.209315
+
+energy loss: 0.058306
+force loss: 0.208022
+
+energy loss: 0.058200
+force loss: 0.205164
+
+energy loss: 0.058063
+force loss: 0.204351
+
+energy loss: 0.057418
+force loss: 0.198989
+
+energy loss: 0.057203
+force loss: 0.197431
+
+energy loss: 0.057252
+force loss: 0.196521
+
+energy loss: 0.056955
+force loss: 0.195528
+
+energy loss: 0.056987
+force loss: 0.194081
+
+energy loss: 0.056868
+force loss: 0.192835
+
+energy loss: 0.056606
+force loss: 0.192065
+
+energy loss: 0.056158
+force loss: 0.188662
+
+energy loss: 0.055971
+force loss: 0.187815
+
+energy loss: 0.055977
+force loss: 0.187453
+
+energy loss: 0.055511
+force loss: 0.186649
+
+energy loss: 0.054956
+force loss: 0.184101
+
+energy loss: 0.054669
+force loss: 0.183182
+
+energy loss: 0.054596
+force loss: 0.182857
+
+energy loss: 0.054139
+force loss: 0.180798
+
+energy loss: 0.053835
+force loss: 0.179828
+
+energy loss: 0.053493
+force loss: 0.179310
+
+energy loss: 0.053360
+force loss: 0.178786
+
+energy loss: 0.053326
+force loss: 0.178331
+
+energy loss: 0.052957
+force loss: 0.177295
+
+energy loss: 0.052888
+force loss: 0.176811
+
+energy loss: 0.052794
+force loss: 0.176025
+
+energy loss: 0.052403
+force loss: 0.175436
+
+energy loss: 0.052424
+force loss: 0.175068
+
+energy loss: 0.052482
+force loss: 0.174848
+
+energy loss: 0.052151
+force loss: 0.174335
+
+energy loss: 0.052154
+force loss: 0.173753
+
+energy loss: 0.052034
+force loss: 0.172927
+
+energy loss: 0.051818
+force loss: 0.172420
+
+energy loss: 0.051811
+force loss: 0.171731
+
+energy loss: 0.051712
+force loss: 0.171289
+
+energy loss: 0.051695
+force loss: 0.171031
+
+energy loss: 0.051599
+force loss: 0.170762
+
+energy loss: 0.051350
+force loss: 0.170087
+
+energy loss: 0.051230
+force loss: 0.169901
+
+energy loss: 0.051118
+force loss: 0.169340
+
+energy loss: 0.050995
+force loss: 0.168846
+
+energy loss: 0.050866
+force loss: 0.168530
+
+energy loss: 0.050753
+force loss: 0.168129
+
+energy loss: 0.050588
+force loss: 0.167912
+
+energy loss: 0.050580
+force loss: 0.167581
+
+energy loss: 0.050491
+force loss: 0.167357
+
+energy loss: 0.050165
+force loss: 0.167063
+
+energy loss: 0.050287
+force loss: 0.166689
+
+energy loss: 0.050119
+force loss: 0.166549
+
+energy loss: 0.050135
+force loss: 0.166385
+
+energy loss: 0.050105
+force loss: 0.166334
+
+energy loss: 0.050045
+force loss: 0.166271
+
+energy loss: 0.049901
+force loss: 0.166087
+
+energy loss: 0.049817
+force loss: 0.165657
+
+energy loss: 0.049798
+force loss: 0.165359
+
+energy loss: 0.049658
+force loss: 0.165069
+
+energy loss: 0.049521
+force loss: 0.164743
+
+energy loss: 0.049403
+force loss: 0.164478
+
+energy loss: 0.049361
+force loss: 0.164220
+
+energy loss: 0.049219
+force loss: 0.164160
+
+energy loss: 0.049236
+force loss: 0.163886
+
+energy loss: 0.049057
+force loss: 0.163666
+
+energy loss: 0.049057
+force loss: 0.163434
+
+energy loss: 0.049045
+force loss: 0.163306
+
+energy loss: 0.048973
+force loss: 0.163205
+
+energy loss: 0.048913
+force loss: 0.163122
+
+energy loss: 0.048813
+force loss: 0.163088
+
+energy loss: 0.048823
+force loss: 0.162858
+
+energy loss: 0.048794
+force loss: 0.162814
+
+energy loss: 0.048788
+force loss: 0.162698
+
+energy loss: 0.048735
+force loss: 0.162574
+
+energy loss: 0.048668
+force loss: 0.162422
+
+energy loss: 0.048596
+force loss: 0.162361
+
+energy loss: 0.048398
+force loss: 0.162219
+
+energy loss: 0.048340
+force loss: 0.162144
+
+energy loss: 0.048223
+force loss: 0.161681
+
+energy loss: 0.048165
+force loss: 0.161337
+
+energy loss: 0.047997
+force loss: 0.160923
+
+energy loss: 0.047921
+force loss: 0.160782
+
+energy loss: 0.047875
+force loss: 0.160746
+
+energy loss: 0.047841
+force loss: 0.160506
+
+energy loss: 0.047775
+force loss: 0.160431
+
+energy loss: 0.047747
+force loss: 0.160328
+
+energy loss: 0.047727
+force loss: 0.160244
+
+energy loss: 0.047743
+force loss: 0.160062
+
+energy loss: 0.047620
+force loss: 0.159878
+
+energy loss: 0.047594
+force loss: 0.159624
+
+energy loss: 0.047384
+force loss: 0.159345
+
+energy loss: 0.047298
+force loss: 0.159231
+
+energy loss: 0.047176
+force loss: 0.159092
+
+energy loss: 0.047029
+force loss: 0.159011
+
+energy loss: 0.047040
+force loss: 0.158846
+
+energy loss: 0.046997
+force loss: 0.158725
+
+energy loss: 0.046981
+force loss: 0.158652
+
+energy loss: 0.046921
+force loss: 0.158638
+
+energy loss: 0.046854
+force loss: 0.158627
+
+energy loss: 0.046779
+force loss: 0.158665
+
+energy loss: 0.046781
+force loss: 0.158659
+
+Training complete in 141 steps
+Training complete in 10m 8s
+LJ optimization initiated...
+0.01487245676194561
+0.014871043154742504
+0.014872323067517564
+0.014891294117152773
+0.01487298859465082
+0.014872653935311966
+0.01486391959153072
+0.03346432242448272
+0.016936749814528522
+0.012357371334670596
+0.014027296575803807
+0.012398388517407957
+0.01319066636819482
+0.012940455962709482
+0.012669092646118606
+0.012409218974484543
+0.012197924844878453
+0.012245118250151477
+0.01210136332981186
+0.012829955205323495
+0.012238513230286262
+0.012070114289794952
+0.01984090520132994
+0.011468872726925296
+0.011625776285246397
+0.011372010850776874
+0.011569351097779294
+0.011259828540359292
+0.011391891537652042
+0.011137958642918272
+0.011189753757166397
+0.011663354064498716
+0.01280163441371744
+0.011542035048123511
+0.0116034922254768
+0.011173685747745524
+0.012036812679952068
+0.011853517665193061
+0.012359145820889166
+0.011132573893267899
+0.011860093003223035
+0.011349547127886873
+0.011726681626756264
+0.011273680411609902
+0.011914486303971872
+0.011173137296036039
+0.011479947062335672
+0.011216144583740966
+0.011153907998275389
+0.011201892217483456
+0.01135780719657227
+0.011160091981786935
+0.011301853634989426
+0.011130588366292342
+0.011342020898963662
+0.011121459308174434
+0.011219568093729988
+0.011109774032683878
+0.011236478102651524
+0.011092545648475758
+0.011226387547032594
+0.011084616484823223
+0.01129397551453381
+0.011084072286695675
+0.011146454547483989
+0.011162354819735702
+0.011087568576465905
+0.011169616916577502
+0.011081776444323212
+0.011154328194175642
+0.011085977652220387
+0.011173347869225556
+0.011077281569658814
+0.011151029530289567
+0.01108411230422667
+0.01114959056901951
+0.011080842057378923
+0.011115432667290185
+0.011078766262345982
+0.01109293368414193
+0.01107381165265557
+0.011086454709578593
+0.011072426076495064
+0.011084358513514081
+0.01108048947249091
+0.011100980364232294
+0.01106939216378457
+0.011090978704013554
+0.011071137358284178
+0.011089749324204813
+0.011070975852769808
+0.011087742262709518
+0.01107010876218404
+0.011077591850327344
+0.011092162217426534
+0.011069439914613987
+0.011087314666682693
+0.011069336395830558
+0.011076194799448635
+0.011082369611946936
+0.011069009481567783
+0.01107495636141214
+0.011068768820904896
+0.011077369647083673
+0.011068356522654177
+0.011072983898091793
+0.01106836247545192
+0.011077837308839437
+0.011067504145236561
+Optimizer terminated successfully.
+Calculating fingerprints...
+Fingerprints Calculated!
+Training Initiated!
+energy loss: 0.371768
+force loss: 3.891056
+
+energy loss: 0.133681
+force loss: 1.641855
+
+energy loss: 0.109631
+force loss: 1.147280
+
+energy loss: 0.113763
+force loss: 0.844477
+
+energy loss: 0.089821
+force loss: 0.628801
+
+energy loss: 0.076701
+force loss: 0.484431
+
+energy loss: 0.067789
+force loss: 0.387725
+
+energy loss: 0.066078
+force loss: 0.331913
+
+energy loss: 0.062582
+force loss: 0.293905
+
+energy loss: 0.059609
+force loss: 0.272064
+
+energy loss: 0.057429
+force loss: 0.252699
+
+energy loss: 0.055271
+force loss: 0.239037
+
+energy loss: 0.052277
+force loss: 0.225911
+
+energy loss: 0.051509
+force loss: 0.218932
+
+energy loss: 0.050892
+force loss: 0.212480
+
+energy loss: 0.051061
+force loss: 0.206708
+
+energy loss: 0.050674
+force loss: 0.201649
+
+energy loss: 0.050561
+force loss: 0.196796
+
+energy loss: 0.050019
+force loss: 0.192431
+
+energy loss: 0.049663
+force loss: 0.189756
+
+energy loss: 0.049191
+force loss: 0.186271
+
+energy loss: 0.048909
+force loss: 0.183417
+
+energy loss: 0.048483
+force loss: 0.181147
+
+energy loss: 0.047864
+force loss: 0.178789
+
+energy loss: 0.047463
+force loss: 0.177662
+
+energy loss: 0.047267
+force loss: 0.176556
+
+energy loss: 0.046839
+force loss: 0.175122
+
+energy loss: 0.046592
+force loss: 0.173810
+
+energy loss: 0.046015
+force loss: 0.173168
+
+energy loss: 0.045572
+force loss: 0.172405
+
+energy loss: 0.045202
+force loss: 0.171086
+
+energy loss: 0.044498
+force loss: 0.169836
+
+energy loss: 0.044133
+force loss: 0.168952
+
+energy loss: 0.043435
+force loss: 0.168390
+
+energy loss: 0.043181
+force loss: 0.167404
+
+energy loss: 0.042836
+force loss: 0.166914
+
+energy loss: 0.042625
+force loss: 0.166273
+
+energy loss: 0.042509
+force loss: 0.165500
+
+energy loss: 0.042273
+force loss: 0.165162
+
+energy loss: 0.041935
+force loss: 0.164809
+
+energy loss: 0.041805
+force loss: 0.164144
+
+energy loss: 0.041872
+force loss: 0.163358
+
+energy loss: 0.041712
+force loss: 0.162869
+
+energy loss: 0.041653
+force loss: 0.162047
+
+energy loss: 0.041428
+force loss: 0.161727
+
+energy loss: 0.041402
+force loss: 0.161030
+
+energy loss: 0.041082
+force loss: 0.160408
+
+energy loss: 0.040692
+force loss: 0.160008
+
+energy loss: 0.040567
+force loss: 0.159636
+
+energy loss: 0.040408
+force loss: 0.159173
+
+energy loss: 0.040489
+force loss: 0.158824
+
+energy loss: 0.040403
+force loss: 0.158560
+
+energy loss: 0.040191
+force loss: 0.158327
+
+energy loss: 0.040063
+force loss: 0.157901
+
+energy loss: 0.040046
+force loss: 0.157532
+
+energy loss: 0.039814
+force loss: 0.157127
+
+energy loss: 0.039576
+force loss: 0.156786
+
+energy loss: 0.039380
+force loss: 0.156406
+
+energy loss: 0.039084
+force loss: 0.155850
+
+energy loss: 0.038971
+force loss: 0.155384
+
+energy loss: 0.038815
+force loss: 0.155054
+
+energy loss: 0.038844
+force loss: 0.154670
+
+energy loss: 0.038692
+force loss: 0.154486
+
+energy loss: 0.038465
+force loss: 0.154176
+
+energy loss: 0.038305
+force loss: 0.153738
+
+energy loss: 0.038221
+force loss: 0.153434
+
+energy loss: 0.038085
+force loss: 0.153111
+
+energy loss: 0.037762
+force loss: 0.152850
+
+energy loss: 0.037224
+force loss: 0.152591
+
+energy loss: 0.036938
+force loss: 0.152469
+
+energy loss: 0.036757
+force loss: 0.152253
+
+energy loss: 0.036410
+force loss: 0.151964
+
+energy loss: 0.035832
+force loss: 0.151839
+
+energy loss: 0.035511
+force loss: 0.151733
+
+energy loss: 0.034894
+force loss: 0.151395
+
+energy loss: 0.034582
+force loss: 0.150953
+
+energy loss: 0.034383
+force loss: 0.150576
+
+energy loss: 0.034150
+force loss: 0.150399
+
+energy loss: 0.033940
+force loss: 0.149998
+
+energy loss: 0.033874
+force loss: 0.149741
+
+energy loss: 0.033768
+force loss: 0.149543
+
+energy loss: 0.033558
+force loss: 0.149417
+
+energy loss: 0.033192
+force loss: 0.149386
+
+energy loss: 0.033072
+force loss: 0.149241
+
+energy loss: 0.032723
+force loss: 0.149138
+
+energy loss: 0.032647
+force loss: 0.149070
+
+energy loss: 0.032176
+force loss: 0.149150
+
+energy loss: 0.032066
+force loss: 0.149035
+
+energy loss: 0.031865
+force loss: 0.148929
+
+energy loss: 0.031675
+force loss: 0.148834
+
+energy loss: 0.031423
+force loss: 0.148799
+
+energy loss: 0.031408
+force loss: 0.148641
+
+energy loss: 0.031254
+force loss: 0.148572
+
+energy loss: 0.031128
+force loss: 0.148454
+
+energy loss: 0.030940
+force loss: 0.148439
+
+energy loss: 0.030811
+force loss: 0.148387
+
+energy loss: 0.030629
+force loss: 0.148266
+
+energy loss: 0.030393
+force loss: 0.148090
+
+energy loss: 0.030257
+force loss: 0.148055
+
+energy loss: 0.030131
+force loss: 0.148042
+
+energy loss: 0.030067
+force loss: 0.147869
+
+energy loss: 0.029744
+force loss: 0.147856
+
+energy loss: 0.029579
+force loss: 0.147771
+
+energy loss: 0.029552
+force loss: 0.147610
+
+energy loss: 0.029467
+force loss: 0.147425
+
+energy loss: 0.029101
+force loss: 0.147331
+
+energy loss: 0.028961
+force loss: 0.147193
+
+energy loss: 0.028805
+force loss: 0.147082
+
+energy loss: 0.028751
+force loss: 0.146984
+
+energy loss: 0.028655
+force loss: 0.146892
+
+energy loss: 0.028648
+force loss: 0.146724
+
+energy loss: 0.028564
+force loss: 0.146502
+
+energy loss: 0.028530
+force loss: 0.146352
+
+energy loss: 0.028448
+force loss: 0.146280
+
+energy loss: 0.028297
+force loss: 0.146227
+
+energy loss: 0.028306
+force loss: 0.146071
+
+energy loss: 0.028358
+force loss: 0.145917
+
+energy loss: 0.028168
+force loss: 0.145813
+
+energy loss: 0.028049
+force loss: 0.145663
+
+energy loss: 0.027938
+force loss: 0.145516
+
+energy loss: 0.027775
+force loss: 0.145436
+
+energy loss: 0.027729
+force loss: 0.145245
+
+energy loss: 0.027624
+force loss: 0.145115
+
+energy loss: 0.027560
+force loss: 0.144871
+
+energy loss: 0.027514
+force loss: 0.144663
+
+energy loss: 0.027449
+force loss: 0.144545
+
+energy loss: 0.027345
+force loss: 0.144439
+
+energy loss: 0.027298
+force loss: 0.144374
+
+energy loss: 0.027318
+force loss: 0.144284
+
+energy loss: 0.027259
+force loss: 0.144198
+
+energy loss: 0.027273
+force loss: 0.144086
+
+energy loss: 0.027246
+force loss: 0.143995
+
+energy loss: 0.027261
+force loss: 0.143887
+
+energy loss: 0.027235
+force loss: 0.143779
+
+energy loss: 0.027210
+force loss: 0.143678
+
+energy loss: 0.027166
+force loss: 0.143623
+
+energy loss: 0.027155
+force loss: 0.143550
+
+energy loss: 0.027112
+force loss: 0.143508
+
+energy loss: 0.027064
+force loss: 0.143473
+
+energy loss: 0.026998
+force loss: 0.143440
+
+energy loss: 0.026951
+force loss: 0.143405
+
+energy loss: 0.026860
+force loss: 0.143307
+
+energy loss: 0.026810
+force loss: 0.143148
+
+energy loss: 0.026752
+force loss: 0.143098
+
+energy loss: 0.026753
+force loss: 0.143016
+
+energy loss: 0.026708
+force loss: 0.142881
+
+energy loss: 0.026672
+force loss: 0.142678
+
+energy loss: 0.026610
+force loss: 0.142370
+
+energy loss: 0.026538
+force loss: 0.142179
+
+energy loss: 0.026522
+force loss: 0.142009
+
+energy loss: 0.026517
+force loss: 0.141839
+
+energy loss: 0.026505
+force loss: 0.141655
+
+energy loss: 0.026538
+force loss: 0.141480
+
+energy loss: 0.026507
+force loss: 0.141223
+
+energy loss: 0.026533
+force loss: 0.141083
+
+energy loss: 0.026537
+force loss: 0.140862
+
+energy loss: 0.026526
+force loss: 0.140767
+
+energy loss: 0.026483
+force loss: 0.140637
+
+energy loss: 0.026481
+force loss: 0.140463
+
+energy loss: 0.026525
+force loss: 0.140261
+
+energy loss: 0.026569
+force loss: 0.140053
+
+energy loss: 0.026615
+force loss: 0.139829
+
+energy loss: 0.026625
+force loss: 0.139603
+
+energy loss: 0.026633
+force loss: 0.139446
+
+energy loss: 0.026652
+force loss: 0.139383
+
+energy loss: 0.026676
+force loss: 0.139184
+
+energy loss: 0.026640
+force loss: 0.138969
+
+energy loss: 0.026631
+force loss: 0.138749
+
+energy loss: 0.026689
+force loss: 0.138521
+
+energy loss: 0.026683
+force loss: 0.138391
+
+energy loss: 0.026735
+force loss: 0.138098
+
+energy loss: 0.026743
+force loss: 0.137834
+
+energy loss: 0.026772
+force loss: 0.137704
+
+energy loss: 0.026844
+force loss: 0.137541
+
+energy loss: 0.026904
+force loss: 0.137346
+
+energy loss: 0.026901
+force loss: 0.137282
+
+energy loss: 0.026943
+force loss: 0.137099
+
+energy loss: 0.027004
+force loss: 0.136901
+
+energy loss: 0.026941
+force loss: 0.136840
+
+energy loss: 0.026972
+force loss: 0.136722
+
+energy loss: 0.026927
+force loss: 0.136667
+
+energy loss: 0.026933
+force loss: 0.136557
+
+energy loss: 0.026933
+force loss: 0.136527
+
+energy loss: 0.026945
+force loss: 0.136446
+
+energy loss: 0.026970
+force loss: 0.136395
+
+energy loss: 0.027003
+force loss: 0.136313
+
+energy loss: 0.027016
+force loss: 0.136277
+
+energy loss: 0.027057
+force loss: 0.136208
+
+energy loss: 0.027096
+force loss: 0.136132
+
+energy loss: 0.027117
+force loss: 0.136009
+
+energy loss: 0.027124
+force loss: 0.135962
+
+energy loss: 0.027138
+force loss: 0.135936
+
+energy loss: 0.027099
+force loss: 0.135934
+
+Training complete in 193 steps
+Training complete in 15m 58s
+Calculating fingerprints...
+Fingerprints Calculated!
+Training Initiated!
+energy loss: 7.763078
+force loss: 62.880260
+
+energy loss: 3.282258
+force loss: 16.601381
+
+energy loss: 1.028764
+force loss: 8.631430
+
+energy loss: 0.907594
+force loss: 7.160845
+
+energy loss: 0.812756
+force loss: 5.897267
+
+energy loss: 0.752209
+force loss: 5.581000
+
+energy loss: 0.649531
+force loss: 5.320883
+
+energy loss: 0.635062
+force loss: 5.155312
+
+energy loss: 0.595935
+force loss: 5.026253
+
+energy loss: 0.565692
+force loss: 4.935103
+
+energy loss: 0.537505
+force loss: 4.888855
+
+energy loss: 0.455519
+force loss: 4.850945
+
+energy loss: 0.422340
+force loss: 4.786966
+
+energy loss: 0.399045
+force loss: 4.760846
+
+energy loss: 0.370293
+force loss: 4.743998
+
+energy loss: 0.346263
+force loss: 4.723446
+
+energy loss: 0.293058
+force loss: 4.677057
+
+energy loss: 0.281735
+force loss: 4.654386
+
+energy loss: 0.259026
+force loss: 4.625761
+
+energy loss: 0.243287
+force loss: 4.612379
+
+energy loss: 0.246396
+force loss: 4.603820
+
+energy loss: 0.248461
+force loss: 4.586815
+
+energy loss: 0.249471
+force loss: 4.578802
+
+energy loss: 0.240215
+force loss: 4.565620
+
+energy loss: 0.237042
+force loss: 4.550988
+
+energy loss: 0.233073
+force loss: 4.546275
+
+energy loss: 0.234571
+force loss: 4.536312
+
+energy loss: 0.229029
+force loss: 4.525480
+
+energy loss: 0.228683
+force loss: 4.502390
+
+energy loss: 0.236225
+force loss: 4.492712
+
+energy loss: 0.232419
+force loss: 4.489432
+
+energy loss: 0.207132
+force loss: 4.483588
+
+energy loss: 0.190733
+force loss: 4.471571
+
+energy loss: 0.189318
+force loss: 4.465698
+
+energy loss: 0.190846
+force loss: 4.457417
+
+energy loss: 0.186280
+force loss: 4.445914
+
+energy loss: 0.179879
+force loss: 4.427896
+
+energy loss: 0.173899
+force loss: 4.411852
+
+energy loss: 0.171620
+force loss: 4.400852
+
+energy loss: 0.151767
+force loss: 4.388587
+
+energy loss: 0.139478
+force loss: 4.368205
+
+energy loss: 0.135593
+force loss: 4.360531
+
+energy loss: 0.136558
+force loss: 4.353383
+
+energy loss: 0.144698
+force loss: 4.340791
+
+energy loss: 0.146573
+force loss: 4.330876
+
+energy loss: 0.136238
+force loss: 4.323062
+
+energy loss: 0.143761
+force loss: 4.309387
+
+energy loss: 0.137675
+force loss: 4.286681
+
+energy loss: 0.131261
+force loss: 4.264988
+
+energy loss: 0.120793
+force loss: 4.236930
+
+energy loss: 0.115436
+force loss: 4.217992
+
+energy loss: 0.123287
+force loss: 4.195905
+
+energy loss: 0.111114
+force loss: 4.171365
+
+energy loss: 0.088175
+force loss: 4.125366
+
+energy loss: 0.099956
+force loss: 4.087340
+
+energy loss: 0.118709
+force loss: 4.037289
+
+energy loss: 0.128028
+force loss: 3.948069
+
+energy loss: 0.092166
+force loss: 3.891177
+
+energy loss: 0.095202
+force loss: 3.847034
+
+energy loss: 0.076935
+force loss: 3.768348
+
+energy loss: 0.091739
+force loss: 3.682548
+
+energy loss: 0.141055
+force loss: 3.615308
+
+energy loss: 0.134046
+force loss: 3.587366
+
+energy loss: 0.140055
+force loss: 3.567617
+
+energy loss: 0.108385
+force loss: 3.545978
+
+energy loss: 0.104635
+force loss: 3.523788
+
+energy loss: 0.085242
+force loss: 3.503183
+
+energy loss: 0.092052
+force loss: 3.489534
+
+energy loss: 0.099369
+force loss: 3.472769
+
+energy loss: 0.092706
+force loss: 3.459031
+
+energy loss: 0.089295
+force loss: 3.434864
+
+energy loss: 0.090052
+force loss: 3.418176
+
+energy loss: 0.082358
+force loss: 3.396553
+
+energy loss: 0.087686
+force loss: 3.387837
+
+energy loss: 0.089512
+force loss: 3.374395
+
+energy loss: 0.077981
+force loss: 3.358680
+
+energy loss: 0.079449
+force loss: 3.344508
+
+energy loss: 0.075188
+force loss: 3.317229
+
+energy loss: 0.065378
+force loss: 3.305484
+
+energy loss: 0.073217
+force loss: 3.296855
+
+energy loss: 0.075950
+force loss: 3.290498
+
+energy loss: 0.076696
+force loss: 3.286316
+
+energy loss: 0.081171
+force loss: 3.281197
+
+energy loss: 0.085675
+force loss: 3.268813
+
+energy loss: 0.087613
+force loss: 3.263999
+
+energy loss: 0.088338
+force loss: 3.256878
+
+energy loss: 0.082565
+force loss: 3.248060
+
+energy loss: 0.060966
+force loss: 3.241319
+
+energy loss: 0.061599
+force loss: 3.236691
+
+energy loss: 0.059534
+force loss: 3.222546
+
+energy loss: 0.061248
+force loss: 3.217407
+
+energy loss: 0.065712
+force loss: 3.211201
+
+energy loss: 0.064928
+force loss: 3.203800
+
+energy loss: 0.062057
+force loss: 3.194658
+
+energy loss: 0.060721
+force loss: 3.185050
+
+energy loss: 0.061743
+force loss: 3.180772
+
+energy loss: 0.058781
+force loss: 3.174533
+
+energy loss: 0.061148
+force loss: 3.168605
+
+energy loss: 0.059185
+force loss: 3.165619
+
+energy loss: 0.065623
+force loss: 3.159176
+
+energy loss: 0.066307
+force loss: 3.151622
+
+energy loss: 0.066312
+force loss: 3.145054
+
+energy loss: 0.062902
+force loss: 3.137986
+
+energy loss: 0.062388
+force loss: 3.131219
+
+energy loss: 0.058503
+force loss: 3.126248
+
+energy loss: 0.059247
+force loss: 3.121292
+
+energy loss: 0.057006
+force loss: 3.117710
+
+energy loss: 0.055398
+force loss: 3.112853
+
+energy loss: 0.054247
+force loss: 3.105002
+
+energy loss: 0.054164
+force loss: 3.097303
+
+energy loss: 0.056648
+force loss: 3.093905
+
+energy loss: 0.051897
+force loss: 3.084123
+
+energy loss: 0.051064
+force loss: 3.076932
+
+energy loss: 0.050646
+force loss: 3.074213
+
+energy loss: 0.050706
+force loss: 3.066104
+
+energy loss: 0.051813
+force loss: 3.054558
+
+energy loss: 0.057520
+force loss: 3.048836
+
+energy loss: 0.062371
+force loss: 3.038179
+
+energy loss: 0.067052
+force loss: 3.032032
+
+energy loss: 0.064198
+force loss: 3.026626
+
+energy loss: 0.065534
+force loss: 3.021976
+
+energy loss: 0.066931
+force loss: 3.017965
+
+energy loss: 0.070694
+force loss: 3.010247
+
+energy loss: 0.072231
+force loss: 2.998789
+
+energy loss: 0.070550
+force loss: 2.992041
+
+energy loss: 0.080177
+force loss: 2.985973
+
+energy loss: 0.085189
+force loss: 2.971781
+
+energy loss: 0.080323
+force loss: 2.967595
+
+energy loss: 0.078221
+force loss: 2.961671
+
+energy loss: 0.081133
+force loss: 2.950597
+
+energy loss: 0.090248
+force loss: 2.938186
+
+energy loss: 0.082110
+force loss: 2.919980
+
+energy loss: 0.071798
+force loss: 2.912565
+
+energy loss: 0.067444
+force loss: 2.906279
+
+energy loss: 0.066538
+force loss: 2.894822
+
+energy loss: 0.064483
+force loss: 2.885839
+
+energy loss: 0.063394
+force loss: 2.877078
+
+energy loss: 0.058724
+force loss: 2.865404
+
+energy loss: 0.057481
+force loss: 2.857168
+
+energy loss: 0.059437
+force loss: 2.851693
+
+energy loss: 0.058741
+force loss: 2.841274
+
+energy loss: 0.059094
+force loss: 2.831846
+
+energy loss: 0.061204
+force loss: 2.827878
+
+energy loss: 0.058712
+force loss: 2.824325
+
+energy loss: 0.058104
+force loss: 2.820245
+
+energy loss: 0.057509
+force loss: 2.813934
+
+energy loss: 0.056848
+force loss: 2.810010
+
+energy loss: 0.058641
+force loss: 2.804003
+
+energy loss: 0.058458
+force loss: 2.798016
+
+energy loss: 0.057195
+force loss: 2.792284
+
+energy loss: 0.056676
+force loss: 2.788081
+
+energy loss: 0.057257
+force loss: 2.782785
+
+energy loss: 0.056603
+force loss: 2.775809
+
+energy loss: 0.054395
+force loss: 2.771227
+
+energy loss: 0.049416
+force loss: 2.764061
+
+energy loss: 0.049975
+force loss: 2.761432
+
+energy loss: 0.051005
+force loss: 2.756299
+
+energy loss: 0.051481
+force loss: 2.750048
+
+energy loss: 0.048642
+force loss: 2.746767
+
+energy loss: 0.048072
+force loss: 2.742658
+
+energy loss: 0.047854
+force loss: 2.736474
+
+energy loss: 0.049484
+force loss: 2.732432
+
+energy loss: 0.055057
+force loss: 2.727399
+
+energy loss: 0.056095
+force loss: 2.722452
+
+energy loss: 0.055898
+force loss: 2.715676
+
+energy loss: 0.055223
+force loss: 2.711765
+
+energy loss: 0.058928
+force loss: 2.707546
+
+energy loss: 0.058638
+force loss: 2.703796
+
+energy loss: 0.061305
+force loss: 2.701850
+
+energy loss: 0.055206
+force loss: 2.698105
+
+energy loss: 0.055497
+force loss: 2.693430
+
+energy loss: 0.054175
+force loss: 2.689491
+
+energy loss: 0.054231
+force loss: 2.685827
+
+energy loss: 0.055352
+force loss: 2.683674
+
+energy loss: 0.056372
+force loss: 2.678798
+
+energy loss: 0.059240
+force loss: 2.675017
+
+energy loss: 0.055716
+force loss: 2.671549
+
+energy loss: 0.060102
+force loss: 2.665520
+
+energy loss: 0.070167
+force loss: 2.659076
+
+energy loss: 0.077969
+force loss: 2.652289
+
+energy loss: 0.083427
+force loss: 2.648444
+
+energy loss: 0.082911
+force loss: 2.647100
+
+energy loss: 0.080451
+force loss: 2.643655
+
+energy loss: 0.089521
+force loss: 2.637394
+
+energy loss: 0.097381
+force loss: 2.631142
+
+energy loss: 0.101639
+force loss: 2.624550
+
+energy loss: 0.096732
+force loss: 2.620283
+
+energy loss: 0.095488
+force loss: 2.617554
+
+energy loss: 0.093305
+force loss: 2.613956
+
+energy loss: 0.097765
+force loss: 2.607354
+
+energy loss: 0.106661
+force loss: 2.602841
+
+energy loss: 0.109265
+force loss: 2.597104
+
+energy loss: 0.115436
+force loss: 2.592535
+
+energy loss: 0.108225
+force loss: 2.585859
+
+energy loss: 0.103917
+force loss: 2.583730
+
+energy loss: 0.101192
+force loss: 2.580743
+
+energy loss: 0.101441
+force loss: 2.575603
+
+energy loss: 0.096289
+force loss: 2.570103
+
+energy loss: 0.096325
+force loss: 2.566043
+
+energy loss: 0.099314
+force loss: 2.559860
+
+energy loss: 0.098119
+force loss: 2.554036
+
+energy loss: 0.097208
+force loss: 2.552211
+
+energy loss: 0.100350
+force loss: 2.549197
+
+energy loss: 0.100084
+force loss: 2.547421
+
+energy loss: 0.100222
+force loss: 2.543669
+
+energy loss: 0.099416
+force loss: 2.542464
+
+energy loss: 0.099534
+force loss: 2.540032
+
+energy loss: 0.098906
+force loss: 2.536874
+
+energy loss: 0.098630
+force loss: 2.531733
+
+energy loss: 0.095002
+force loss: 2.529972
+
+energy loss: 0.092761
+force loss: 2.526738
+
+energy loss: 0.092448
+force loss: 2.522998
+
+energy loss: 0.090528
+force loss: 2.520236
+
+energy loss: 0.091039
+force loss: 2.517846
+
+energy loss: 0.092243
+force loss: 2.512875
+
+energy loss: 0.094301
+force loss: 2.510166
+
+energy loss: 0.097608
+force loss: 2.506650
+
+energy loss: 0.100133
+force loss: 2.504318
+
+energy loss: 0.099048
+force loss: 2.501955
+
+energy loss: 0.099716
+force loss: 2.498850
+
+energy loss: 0.094088
+force loss: 2.494751
+
+energy loss: 0.092328
+force loss: 2.492250
+
+energy loss: 0.092523
+force loss: 2.489706
+
+energy loss: 0.090985
+force loss: 2.482099
+
+energy loss: 0.088563
+force loss: 2.474702
+
+energy loss: 0.089849
+force loss: 2.467047
+
+energy loss: 0.085095
+force loss: 2.462998
+
+energy loss: 0.083250
+force loss: 2.460205
+
+energy loss: 0.081210
+force loss: 2.454707
+
+energy loss: 0.081008
+force loss: 2.452594
+
+energy loss: 0.080305
+force loss: 2.447904
+
+energy loss: 0.074970
+force loss: 2.443578
+
+energy loss: 0.076455
+force loss: 2.439041
+
+energy loss: 0.078880
+force loss: 2.434585
+
+energy loss: 0.083166
+force loss: 2.428591
+
+energy loss: 0.087268
+force loss: 2.422524
+
+energy loss: 0.087888
+force loss: 2.415506
+
+energy loss: 0.083394
+force loss: 2.407757
+
+energy loss: 0.083819
+force loss: 2.405058
+
+energy loss: 0.083434
+force loss: 2.402876
+
+energy loss: 0.085954
+force loss: 2.399926
+
+energy loss: 0.089293
+force loss: 2.393291
+
+energy loss: 0.092607
+force loss: 2.388745
+
+energy loss: 0.091698
+force loss: 2.383616
+
+energy loss: 0.091705
+force loss: 2.376027
+
+energy loss: 0.092018
+force loss: 2.365618
+
+energy loss: 0.095851
+force loss: 2.358961
+
+energy loss: 0.093021
+force loss: 2.356280
+
+energy loss: 0.094548
+force loss: 2.353433
+
+energy loss: 0.085234
+force loss: 2.350328
+
+energy loss: 0.083200
+force loss: 2.346498
+
+energy loss: 0.078810
+force loss: 2.344149
+
+energy loss: 0.078253
+force loss: 2.341904
+
+energy loss: 0.071844
+force loss: 2.338865
+
+energy loss: 0.069158
+force loss: 2.336304
+
+energy loss: 0.069145
+force loss: 2.333628
+
+energy loss: 0.068257
+force loss: 2.331345
+
+energy loss: 0.067914
+force loss: 2.330016
+
+energy loss: 0.069053
+force loss: 2.327821
+
+energy loss: 0.069153
+force loss: 2.326381
+
+energy loss: 0.069590
+force loss: 2.323934
+
+energy loss: 0.068374
+force loss: 2.322466
+
+energy loss: 0.069321
+force loss: 2.319617
+
+energy loss: 0.069465
+force loss: 2.318036
+
+energy loss: 0.069745
+force loss: 2.315196
+
+energy loss: 0.069926
+force loss: 2.313531
+
+energy loss: 0.070895
+force loss: 2.312306
+
+energy loss: 0.065033
+force loss: 2.310441
+
+energy loss: 0.064239
+force loss: 2.308698
+
+energy loss: 0.062990
+force loss: 2.305894
+
+energy loss: 0.062827
+force loss: 2.303394
+
+energy loss: 0.063347
+force loss: 2.299362
+
+energy loss: 0.062072
+force loss: 2.296220
+
+energy loss: 0.063244
+force loss: 2.293862
+
+energy loss: 0.063479
+force loss: 2.292830
+
+energy loss: 0.064256
+force loss: 2.292251
+
+energy loss: 0.064248
+force loss: 2.291710
+
+energy loss: 0.064572
+force loss: 2.291095
+
+energy loss: 0.064050
+force loss: 2.289519
+
+energy loss: 0.065328
+force loss: 2.286668
+
+energy loss: 0.064545
+force loss: 2.283631
+
+energy loss: 0.060147
+force loss: 2.280382
+
+energy loss: 0.058565
+force loss: 2.278512
+
+energy loss: 0.059615
+force loss: 2.277116
+
+energy loss: 0.056836
+force loss: 2.274298
+
+energy loss: 0.057427
+force loss: 2.271186
+
+energy loss: 0.059474
+force loss: 2.269862
+
+energy loss: 0.058560
+force loss: 2.269695
+
+energy loss: 0.058634
+force loss: 2.269296
+
+energy loss: 0.058324
+force loss: 2.269061
+
+energy loss: 0.058254
+force loss: 2.268570
+
+energy loss: 0.057619
+force loss: 2.267847
+
+energy loss: 0.057957
+force loss: 2.266953
+
+energy loss: 0.057650
+force loss: 2.266096
+
+energy loss: 0.058912
+force loss: 2.265320
+
+energy loss: 0.058905
+force loss: 2.264799
+
+energy loss: 0.058604
+force loss: 2.263406
+
+energy loss: 0.059498
+force loss: 2.261982
+
+energy loss: 0.058892
+force loss: 2.260233
+
+energy loss: 0.060270
+force loss: 2.259127
+
+energy loss: 0.059823
+force loss: 2.257799
+
+energy loss: 0.058185
+force loss: 2.255456
+
+energy loss: 0.055807
+force loss: 2.253963
+
+energy loss: 0.053167
+force loss: 2.252302
+
+energy loss: 0.050202
+force loss: 2.249529
+
+energy loss: 0.047878
+force loss: 2.247530
+
+energy loss: 0.047097
+force loss: 2.246494
+
+energy loss: 0.048701
+force loss: 2.244550
+
+energy loss: 0.047978
+force loss: 2.241915
+
+energy loss: 0.046699
+force loss: 2.239567
+
+energy loss: 0.047283
+force loss: 2.238040
+
+energy loss: 0.047742
+force loss: 2.237184
+
+energy loss: 0.048553
+force loss: 2.234620
+
+energy loss: 0.049957
+force loss: 2.231693
+
+energy loss: 0.054181
+force loss: 2.229512
+
+energy loss: 0.054455
+force loss: 2.227930
+
+energy loss: 0.055966
+force loss: 2.227179
+
+energy loss: 0.056779
+force loss: 2.226382
+
+energy loss: 0.058873
+force loss: 2.225052
+
+energy loss: 0.059903
+force loss: 2.224561
+
+energy loss: 0.061035
+force loss: 2.224060
+
+energy loss: 0.061450
+force loss: 2.223491
+
+energy loss: 0.060947
+force loss: 2.223229
+
+energy loss: 0.060484
+force loss: 2.223062
+
+energy loss: 0.060433
+force loss: 2.223034
+
+energy loss: 0.059692
+force loss: 2.222960
+
+energy loss: 0.059692
+force loss: 2.222960
+
+Training complete in 327 steps
+Training complete in 24m 23s
+Calculating fingerprints...
+Fingerprints Calculated!
+Training Initiated!
+energy loss: 2.236154
+force loss: 64.899963
+
+energy loss: 2.139861
+force loss: 40.472065
+
+energy loss: 4.466971
+force loss: 24.815939
+
+energy loss: 0.786534
+force loss: 13.990526
+
+energy loss: 0.545169
+force loss: 10.638057
+
+energy loss: 0.444704
+force loss: 8.319547
+
+energy loss: 0.368125
+force loss: 7.151245
+
+energy loss: 0.352272
+force loss: 5.796225
+
+energy loss: 0.429315
+force loss: 5.155457
+
+energy loss: 0.409676
+force loss: 4.801459
+
+energy loss: 0.416579
+force loss: 4.508878
+
+energy loss: 0.401013
+force loss: 4.237147
+
+energy loss: 0.417988
+force loss: 4.106837
+
+energy loss: 0.383094
+force loss: 4.023189
+
+energy loss: 0.351849
+force loss: 3.930660
+
+energy loss: 0.321119
+force loss: 3.879367
+
+energy loss: 0.272538
+force loss: 3.818790
+
+energy loss: 0.254834
+force loss: 3.778045
+
+energy loss: 0.239530
+force loss: 3.735211
+
+energy loss: 0.232741
+force loss: 3.696548
+
+energy loss: 0.213763
+force loss: 3.680874
+
+energy loss: 0.201745
+force loss: 3.655430
+
+energy loss: 0.180140
+force loss: 3.627806
+
+energy loss: 0.168027
+force loss: 3.608875
+
+energy loss: 0.162842
+force loss: 3.593921
+
+energy loss: 0.150800
+force loss: 3.575340
+
+energy loss: 0.145537
+force loss: 3.555235
+
+energy loss: 0.136945
+force loss: 3.535005
+
+energy loss: 0.130227
+force loss: 3.503723
+
+energy loss: 0.129959
+force loss: 3.492447
+
+energy loss: 0.129886
+force loss: 3.475831
+
+energy loss: 0.130701
+force loss: 3.464321
+
+energy loss: 0.131812
+force loss: 3.452981
+
+energy loss: 0.131461
+force loss: 3.445982
+
+energy loss: 0.139538
+force loss: 3.432965
+
+energy loss: 0.136070
+force loss: 3.415294
+
+energy loss: 0.135509
+force loss: 3.405496
+
+energy loss: 0.133538
+force loss: 3.392438
+
+energy loss: 0.138463
+force loss: 3.382406
+
+energy loss: 0.132164
+force loss: 3.374042
+
+energy loss: 0.134545
+force loss: 3.364092
+
+energy loss: 0.133819
+force loss: 3.361060
+
+energy loss: 0.133573
+force loss: 3.352653
+
+energy loss: 0.132159
+force loss: 3.337960
+
+energy loss: 0.135428
+force loss: 3.329115
+
+energy loss: 0.137156
+force loss: 3.318326
+
+energy loss: 0.146714
+force loss: 3.306557
+
+energy loss: 0.152142
+force loss: 3.291587
+
+energy loss: 0.153895
+force loss: 3.286623
+
+energy loss: 0.154194
+force loss: 3.273280
+
+energy loss: 0.156049
+force loss: 3.260683
+
+energy loss: 0.147515
+force loss: 3.251665
+
+energy loss: 0.144048
+force loss: 3.245148
+
+energy loss: 0.135496
+force loss: 3.222278
+
+energy loss: 0.134985
+force loss: 3.214705
+
+energy loss: 0.134633
+force loss: 3.211379
+
+energy loss: 0.133355
+force loss: 3.200011
+
+energy loss: 0.125116
+force loss: 3.193817
+
+energy loss: 0.122516
+force loss: 3.187733
+
+energy loss: 0.124202
+force loss: 3.177991
+
+energy loss: 0.122951
+force loss: 3.169828
+
+energy loss: 0.117017
+force loss: 3.161676
+
+energy loss: 0.117967
+force loss: 3.158697
+
+energy loss: 0.118496
+force loss: 3.150933
+
+energy loss: 0.118554
+force loss: 3.144523
+
+energy loss: 0.123927
+force loss: 3.137870
+
+energy loss: 0.122835
+force loss: 3.131153
+
+energy loss: 0.115855
+force loss: 3.123485
+
+energy loss: 0.113220
+force loss: 3.118010
+
+energy loss: 0.111098
+force loss: 3.111772
+
+energy loss: 0.108855
+force loss: 3.107349
+
+energy loss: 0.105688
+force loss: 3.100803
+
+energy loss: 0.102522
+force loss: 3.088252
+
+energy loss: 0.102522
+force loss: 3.082533
+
+energy loss: 0.099934
+force loss: 3.072943
+
+energy loss: 0.098906
+force loss: 3.059463
+
+energy loss: 0.100502
+force loss: 3.051639
+
+energy loss: 0.096261
+force loss: 3.044322
+
+energy loss: 0.096579
+force loss: 3.037285
+
+energy loss: 0.094964
+force loss: 3.030823
+
+energy loss: 0.094230
+force loss: 3.026314
+
+energy loss: 0.097177
+force loss: 3.018416
+
+energy loss: 0.095238
+force loss: 3.011230
+
+energy loss: 0.095098
+force loss: 3.004460
+
+energy loss: 0.093781
+force loss: 3.000549
+
+energy loss: 0.094902
+force loss: 2.995206
+
+energy loss: 0.094530
+force loss: 2.991558
+
+energy loss: 0.093279
+force loss: 2.982140
+
+energy loss: 0.091675
+force loss: 2.976530
+
+energy loss: 0.091475
+force loss: 2.971511
+
+energy loss: 0.089351
+force loss: 2.965022
+
+energy loss: 0.084977
+force loss: 2.957430
+
+energy loss: 0.083890
+force loss: 2.955195
+
+energy loss: 0.085025
+force loss: 2.947948
+
+energy loss: 0.077894
+force loss: 2.942119
+
+energy loss: 0.075978
+force loss: 2.937151
+
+energy loss: 0.077873
+force loss: 2.933429
+
+energy loss: 0.078528
+force loss: 2.929054
+
+energy loss: 0.075027
+force loss: 2.921875
+
+energy loss: 0.073546
+force loss: 2.916876
+
+energy loss: 0.074248
+force loss: 2.910113
+
+energy loss: 0.074208
+force loss: 2.904727
+
+energy loss: 0.079341
+force loss: 2.897822
+
+energy loss: 0.082317
+force loss: 2.893075
+
+energy loss: 0.084519
+force loss: 2.888875
+
+energy loss: 0.092148
+force loss: 2.883976
+
+energy loss: 0.095868
+force loss: 2.879311
+
+energy loss: 0.096480
+force loss: 2.871423
+
+energy loss: 0.088967
+force loss: 2.865788
+
+energy loss: 0.090513
+force loss: 2.862046
+
+energy loss: 0.092520
+force loss: 2.857701
+
+energy loss: 0.088399
+force loss: 2.853301
+
+energy loss: 0.084731
+force loss: 2.849434
+
+energy loss: 0.085104
+force loss: 2.839349
+
+energy loss: 0.082211
+force loss: 2.836702
+
+energy loss: 0.080870
+force loss: 2.829633
+
+energy loss: 0.075412
+force loss: 2.822532
+
+energy loss: 0.071858
+force loss: 2.815747
+
+energy loss: 0.072613
+force loss: 2.811222
+
+energy loss: 0.071944
+force loss: 2.805079
+
+energy loss: 0.075231
+force loss: 2.798909
+
+energy loss: 0.080138
+force loss: 2.790073
+
+energy loss: 0.089180
+force loss: 2.779477
+
+energy loss: 0.082220
+force loss: 2.772734
+
+energy loss: 0.082605
+force loss: 2.764627
+
+energy loss: 0.090425
+force loss: 2.750852
+
+energy loss: 0.088864
+force loss: 2.744191
+
+energy loss: 0.088026
+force loss: 2.736052
+
+energy loss: 0.079406
+force loss: 2.721232
+
+energy loss: 0.079235
+force loss: 2.714555
+
+energy loss: 0.074991
+force loss: 2.706156
+
+energy loss: 0.077291
+force loss: 2.697748
+
+energy loss: 0.082947
+force loss: 2.686687
+
+energy loss: 0.090013
+force loss: 2.674835
+
+energy loss: 0.087450
+force loss: 2.670683
+
+energy loss: 0.089048
+force loss: 2.654668
+
+energy loss: 0.094288
+force loss: 2.643494
+
+energy loss: 0.093774
+force loss: 2.635114
+
+energy loss: 0.084084
+force loss: 2.628931
+
+energy loss: 0.074830
+force loss: 2.616451
+
+energy loss: 0.069025
+force loss: 2.605750
+
+energy loss: 0.070645
+force loss: 2.598428
+
+energy loss: 0.068529
+force loss: 2.586219
+
+energy loss: 0.068921
+force loss: 2.579811
+
+energy loss: 0.071116
+force loss: 2.572937
+
+energy loss: 0.071996
+force loss: 2.568239
+
+energy loss: 0.078281
+force loss: 2.557845
+
+energy loss: 0.084329
+force loss: 2.540148
+
+energy loss: 0.097835
+force loss: 2.527589
+
+energy loss: 0.104106
+force loss: 2.517531
+
+energy loss: 0.099613
+force loss: 2.514225
+
+energy loss: 0.095372
+force loss: 2.506353
+
+energy loss: 0.094399
+force loss: 2.503098
+
+energy loss: 0.086523
+force loss: 2.497789
+
+energy loss: 0.083131
+force loss: 2.491378
+
+energy loss: 0.084899
+force loss: 2.485149
+
+energy loss: 0.080348
+force loss: 2.478070
+
+energy loss: 0.080692
+force loss: 2.472966
+
+energy loss: 0.079505
+force loss: 2.469654
+
+energy loss: 0.077880
+force loss: 2.465202
+
+energy loss: 0.082469
+force loss: 2.458558
+
+energy loss: 0.079419
+force loss: 2.455967
+
+energy loss: 0.080067
+force loss: 2.451004
+
+energy loss: 0.080926
+force loss: 2.444278
+
+energy loss: 0.081901
+force loss: 2.439468
+
+energy loss: 0.082342
+force loss: 2.436463
+
+energy loss: 0.077534
+force loss: 2.432563
+
+energy loss: 0.077593
+force loss: 2.428140
+
+energy loss: 0.077984
+force loss: 2.425844
+
+energy loss: 0.078279
+force loss: 2.422691
+
+energy loss: 0.085048
+force loss: 2.417916
+
+energy loss: 0.088712
+force loss: 2.414056
+
+energy loss: 0.094601
+force loss: 2.407850
+
+energy loss: 0.093390
+force loss: 2.401443
+
+energy loss: 0.094736
+force loss: 2.397299
+
+energy loss: 0.094076
+force loss: 2.393491
+
+energy loss: 0.091981
+force loss: 2.389604
+
+energy loss: 0.083504
+force loss: 2.387760
+
+energy loss: 0.080087
+force loss: 2.385386
+
+energy loss: 0.077912
+force loss: 2.382514
+
+energy loss: 0.078746
+force loss: 2.377613
+
+energy loss: 0.071405
+force loss: 2.374438
+
+energy loss: 0.069205
+force loss: 2.370461
+
+energy loss: 0.069349
+force loss: 2.368748
+
+energy loss: 0.068207
+force loss: 2.366006
+
+energy loss: 0.066921
+force loss: 2.363709
+
+energy loss: 0.067699
+force loss: 2.361256
+
+energy loss: 0.068913
+force loss: 2.357040
+
+energy loss: 0.068069
+force loss: 2.354633
+
+energy loss: 0.068010
+force loss: 2.352243
+
+energy loss: 0.067825
+force loss: 2.349810
+
+energy loss: 0.068999
+force loss: 2.347317
+
+energy loss: 0.069529
+force loss: 2.343188
+
+energy loss: 0.066358
+force loss: 2.337628
+
+energy loss: 0.067236
+force loss: 2.333046
+
+energy loss: 0.065482
+force loss: 2.330368
+
+energy loss: 0.066982
+force loss: 2.326182
+
+energy loss: 0.072000
+force loss: 2.318727
+
+energy loss: 0.076719
+force loss: 2.313012
+
+energy loss: 0.082080
+force loss: 2.309617
+
+energy loss: 0.087614
+force loss: 2.305417
+
+energy loss: 0.095268
+force loss: 2.300022
+
+energy loss: 0.100950
+force loss: 2.289939
+
+energy loss: 0.106827
+force loss: 2.281873
+
+energy loss: 0.106541
+force loss: 2.277857
+
+energy loss: 0.105422
+force loss: 2.275486
+
+energy loss: 0.111732
+force loss: 2.269497
+
+energy loss: 0.111339
+force loss: 2.266249
+
+energy loss: 0.111255
+force loss: 2.264084
+
+energy loss: 0.109331
+force loss: 2.262703
+
+energy loss: 0.109998
+force loss: 2.260577
+
+energy loss: 0.107850
+force loss: 2.254360
+
+energy loss: 0.107175
+force loss: 2.250975
+
+energy loss: 0.106504
+force loss: 2.246611
+
+energy loss: 0.102219
+force loss: 2.243950
+
+energy loss: 0.094177
+force loss: 2.241090
+
+energy loss: 0.086021
+force loss: 2.234773
+
+energy loss: 0.084484
+force loss: 2.229759
+
+energy loss: 0.087914
+force loss: 2.224307
+
+energy loss: 0.090678
+force loss: 2.218444
+
+energy loss: 0.090983
+force loss: 2.214735
+
+energy loss: 0.088775
+force loss: 2.208996
+
+energy loss: 0.088626
+force loss: 2.205968
+
+energy loss: 0.088784
+force loss: 2.202925
+
+energy loss: 0.079768
+force loss: 2.198857
+
+energy loss: 0.078160
+force loss: 2.194425
+
+energy loss: 0.075746
+force loss: 2.191886
+
+energy loss: 0.070658
+force loss: 2.188906
+
+energy loss: 0.071755
+force loss: 2.186219
+
+energy loss: 0.067096
+force loss: 2.184510
+
+energy loss: 0.067785
+force loss: 2.183124
+
+energy loss: 0.066229
+force loss: 2.181420
+
+energy loss: 0.065658
+force loss: 2.179475
+
+energy loss: 0.064567
+force loss: 2.177598
+
+energy loss: 0.065044
+force loss: 2.175416
+
+energy loss: 0.065044
+force loss: 2.173323
+
+energy loss: 0.065301
+force loss: 2.170926
+
+energy loss: 0.067253
+force loss: 2.167585
+
+energy loss: 0.068983
+force loss: 2.165520
+
+energy loss: 0.069378
+force loss: 2.164229
+
+energy loss: 0.069726
+force loss: 2.162055
+
+energy loss: 0.068855
+force loss: 2.159823
+
+energy loss: 0.071665
+force loss: 2.156436
+
+energy loss: 0.071245
+force loss: 2.155087
+
+energy loss: 0.073456
+force loss: 2.151697
+
+energy loss: 0.074885
+force loss: 2.149040
+
+energy loss: 0.075585
+force loss: 2.144880
+
+energy loss: 0.080230
+force loss: 2.140501
+
+energy loss: 0.079873
+force loss: 2.139326
+
+energy loss: 0.079523
+force loss: 2.137960
+
+energy loss: 0.078832
+force loss: 2.135920
+
+energy loss: 0.080136
+force loss: 2.130078
+
+energy loss: 0.079488
+force loss: 2.126273
+
+energy loss: 0.080868
+force loss: 2.122449
+
+energy loss: 0.077704
+force loss: 2.119310
+
+energy loss: 0.076989
+force loss: 2.117190
+
+energy loss: 0.073190
+force loss: 2.115168
+
+energy loss: 0.073760
+force loss: 2.113805
+
+energy loss: 0.075179
+force loss: 2.111704
+
+energy loss: 0.071984
+force loss: 2.108574
+
+energy loss: 0.069086
+force loss: 2.106812
+
+energy loss: 0.071637
+force loss: 2.103318
+
+energy loss: 0.070868
+force loss: 2.101171
+
+energy loss: 0.069818
+force loss: 2.099936
+
+energy loss: 0.069588
+force loss: 2.096977
+
+energy loss: 0.070322
+force loss: 2.093630
+
+energy loss: 0.069393
+force loss: 2.090982
+
+energy loss: 0.072692
+force loss: 2.084866
+
+energy loss: 0.067525
+force loss: 2.081345
+
+energy loss: 0.068407
+force loss: 2.078218
+
+energy loss: 0.067696
+force loss: 2.071981
+
+energy loss: 0.069223
+force loss: 2.066390
+
+energy loss: 0.071070
+force loss: 2.062454
+
+energy loss: 0.070063
+force loss: 2.059762
+
+energy loss: 0.069527
+force loss: 2.057353
+
+energy loss: 0.069789
+force loss: 2.054713
+
+energy loss: 0.069367
+force loss: 2.051578
+
+energy loss: 0.067615
+force loss: 2.049352
+
+energy loss: 0.069262
+force loss: 2.046674
+
+energy loss: 0.070740
+force loss: 2.044114
+
+energy loss: 0.073787
+force loss: 2.041038
+
+energy loss: 0.074230
+force loss: 2.038697
+
+energy loss: 0.075138
+force loss: 2.035670
+
+energy loss: 0.073477
+force loss: 2.033784
+
+energy loss: 0.074787
+force loss: 2.029368
+
+energy loss: 0.072632
+force loss: 2.025828
+
+energy loss: 0.070738
+force loss: 2.024140
+
+energy loss: 0.072043
+force loss: 2.022615
+
+energy loss: 0.072347
+force loss: 2.020756
+
+energy loss: 0.073307
+force loss: 2.016490
+
+energy loss: 0.070532
+force loss: 2.014849
+
+energy loss: 0.074235
+force loss: 2.010563
+
+energy loss: 0.072724
+force loss: 2.007012
+
+energy loss: 0.070539
+force loss: 2.004770
+
+energy loss: 0.070582
+force loss: 2.003610
+
+energy loss: 0.068966
+force loss: 2.001958
+
+energy loss: 0.069796
+force loss: 1.999864
+
+energy loss: 0.068983
+force loss: 1.998422
+
+energy loss: 0.067938
+force loss: 1.996336
+
+energy loss: 0.067933
+force loss: 1.994447
+
+energy loss: 0.067572
+force loss: 1.993169
+
+energy loss: 0.067646
+force loss: 1.990949
+
+energy loss: 0.067439
+force loss: 1.989452
+
+energy loss: 0.067170
+force loss: 1.988107
+
+energy loss: 0.066506
+force loss: 1.985996
+
+energy loss: 0.065115
+force loss: 1.983858
+
+energy loss: 0.066194
+force loss: 1.981889
+
+energy loss: 0.064663
+force loss: 1.979079
+
+energy loss: 0.064164
+force loss: 1.977816
+
+energy loss: 0.062798
+force loss: 1.976076
+
+energy loss: 0.062608
+force loss: 1.974332
+
+energy loss: 0.061968
+force loss: 1.971113
+
+energy loss: 0.062009
+force loss: 1.967952
+
+energy loss: 0.061414
+force loss: 1.965818
+
+energy loss: 0.061663
+force loss: 1.964167
+
+energy loss: 0.062058
+force loss: 1.962169
+
+energy loss: 0.066592
+force loss: 1.957278
+
+energy loss: 0.065716
+force loss: 1.953365
+
+energy loss: 0.064376
+force loss: 1.950907
+
+energy loss: 0.062709
+force loss: 1.948382
+
+energy loss: 0.061880
+force loss: 1.945962
+
+energy loss: 0.062620
+force loss: 1.943889
+
+energy loss: 0.061821
+force loss: 1.939824
+
+energy loss: 0.062443
+force loss: 1.935463
+
+energy loss: 0.067963
+force loss: 1.928190
+
+energy loss: 0.064738
+force loss: 1.926035
+
+energy loss: 0.065650
+force loss: 1.924529
+
+energy loss: 0.064357
+force loss: 1.923409
+
+energy loss: 0.063756
+force loss: 1.920786
+
+energy loss: 0.064425
+force loss: 1.918655
+
+energy loss: 0.062494
+force loss: 1.915673
+
+energy loss: 0.061775
+force loss: 1.913138
+
+energy loss: 0.061369
+force loss: 1.910170
+
+energy loss: 0.061893
+force loss: 1.908590
+
+energy loss: 0.061505
+force loss: 1.907429
+
+energy loss: 0.061868
+force loss: 1.906150
+
+energy loss: 0.062804
+force loss: 1.904662
+
+energy loss: 0.063649
+force loss: 1.902431
+
+energy loss: 0.063409
+force loss: 1.899491
+
+energy loss: 0.063807
+force loss: 1.898180
+
+energy loss: 0.066232
+force loss: 1.896482
+
+energy loss: 0.067248
+force loss: 1.894927
+
+energy loss: 0.065728
+force loss: 1.893695
+
+energy loss: 0.067002
+force loss: 1.891923
+
+energy loss: 0.067010
+force loss: 1.891082
+
+energy loss: 0.068690
+force loss: 1.889245
+
+energy loss: 0.067831
+force loss: 1.888414
+
+energy loss: 0.068781
+force loss: 1.887578
+
+energy loss: 0.069967
+force loss: 1.886240
+
+energy loss: 0.071570
+force loss: 1.883927
+
+energy loss: 0.071321
+force loss: 1.882600
+
+energy loss: 0.071439
+force loss: 1.881396
+
+energy loss: 0.070641
+force loss: 1.879767
+
+energy loss: 0.070426
+force loss: 1.878564
+
+energy loss: 0.071160
+force loss: 1.877313
+
+energy loss: 0.072278
+force loss: 1.876509
+
+energy loss: 0.072878
+force loss: 1.875954
+
+energy loss: 0.072209
+force loss: 1.875455
+
+energy loss: 0.071824
+force loss: 1.874581
+
+energy loss: 0.071257
+force loss: 1.873978
+
+energy loss: 0.071945
+force loss: 1.871571
+
+energy loss: 0.071457
+force loss: 1.870597
+
+energy loss: 0.071812
+force loss: 1.869649
+
+energy loss: 0.070060
+force loss: 1.868527
+
+energy loss: 0.070335
+force loss: 1.867608
+
+energy loss: 0.069086
+force loss: 1.866129
+
+energy loss: 0.069027
+force loss: 1.865159
+
+energy loss: 0.068479
+force loss: 1.863739
+
+energy loss: 0.067816
+force loss: 1.861621
+
+energy loss: 0.067371
+force loss: 1.860657
+
+energy loss: 0.068067
+force loss: 1.859629
+
+energy loss: 0.067229
+force loss: 1.858730
+
+energy loss: 0.065849
+force loss: 1.856533
+
+energy loss: 0.066055
+force loss: 1.855015
+
+energy loss: 0.065639
+force loss: 1.853932
+
+energy loss: 0.066335
+force loss: 1.852591
+
+energy loss: 0.066868
+force loss: 1.851817
+
+energy loss: 0.066608
+force loss: 1.850400
+
+energy loss: 0.067334
+force loss: 1.847417
+
+energy loss: 0.067376
+force loss: 1.846313
+
+energy loss: 0.065021
+force loss: 1.845053
+
+energy loss: 0.064403
+force loss: 1.844198
+
+energy loss: 0.064328
+force loss: 1.843554
+
+energy loss: 0.064599
+force loss: 1.843077
+
+energy loss: 0.064187
+force loss: 1.842318
+
+energy loss: 0.064080
+force loss: 1.841204
+
+energy loss: 0.063535
+force loss: 1.840315
+
+energy loss: 0.063870
+force loss: 1.839576
+
+energy loss: 0.063463
+force loss: 1.838914
+
+energy loss: 0.063276
+force loss: 1.838015
+
+energy loss: 0.064075
+force loss: 1.836800
+
+energy loss: 0.064300
+force loss: 1.835294
+
+energy loss: 0.069034
+force loss: 1.831980
+
+energy loss: 0.065789
+force loss: 1.829080
+
+energy loss: 0.066103
+force loss: 1.827681
+
+energy loss: 0.065267
+force loss: 1.825406
+
+energy loss: 0.065428
+force loss: 1.822838
+
+energy loss: 0.063858
+force loss: 1.820333
+
+energy loss: 0.061960
+force loss: 1.817912
+
+energy loss: 0.062164
+force loss: 1.815991
+
+energy loss: 0.063476
+force loss: 1.814330
+
+energy loss: 0.062536
+force loss: 1.811073
+
+energy loss: 0.061603
+force loss: 1.808439
+
+energy loss: 0.061187
+force loss: 1.806735
+
+energy loss: 0.061742
+force loss: 1.805079
+
+energy loss: 0.060788
+force loss: 1.803786
+
+energy loss: 0.061995
+force loss: 1.802441
+
+energy loss: 0.063095
+force loss: 1.799668
+
+energy loss: 0.063322
+force loss: 1.796922
+
+energy loss: 0.063018
+force loss: 1.793519
+
+energy loss: 0.065826
+force loss: 1.790451
+
+energy loss: 0.062187
+force loss: 1.789107
+
+energy loss: 0.062543
+force loss: 1.787512
+
+energy loss: 0.060400
+force loss: 1.785729
+
+energy loss: 0.058831
+force loss: 1.784058
+
+energy loss: 0.058514
+force loss: 1.783184
+
+energy loss: 0.057817
+force loss: 1.781804
+
+energy loss: 0.056351
+force loss: 1.780605
+
+energy loss: 0.056102
+force loss: 1.779816
+
+energy loss: 0.055837
+force loss: 1.778779
+
+energy loss: 0.055667
+force loss: 1.778124
+
+energy loss: 0.055466
+force loss: 1.777404
+
+energy loss: 0.056317
+force loss: 1.775525
+
+energy loss: 0.057028
+force loss: 1.774340
+
+energy loss: 0.058219
+force loss: 1.773288
+
+energy loss: 0.059040
+force loss: 1.772011
+
+energy loss: 0.060193
+force loss: 1.769694
+
+energy loss: 0.061232
+force loss: 1.768490
+
+energy loss: 0.060828
+force loss: 1.768069
+
+energy loss: 0.061226
+force loss: 1.767587
+
+energy loss: 0.059871
+force loss: 1.766705
+
+energy loss: 0.060119
+force loss: 1.765435
+
+energy loss: 0.060333
+force loss: 1.763466
+
+energy loss: 0.059368
+force loss: 1.761974
+
+energy loss: 0.057913
+force loss: 1.760336
+
+energy loss: 0.059045
+force loss: 1.758165
+
+energy loss: 0.059051
+force loss: 1.756463
+
+energy loss: 0.059653
+force loss: 1.753658
+
+energy loss: 0.060189
+force loss: 1.750936
+
+energy loss: 0.058562
+force loss: 1.749489
+
+energy loss: 0.058002
+force loss: 1.748706
+
+energy loss: 0.057950
+force loss: 1.747642
+
+energy loss: 0.057978
+force loss: 1.746008
+
+energy loss: 0.057212
+force loss: 1.743724
+
+energy loss: 0.058118
+force loss: 1.741299
+
+energy loss: 0.057409
+force loss: 1.739844
+
+energy loss: 0.057925
+force loss: 1.737571
+
+energy loss: 0.057859
+force loss: 1.735093
+
+energy loss: 0.057211
+force loss: 1.732738
+
+energy loss: 0.056740
+force loss: 1.731343
+
+energy loss: 0.057772
+force loss: 1.729442
+
+energy loss: 0.057971
+force loss: 1.729104
+
+energy loss: 0.058082
+force loss: 1.727579
+
+energy loss: 0.058283
+force loss: 1.725638
+
+energy loss: 0.059907
+force loss: 1.722775
+
+energy loss: 0.059850
+force loss: 1.720624
+
+energy loss: 0.059003
+force loss: 1.719081
+
+energy loss: 0.057080
+force loss: 1.717688
+
+energy loss: 0.056841
+force loss: 1.716945
+
+energy loss: 0.057224
+force loss: 1.716119
+
+energy loss: 0.056961
+force loss: 1.715900
+
+energy loss: 0.056603
+force loss: 1.715413
+
+energy loss: 0.056682
+force loss: 1.714956
+
+energy loss: 0.056649
+force loss: 1.714669
+
+energy loss: 0.056882
+force loss: 1.714210
+
+energy loss: 0.056787
+force loss: 1.713393
+
+energy loss: 0.056777
+force loss: 1.712810
+
+energy loss: 0.057271
+force loss: 1.712227
+
+energy loss: 0.057415
+force loss: 1.711792
+
+energy loss: 0.056794
+force loss: 1.711166
+
+energy loss: 0.056706
+force loss: 1.710461
+
+energy loss: 0.056535
+force loss: 1.709777
+
+energy loss: 0.056881
+force loss: 1.708816
+
+energy loss: 0.057322
+force loss: 1.707914
+
+energy loss: 0.057221
+force loss: 1.707113
+
+energy loss: 0.057289
+force loss: 1.706254
+
+energy loss: 0.057492
+force loss: 1.705534
+
+energy loss: 0.057612
+force loss: 1.704715
+
+energy loss: 0.059183
+force loss: 1.702388
+
+energy loss: 0.059602
+force loss: 1.701618
+
+energy loss: 0.059878
+force loss: 1.700809
+
+energy loss: 0.059662
+force loss: 1.700138
+
+energy loss: 0.059708
+force loss: 1.699472
+
+energy loss: 0.060012
+force loss: 1.699119
+
+energy loss: 0.060162
+force loss: 1.698618
+
+energy loss: 0.060056
+force loss: 1.698286
+
+energy loss: 0.060349
+force loss: 1.697562
+
+energy loss: 0.060929
+force loss: 1.696130
+
+energy loss: 0.061694
+force loss: 1.694896
+
+energy loss: 0.061057
+force loss: 1.693442
+
+energy loss: 0.060389
+force loss: 1.691782
+
+energy loss: 0.060873
+force loss: 1.690806
+
+energy loss: 0.060407
+force loss: 1.690302
+
+energy loss: 0.060753
+force loss: 1.689502
+
+energy loss: 0.060020
+force loss: 1.687967
+
+energy loss: 0.059937
+force loss: 1.686457
+
+energy loss: 0.059809
+force loss: 1.685691
+
+energy loss: 0.059602
+force loss: 1.684366
+
+energy loss: 0.059112
+force loss: 1.682584
+
+energy loss: 0.058317
+force loss: 1.682042
+
+energy loss: 0.056739
+force loss: 1.680939
+
+energy loss: 0.056963
+force loss: 1.679178
+
+energy loss: 0.057291
+force loss: 1.676151
+
+energy loss: 0.056929
+force loss: 1.674994
+
+energy loss: 0.055636
+force loss: 1.672750
+
+energy loss: 0.055438
+force loss: 1.671609
+
+energy loss: 0.055252
+force loss: 1.670844
+
+energy loss: 0.055378
+force loss: 1.670006
+
+energy loss: 0.055222
+force loss: 1.669264
+
+energy loss: 0.055272
+force loss: 1.667302
+
+energy loss: 0.055021
+force loss: 1.666972
+
+energy loss: 0.055151
+force loss: 1.666332
+
+energy loss: 0.055444
+force loss: 1.665729
+
+energy loss: 0.055912
+force loss: 1.664771
+
+energy loss: 0.056175
+force loss: 1.664037
+
+energy loss: 0.057453
+force loss: 1.662864
+
+energy loss: 0.056869
+force loss: 1.662346
+
+energy loss: 0.056438
+force loss: 1.660451
+
+energy loss: 0.055962
+force loss: 1.659705
+
+energy loss: 0.056094
+force loss: 1.658772
+
+energy loss: 0.056825
+force loss: 1.657758
+
+energy loss: 0.057325
+force loss: 1.656893
+
+energy loss: 0.057980
+force loss: 1.656097
+
+energy loss: 0.057837
+force loss: 1.655533
+
+energy loss: 0.057854
+force loss: 1.653809
+
+energy loss: 0.058343
+force loss: 1.653074
+
+energy loss: 0.057460
+force loss: 1.652282
+
+energy loss: 0.057789
+force loss: 1.651092
+
+energy loss: 0.057802
+force loss: 1.650261
+
+energy loss: 0.059822
+force loss: 1.648125
+
+energy loss: 0.057602
+force loss: 1.647214
+
+energy loss: 0.057106
+force loss: 1.646501
+
+energy loss: 0.056441
+force loss: 1.645831
+
+energy loss: 0.056261
+force loss: 1.645143
+
+energy loss: 0.055856
+force loss: 1.644861
+
+energy loss: 0.055748
+force loss: 1.644508
+
+energy loss: 0.055494
+force loss: 1.644119
+
+energy loss: 0.055197
+force loss: 1.643149
+
+energy loss: 0.055125
+force loss: 1.642720
+
+energy loss: 0.055145
+force loss: 1.642384
+
+energy loss: 0.055115
+force loss: 1.642012
+
+energy loss: 0.055389
+force loss: 1.641763
+
+energy loss: 0.056003
+force loss: 1.640975
+
+energy loss: 0.056714
+force loss: 1.640206
+
+energy loss: 0.057046
+force loss: 1.639674
+
+energy loss: 0.058562
+force loss: 1.638878
+
+energy loss: 0.058799
+force loss: 1.638579
+
+energy loss: 0.058790
+force loss: 1.638365
+
+energy loss: 0.058718
+force loss: 1.637931
+
+energy loss: 0.059248
+force loss: 1.637264
+
+energy loss: 0.059348
+force loss: 1.636833
+
+energy loss: 0.059676
+force loss: 1.635756
+
+energy loss: 0.061314
+force loss: 1.634479
+
+energy loss: 0.061666
+force loss: 1.632587
+
+energy loss: 0.063551
+force loss: 1.631022
+
+energy loss: 0.063059
+force loss: 1.630762
+
+energy loss: 0.062399
+force loss: 1.630274
+
+energy loss: 0.061486
+force loss: 1.629341
+
+energy loss: 0.061508
+force loss: 1.628942
+
+energy loss: 0.061760
+force loss: 1.628730
+
+energy loss: 0.062186
+force loss: 1.628282
+
+energy loss: 0.062349
+force loss: 1.627734
+
+energy loss: 0.061956
+force loss: 1.627147
+
+energy loss: 0.062427
+force loss: 1.626681
+
+energy loss: 0.063678
+force loss: 1.625378
+
+energy loss: 0.064435
+force loss: 1.624411
+
+energy loss: 0.064328
+force loss: 1.623840
+
+energy loss: 0.064071
+force loss: 1.623165
+
+energy loss: 0.063310
+force loss: 1.622797
+
+energy loss: 0.063110
+force loss: 1.622361
+
+energy loss: 0.062569
+force loss: 1.622144
+
+energy loss: 0.062052
+force loss: 1.621722
+
+energy loss: 0.062033
+force loss: 1.621164
+
+energy loss: 0.062436
+force loss: 1.620693
+
+energy loss: 0.061920
+force loss: 1.620551
+
+energy loss: 0.062045
+force loss: 1.620073
+
+energy loss: 0.062180
+force loss: 1.619230
+
+energy loss: 0.062795
+force loss: 1.618606
+
+energy loss: 0.062753
+force loss: 1.618260
+
+energy loss: 0.062845
+force loss: 1.617923
+
+energy loss: 0.062708
+force loss: 1.617813
+
+energy loss: 0.062708
+force loss: 1.617813
+
+Training complete in 582 steps
+Training complete in 41m 37s
+Calculating fingerprints...
+Fingerprints Calculated!
+Training Initiated!
+energy loss: 2.027972
+force loss: 13.870068
+
+energy loss: 0.823452
+force loss: 8.774671
+
+energy loss: 0.813193
+force loss: 7.753846
+
+energy loss: 0.871549
+force loss: 6.450790
+
+energy loss: 0.830501
+force loss: 5.574614
+
+energy loss: 0.793175
+force loss: 5.196646
+
+energy loss: 0.756558
+force loss: 5.042489
+
+energy loss: 0.703830
+force loss: 4.609149
+
+energy loss: 0.664886
+force loss: 4.444425
+
+energy loss: 0.587670
+force loss: 4.282779
+
+energy loss: 0.462081
+force loss: 4.109544
+
+energy loss: 0.397053
+force loss: 4.006898
+
+energy loss: 0.248299
+force loss: 3.925433
+
+energy loss: 0.199335
+force loss: 3.868620
+
+energy loss: 0.180911
+force loss: 3.833724
+
+energy loss: 0.169264
+force loss: 3.788791
+
+energy loss: 0.146395
+force loss: 3.739964
+
+energy loss: 0.115745
+force loss: 3.698749
+
+energy loss: 0.123181
+force loss: 3.654104
+
+energy loss: 0.090530
+force loss: 3.618921
+
+energy loss: 0.084320
+force loss: 3.594253
+
+energy loss: 0.079278
+force loss: 3.587224
+
+energy loss: 0.092239
+force loss: 3.555882
+
+energy loss: 0.091482
+force loss: 3.535357
+
+energy loss: 0.079019
+force loss: 3.514169
+
+energy loss: 0.081861
+force loss: 3.508047
+
+energy loss: 0.091938
+force loss: 3.491775
+
+energy loss: 0.107300
+force loss: 3.471631
+
+energy loss: 0.102990
+force loss: 3.453042
+
+energy loss: 0.082780
+force loss: 3.439533
+
+energy loss: 0.077522
+force loss: 3.427843
+
+energy loss: 0.084967
+force loss: 3.413629
+
+energy loss: 0.075837
+force loss: 3.401258
+
+energy loss: 0.066808
+force loss: 3.381906
+
+energy loss: 0.073224
+force loss: 3.372154
+
+energy loss: 0.080471
+force loss: 3.363508
+
+energy loss: 0.072126
+force loss: 3.356323
+
+energy loss: 0.078780
+force loss: 3.340891
+
+energy loss: 0.082797
+force loss: 3.331790
+
+energy loss: 0.086394
+force loss: 3.320407
+
+energy loss: 0.077460
+force loss: 3.313234
+
+energy loss: 0.056653
+force loss: 3.298715
+
+energy loss: 0.055843
+force loss: 3.287523
+
+energy loss: 0.050547
+force loss: 3.280213
+
+energy loss: 0.046448
+force loss: 3.273315
+
+energy loss: 0.062181
+force loss: 3.261480
+
+energy loss: 0.063168
+force loss: 3.253996
+
+energy loss: 0.063957
+force loss: 3.246182
+
+energy loss: 0.071070
+force loss: 3.241494
+
+energy loss: 0.073482
+force loss: 3.235080
+
+energy loss: 0.075475
+force loss: 3.229675
+
+energy loss: 0.073147
+force loss: 3.225001
+
+energy loss: 0.061735
+force loss: 3.215156
+
+energy loss: 0.063019
+force loss: 3.202805
+
+energy loss: 0.066235
+force loss: 3.195066
+
+energy loss: 0.042841
+force loss: 3.186231
+
+energy loss: 0.037997
+force loss: 3.179946
+
+energy loss: 0.040788
+force loss: 3.173834
+
+energy loss: 0.037048
+force loss: 3.168489
+
+energy loss: 0.037040
+force loss: 3.163845
+
+energy loss: 0.039143
+force loss: 3.159016
+
+energy loss: 0.051363
+force loss: 3.152235
+
+energy loss: 0.052743
+force loss: 3.145076
+
+energy loss: 0.055755
+force loss: 3.140995
+
+energy loss: 0.063301
+force loss: 3.135359
+
+energy loss: 0.064795
+force loss: 3.131155
+
+energy loss: 0.064680
+force loss: 3.124789
+
+energy loss: 0.075467
+force loss: 3.118340
+
+energy loss: 0.074778
+force loss: 3.114246
+
+energy loss: 0.061625
+force loss: 3.107533
+
+energy loss: 0.060340
+force loss: 3.100546
+
+energy loss: 0.046878
+force loss: 3.094062
+
+energy loss: 0.040688
+force loss: 3.089490
+
+energy loss: 0.041785
+force loss: 3.086088
+
+energy loss: 0.046778
+force loss: 3.074564
+
+energy loss: 0.051874
+force loss: 3.070143
+
+energy loss: 0.054039
+force loss: 3.065166
+
+energy loss: 0.053949
+force loss: 3.060455
+
+energy loss: 0.049933
+force loss: 3.056251
+
+energy loss: 0.058705
+force loss: 3.045261
+
+energy loss: 0.061038
+force loss: 3.039369
+
+energy loss: 0.065678
+force loss: 3.032429
+
+energy loss: 0.068306
+force loss: 3.030411
+
+energy loss: 0.069843
+force loss: 3.028393
+
+energy loss: 0.068857
+force loss: 3.024785
+
+energy loss: 0.072410
+force loss: 3.021171
+
+energy loss: 0.068171
+force loss: 3.017008
+
+energy loss: 0.061517
+force loss: 3.015075
+
+energy loss: 0.059876
+force loss: 3.009605
+
+energy loss: 0.062357
+force loss: 3.005490
+
+energy loss: 0.054591
+force loss: 2.999129
+
+energy loss: 0.067647
+force loss: 2.993756
+
+energy loss: 0.056565
+force loss: 2.986647
+
+energy loss: 0.064779
+force loss: 2.979245
+
+energy loss: 0.057802
+force loss: 2.974410
+
+energy loss: 0.051324
+force loss: 2.964635
+
+energy loss: 0.046211
+force loss: 2.960546
+
+energy loss: 0.046446
+force loss: 2.954569
+
+energy loss: 0.051958
+force loss: 2.947798
+
+energy loss: 0.065287
+force loss: 2.939342
+
+energy loss: 0.075031
+force loss: 2.932390
+
+energy loss: 0.075291
+force loss: 2.928237
+
+energy loss: 0.076613
+force loss: 2.923103
+
+energy loss: 0.074192
+force loss: 2.914489
+
+energy loss: 0.058683
+force loss: 2.907584
+
+energy loss: 0.053717
+force loss: 2.900310
+
+energy loss: 0.058520
+force loss: 2.892463
+
+energy loss: 0.074149
+force loss: 2.885366
+
+energy loss: 0.092029
+force loss: 2.875019
+
+energy loss: 0.101544
+force loss: 2.866370
+
+energy loss: 0.107251
+force loss: 2.858002
+
+energy loss: 0.110451
+force loss: 2.849648
+
+energy loss: 0.093328
+force loss: 2.840255
+
+energy loss: 0.083910
+force loss: 2.827188
+
+energy loss: 0.079708
+force loss: 2.819156
+
+energy loss: 0.082139
+force loss: 2.801744
+
+energy loss: 0.069832
+force loss: 2.792017
+
+energy loss: 0.068273
+force loss: 2.769298
+
+energy loss: 0.058175
+force loss: 2.757843
+
+energy loss: 0.065023
+force loss: 2.745988
+
+energy loss: 0.058128
+force loss: 2.738169
+
+energy loss: 0.068942
+force loss: 2.722362
+
+energy loss: 0.065249
+force loss: 2.713371
+
+energy loss: 0.054867
+force loss: 2.699246
+
+energy loss: 0.052395
+force loss: 2.678553
+
+energy loss: 0.060312
+force loss: 2.661134
+
+energy loss: 0.052077
+force loss: 2.638003
+
+energy loss: 0.056846
+force loss: 2.619515
+
+energy loss: 0.059049
+force loss: 2.604604
+
+energy loss: 0.064542
+force loss: 2.591909
+
+energy loss: 0.060480
+force loss: 2.568807
+
+energy loss: 0.051773
+force loss: 2.548091
+
+energy loss: 0.062937
+force loss: 2.531767
+
+energy loss: 0.058878
+force loss: 2.510955
+
+energy loss: 0.083993
+force loss: 2.486062
+
+energy loss: 0.086432
+force loss: 2.472379
+
+energy loss: 0.051862
+force loss: 2.453559
+
+energy loss: 0.047601
+force loss: 2.438389
+
+energy loss: 0.050402
+force loss: 2.417832
+
+energy loss: 0.046942
+force loss: 2.408918
+
+energy loss: 0.047740
+force loss: 2.382801
+
+energy loss: 0.050036
+force loss: 2.357960
+
+energy loss: 0.038759
+force loss: 2.343003
+
+energy loss: 0.054086
+force loss: 2.327994
+
+energy loss: 0.051186
+force loss: 2.310161
+
+energy loss: 0.062177
+force loss: 2.291461
+
+energy loss: 0.070261
+force loss: 2.277809
+
+energy loss: 0.064483
+force loss: 2.258806
+
+energy loss: 0.087661
+force loss: 2.216210
+
+energy loss: 0.086450
+force loss: 2.184195
+
+energy loss: 0.077957
+force loss: 2.168734
+
+energy loss: 0.077815
+force loss: 2.148318
+
+energy loss: 0.094593
+force loss: 2.132614
+
+energy loss: 0.086056
+force loss: 2.118650
+
+energy loss: 0.075115
+force loss: 2.100730
+
+energy loss: 0.058440
+force loss: 2.085537
+
+energy loss: 0.062252
+force loss: 2.070509
+
+energy loss: 0.063636
+force loss: 2.054332
+
+energy loss: 0.072146
+force loss: 2.041702
+
+energy loss: 0.088813
+force loss: 2.016814
+
+energy loss: 0.066821
+force loss: 2.007693
+
+energy loss: 0.058884
+force loss: 1.994786
+
+energy loss: 0.073940
+force loss: 1.976610
+
+energy loss: 0.070406
+force loss: 1.961379
+
+energy loss: 0.060698
+force loss: 1.935897
+
+energy loss: 0.069656
+force loss: 1.918374
+
+energy loss: 0.082610
+force loss: 1.903242
+
+energy loss: 0.091095
+force loss: 1.888520
+
+energy loss: 0.081973
+force loss: 1.878024
+
+energy loss: 0.075664
+force loss: 1.866728
+
+energy loss: 0.067707
+force loss: 1.853300
+
+energy loss: 0.070830
+force loss: 1.841346
+
+energy loss: 0.056309
+force loss: 1.829206
+
+energy loss: 0.052382
+force loss: 1.815249
+
+energy loss: 0.049607
+force loss: 1.806555
+
+energy loss: 0.047283
+force loss: 1.792719
+
+energy loss: 0.050817
+force loss: 1.774968
+
+energy loss: 0.058451
+force loss: 1.767694
+
+energy loss: 0.054644
+force loss: 1.762733
+
+energy loss: 0.051750
+force loss: 1.756253
+
+energy loss: 0.056230
+force loss: 1.748491
+
+energy loss: 0.057686
+force loss: 1.739815
+
+energy loss: 0.060792
+force loss: 1.732312
+
+energy loss: 0.063507
+force loss: 1.722676
+
+energy loss: 0.076178
+force loss: 1.708748
+
+energy loss: 0.072127
+force loss: 1.699754
+
+energy loss: 0.067014
+force loss: 1.691677
+
+energy loss: 0.078199
+force loss: 1.680852
+
+energy loss: 0.073584
+force loss: 1.673226
+
+energy loss: 0.082595
+force loss: 1.664936
+
+energy loss: 0.077429
+force loss: 1.657596
+
+energy loss: 0.076511
+force loss: 1.649398
+
+energy loss: 0.079597
+force loss: 1.643966
+
+energy loss: 0.066244
+force loss: 1.632121
+
+energy loss: 0.063563
+force loss: 1.620693
+
+energy loss: 0.057553
+force loss: 1.609869
+
+energy loss: 0.054186
+force loss: 1.601188
+
+energy loss: 0.051762
+force loss: 1.594377
+
+energy loss: 0.048986
+force loss: 1.587442
+
+energy loss: 0.048290
+force loss: 1.577599
+
+energy loss: 0.046848
+force loss: 1.567153
+
+energy loss: 0.047031
+force loss: 1.560235
+
+energy loss: 0.047295
+force loss: 1.554888
+
+energy loss: 0.047872
+force loss: 1.547910
+
+energy loss: 0.051043
+force loss: 1.535755
+
+energy loss: 0.047442
+force loss: 1.526582
+
+energy loss: 0.045540
+force loss: 1.517837
+
+energy loss: 0.048263
+force loss: 1.509414
+
+energy loss: 0.046478
+force loss: 1.505489
+
+energy loss: 0.045708
+force loss: 1.499722
+
+energy loss: 0.046134
+force loss: 1.494839
+
+energy loss: 0.047251
+force loss: 1.490484
+
+energy loss: 0.047374
+force loss: 1.485983
+
+energy loss: 0.046162
+force loss: 1.480536
+
+energy loss: 0.045876
+force loss: 1.477701
+
+energy loss: 0.045754
+force loss: 1.470766
+
+energy loss: 0.045715
+force loss: 1.466369
+
+energy loss: 0.046120
+force loss: 1.463842
+
+energy loss: 0.046907
+force loss: 1.461165
+
+energy loss: 0.047908
+force loss: 1.457780
+
+energy loss: 0.048272
+force loss: 1.454909
+
+energy loss: 0.048091
+force loss: 1.452655
+
+energy loss: 0.049015
+force loss: 1.448574
+
+energy loss: 0.048672
+force loss: 1.446100
+
+energy loss: 0.050271
+force loss: 1.443002
+
+energy loss: 0.053682
+force loss: 1.440244
+
+energy loss: 0.055318
+force loss: 1.437461
+
+energy loss: 0.055950
+force loss: 1.434812
+
+energy loss: 0.057912
+force loss: 1.430547
+
+energy loss: 0.058691
+force loss: 1.425450
+
+energy loss: 0.057358
+force loss: 1.422745
+
+energy loss: 0.056363
+force loss: 1.421265
+
+energy loss: 0.057928
+force loss: 1.416277
+
+energy loss: 0.055338
+force loss: 1.410887
+
+energy loss: 0.051067
+force loss: 1.408311
+
+energy loss: 0.048520
+force loss: 1.403727
+
+energy loss: 0.048472
+force loss: 1.400344
+
+energy loss: 0.047698
+force loss: 1.397897
+
+energy loss: 0.047759
+force loss: 1.394149
+
+energy loss: 0.047144
+force loss: 1.392228
+
+energy loss: 0.048636
+force loss: 1.390599
+
+energy loss: 0.048375
+force loss: 1.387402
+
+energy loss: 0.048442
+force loss: 1.383868
+
+energy loss: 0.047502
+force loss: 1.380158
+
+energy loss: 0.046919
+force loss: 1.376805
+
+energy loss: 0.047456
+force loss: 1.374438
+
+energy loss: 0.046405
+force loss: 1.371418
+
+energy loss: 0.047494
+force loss: 1.368326
+
+energy loss: 0.046911
+force loss: 1.365221
+
+energy loss: 0.046783
+force loss: 1.361986
+
+energy loss: 0.047227
+force loss: 1.358403
+
+energy loss: 0.046774
+force loss: 1.355592
+
+energy loss: 0.047666
+force loss: 1.352754
+
+energy loss: 0.048632
+force loss: 1.348083
+
+energy loss: 0.048132
+force loss: 1.343925
+
+energy loss: 0.050364
+force loss: 1.339496
+
+energy loss: 0.051561
+force loss: 1.336823
+
+energy loss: 0.051801
+force loss: 1.331581
+
+energy loss: 0.052939
+force loss: 1.327174
+
+energy loss: 0.057137
+force loss: 1.323164
+
+energy loss: 0.057585
+force loss: 1.319311
+
+energy loss: 0.060841
+force loss: 1.314253
+
+energy loss: 0.056552
+force loss: 1.311572
+
+energy loss: 0.056320
+force loss: 1.304028
+
+energy loss: 0.055865
+force loss: 1.300883
+
+energy loss: 0.056105
+force loss: 1.294935
+
+energy loss: 0.053323
+force loss: 1.292477
+
+energy loss: 0.056784
+force loss: 1.289006
+
+energy loss: 0.056884
+force loss: 1.285841
+
+energy loss: 0.052494
+force loss: 1.283043
+
+energy loss: 0.052311
+force loss: 1.279253
+
+energy loss: 0.052654
+force loss: 1.275586
+
+energy loss: 0.052877
+force loss: 1.271444
+
+energy loss: 0.052968
+force loss: 1.267318
+
+energy loss: 0.052049
+force loss: 1.262598
+
+energy loss: 0.049513
+force loss: 1.259625
+
+energy loss: 0.049019
+force loss: 1.256485
+
+energy loss: 0.045944
+force loss: 1.250817
+
+energy loss: 0.043435
+force loss: 1.246828
+
+energy loss: 0.043558
+force loss: 1.244062
+
+energy loss: 0.044718
+force loss: 1.241272
+
+energy loss: 0.043530
+force loss: 1.239019
+
+energy loss: 0.043824
+force loss: 1.236149
+
+energy loss: 0.042829
+force loss: 1.233554
+
+energy loss: 0.042868
+force loss: 1.231843
+
+energy loss: 0.042937
+force loss: 1.229911
+
+energy loss: 0.042665
+force loss: 1.228426
+
+energy loss: 0.042655
+force loss: 1.226902
+
+energy loss: 0.042223
+force loss: 1.223241
+
+energy loss: 0.042851
+force loss: 1.221105
+
+energy loss: 0.042608
+force loss: 1.218936
+
+energy loss: 0.042557
+force loss: 1.217299
+
+energy loss: 0.041930
+force loss: 1.214426
+
+energy loss: 0.043557
+force loss: 1.210536
+
+energy loss: 0.045828
+force loss: 1.206998
+
+energy loss: 0.046177
+force loss: 1.203100
+
+energy loss: 0.046166
+force loss: 1.200272
+
+energy loss: 0.043682
+force loss: 1.198271
+
+energy loss: 0.044307
+force loss: 1.196629
+
+energy loss: 0.042933
+force loss: 1.194535
+
+energy loss: 0.042044
+force loss: 1.192546
+
+energy loss: 0.043151
+force loss: 1.189198
+
+energy loss: 0.044640
+force loss: 1.185779
+
+energy loss: 0.038989
+force loss: 1.180161
+
+energy loss: 0.040648
+force loss: 1.178085
+
+energy loss: 0.038841
+force loss: 1.175451
+
+energy loss: 0.039253
+force loss: 1.172657
+
+energy loss: 0.039028
+force loss: 1.171727
+
+energy loss: 0.038312
+force loss: 1.167812
+
+energy loss: 0.039095
+force loss: 1.165765
+
+energy loss: 0.037521
+force loss: 1.165145
+
+energy loss: 0.038141
+force loss: 1.164300
+
+energy loss: 0.037874
+force loss: 1.163689
+
+energy loss: 0.037980
+force loss: 1.162679
+
+energy loss: 0.037566
+force loss: 1.161581
+
+energy loss: 0.037720
+force loss: 1.160506
+
+energy loss: 0.037682
+force loss: 1.159755
+
+energy loss: 0.037895
+force loss: 1.157433
+
+energy loss: 0.037918
+force loss: 1.153910
+
+energy loss: 0.037671
+force loss: 1.152198
+
+energy loss: 0.037408
+force loss: 1.149323
+
+energy loss: 0.037591
+force loss: 1.147203
+
+energy loss: 0.037826
+force loss: 1.146099
+
+energy loss: 0.037442
+force loss: 1.143820
+
+energy loss: 0.037521
+force loss: 1.141417
+
+energy loss: 0.037566
+force loss: 1.138813
+
+energy loss: 0.038474
+force loss: 1.136763
+
+energy loss: 0.039525
+force loss: 1.132696
+
+energy loss: 0.039974
+force loss: 1.129933
+
+energy loss: 0.040242
+force loss: 1.128134
+
+energy loss: 0.040133
+force loss: 1.126517
+
+energy loss: 0.040796
+force loss: 1.123598
+
+energy loss: 0.040720
+force loss: 1.122255
+
+energy loss: 0.042769
+force loss: 1.119809
+
+energy loss: 0.041740
+force loss: 1.117850
+
+energy loss: 0.041970
+force loss: 1.115722
+
+energy loss: 0.042141
+force loss: 1.114741
+
+energy loss: 0.042863
+force loss: 1.112768
+
+energy loss: 0.042529
+force loss: 1.111833
+
+energy loss: 0.041640
+force loss: 1.110860
+
+energy loss: 0.041632
+force loss: 1.110423
+
+energy loss: 0.040873
+force loss: 1.110100
+
+energy loss: 0.040389
+force loss: 1.109330
+
+energy loss: 0.040490
+force loss: 1.108295
+
+energy loss: 0.040441
+force loss: 1.107818
+
+energy loss: 0.040724
+force loss: 1.107300
+
+energy loss: 0.040708
+force loss: 1.106820
+
+energy loss: 0.041362
+force loss: 1.106252
+
+energy loss: 0.041678
+force loss: 1.105862
+
+energy loss: 0.042324
+force loss: 1.105497
+
+energy loss: 0.042430
+force loss: 1.105402
+
+energy loss: 0.042430
+force loss: 1.105402
+
+Training complete in 352 steps
+Training complete in 25m 5s
+LJ optimization initiated...
+0.021141170429159847
+0.02113018839968511
+0.02114037087202239
+0.02116146235614045
+0.021132333424529196
+0.021140646782948865
+0.0211336487282105
+0.039035763312936594
+0.023435943500496503
+0.018206970990352074
+0.020345299910885087
+0.018412093068839272
+0.01937422487422647
+0.019098212333331064
+0.018790295582044158
+0.018478727950428896
+0.01819784193865946
+0.01799471763695725
+0.017974390776171995
+0.018769906924293818
+0.0181078739489519
+0.01707979317649798
+0.021589285787702032
+0.017249960152130372
+0.017182499633575807
+0.017103481654299032
+0.016967069586342254
+0.01755840481518774
+0.018282805776781492
+0.017411807062348156
+0.019872909042194048
+0.017208249685237105
+0.016587437476817183
+0.01769556701035151
+0.016565277116013438
+0.018483116338749127
+0.01667224276335976
+0.017051195436125943
+0.017075892390131207
+0.016704047394906038
+0.018582566869171806
+0.016689222619353464
+0.018857444994161282
+0.016637645617601907
+0.01680802540922953
+0.016997233248226343
+0.017603732656246852
+0.016568271251618857
+0.01691624595246918
+0.017553835446482275
+0.016616979526763952
+0.016902442148609476
+0.016628811944827362
+0.016790258852950806
+0.01656743236814069
+0.016989913367216856
+0.016517132484397547
+0.016669521125767903
+0.016769638495787092
+0.016519207791455492
+0.01673072542137413
+0.01652139355749799
+0.016701186656054072
+0.016534361602311233
+0.016802386208721175
+0.01652129000288238
+0.016821970604305608
+0.016517406287260023
+0.016537922487338853
+0.0165315601499402
+0.016599841912489047
+0.016507427399617913
+0.016578753448114013
+0.016507243770061353
+0.016518447752452228
+0.016537850616888613
+0.016501535933402908
+0.016563516742729774
+0.016496824735507322
+0.016529915368709812
+0.01649607262788064
+0.016531075511581204
+0.016497585685518037
+0.01654397501051144
+0.01649383608994201
+0.0165315640479591
+0.016496046058911865
+0.016525058689672106
+0.016496940227878242
+0.016539885931116785
+0.01649470179268107
+0.016498820463416847
+0.016507799002961874
+0.016493744304580407
+0.01649738774444332
+0.016502940776524443
+0.016491152858598424
+0.01650199130860309
+0.016490965400642314
+0.01649942907506225
+0.016490946050237296
+0.016499748373961683
+0.01649092503329694
+0.016501554030860066
+0.016490624173241104
+0.016494100178265636
+0.01651184462382181
+0.016489329150974397
+0.01649066250367076
+0.016494666564984217
+0.016490174874210017
+0.01650032391141422
+0.016489438599509743
+0.016491242712514047
+0.016489174260089702
+0.01649037669761541
+0.016487223975888404
+0.01648699906266137
+0.01649351189164805
+0.016488617654632873
+0.016486161947995813
+0.016485454210600384
+0.016490965913534217
+0.01648827919914855
+0.016487817798722514
+0.01648688874203494
+0.01648742850977487
+0.01648448967628319
+0.016483805376430887
+0.01648558685712397
+0.016488979403823777
+0.016486285088042653
+0.016482287733137067
+0.01648005870606422
+0.0164844854246612
+0.01648407093499131
+0.01648171884663239
+0.016478748563628763
+0.016474932191833096
+0.016478026205045612
+0.01647615336328126
+0.016474807383597953
+0.016471499937329697
+0.016470786074739226
+0.016464679335226075
+0.01647348286573071
+0.016473711884226177
+0.016465737864818874
+0.016466126976626517
+0.01646215384084284
+0.016457056221063932
+0.016461948821328
+0.016460743642120957
+0.01646109159112428
+0.01645347320615937
+0.016446497798712215
+0.016446769428857373
+0.01644455384199506
+0.01643589473732373
+0.016446224432650466
+0.01645020489791525
+0.016437711613591612
+0.01643081485401466
+0.01641653611133654
+0.01643183078867192
+0.016427061564793795
+0.016413672800075035
+0.01639587636707341
+0.016419863524211466
+0.01642244239212604
+0.016413125949557877
+0.016396345750434554
+0.016397969140871046
+0.016391799496651246
+0.01638708926984823
+0.016382585222487495
+0.016378846816409724
+0.016374034010884716
+0.016371695535408105
+0.016372354876764878
+0.016402659884341683
+0.016408714574749815
+0.01638746749590745
+0.016397283821434273
+0.016401579480574833
+0.016383185763151422
+0.01637907514058786
+0.0164013539449453
+0.016380473800927033
+0.016383678621468542
+0.01642012543989651
+0.016377422299325307
+0.01639052104236277
+0.01637312879245396
+0.01637756614068443
+0.01639044744215881
+0.01637148827116106
+0.01640366512942503
+0.01637250477769782
+0.016389079838278822
+0.016372611892192208
+0.016370922859604852
+0.01638019883553712
+0.01637518599868236
+0.016384192055930818
+0.01637045515925903
+0.016370845112615103
+0.01637875921973752
+0.01636978050787236
+0.01637363589011649
+0.016369309546151477
+0.01636862444486635
+0.016375429559905796
+0.016375641985699824
+0.016368911300951375
+0.016366273418132952
+0.01636916176764673
+0.016371190727368295
+0.016366669555653777
+0.01636864154670925
+0.016381043099782444
+0.016366955480549932
+0.01636988188879602
+0.016366688273589086
+0.016369877153868898
+0.01636699607622563
+0.01636804012898057
+0.016362248271448426
+0.01635916568937374
+0.016363672074127658
+0.01636398144624246
+0.01636261716642504
+0.016364706143144947
+0.01636112913559435
+0.016358492019687407
+0.0163564481978857
+0.016357548267883895
+0.016358112847440636
+0.016356849577259313
+0.016357201832019153
+0.016353472597977953
+0.016352933707472494
+0.016352632351481794
+0.01635336941500158
+0.016348928552325864
+0.01634624535536571
+0.01634968685816456
+0.016345614802980534
+0.016342435604177308
+0.016342832975701386
+0.016342196519796657
+0.01634153100895288
+0.016336131400817265
+0.016330232297115527
+0.01634181589856269
+0.016327504409149075
+0.016319439135444116
+0.01633121495130517
+0.016338768454924123
+0.016315419769068928
+0.016301314129976964
+0.01631130047929905
+0.016319090063623545
+0.01630305780285118
+0.016297122575248808
+0.01628397819093615
+0.016298249255729667
+0.016293366784590087
+0.016289185383231576
+0.016288328619538932
+0.016278947060312434
+0.016280829217962298
+0.016279180189828782
+0.016269936108650004
+0.01626540398504763
+0.016266222706891015
+0.016262237116891124
+0.016259622242110416
+0.01626670069803342
+0.016258839011104354
+0.016270573857696213
+0.016259381480200313
+0.01627399868737278
+0.01626093791331243
+0.016258630989147742
+0.0162809909348776
+0.016271102055996526
+0.01627013968177389
+0.01628077240911805
+0.01626032226973588
+0.016273707900878884
+0.01625881037115282
+0.01627758722778095
+0.01625780467035959
+0.016266506898999052
+0.016258669185512803
+0.016258790843332843
+0.016256428732542873
+0.016265266333663167
+0.016259305713807445
+0.016258728615536202
+0.016265461797080043
+0.016255299095798828
+0.016257323135059124
+0.0162568653242991
+0.01625872721988437
+0.016260960432394486
+0.016255252518198753
+0.016260892685356083
+0.016255086734262358
+0.0162585754373772
+0.016258244134327523
+0.016262049379538134
+0.016255119251792266
+0.01625914774618924
+0.01625545546089858
+0.016258834125402525
+0.016255334899129635
+0.016257558850453158
+0.01625516003598099
+0.016258256235484762
+0.016255070482860852
+0.016256306767531706
+0.016257514341226176
+0.01625472655222021
+0.016256958557167595
+0.016254701610061546
+0.016255642535702317
+0.01625460630251718
+0.016254748509003533
+0.0162564479737154
+0.0162544394231035
+0.01625484101737625
+0.016255505285389594
+0.016254446680742773
+0.01625574616040009
+0.016254415428414864
+0.016255529294298944
+0.01625441936604868
+0.016255756939264225
+0.016254420563362324
+0.01625498568948836
+0.016254394283331846
+0.016254718260605032
+0.016254776124837656
+0.016254374599550897
+0.016254733474316427
+0.01625437343413167
+0.016254694539216585
+0.01625437038127413
+0.016254552634684453
+0.016254321898752082
+0.01625439129859355
+0.016254352993807463
+0.016254537321699784
+0.01625427401446493
+0.016254396119353066
+0.01625443000687332
+0.01625428020401168
+0.01625444977737693
+0.016254271745495822
+0.016254552557763594
+0.01625425993985353
+0.01625451785285588
+0.01625426475896495
+0.016254355997514132
+0.016254397989012112
+0.016254269506635898
+0.0162542838543641
+0.016254373669597273
+0.01625425935939922
+0.01625436535157786
+0.01625425824742948
+Optimizer terminated successfully.
+Calculating fingerprints...
+Fingerprints Calculated!
+Training Initiated!
+energy loss: 0.298414
+force loss: 9.120770
+
+energy loss: 0.212991
+force loss: 5.052938
+
+energy loss: 0.304097
+force loss: 3.202998
+
+energy loss: 0.241409
+force loss: 2.403383
+
+energy loss: 0.155199
+force loss: 1.879223
+
+energy loss: 0.122541
+force loss: 1.518966
+
+energy loss: 0.118719
+force loss: 1.334635
+
+energy loss: 0.122498
+force loss: 1.229208
+
+energy loss: 0.103315
+force loss: 1.084284
+
+energy loss: 0.097248
+force loss: 1.006831
+
+energy loss: 0.097262
+force loss: 0.922266
+
+energy loss: 0.090987
+force loss: 0.844517
+
+energy loss: 0.090238
+force loss: 0.785973
+
+energy loss: 0.087214
+force loss: 0.725352
+
+energy loss: 0.086351
+force loss: 0.704624
+
+energy loss: 0.084079
+force loss: 0.653913
+
+energy loss: 0.082444
+force loss: 0.614169
+
+energy loss: 0.080656
+force loss: 0.582758
+
+energy loss: 0.080383
+force loss: 0.563970
+
+energy loss: 0.079172
+force loss: 0.543436
+
+energy loss: 0.078406
+force loss: 0.515222
+
+energy loss: 0.076502
+force loss: 0.501490
+
+energy loss: 0.075498
+force loss: 0.467669
+
+energy loss: 0.073543
+force loss: 0.450030
+
+energy loss: 0.070841
+force loss: 0.430763
+
+energy loss: 0.071396
+force loss: 0.412113
+
+energy loss: 0.069154
+force loss: 0.396368
+
+energy loss: 0.067034
+force loss: 0.378194
+
+energy loss: 0.066044
+force loss: 0.364807
+
+energy loss: 0.065186
+force loss: 0.346286
+
+energy loss: 0.064822
+force loss: 0.334733
+
+energy loss: 0.063927
+force loss: 0.321562
+
+energy loss: 0.063572
+force loss: 0.312619
+
+energy loss: 0.063838
+force loss: 0.304432
+
+energy loss: 0.063514
+force loss: 0.296623
+
+energy loss: 0.062697
+force loss: 0.289780
+
+energy loss: 0.062431
+force loss: 0.286300
+
+energy loss: 0.062160
+force loss: 0.280604
+
+energy loss: 0.061834
+force loss: 0.274740
+
+energy loss: 0.061432
+force loss: 0.269104
+
+energy loss: 0.061157
+force loss: 0.263721
+
+energy loss: 0.060871
+force loss: 0.261800
+
+energy loss: 0.061108
+force loss: 0.257611
+
+energy loss: 0.061110
+force loss: 0.255690
+
+energy loss: 0.061028
+force loss: 0.253110
+
+energy loss: 0.060882
+force loss: 0.250704
+
+energy loss: 0.060702
+force loss: 0.247236
+
+energy loss: 0.060424
+force loss: 0.243434
+
+energy loss: 0.060173
+force loss: 0.240683
+
+energy loss: 0.060146
+force loss: 0.237322
+
+energy loss: 0.060007
+force loss: 0.234829
+
+energy loss: 0.059456
+force loss: 0.231994
+
+energy loss: 0.058827
+force loss: 0.230058
+
+energy loss: 0.058192
+force loss: 0.228074
+
+energy loss: 0.057885
+force loss: 0.225567
+
+energy loss: 0.057718
+force loss: 0.223554
+
+energy loss: 0.057351
+force loss: 0.221730
+
+energy loss: 0.056986
+force loss: 0.220774
+
+energy loss: 0.056354
+force loss: 0.219056
+
+energy loss: 0.056289
+force loss: 0.217362
+
+energy loss: 0.056160
+force loss: 0.216201
+
+energy loss: 0.055582
+force loss: 0.215092
+
+energy loss: 0.055343
+force loss: 0.214550
+
+energy loss: 0.055291
+force loss: 0.213436
+
+energy loss: 0.055004
+force loss: 0.212894
+
+energy loss: 0.054932
+force loss: 0.212429
+
+energy loss: 0.054605
+force loss: 0.211481
+
+energy loss: 0.053901
+force loss: 0.210585
+
+energy loss: 0.053701
+force loss: 0.209658
+
+energy loss: 0.053709
+force loss: 0.208540
+
+energy loss: 0.053593
+force loss: 0.207529
+
+energy loss: 0.053723
+force loss: 0.206712
+
+energy loss: 0.053689
+force loss: 0.205789
+
+energy loss: 0.053479
+force loss: 0.205157
+
+energy loss: 0.053355
+force loss: 0.204572
+
+energy loss: 0.052921
+force loss: 0.204164
+
+energy loss: 0.052825
+force loss: 0.203443
+
+energy loss: 0.052592
+force loss: 0.203131
+
+energy loss: 0.052550
+force loss: 0.202722
+
+energy loss: 0.052441
+force loss: 0.201963
+
+energy loss: 0.052325
+force loss: 0.201429
+
+energy loss: 0.052010
+force loss: 0.201112
+
+energy loss: 0.051791
+force loss: 0.200581
+
+energy loss: 0.051690
+force loss: 0.200263
+
+energy loss: 0.051595
+force loss: 0.199835
+
+energy loss: 0.051419
+force loss: 0.199351
+
+energy loss: 0.051251
+force loss: 0.198823
+
+energy loss: 0.051072
+force loss: 0.198549
+
+energy loss: 0.051079
+force loss: 0.197989
+
+energy loss: 0.050941
+force loss: 0.197764
+
+energy loss: 0.050836
+force loss: 0.197274
+
+energy loss: 0.050609
+force loss: 0.197116
+
+energy loss: 0.050332
+force loss: 0.196912
+
+energy loss: 0.050081
+force loss: 0.196647
+
+energy loss: 0.049624
+force loss: 0.196579
+
+energy loss: 0.049027
+force loss: 0.196372
+
+energy loss: 0.048731
+force loss: 0.196229
+
+energy loss: 0.048344
+force loss: 0.196162
+
+energy loss: 0.048240
+force loss: 0.196003
+
+energy loss: 0.047958
+force loss: 0.195800
+
+energy loss: 0.047678
+force loss: 0.195709
+
+energy loss: 0.047370
+force loss: 0.195739
+
+energy loss: 0.047251
+force loss: 0.195455
+
+energy loss: 0.047006
+force loss: 0.195294
+
+energy loss: 0.046941
+force loss: 0.195084
+
+energy loss: 0.046762
+force loss: 0.194980
+
+energy loss: 0.046631
+force loss: 0.194837
+
+energy loss: 0.046271
+force loss: 0.194702
+
+energy loss: 0.046292
+force loss: 0.194520
+
+energy loss: 0.046160
+force loss: 0.194472
+
+energy loss: 0.046141
+force loss: 0.194299
+
+energy loss: 0.045803
+force loss: 0.194344
+
+energy loss: 0.045669
+force loss: 0.194236
+
+energy loss: 0.045611
+force loss: 0.194156
+
+energy loss: 0.045399
+force loss: 0.194117
+
+energy loss: 0.045249
+force loss: 0.194093
+
+energy loss: 0.045135
+force loss: 0.194006
+
+energy loss: 0.044967
+force loss: 0.193970
+
+energy loss: 0.044845
+force loss: 0.193835
+
+energy loss: 0.044646
+force loss: 0.193771
+
+energy loss: 0.044564
+force loss: 0.193594
+
+energy loss: 0.044474
+force loss: 0.193401
+
+energy loss: 0.044356
+force loss: 0.193330
+
+energy loss: 0.044251
+force loss: 0.193157
+
+energy loss: 0.044218
+force loss: 0.192979
+
+energy loss: 0.044122
+force loss: 0.192771
+
+energy loss: 0.044077
+force loss: 0.192607
+
+energy loss: 0.043779
+force loss: 0.192706
+
+energy loss: 0.043765
+force loss: 0.192524
+
+energy loss: 0.043558
+force loss: 0.192365
+
+energy loss: 0.043447
+force loss: 0.192215
+
+energy loss: 0.043287
+force loss: 0.192074
+
+energy loss: 0.043010
+force loss: 0.191957
+
+energy loss: 0.042889
+force loss: 0.191683
+
+energy loss: 0.042785
+force loss: 0.191501
+
+energy loss: 0.042556
+force loss: 0.191500
+
+Training complete in 136 steps
+Training complete in 11m 1s
+LJ optimization initiated...
+0.021141170429159847
+0.02113018839968511
+0.02114037087202239
+0.02116146235614045
+0.021132333424529196
+0.021140646782948865
+0.0211336487282105
+0.039035763312936594
+0.023435943500496503
+0.018206970990352074
+0.020345299910885087
+0.018412093068839272
+0.01937422487422647
+0.019098212333331064
+0.018790295582044158
+0.018478727950428896
+0.01819784193865946
+0.01799471763695725
+0.017974390776171995
+0.018769906924293818
+0.0181078739489519
+0.01707979317649798
+0.021589285787702032
+0.017249960152130372
+0.017182499633575807
+0.017103481654299032
+0.016967069586342254
+0.01755840481518774
+0.018282805776781492
+0.017411807062348156
+0.019872909042194048
+0.017208249685237105
+0.016587437476817183
+0.01769556701035151
+0.016565277116013438
+0.018483116338749127
+0.01667224276335976
+0.017051195436125943
+0.017075892390131207
+0.016704047394906038
+0.018582566869171806
+0.016689222619353464
+0.018857444994161282
+0.016637645617601907
+0.01680802540922953
+0.016997233248226343
+0.017603732656246852
+0.016568271251618857
+0.01691624595246918
+0.017553835446482275
+0.016616979526763952
+0.016902442148609476
+0.016628811944827362
+0.016790258852950806
+0.01656743236814069
+0.016989913367216856
+0.016517132484397547
+0.016669521125767903
+0.016769638495787092
+0.016519207791455492
+0.01673072542137413
+0.01652139355749799
+0.016701186656054072
+0.016534361602311233
+0.016802386208721175
+0.01652129000288238
+0.016821970604305608
+0.016517406287260023
+0.016537922487338853
+0.0165315601499402
+0.016599841912489047
+0.016507427399617913
+0.016578753448114013
+0.016507243770061353
+0.016518447752452228
+0.016537850616888613
+0.016501535933402908
+0.016563516742729774
+0.016496824735507322
+0.016529915368709812
+0.01649607262788064
+0.016531075511581204
+0.016497585685518037
+0.01654397501051144
+0.01649383608994201
+0.0165315640479591
+0.016496046058911865
+0.016525058689672106
+0.016496940227878242
+0.016539885931116785
+0.01649470179268107
+0.016498820463416847
+0.016507799002961874
+0.016493744304580407
+0.01649738774444332
+0.016502940776524443
+0.016491152858598424
+0.01650199130860309
+0.016490965400642314
+0.01649942907506225
+0.016490946050237296
+0.016499748373961683
+0.01649092503329694
+0.016501554030860066
+0.016490624173241104
+0.016494100178265636
+0.01651184462382181
+0.016489329150974397
+0.01649066250367076
+0.016494666564984217
+0.016490174874210017
+0.01650032391141422
+0.016489438599509743
+0.016491242712514047
+0.016489174260089702
+0.01649037669761541
+0.016487223975888404
+0.01648699906266137
+0.01649351189164805
+0.016488617654632873
+0.016486161947995813
+0.016485454210600384
+0.016490965913534217
+0.01648827919914855
+0.016487817798722514
+0.01648688874203494
+0.01648742850977487
+0.01648448967628319
+0.016483805376430887
+0.01648558685712397
+0.016488979403823777
+0.016486285088042653
+0.016482287733137067
+0.01648005870606422
+0.0164844854246612
+0.01648407093499131
+0.01648171884663239
+0.016478748563628763
+0.016474932191833096
+0.016478026205045612
+0.01647615336328126
+0.016474807383597953
+0.016471499937329697
+0.016470786074739226
+0.016464679335226075
+0.01647348286573071
+0.016473711884226177
+0.016465737864818874
+0.016466126976626517
+0.01646215384084284
+0.016457056221063932
+0.016461948821328
+0.016460743642120957
+0.01646109159112428
+0.01645347320615937
+0.016446497798712215
+0.016446769428857373
+0.01644455384199506
+0.01643589473732373
+0.016446224432650466
+0.01645020489791525
+0.016437711613591612
+0.01643081485401466
+0.01641653611133654
+0.01643183078867192
+0.016427061564793795
+0.016413672800075035
+0.01639587636707341
+0.016419863524211466
+0.01642244239212604
+0.016413125949557877
+0.016396345750434554
+0.016397969140871046
+0.016391799496651246
+0.01638708926984823
+0.016382585222487495
+0.016378846816409724
+0.016374034010884716
+0.016371695535408105
+0.016372354876764878
+0.016402659884341683
+0.016408714574749815
+0.01638746749590745
+0.016397283821434273
+0.016401579480574833
+0.016383185763151422
+0.01637907514058786
+0.0164013539449453
+0.016380473800927033
+0.016383678621468542
+0.01642012543989651
+0.016377422299325307
+0.01639052104236277
+0.01637312879245396
+0.01637756614068443
+0.01639044744215881
+0.01637148827116106
+0.01640366512942503
+0.01637250477769782
+0.016389079838278822
+0.016372611892192208
+0.016370922859604852
+0.01638019883553712
+0.01637518599868236
+0.016384192055930818
+0.01637045515925903
+0.016370845112615103
+0.01637875921973752
+0.01636978050787236
+0.01637363589011649
+0.016369309546151477
+0.01636862444486635
+0.016375429559905796
+0.016375641985699824
+0.016368911300951375
+0.016366273418132952
+0.01636916176764673
+0.016371190727368295
+0.016366669555653777
+0.01636864154670925
+0.016381043099782444
+0.016366955480549932
+0.01636988188879602
+0.016366688273589086
+0.016369877153868898
+0.01636699607622563
+0.01636804012898057
+0.016362248271448426
+0.01635916568937374
+0.016363672074127658
+0.01636398144624246
+0.01636261716642504
+0.016364706143144947
+0.01636112913559435
+0.016358492019687407
+0.0163564481978857
+0.016357548267883895
+0.016358112847440636
+0.016356849577259313
+0.016357201832019153
+0.016353472597977953
+0.016352933707472494
+0.016352632351481794
+0.01635336941500158
+0.016348928552325864
+0.01634624535536571
+0.01634968685816456
+0.016345614802980534
+0.016342435604177308
+0.016342832975701386
+0.016342196519796657
+0.01634153100895288
+0.016336131400817265
+0.016330232297115527
+0.01634181589856269
+0.016327504409149075
+0.016319439135444116
+0.01633121495130517
+0.016338768454924123
+0.016315419769068928
+0.016301314129976964
+0.01631130047929905
+0.016319090063623545
+0.01630305780285118
+0.016297122575248808
+0.01628397819093615
+0.016298249255729667
+0.016293366784590087
+0.016289185383231576
+0.016288328619538932
+0.016278947060312434
+0.016280829217962298
+0.016279180189828782
+0.016269936108650004
+0.01626540398504763
+0.016266222706891015
+0.016262237116891124
+0.016259622242110416
+0.01626670069803342
+0.016258839011104354
+0.016270573857696213
+0.016259381480200313
+0.01627399868737278
+0.01626093791331243
+0.016258630989147742
+0.0162809909348776
+0.016271102055996526
+0.01627013968177389
+0.01628077240911805
+0.01626032226973588
+0.016273707900878884
+0.01625881037115282
+0.01627758722778095
+0.01625780467035959
+0.016266506898999052
+0.016258669185512803
+0.016258790843332843
+0.016256428732542873
+0.016265266333663167
+0.016259305713807445
+0.016258728615536202
+0.016265461797080043
+0.016255299095798828
+0.016257323135059124
+0.0162568653242991
+0.01625872721988437
+0.016260960432394486
+0.016255252518198753
+0.016260892685356083
+0.016255086734262358
+0.0162585754373772
+0.016258244134327523
+0.016262049379538134
+0.016255119251792266
+0.01625914774618924
+0.01625545546089858
+0.016258834125402525
+0.016255334899129635
+0.016257558850453158
+0.01625516003598099
+0.016258256235484762
+0.016255070482860852
+0.016256306767531706
+0.016257514341226176
+0.01625472655222021
+0.016256958557167595
+0.016254701610061546
+0.016255642535702317
+0.01625460630251718
+0.016254748509003533
+0.0162564479737154
+0.0162544394231035
+0.01625484101737625
+0.016255505285389594
+0.016254446680742773
+0.01625574616040009
+0.016254415428414864
+0.016255529294298944
+0.01625441936604868
+0.016255756939264225
+0.016254420563362324
+0.01625498568948836
+0.016254394283331846
+0.016254718260605032
+0.016254776124837656
+0.016254374599550897
+0.016254733474316427
+0.01625437343413167
+0.016254694539216585
+0.01625437038127413
+0.016254552634684453
+0.016254321898752082
+0.01625439129859355
+0.016254352993807463
+0.016254537321699784
+0.01625427401446493
+0.016254396119353066
+0.01625443000687332
+0.01625428020401168
+0.01625444977737693
+0.016254271745495822
+0.016254552557763594
+0.01625425993985353
+0.01625451785285588
+0.01625426475896495
+0.016254355997514132
+0.016254397989012112
+0.016254269506635898
+0.0162542838543641
+0.016254373669597273
+0.01625425935939922
+0.01625436535157786
+0.01625425824742948
+Optimizer terminated successfully.
+Calculating fingerprints...
+Fingerprints Calculated!
+Training Initiated!
+energy loss: 2.333059
+force loss: 7.920927
+
+energy loss: 0.842761
+force loss: 4.188051
+
+energy loss: 0.125240
+force loss: 2.628728
+
+energy loss: 0.193994
+force loss: 1.771790
+
+energy loss: 0.115884
+force loss: 1.239663
+
+energy loss: 0.101429
+force loss: 0.901326
+
+energy loss: 0.097415
+force loss: 0.593937
+
+energy loss: 0.089295
+force loss: 0.417500
+
+energy loss: 0.087208
+force loss: 0.319538
+
+energy loss: 0.084772
+force loss: 0.270735
+
+energy loss: 0.078687
+force loss: 0.244261
+
+energy loss: 0.073612
+force loss: 0.228538
+
+energy loss: 0.069340
+force loss: 0.216932
+
+energy loss: 0.066240
+force loss: 0.210703
+
+energy loss: 0.062143
+force loss: 0.206325
+
+energy loss: 0.058726
+force loss: 0.201720
+
+energy loss: 0.053937
+force loss: 0.199021
+
+energy loss: 0.049794
+force loss: 0.196393
+
+energy loss: 0.045682
+force loss: 0.194409
+
+energy loss: 0.043331
+force loss: 0.192948
+
+energy loss: 0.041642
+force loss: 0.191401
+
+energy loss: 0.039645
+force loss: 0.190088
+
+energy loss: 0.038288
+force loss: 0.188859
+
+energy loss: 0.037166
+force loss: 0.188005
+
+energy loss: 0.036130
+force loss: 0.187443
+
+energy loss: 0.035308
+force loss: 0.186741
+
+energy loss: 0.033907
+force loss: 0.186204
+
+energy loss: 0.033129
+force loss: 0.185874
+
+energy loss: 0.032437
+force loss: 0.185137
+
+energy loss: 0.031977
+force loss: 0.184835
+
+energy loss: 0.031089
+force loss: 0.184316
+
+energy loss: 0.030767
+force loss: 0.183882
+
+energy loss: 0.030400
+force loss: 0.183433
+
+energy loss: 0.029967
+force loss: 0.182570
+
+energy loss: 0.029836
+force loss: 0.182094
+
+energy loss: 0.029735
+force loss: 0.181678
+
+energy loss: 0.029594
+force loss: 0.181297
+
+energy loss: 0.029344
+force loss: 0.180508
+
+energy loss: 0.029178
+force loss: 0.179888
+
+energy loss: 0.029081
+force loss: 0.178997
+
+energy loss: 0.029070
+force loss: 0.178458
+
+energy loss: 0.028952
+force loss: 0.177993
+
+energy loss: 0.028918
+force loss: 0.177590
+
+energy loss: 0.028998
+force loss: 0.177069
+
+energy loss: 0.028977
+force loss: 0.176726
+
+energy loss: 0.028985
+force loss: 0.176361
+
+energy loss: 0.029012
+force loss: 0.175985
+
+energy loss: 0.029035
+force loss: 0.175676
+
+energy loss: 0.029027
+force loss: 0.175357
+
+energy loss: 0.029041
+force loss: 0.175164
+
+energy loss: 0.029020
+force loss: 0.174994
+
+energy loss: 0.028996
+force loss: 0.174778
+
+energy loss: 0.029030
+force loss: 0.174599
+
+energy loss: 0.028998
+force loss: 0.174497
+
+energy loss: 0.028968
+force loss: 0.174395
+
+energy loss: 0.028927
+force loss: 0.174286
+
+energy loss: 0.028890
+force loss: 0.174148
+
+energy loss: 0.028879
+force loss: 0.174015
+
+energy loss: 0.028858
+force loss: 0.173860
+
+energy loss: 0.028826
+force loss: 0.173741
+
+energy loss: 0.028728
+force loss: 0.173615
+
+energy loss: 0.028679
+force loss: 0.173509
+
+energy loss: 0.028589
+force loss: 0.173388
+
+energy loss: 0.028481
+force loss: 0.173223
+
+energy loss: 0.028368
+force loss: 0.173021
+
+energy loss: 0.028291
+force loss: 0.172816
+
+energy loss: 0.028218
+force loss: 0.172544
+
+energy loss: 0.027984
+force loss: 0.172020
+
+energy loss: 0.027649
+force loss: 0.171316
+
+energy loss: 0.027193
+force loss: 0.170411
+
+energy loss: 0.027214
+force loss: 0.168615
+
+energy loss: 0.027198
+force loss: 0.167891
+
+energy loss: 0.027151
+force loss: 0.167116
+
+energy loss: 0.027044
+force loss: 0.166880
+
+energy loss: 0.026979
+force loss: 0.166673
+
+energy loss: 0.026813
+force loss: 0.166360
+
+energy loss: 0.026720
+force loss: 0.166128
+
+energy loss: 0.026653
+force loss: 0.165924
+
+energy loss: 0.026646
+force loss: 0.165779
+
+energy loss: 0.026652
+force loss: 0.165645
+
+energy loss: 0.026630
+force loss: 0.165509
+
+energy loss: 0.026612
+force loss: 0.165335
+
+energy loss: 0.026616
+force loss: 0.165194
+
+energy loss: 0.026580
+force loss: 0.165031
+
+energy loss: 0.026520
+force loss: 0.164913
+
+energy loss: 0.026454
+force loss: 0.164831
+
+energy loss: 0.026380
+force loss: 0.164765
+
+energy loss: 0.026334
+force loss: 0.164725
+
+energy loss: 0.026274
+force loss: 0.164652
+
+energy loss: 0.026232
+force loss: 0.164600
+
+energy loss: 0.026143
+force loss: 0.164550
+
+energy loss: 0.026118
+force loss: 0.164420
+
+energy loss: 0.026046
+force loss: 0.164358
+
+energy loss: 0.025988
+force loss: 0.164303
+
+energy loss: 0.025938
+force loss: 0.164253
+
+energy loss: 0.025884
+force loss: 0.164184
+
+energy loss: 0.025794
+force loss: 0.164121
+
+energy loss: 0.025761
+force loss: 0.164023
+
+energy loss: 0.025759
+force loss: 0.163944
+
+energy loss: 0.025747
+force loss: 0.163873
+
+energy loss: 0.025733
+force loss: 0.163808
+
+energy loss: 0.025749
+force loss: 0.163723
+
+energy loss: 0.025733
+force loss: 0.163628
+
+energy loss: 0.025699
+force loss: 0.163564
+
+energy loss: 0.025692
+force loss: 0.163501
+
+energy loss: 0.025675
+force loss: 0.163460
+
+energy loss: 0.025648
+force loss: 0.163409
+
+energy loss: 0.025607
+force loss: 0.163364
+
+energy loss: 0.025585
+force loss: 0.163283
+
+energy loss: 0.025544
+force loss: 0.163212
+
+energy loss: 0.025511
+force loss: 0.163146
+
+energy loss: 0.025491
+force loss: 0.163086
+
+energy loss: 0.025441
+force loss: 0.163009
+
+energy loss: 0.025402
+force loss: 0.162915
+
+energy loss: 0.025400
+force loss: 0.162851
+
+energy loss: 0.025345
+force loss: 0.162780
+
+energy loss: 0.025278
+force loss: 0.162747
+
+energy loss: 0.025266
+force loss: 0.162655
+
+energy loss: 0.025238
+force loss: 0.162564
+
+energy loss: 0.025187
+force loss: 0.162489
+
+energy loss: 0.025116
+force loss: 0.162425
+
+energy loss: 0.025103
+force loss: 0.162331
+
+energy loss: 0.025091
+force loss: 0.162261
+
+energy loss: 0.025026
+force loss: 0.162205
+
+energy loss: 0.024945
+force loss: 0.162177
+
+energy loss: 0.024882
+force loss: 0.162128
+
+energy loss: 0.024812
+force loss: 0.162043
+
+energy loss: 0.024715
+force loss: 0.161980
+
+energy loss: 0.024615
+force loss: 0.161919
+
+energy loss: 0.024549
+force loss: 0.161855
+
+energy loss: 0.024520
+force loss: 0.161748
+
+energy loss: 0.024395
+force loss: 0.161649
+
+energy loss: 0.024379
+force loss: 0.161543
+
+energy loss: 0.024327
+force loss: 0.161450
+
+energy loss: 0.024217
+force loss: 0.161333
+
+energy loss: 0.024089
+force loss: 0.161179
+
+energy loss: 0.023878
+force loss: 0.161082
+
+energy loss: 0.023797
+force loss: 0.160936
+
+energy loss: 0.023643
+force loss: 0.160859
+
+energy loss: 0.023488
+force loss: 0.160758
+
+energy loss: 0.023255
+force loss: 0.160635
+
+energy loss: 0.023021
+force loss: 0.160517
+
+energy loss: 0.022885
+force loss: 0.160424
+
+energy loss: 0.022602
+force loss: 0.160351
+
+energy loss: 0.022430
+force loss: 0.160228
+
+energy loss: 0.022305
+force loss: 0.160067
+
+energy loss: 0.022263
+force loss: 0.159943
+
+energy loss: 0.022166
+force loss: 0.159798
+
+energy loss: 0.022079
+force loss: 0.159617
+
+energy loss: 0.021931
+force loss: 0.159514
+
+energy loss: 0.021773
+force loss: 0.159391
+
+energy loss: 0.021706
+force loss: 0.159228
+
+energy loss: 0.021627
+force loss: 0.159080
+
+energy loss: 0.021465
+force loss: 0.158961
+
+energy loss: 0.021262
+force loss: 0.158838
+
+energy loss: 0.021026
+force loss: 0.158742
+
+energy loss: 0.020944
+force loss: 0.158666
+
+energy loss: 0.020838
+force loss: 0.158619
+
+energy loss: 0.020728
+force loss: 0.158525
+
+energy loss: 0.020633
+force loss: 0.158435
+
+energy loss: 0.020526
+force loss: 0.158370
+
+energy loss: 0.020328
+force loss: 0.158312
+
+energy loss: 0.020148
+force loss: 0.158247
+
+energy loss: 0.019829
+force loss: 0.158209
+
+energy loss: 0.019544
+force loss: 0.158186
+
+energy loss: 0.019308
+force loss: 0.158117
+
+energy loss: 0.019042
+force loss: 0.158091
+
+energy loss: 0.018905
+force loss: 0.158014
+
+energy loss: 0.018738
+force loss: 0.157934
+
+energy loss: 0.018531
+force loss: 0.157831
+
+energy loss: 0.018325
+force loss: 0.157742
+
+energy loss: 0.018090
+force loss: 0.157675
+
+energy loss: 0.017843
+force loss: 0.157639
+
+energy loss: 0.017605
+force loss: 0.157568
+
+energy loss: 0.017384
+force loss: 0.157511
+
+energy loss: 0.017237
+force loss: 0.157468
+
+energy loss: 0.017118
+force loss: 0.157419
+
+energy loss: 0.017024
+force loss: 0.157357
+
+energy loss: 0.016992
+force loss: 0.157275
+
+energy loss: 0.016926
+force loss: 0.157224
+
+energy loss: 0.016799
+force loss: 0.157165
+
+energy loss: 0.016681
+force loss: 0.157128
+
+energy loss: 0.016623
+force loss: 0.157065
+
+energy loss: 0.016565
+force loss: 0.156982
+
+energy loss: 0.016507
+force loss: 0.156922
+
+energy loss: 0.016427
+force loss: 0.156828
+
+energy loss: 0.016375
+force loss: 0.156758
+
+energy loss: 0.016323
+force loss: 0.156702
+
+energy loss: 0.016285
+force loss: 0.156629
+
+energy loss: 0.016276
+force loss: 0.156558
+
+energy loss: 0.016262
+force loss: 0.156488
+
+energy loss: 0.016233
+force loss: 0.156426
+
+energy loss: 0.016213
+force loss: 0.156369
+
+energy loss: 0.016215
+force loss: 0.156290
+
+energy loss: 0.016176
+force loss: 0.156212
+
+energy loss: 0.016149
+force loss: 0.156148
+
+energy loss: 0.016155
+force loss: 0.156076
+
+energy loss: 0.016132
+force loss: 0.155994
+
+energy loss: 0.016101
+force loss: 0.155902
+
+energy loss: 0.016061
+force loss: 0.155783
+
+energy loss: 0.016024
+force loss: 0.155704
+
+energy loss: 0.016077
+force loss: 0.155499
+
+energy loss: 0.016041
+force loss: 0.155362
+
+energy loss: 0.016035
+force loss: 0.155220
+
+energy loss: 0.016023
+force loss: 0.155089
+
+energy loss: 0.015994
+force loss: 0.154979
+
+energy loss: 0.015917
+force loss: 0.154856
+
+energy loss: 0.015913
+force loss: 0.154681
+
+energy loss: 0.015892
+force loss: 0.154529
+
+energy loss: 0.015881
+force loss: 0.154391
+
+energy loss: 0.015866
+force loss: 0.154256
+
+energy loss: 0.015860
+force loss: 0.154158
+
+energy loss: 0.015837
+force loss: 0.154089
+
+energy loss: 0.015791
+force loss: 0.154014
+
+energy loss: 0.015752
+force loss: 0.153940
+
+energy loss: 0.015742
+force loss: 0.153867
+
+energy loss: 0.015740
+force loss: 0.153830
+
+energy loss: 0.015726
+force loss: 0.153770
+
+energy loss: 0.015728
+force loss: 0.153722
+
+energy loss: 0.015722
+force loss: 0.153661
+
+energy loss: 0.015746
+force loss: 0.153607
+
+energy loss: 0.015736
+force loss: 0.153563
+
+energy loss: 0.015735
+force loss: 0.153503
+
+energy loss: 0.015711
+force loss: 0.153447
+
+energy loss: 0.015699
+force loss: 0.153394
+
+energy loss: 0.015681
+force loss: 0.153369
+
+energy loss: 0.015671
+force loss: 0.153314
+
+energy loss: 0.015653
+force loss: 0.153263
+
+energy loss: 0.015648
+force loss: 0.153233
+
+energy loss: 0.015633
+force loss: 0.153209
+
+energy loss: 0.015633
+force loss: 0.153186
+
+energy loss: 0.015612
+force loss: 0.153147
+
+energy loss: 0.015620
+force loss: 0.153100
+
+energy loss: 0.015606
+force loss: 0.153053
+
+energy loss: 0.015600
+force loss: 0.152982
+
+energy loss: 0.015595
+force loss: 0.152945
+
+energy loss: 0.015606
+force loss: 0.152916
+
+energy loss: 0.015577
+force loss: 0.152857
+
+energy loss: 0.015580
+force loss: 0.152794
+
+energy loss: 0.015589
+force loss: 0.152757
+
+energy loss: 0.015570
+force loss: 0.152713
+
+energy loss: 0.015576
+force loss: 0.152679
+
+energy loss: 0.015558
+force loss: 0.152662
+
+energy loss: 0.015559
+force loss: 0.152606
+
+energy loss: 0.015551
+force loss: 0.152568
+
+energy loss: 0.015543
+force loss: 0.152530
+
+energy loss: 0.015517
+force loss: 0.152502
+
+energy loss: 0.015512
+force loss: 0.152479
+
+energy loss: 0.015496
+force loss: 0.152454
+
+energy loss: 0.015493
+force loss: 0.152432
+
+energy loss: 0.015464
+force loss: 0.152405
+
+energy loss: 0.015462
+force loss: 0.152387
+
+energy loss: 0.015440
+force loss: 0.152356
+
+energy loss: 0.015442
+force loss: 0.152340
+
+energy loss: 0.015437
+force loss: 0.152312
+
+energy loss: 0.015412
+force loss: 0.152291
+
+energy loss: 0.015404
+force loss: 0.152271
+
+energy loss: 0.015391
+force loss: 0.152242
+
+energy loss: 0.015396
+force loss: 0.152220
+
+energy loss: 0.015367
+force loss: 0.152196
+
+energy loss: 0.015367
+force loss: 0.152163
+
+energy loss: 0.015354
+force loss: 0.152136
+
+energy loss: 0.015364
+force loss: 0.152106
+
+energy loss: 0.015364
+force loss: 0.152075
+
+energy loss: 0.015354
+force loss: 0.152055
+
+energy loss: 0.015351
+force loss: 0.152033
+
+energy loss: 0.015359
+force loss: 0.152011
+
+energy loss: 0.015368
+force loss: 0.151988
+
+energy loss: 0.015355
+force loss: 0.151980
+
+Training complete in 269 steps
+Training complete in 21m 41s
+LJ optimization initiated...
+0.021141170429159847
+0.02113018839968511
+0.02114037087202239
+0.02116146235614045
+0.021132333424529196
+0.021140646782948865
+0.0211336487282105
+0.039035763312936594
+0.023435943500496503
+0.018206970990352074
+0.020345299910885087
+0.018412093068839272
+0.01937422487422647
+0.019098212333331064
+0.018790295582044158
+0.018478727950428896
+0.01819784193865946
+0.01799471763695725
+0.017974390776171995
+0.018769906924293818
+0.0181078739489519
+0.01707979317649798
+0.021589285787702032
+0.017249960152130372
+0.017182499633575807
+0.017103481654299032
+0.016967069586342254
+0.01755840481518774
+0.018282805776781492
+0.017411807062348156
+0.019872909042194048
+0.017208249685237105
+0.016587437476817183
+0.01769556701035151
+0.016565277116013438
+0.018483116338749127
+0.01667224276335976
+0.017051195436125943
+0.017075892390131207
+0.016704047394906038
+0.018582566869171806
+0.016689222619353464
+0.018857444994161282
+0.016637645617601907
+0.01680802540922953
+0.016997233248226343
+0.017603732656246852
+0.016568271251618857
+0.01691624595246918
+0.017553835446482275
+0.016616979526763952
+0.016902442148609476
+0.016628811944827362
+0.016790258852950806
+0.01656743236814069
+0.016989913367216856
+0.016517132484397547
+0.016669521125767903
+0.016769638495787092
+0.016519207791455492
+0.01673072542137413
+0.01652139355749799
+0.016701186656054072
+0.016534361602311233
+0.016802386208721175
+0.01652129000288238
+0.016821970604305608
+0.016517406287260023
+0.016537922487338853
+0.0165315601499402
+0.016599841912489047
+0.016507427399617913
+0.016578753448114013
+0.016507243770061353
+0.016518447752452228
+0.016537850616888613
+0.016501535933402908
+0.016563516742729774
+0.016496824735507322
+0.016529915368709812
+0.01649607262788064
+0.016531075511581204
+0.016497585685518037
+0.01654397501051144
+0.01649383608994201
+0.0165315640479591
+0.016496046058911865
+0.016525058689672106
+0.016496940227878242
+0.016539885931116785
+0.01649470179268107
+0.016498820463416847
+0.016507799002961874
+0.016493744304580407
+0.01649738774444332
+0.016502940776524443
+0.016491152858598424
+0.01650199130860309
+0.016490965400642314
+0.01649942907506225
+0.016490946050237296
+0.016499748373961683
+0.01649092503329694
+0.016501554030860066
+0.016490624173241104
+0.016494100178265636
+0.01651184462382181
+0.016489329150974397
+0.01649066250367076
+0.016494666564984217
+0.016490174874210017
+0.01650032391141422
+0.016489438599509743
+0.016491242712514047
+0.016489174260089702
+0.01649037669761541
+0.016487223975888404
+0.01648699906266137
+0.01649351189164805
+0.016488617654632873
+0.016486161947995813
+0.016485454210600384
+0.016490965913534217
+0.01648827919914855
+0.016487817798722514
+0.01648688874203494
+0.01648742850977487
+0.01648448967628319
+0.016483805376430887
+0.01648558685712397
+0.016488979403823777
+0.016486285088042653
+0.016482287733137067
+0.01648005870606422
+0.0164844854246612
+0.01648407093499131
+0.01648171884663239
+0.016478748563628763
+0.016474932191833096
+0.016478026205045612
+0.01647615336328126
+0.016474807383597953
+0.016471499937329697
+0.016470786074739226
+0.016464679335226075
+0.01647348286573071
+0.016473711884226177
+0.016465737864818874
+0.016466126976626517
+0.01646215384084284
+0.016457056221063932
+0.016461948821328
+0.016460743642120957
+0.01646109159112428
+0.01645347320615937
+0.016446497798712215
+0.016446769428857373
+0.01644455384199506
+0.01643589473732373
+0.016446224432650466
+0.01645020489791525
+0.016437711613591612
+0.01643081485401466
+0.01641653611133654
+0.01643183078867192
+0.016427061564793795
+0.016413672800075035
+0.01639587636707341
+0.016419863524211466
+0.01642244239212604
+0.016413125949557877
+0.016396345750434554
+0.016397969140871046
+0.016391799496651246
+0.01638708926984823
+0.016382585222487495
+0.016378846816409724
+0.016374034010884716
+0.016371695535408105
+0.016372354876764878
+0.016402659884341683
+0.016408714574749815
+0.01638746749590745
+0.016397283821434273
+0.016401579480574833
+0.016383185763151422
+0.01637907514058786
+0.0164013539449453
+0.016380473800927033
+0.016383678621468542
+0.01642012543989651
+0.016377422299325307
+0.01639052104236277
+0.01637312879245396
+0.01637756614068443
+0.01639044744215881
+0.01637148827116106
+0.01640366512942503
+0.01637250477769782
+0.016389079838278822
+0.016372611892192208
+0.016370922859604852
+0.01638019883553712
+0.01637518599868236
+0.016384192055930818
+0.01637045515925903
+0.016370845112615103
+0.01637875921973752
+0.01636978050787236
+0.01637363589011649
+0.016369309546151477
+0.01636862444486635
+0.016375429559905796
+0.016375641985699824
+0.016368911300951375
+0.016366273418132952
+0.01636916176764673
+0.016371190727368295
+0.016366669555653777
+0.01636864154670925
+0.016381043099782444
+0.016366955480549932
+0.01636988188879602
+0.016366688273589086
+0.016369877153868898
+0.01636699607622563
+0.01636804012898057
+0.016362248271448426
+0.01635916568937374
+0.016363672074127658
+0.01636398144624246
+0.01636261716642504
+0.016364706143144947
+0.01636112913559435
+0.016358492019687407
+0.0163564481978857
+0.016357548267883895
+0.016358112847440636
+0.016356849577259313
+0.016357201832019153
+0.016353472597977953
+0.016352933707472494
+0.016352632351481794
+0.01635336941500158
+0.016348928552325864
+0.01634624535536571
+0.01634968685816456
+0.016345614802980534
+0.016342435604177308
+0.016342832975701386
+0.016342196519796657
+0.01634153100895288
+0.016336131400817265
+0.016330232297115527
+0.01634181589856269
+0.016327504409149075
+0.016319439135444116
+0.01633121495130517
+0.016338768454924123
+0.016315419769068928
+0.016301314129976964
+0.01631130047929905
+0.016319090063623545
+0.01630305780285118
+0.016297122575248808
+0.01628397819093615
+0.016298249255729667
+0.016293366784590087
+0.016289185383231576
+0.016288328619538932
+0.016278947060312434
+0.016280829217962298
+0.016279180189828782
+0.016269936108650004
+0.01626540398504763
+0.016266222706891015
+0.016262237116891124
+0.016259622242110416
+0.01626670069803342
+0.016258839011104354
+0.016270573857696213
+0.016259381480200313
+0.01627399868737278
+0.01626093791331243
+0.016258630989147742
+0.0162809909348776
+0.016271102055996526
+0.01627013968177389
+0.01628077240911805
+0.01626032226973588
+0.016273707900878884
+0.01625881037115282
+0.01627758722778095
+0.01625780467035959
+0.016266506898999052
+0.016258669185512803
+0.016258790843332843
+0.016256428732542873
+0.016265266333663167
+0.016259305713807445
+0.016258728615536202
+0.016265461797080043
+0.016255299095798828
+0.016257323135059124
+0.0162568653242991
+0.01625872721988437
+0.016260960432394486
+0.016255252518198753
+0.016260892685356083
+0.016255086734262358
+0.0162585754373772
+0.016258244134327523
+0.016262049379538134
+0.016255119251792266
+0.01625914774618924
+0.01625545546089858
+0.016258834125402525
+0.016255334899129635
+0.016257558850453158
+0.01625516003598099
+0.016258256235484762
+0.016255070482860852
+0.016256306767531706
+0.016257514341226176
+0.01625472655222021
+0.016256958557167595
+0.016254701610061546
+0.016255642535702317
+0.01625460630251718
+0.016254748509003533
+0.0162564479737154
+0.0162544394231035
+0.01625484101737625
+0.016255505285389594
+0.016254446680742773
+0.01625574616040009
+0.016254415428414864
+0.016255529294298944
+0.01625441936604868
+0.016255756939264225
+0.016254420563362324
+0.01625498568948836
+0.016254394283331846
+0.016254718260605032
+0.016254776124837656
+0.016254374599550897
+0.016254733474316427
+0.01625437343413167
+0.016254694539216585
+0.01625437038127413
+0.016254552634684453
+0.016254321898752082
+0.01625439129859355
+0.016254352993807463
+0.016254537321699784
+0.01625427401446493
+0.016254396119353066
+0.01625443000687332
+0.01625428020401168
+0.01625444977737693
+0.016254271745495822
+0.016254552557763594
+0.01625425993985353
+0.01625451785285588
+0.01625426475896495
+0.016254355997514132
+0.016254397989012112
+0.016254269506635898
+0.0162542838543641
+0.016254373669597273
+0.01625425935939922
+0.01625436535157786
+0.01625425824742948
+Optimizer terminated successfully.
+Calculating fingerprints...
+Fingerprints Calculated!
+Training Initiated!
+energy loss: 0.288319
+force loss: 7.430679
+
+energy loss: 0.097507
+force loss: 3.243684
+
+energy loss: 0.095374
+force loss: 1.878327
+
+energy loss: 0.092430
+force loss: 1.089154
+
+energy loss: 0.081435
+force loss: 0.781196
+
+energy loss: 0.080466
+force loss: 0.575748
+
+energy loss: 0.071378
+force loss: 0.440575
+
+energy loss: 0.068338
+force loss: 0.352165
+
+energy loss: 0.064067
+force loss: 0.309975
+
+energy loss: 0.060221
+force loss: 0.274300
+
+energy loss: 0.056411
+force loss: 0.253306
+
+energy loss: 0.052720
+force loss: 0.234829
+
+energy loss: 0.050139
+force loss: 0.223931
+
+energy loss: 0.048604
+force loss: 0.217392
+
+energy loss: 0.046808
+force loss: 0.209983
+
+energy loss: 0.045439
+force loss: 0.206423
+
+energy loss: 0.043324
+force loss: 0.202824
+
+energy loss: 0.042124
+force loss: 0.201023
+
+energy loss: 0.040466
+force loss: 0.199606
+
+energy loss: 0.039162
+force loss: 0.198232
+
+energy loss: 0.037703
+force loss: 0.197125
+
+energy loss: 0.036619
+force loss: 0.196204
+
+energy loss: 0.035584
+force loss: 0.195792
+
+energy loss: 0.034879
+force loss: 0.195447
+
+energy loss: 0.034156
+force loss: 0.195028
+
+energy loss: 0.033637
+force loss: 0.194492
+
+energy loss: 0.033168
+force loss: 0.194040
+
+energy loss: 0.032666
+force loss: 0.193708
+
+energy loss: 0.032317
+force loss: 0.193219
+
+energy loss: 0.031990
+force loss: 0.192916
+
+energy loss: 0.031728
+force loss: 0.192578
+
+energy loss: 0.031625
+force loss: 0.192224
+
+energy loss: 0.031483
+force loss: 0.191829
+
+energy loss: 0.031354
+force loss: 0.191455
+
+energy loss: 0.031154
+force loss: 0.191095
+
+energy loss: 0.030951
+force loss: 0.190849
+
+energy loss: 0.030746
+force loss: 0.190572
+
+energy loss: 0.030613
+force loss: 0.190441
+
+energy loss: 0.030381
+force loss: 0.190165
+
+energy loss: 0.030192
+force loss: 0.189949
+
+energy loss: 0.030037
+force loss: 0.189786
+
+energy loss: 0.029837
+force loss: 0.189461
+
+energy loss: 0.029673
+force loss: 0.188976
+
+energy loss: 0.029513
+force loss: 0.188494
+
+energy loss: 0.029483
+force loss: 0.188081
+
+energy loss: 0.029355
+force loss: 0.187501
+
+energy loss: 0.029136
+force loss: 0.186838
+
+energy loss: 0.028809
+force loss: 0.185868
+
+energy loss: 0.028753
+force loss: 0.185354
+
+energy loss: 0.028662
+force loss: 0.184817
+
+energy loss: 0.028620
+force loss: 0.184252
+
+energy loss: 0.028528
+force loss: 0.183654
+
+energy loss: 0.028398
+force loss: 0.183056
+
+energy loss: 0.028342
+force loss: 0.182677
+
+energy loss: 0.028310
+force loss: 0.182146
+
+energy loss: 0.028233
+force loss: 0.181873
+
+energy loss: 0.028145
+force loss: 0.181407
+
+energy loss: 0.028016
+force loss: 0.181012
+
+energy loss: 0.027990
+force loss: 0.180566
+
+energy loss: 0.027952
+force loss: 0.180174
+
+energy loss: 0.027971
+force loss: 0.179827
+
+energy loss: 0.027935
+force loss: 0.179382
+
+energy loss: 0.027971
+force loss: 0.179007
+
+energy loss: 0.027913
+force loss: 0.178790
+
+energy loss: 0.027956
+force loss: 0.178475
+
+energy loss: 0.027962
+force loss: 0.178161
+
+energy loss: 0.027962
+force loss: 0.177991
+
+energy loss: 0.027931
+force loss: 0.177832
+
+energy loss: 0.027920
+force loss: 0.177536
+
+energy loss: 0.027964
+force loss: 0.177352
+
+energy loss: 0.027978
+force loss: 0.177181
+
+energy loss: 0.027934
+force loss: 0.177068
+
+energy loss: 0.027942
+force loss: 0.176950
+
+energy loss: 0.027957
+force loss: 0.176863
+
+energy loss: 0.027987
+force loss: 0.176794
+
+energy loss: 0.027993
+force loss: 0.176715
+
+energy loss: 0.027953
+force loss: 0.176652
+
+energy loss: 0.027946
+force loss: 0.176584
+
+energy loss: 0.027929
+force loss: 0.176539
+
+energy loss: 0.027923
+force loss: 0.176480
+
+energy loss: 0.027911
+force loss: 0.176428
+
+energy loss: 0.027884
+force loss: 0.176355
+
+energy loss: 0.027854
+force loss: 0.176308
+
+energy loss: 0.027839
+force loss: 0.176255
+
+energy loss: 0.027817
+force loss: 0.176187
+
+energy loss: 0.027795
+force loss: 0.176149
+
+energy loss: 0.027759
+force loss: 0.176104
+
+energy loss: 0.027731
+force loss: 0.176065
+
+energy loss: 0.027702
+force loss: 0.175991
+
+energy loss: 0.027693
+force loss: 0.175935
+
+energy loss: 0.027696
+force loss: 0.175883
+
+energy loss: 0.027670
+force loss: 0.175846
+
+energy loss: 0.027652
+force loss: 0.175806
+
+energy loss: 0.027617
+force loss: 0.175783
+
+energy loss: 0.027596
+force loss: 0.175743
+
+energy loss: 0.027605
+force loss: 0.175698
+
+energy loss: 0.027579
+force loss: 0.175650
+
+energy loss: 0.027528
+force loss: 0.175608
+
+energy loss: 0.027501
+force loss: 0.175562
+
+energy loss: 0.027453
+force loss: 0.175516
+
+energy loss: 0.027429
+force loss: 0.175484
+
+energy loss: 0.027417
+force loss: 0.175438
+
+energy loss: 0.027388
+force loss: 0.175397
+
+energy loss: 0.027348
+force loss: 0.175330
+
+energy loss: 0.027311
+force loss: 0.175288
+
+energy loss: 0.027275
+force loss: 0.175203
+
+energy loss: 0.027260
+force loss: 0.175130
+
+energy loss: 0.027261
+force loss: 0.175087
+
+energy loss: 0.027266
+force loss: 0.175040
+
+energy loss: 0.027267
+force loss: 0.175002
+
+energy loss: 0.027274
+force loss: 0.174944
+
+energy loss: 0.027287
+force loss: 0.174899
+
+energy loss: 0.027296
+force loss: 0.174854
+
+energy loss: 0.027291
+force loss: 0.174811
+
+energy loss: 0.027298
+force loss: 0.174755
+
+energy loss: 0.027303
+force loss: 0.174700
+
+energy loss: 0.027299
+force loss: 0.174630
+
+energy loss: 0.027294
+force loss: 0.174586
+
+energy loss: 0.027296
+force loss: 0.174541
+
+energy loss: 0.027293
+force loss: 0.174480
+
+energy loss: 0.027289
+force loss: 0.174416
+
+energy loss: 0.027288
+force loss: 0.174379
+
+energy loss: 0.027277
+force loss: 0.174337
+
+energy loss: 0.027274
+force loss: 0.174297
+
+energy loss: 0.027252
+force loss: 0.174263
+
+energy loss: 0.027254
+force loss: 0.174230
+
+energy loss: 0.027250
+force loss: 0.174179
+
+energy loss: 0.027250
+force loss: 0.174135
+
+energy loss: 0.027246
+force loss: 0.174101
+
+energy loss: 0.027252
+force loss: 0.174070
+
+energy loss: 0.027262
+force loss: 0.174023
+
+energy loss: 0.027271
+force loss: 0.173966
+
+energy loss: 0.027285
+force loss: 0.173900
+
+energy loss: 0.027280
+force loss: 0.173847
+
+energy loss: 0.027296
+force loss: 0.173796
+
+energy loss: 0.027299
+force loss: 0.173748
+
+energy loss: 0.027307
+force loss: 0.173708
+
+energy loss: 0.027311
+force loss: 0.173677
+
+energy loss: 0.027296
+force loss: 0.173641
+
+energy loss: 0.027294
+force loss: 0.173600
+
+energy loss: 0.027307
+force loss: 0.173563
+
+energy loss: 0.027293
+force loss: 0.173511
+
+energy loss: 0.027297
+force loss: 0.173465
+
+energy loss: 0.027291
+force loss: 0.173434
+
+energy loss: 0.027293
+force loss: 0.173384
+
+energy loss: 0.027283
+force loss: 0.173338
+
+energy loss: 0.027281
+force loss: 0.173298
+
+energy loss: 0.027287
+force loss: 0.173249
+
+energy loss: 0.027289
+force loss: 0.173219
+
+energy loss: 0.027308
+force loss: 0.173160
+
+energy loss: 0.027326
+force loss: 0.173117
+
+energy loss: 0.027338
+force loss: 0.173079
+
+energy loss: 0.027363
+force loss: 0.173031
+
+energy loss: 0.027363
+force loss: 0.172993
+
+energy loss: 0.027360
+force loss: 0.172969
+
+energy loss: 0.027357
+force loss: 0.172937
+
+energy loss: 0.027352
+force loss: 0.172898
+
+energy loss: 0.027354
+force loss: 0.172872
+
+energy loss: 0.027343
+force loss: 0.172846
+
+energy loss: 0.027339
+force loss: 0.172815
+
+energy loss: 0.027337
+force loss: 0.172775
+
+energy loss: 0.027339
+force loss: 0.172732
+
+energy loss: 0.027342
+force loss: 0.172693
+
+energy loss: 0.027344
+force loss: 0.172654
+
+energy loss: 0.027345
+force loss: 0.172616
+
+energy loss: 0.027342
+force loss: 0.172581
+
+energy loss: 0.027348
+force loss: 0.172531
+
+energy loss: 0.027350
+force loss: 0.172490
+
+energy loss: 0.027347
+force loss: 0.172453
+
+energy loss: 0.027349
+force loss: 0.172417
+
+energy loss: 0.027331
+force loss: 0.172368
+
+energy loss: 0.027320
+force loss: 0.172308
+
+energy loss: 0.027311
+force loss: 0.172266
+
+energy loss: 0.027287
+force loss: 0.172192
+
+energy loss: 0.027254
+force loss: 0.172122
+
+energy loss: 0.027229
+force loss: 0.172080
+
+energy loss: 0.027205
+force loss: 0.172015
+
+energy loss: 0.027167
+force loss: 0.171938
+
+energy loss: 0.027126
+force loss: 0.171850
+
+energy loss: 0.027074
+force loss: 0.171781
+
+energy loss: 0.027034
+force loss: 0.171727
+
+energy loss: 0.026995
+force loss: 0.171685
+
+energy loss: 0.026963
+force loss: 0.171629
+
+energy loss: 0.026951
+force loss: 0.171591
+
+energy loss: 0.026938
+force loss: 0.171551
+
+energy loss: 0.026922
+force loss: 0.171504
+
+energy loss: 0.026898
+force loss: 0.171443
+
+energy loss: 0.026871
+force loss: 0.171397
+
+energy loss: 0.026845
+force loss: 0.171318
+
+energy loss: 0.026839
+force loss: 0.171251
+
+energy loss: 0.026815
+force loss: 0.171183
+
+energy loss: 0.026799
+force loss: 0.171092
+
+energy loss: 0.026770
+force loss: 0.170978
+
+energy loss: 0.026761
+force loss: 0.170863
+
+energy loss: 0.026781
+force loss: 0.170705
+
+energy loss: 0.026769
+force loss: 0.170485
+
+energy loss: 0.026760
+force loss: 0.170316
+
+energy loss: 0.026750
+force loss: 0.170099
+
+energy loss: 0.026781
+force loss: 0.169747
+
+energy loss: 0.026788
+force loss: 0.169580
+
+energy loss: 0.026769
+force loss: 0.169359
+
+energy loss: 0.026745
+force loss: 0.169065
+
+energy loss: 0.026739
+force loss: 0.168758
+
+energy loss: 0.026746
+force loss: 0.168513
+
+energy loss: 0.026768
+force loss: 0.168195
+
+energy loss: 0.026745
+force loss: 0.167969
+
+energy loss: 0.026712
+force loss: 0.167806
+
+energy loss: 0.026688
+force loss: 0.167597
+
+energy loss: 0.026675
+force loss: 0.167474
+
+energy loss: 0.026632
+force loss: 0.167331
+
+energy loss: 0.026643
+force loss: 0.167208
+
+energy loss: 0.026646
+force loss: 0.167041
+
+energy loss: 0.026645
+force loss: 0.166916
+
+energy loss: 0.026616
+force loss: 0.166818
+
+energy loss: 0.026604
+force loss: 0.166744
+
+energy loss: 0.026589
+force loss: 0.166683
+
+energy loss: 0.026562
+force loss: 0.166598
+
+energy loss: 0.026531
+force loss: 0.166498
+
+energy loss: 0.026478
+force loss: 0.166435
+
+energy loss: 0.026436
+force loss: 0.166350
+
+energy loss: 0.026374
+force loss: 0.166252
+
+energy loss: 0.026330
+force loss: 0.166201
+
+energy loss: 0.026287
+force loss: 0.166125
+
+energy loss: 0.026269
+force loss: 0.166077
+
+energy loss: 0.026241
+force loss: 0.166025
+
+energy loss: 0.026195
+force loss: 0.165985
+
+energy loss: 0.026165
+force loss: 0.165954
+
+energy loss: 0.026135
+force loss: 0.165917
+
+energy loss: 0.026088
+force loss: 0.165863
+
+energy loss: 0.026053
+force loss: 0.165801
+
+energy loss: 0.026033
+force loss: 0.165761
+
+energy loss: 0.026022
+force loss: 0.165705
+
+energy loss: 0.025993
+force loss: 0.165666
+
+energy loss: 0.025960
+force loss: 0.165627
+
+energy loss: 0.025910
+force loss: 0.165584
+
+energy loss: 0.025867
+force loss: 0.165516
+
+energy loss: 0.025839
+force loss: 0.165484
+
+energy loss: 0.025823
+force loss: 0.165436
+
+energy loss: 0.025807
+force loss: 0.165393
+
+energy loss: 0.025750
+force loss: 0.165352
+
+energy loss: 0.025711
+force loss: 0.165304
+
+energy loss: 0.025673
+force loss: 0.165245
+
+energy loss: 0.025624
+force loss: 0.165206
+
+energy loss: 0.025591
+force loss: 0.165157
+
+energy loss: 0.025577
+force loss: 0.165077
+
+energy loss: 0.025537
+force loss: 0.165019
+
+energy loss: 0.025524
+force loss: 0.164989
+
+energy loss: 0.025508
+force loss: 0.164947
+
+energy loss: 0.025515
+force loss: 0.164879
+
+energy loss: 0.025476
+force loss: 0.164826
+
+energy loss: 0.025437
+force loss: 0.164772
+
+energy loss: 0.025402
+force loss: 0.164739
+
+energy loss: 0.025393
+force loss: 0.164666
+
+energy loss: 0.025305
+force loss: 0.164605
+
+energy loss: 0.025256
+force loss: 0.164570
+
+energy loss: 0.025260
+force loss: 0.164532
+
+energy loss: 0.025198
+force loss: 0.164480
+
+energy loss: 0.025153
+force loss: 0.164447
+
+energy loss: 0.025089
+force loss: 0.164409
+
+energy loss: 0.025077
+force loss: 0.164364
+
+energy loss: 0.025033
+force loss: 0.164324
+
+energy loss: 0.025003
+force loss: 0.164289
+
+energy loss: 0.024954
+force loss: 0.164258
+
+energy loss: 0.024923
+force loss: 0.164212
+
+energy loss: 0.024894
+force loss: 0.164179
+
+energy loss: 0.024845
+force loss: 0.164156
+
+energy loss: 0.024808
+force loss: 0.164109
+
+energy loss: 0.024768
+force loss: 0.164079
+
+energy loss: 0.024718
+force loss: 0.164048
+
+energy loss: 0.024694
+force loss: 0.164025
+
+energy loss: 0.024671
+force loss: 0.164002
+
+energy loss: 0.024628
+force loss: 0.163976
+
+energy loss: 0.024600
+force loss: 0.163961
+
+energy loss: 0.024548
+force loss: 0.163929
+
+energy loss: 0.024521
+force loss: 0.163904
+
+energy loss: 0.024475
+force loss: 0.163872
+
+energy loss: 0.024392
+force loss: 0.163808
+
+energy loss: 0.024382
+force loss: 0.163788
+
+energy loss: 0.024347
+force loss: 0.163769
+
+energy loss: 0.024293
+force loss: 0.163737
+
+energy loss: 0.024257
+force loss: 0.163679
+
+energy loss: 0.024215
+force loss: 0.163663
+
+energy loss: 0.024137
+force loss: 0.163623
+
+energy loss: 0.024128
+force loss: 0.163572
+
+energy loss: 0.024048
+force loss: 0.163547
+
+energy loss: 0.024026
+force loss: 0.163520
+
+energy loss: 0.023977
+force loss: 0.163490
+
+energy loss: 0.023947
+force loss: 0.163440
+
+energy loss: 0.023934
+force loss: 0.163412
+
+energy loss: 0.023875
+force loss: 0.163386
+
+energy loss: 0.023859
+force loss: 0.163302
+
+energy loss: 0.023800
+force loss: 0.163247
+
+energy loss: 0.023740
+force loss: 0.163203
+
+energy loss: 0.023675
+force loss: 0.163160
+
+energy loss: 0.023638
+force loss: 0.163135
+
+energy loss: 0.023584
+force loss: 0.163105
+
+energy loss: 0.023497
+force loss: 0.163072
+
+energy loss: 0.023483
+force loss: 0.163040
+
+energy loss: 0.023413
+force loss: 0.163037
+
+Training complete in 299 steps
+Training complete in 23m 51s
+Calculating fingerprints...
+Fingerprints Calculated!
+Training Initiated!
+energy loss: 3.960982
+force loss: 28.229866
+
+energy loss: 1.410251
+force loss: 19.775312
+
+energy loss: 1.210256
+force loss: 16.779778
+
+energy loss: 1.116750
+force loss: 15.488302
+
+energy loss: 1.078935
+force loss: 14.149920
+
+energy loss: 0.857411
+force loss: 12.012570
+
+energy loss: 0.782197
+force loss: 10.669296
+
+energy loss: 0.668529
+force loss: 10.060695
+
+energy loss: 0.443287
+force loss: 9.772903
+
+energy loss: 0.363047
+force loss: 9.490681
+
+energy loss: 0.303379
+force loss: 9.259139
+
+energy loss: 0.297653
+force loss: 9.120215
+
+energy loss: 0.301800
+force loss: 8.979556
+
+energy loss: 0.294835
+force loss: 8.754622
+
+energy loss: 0.289020
+force loss: 8.591220
+
+energy loss: 0.302943
+force loss: 8.456950
+
+energy loss: 0.310245
+force loss: 8.271193
+
+energy loss: 0.299103
+force loss: 8.076569
+
+energy loss: 0.286489
+force loss: 7.952849
+
+energy loss: 0.285700
+force loss: 7.842777
+
+energy loss: 0.278921
+force loss: 7.783391
+
+energy loss: 0.295748
+force loss: 7.720183
+
+energy loss: 0.296311
+force loss: 7.642814
+
+energy loss: 0.297396
+force loss: 7.592883
+
+energy loss: 0.304151
+force loss: 7.546729
+
+energy loss: 0.298488
+force loss: 7.497661
+
+energy loss: 0.272970
+force loss: 7.460261
+
+energy loss: 0.237195
+force loss: 7.396123
+
+energy loss: 0.231064
+force loss: 7.364847
+
+energy loss: 0.217203
+force loss: 7.352280
+
+energy loss: 0.210145
+force loss: 7.334053
+
+energy loss: 0.207817
+force loss: 7.313069
+
+energy loss: 0.211670
+force loss: 7.304013
+
+energy loss: 0.211538
+force loss: 7.283563
+
+energy loss: 0.201727
+force loss: 7.260383
+
+energy loss: 0.195627
+force loss: 7.244041
+
+energy loss: 0.198607
+force loss: 7.235926
+
+energy loss: 0.199885
+force loss: 7.219930
+
+energy loss: 0.208471
+force loss: 7.206633
+
+energy loss: 0.207009
+force loss: 7.184282
+
+energy loss: 0.158440
+force loss: 7.143950
+
+energy loss: 0.175559
+force loss: 7.091668
+
+energy loss: 0.163901
+force loss: 7.045472
+
+energy loss: 0.142177
+force loss: 6.995143
+
+energy loss: 0.179268
+force loss: 6.927407
+
+energy loss: 0.174530
+force loss: 6.890923
+
+energy loss: 0.173911
+force loss: 6.831556
+
+energy loss: 0.187648
+force loss: 6.775013
+
+energy loss: 0.160831
+force loss: 6.702859
+
+energy loss: 0.161879
+force loss: 6.655895
+
+energy loss: 0.143974
+force loss: 6.607271
+
+energy loss: 0.131820
+force loss: 6.569590
+
+energy loss: 0.134802
+force loss: 6.528290
+
+energy loss: 0.128734
+force loss: 6.484410
+
+energy loss: 0.125497
+force loss: 6.449019
+
+energy loss: 0.128019
+force loss: 6.410758
+
+energy loss: 0.130548
+force loss: 6.366632
+
+energy loss: 0.140689
+force loss: 6.327510
+
+energy loss: 0.140852
+force loss: 6.305613
+
+energy loss: 0.164891
+force loss: 6.276079
+
+energy loss: 0.183024
+force loss: 6.246355
+
+energy loss: 0.163866
+force loss: 6.220858
+
+energy loss: 0.158239
+force loss: 6.200714
+
+energy loss: 0.162872
+force loss: 6.180630
+
+energy loss: 0.161255
+force loss: 6.167377
+
+energy loss: 0.153257
+force loss: 6.157758
+
+energy loss: 0.150337
+force loss: 6.145074
+
+energy loss: 0.153914
+force loss: 6.134593
+
+energy loss: 0.154832
+force loss: 6.123320
+
+energy loss: 0.145253
+force loss: 6.114608
+
+energy loss: 0.145327
+force loss: 6.103232
+
+energy loss: 0.146976
+force loss: 6.092118
+
+energy loss: 0.158322
+force loss: 6.081158
+
+energy loss: 0.160646
+force loss: 6.073478
+
+energy loss: 0.151613
+force loss: 6.065837
+
+energy loss: 0.145010
+force loss: 6.060416
+
+energy loss: 0.140581
+force loss: 6.052172
+
+energy loss: 0.144258
+force loss: 6.039693
+
+energy loss: 0.141831
+force loss: 6.033739
+
+energy loss: 0.144990
+force loss: 6.021166
+
+energy loss: 0.142964
+force loss: 6.010028
+
+energy loss: 0.148902
+force loss: 6.004237
+
+energy loss: 0.144481
+force loss: 5.995233
+
+energy loss: 0.141936
+force loss: 5.991242
+
+energy loss: 0.141306
+force loss: 5.983486
+
+energy loss: 0.142150
+force loss: 5.973156
+
+energy loss: 0.142585
+force loss: 5.961859
+
+energy loss: 0.139340
+force loss: 5.954770
+
+energy loss: 0.135839
+force loss: 5.948633
+
+energy loss: 0.132377
+force loss: 5.943069
+
+energy loss: 0.130871
+force loss: 5.931269
+
+energy loss: 0.129095
+force loss: 5.924829
+
+energy loss: 0.123956
+force loss: 5.916942
+
+energy loss: 0.121615
+force loss: 5.908904
+
+energy loss: 0.121940
+force loss: 5.898728
+
+energy loss: 0.117863
+force loss: 5.887479
+
+energy loss: 0.114497
+force loss: 5.870629
+
+energy loss: 0.109946
+force loss: 5.861923
+
+energy loss: 0.110805
+force loss: 5.842250
+
+energy loss: 0.111867
+force loss: 5.826287
+
+energy loss: 0.108096
+force loss: 5.816948
+
+energy loss: 0.104053
+force loss: 5.807013
+
+energy loss: 0.107405
+force loss: 5.793320
+
+energy loss: 0.112445
+force loss: 5.778042
+
+energy loss: 0.118574
+force loss: 5.759033
+
+energy loss: 0.129723
+force loss: 5.738988
+
+energy loss: 0.129925
+force loss: 5.728250
+
+energy loss: 0.136465
+force loss: 5.715743
+
+energy loss: 0.152303
+force loss: 5.697821
+
+energy loss: 0.139290
+force loss: 5.685581
+
+energy loss: 0.137510
+force loss: 5.671802
+
+energy loss: 0.117533
+force loss: 5.658008
+
+energy loss: 0.112863
+force loss: 5.642934
+
+energy loss: 0.111521
+force loss: 5.626136
+
+energy loss: 0.107775
+force loss: 5.618103
+
+energy loss: 0.119756
+force loss: 5.607114
+
+energy loss: 0.116676
+force loss: 5.597007
+
+energy loss: 0.112446
+force loss: 5.585217
+
+energy loss: 0.116138
+force loss: 5.577909
+
+energy loss: 0.127070
+force loss: 5.564718
+
+energy loss: 0.127250
+force loss: 5.543153
+
+energy loss: 0.123097
+force loss: 5.528232
+
+energy loss: 0.115972
+force loss: 5.509549
+
+energy loss: 0.103982
+force loss: 5.482913
+
+energy loss: 0.089724
+force loss: 5.467580
+
+energy loss: 0.091666
+force loss: 5.447649
+
+energy loss: 0.081969
+force loss: 5.429910
+
+energy loss: 0.082519
+force loss: 5.406512
+
+energy loss: 0.088124
+force loss: 5.386786
+
+energy loss: 0.083161
+force loss: 5.370003
+
+energy loss: 0.082386
+force loss: 5.361634
+
+energy loss: 0.083034
+force loss: 5.333681
+
+energy loss: 0.086494
+force loss: 5.293412
+
+energy loss: 0.099262
+force loss: 5.253036
+
+energy loss: 0.118857
+force loss: 5.228798
+
+energy loss: 0.121946
+force loss: 5.200960
+
+energy loss: 0.115717
+force loss: 5.176559
+
+energy loss: 0.141152
+force loss: 5.137687
+
+energy loss: 0.142728
+force loss: 5.106267
+
+energy loss: 0.140551
+force loss: 5.053697
+
+energy loss: 0.150287
+force loss: 5.007756
+
+energy loss: 0.150382
+force loss: 4.956353
+
+energy loss: 0.155905
+force loss: 4.911842
+
+energy loss: 0.172857
+force loss: 4.869878
+
+energy loss: 0.151033
+force loss: 4.837270
+
+energy loss: 0.128715
+force loss: 4.810315
+
+energy loss: 0.135031
+force loss: 4.781315
+
+energy loss: 0.135975
+force loss: 4.749433
+
+energy loss: 0.139586
+force loss: 4.727044
+
+energy loss: 0.139225
+force loss: 4.703758
+
+energy loss: 0.137365
+force loss: 4.675698
+
+energy loss: 0.138845
+force loss: 4.652529
+
+energy loss: 0.137147
+force loss: 4.631371
+
+energy loss: 0.136790
+force loss: 4.597433
+
+energy loss: 0.140646
+force loss: 4.564722
+
+energy loss: 0.142374
+force loss: 4.539245
+
+energy loss: 0.144175
+force loss: 4.511664
+
+energy loss: 0.151837
+force loss: 4.477762
+
+energy loss: 0.160184
+force loss: 4.458634
+
+energy loss: 0.173395
+force loss: 4.436131
+
+energy loss: 0.174329
+force loss: 4.414930
+
+energy loss: 0.168708
+force loss: 4.398685
+
+energy loss: 0.165529
+force loss: 4.389905
+
+energy loss: 0.161888
+force loss: 4.380237
+
+energy loss: 0.158004
+force loss: 4.368588
+
+energy loss: 0.158037
+force loss: 4.356124
+
+energy loss: 0.150268
+force loss: 4.340004
+
+energy loss: 0.146611
+force loss: 4.328682
+
+energy loss: 0.140468
+force loss: 4.316582
+
+energy loss: 0.138332
+force loss: 4.304993
+
+energy loss: 0.139439
+force loss: 4.293387
+
+energy loss: 0.139820
+force loss: 4.273699
+
+energy loss: 0.140648
+force loss: 4.256978
+
+energy loss: 0.145677
+force loss: 4.237528
+
+energy loss: 0.141195
+force loss: 4.222222
+
+energy loss: 0.133385
+force loss: 4.202588
+
+energy loss: 0.134704
+force loss: 4.186060
+
+energy loss: 0.132503
+force loss: 4.175458
+
+energy loss: 0.134460
+force loss: 4.167459
+
+energy loss: 0.134173
+force loss: 4.157487
+
+energy loss: 0.134831
+force loss: 4.143494
+
+energy loss: 0.130004
+force loss: 4.126854
+
+energy loss: 0.128495
+force loss: 4.112740
+
+energy loss: 0.128351
+force loss: 4.105179
+
+energy loss: 0.124722
+force loss: 4.095481
+
+energy loss: 0.122957
+force loss: 4.080819
+
+energy loss: 0.124961
+force loss: 4.069749
+
+energy loss: 0.122151
+force loss: 4.055781
+
+energy loss: 0.122078
+force loss: 4.044862
+
+energy loss: 0.128697
+force loss: 4.028357
+
+energy loss: 0.125422
+force loss: 4.019062
+
+energy loss: 0.128528
+force loss: 4.006972
+
+energy loss: 0.124047
+force loss: 3.995206
+
+energy loss: 0.124108
+force loss: 3.983761
+
+energy loss: 0.117555
+force loss: 3.974445
+
+energy loss: 0.120057
+force loss: 3.965514
+
+energy loss: 0.125977
+force loss: 3.955654
+
+energy loss: 0.124239
+force loss: 3.944183
+
+energy loss: 0.125150
+force loss: 3.934982
+
+energy loss: 0.128333
+force loss: 3.917267
+
+energy loss: 0.130224
+force loss: 3.909670
+
+energy loss: 0.129454
+force loss: 3.901829
+
+energy loss: 0.126826
+force loss: 3.891665
+
+energy loss: 0.125459
+force loss: 3.883183
+
+energy loss: 0.122215
+force loss: 3.874030
+
+energy loss: 0.118485
+force loss: 3.865608
+
+energy loss: 0.118823
+force loss: 3.855095
+
+energy loss: 0.121283
+force loss: 3.841634
+
+energy loss: 0.118470
+force loss: 3.834337
+
+energy loss: 0.120661
+force loss: 3.826391
+
+energy loss: 0.119049
+force loss: 3.818863
+
+energy loss: 0.117153
+force loss: 3.810148
+
+energy loss: 0.116249
+force loss: 3.803523
+
+energy loss: 0.120538
+force loss: 3.794506
+
+energy loss: 0.120900
+force loss: 3.786729
+
+energy loss: 0.121657
+force loss: 3.782680
+
+energy loss: 0.124093
+force loss: 3.777694
+
+energy loss: 0.127234
+force loss: 3.771822
+
+energy loss: 0.129168
+force loss: 3.766260
+
+energy loss: 0.132176
+force loss: 3.759865
+
+energy loss: 0.132150
+force loss: 3.752114
+
+energy loss: 0.123770
+force loss: 3.742869
+
+energy loss: 0.114118
+force loss: 3.736377
+
+energy loss: 0.111534
+force loss: 3.731366
+
+energy loss: 0.109012
+force loss: 3.724543
+
+energy loss: 0.110556
+force loss: 3.717923
+
+energy loss: 0.109406
+force loss: 3.713280
+
+energy loss: 0.108589
+force loss: 3.709039
+
+energy loss: 0.108879
+force loss: 3.703249
+
+energy loss: 0.109496
+force loss: 3.695932
+
+energy loss: 0.110621
+force loss: 3.687357
+
+energy loss: 0.111151
+force loss: 3.678738
+
+energy loss: 0.107008
+force loss: 3.673083
+
+energy loss: 0.104564
+force loss: 3.665521
+
+energy loss: 0.104957
+force loss: 3.660805
+
+energy loss: 0.104051
+force loss: 3.655446
+
+energy loss: 0.101700
+force loss: 3.647260
+
+energy loss: 0.099630
+force loss: 3.641896
+
+energy loss: 0.097799
+force loss: 3.636052
+
+energy loss: 0.099269
+force loss: 3.627193
+
+energy loss: 0.100164
+force loss: 3.623213
+
+energy loss: 0.100618
+force loss: 3.613404
+
+energy loss: 0.099976
+force loss: 3.607171
+
+energy loss: 0.102645
+force loss: 3.599077
+
+energy loss: 0.104302
+force loss: 3.594055
+
+energy loss: 0.105876
+force loss: 3.588378
+
+energy loss: 0.109643
+force loss: 3.579621
+
+energy loss: 0.108060
+force loss: 3.572586
+
+energy loss: 0.105440
+force loss: 3.566643
+
+energy loss: 0.105597
+force loss: 3.561905
+
+energy loss: 0.109959
+force loss: 3.554097
+
+energy loss: 0.105734
+force loss: 3.549289
+
+energy loss: 0.107041
+force loss: 3.542080
+
+energy loss: 0.104816
+force loss: 3.535275
+
+energy loss: 0.102032
+force loss: 3.530600
+
+energy loss: 0.095717
+force loss: 3.520543
+
+energy loss: 0.097227
+force loss: 3.514684
+
+energy loss: 0.092393
+force loss: 3.507046
+
+energy loss: 0.095151
+force loss: 3.499702
+
+energy loss: 0.093335
+force loss: 3.493581
+
+energy loss: 0.092085
+force loss: 3.488001
+
+energy loss: 0.089441
+force loss: 3.482727
+
+energy loss: 0.092286
+force loss: 3.475346
+
+energy loss: 0.093540
+force loss: 3.467245
+
+energy loss: 0.091763
+force loss: 3.462465
+
+energy loss: 0.094324
+force loss: 3.456558
+
+energy loss: 0.094608
+force loss: 3.447860
+
+energy loss: 0.095501
+force loss: 3.439858
+
+energy loss: 0.095394
+force loss: 3.428959
+
+energy loss: 0.096437
+force loss: 3.423407
+
+energy loss: 0.100197
+force loss: 3.417955
+
+energy loss: 0.101452
+force loss: 3.408949
+
+energy loss: 0.100344
+force loss: 3.401320
+
+energy loss: 0.101107
+force loss: 3.393202
+
+energy loss: 0.101854
+force loss: 3.384661
+
+energy loss: 0.103416
+force loss: 3.380900
+
+energy loss: 0.102588
+force loss: 3.377820
+
+energy loss: 0.101068
+force loss: 3.372125
+
+energy loss: 0.100019
+force loss: 3.367171
+
+energy loss: 0.100453
+force loss: 3.362348
+
+energy loss: 0.100226
+force loss: 3.357213
+
+energy loss: 0.098663
+force loss: 3.353019
+
+energy loss: 0.100550
+force loss: 3.347763
+
+energy loss: 0.099566
+force loss: 3.344732
+
+energy loss: 0.097147
+force loss: 3.340908
+
+energy loss: 0.096903
+force loss: 3.336208
+
+energy loss: 0.095412
+force loss: 3.331932
+
+energy loss: 0.094267
+force loss: 3.326120
+
+energy loss: 0.089920
+force loss: 3.320627
+
+energy loss: 0.089891
+force loss: 3.315068
+
+energy loss: 0.087894
+force loss: 3.311063
+
+energy loss: 0.088371
+force loss: 3.307239
+
+energy loss: 0.087383
+force loss: 3.304250
+
+energy loss: 0.086650
+force loss: 3.301416
+
+energy loss: 0.087438
+force loss: 3.299259
+
+energy loss: 0.086979
+force loss: 3.295678
+
+energy loss: 0.087461
+force loss: 3.291788
+
+energy loss: 0.087675
+force loss: 3.288932
+
+energy loss: 0.087695
+force loss: 3.286247
+
+energy loss: 0.087776
+force loss: 3.283570
+
+energy loss: 0.089432
+force loss: 3.280015
+
+energy loss: 0.092329
+force loss: 3.275668
+
+energy loss: 0.091778
+force loss: 3.272482
+
+energy loss: 0.092259
+force loss: 3.268762
+
+energy loss: 0.092781
+force loss: 3.265063
+
+energy loss: 0.093131
+force loss: 3.261438
+
+energy loss: 0.096477
+force loss: 3.258096
+
+energy loss: 0.098245
+force loss: 3.255846
+
+energy loss: 0.099123
+force loss: 3.253526
+
+energy loss: 0.101615
+force loss: 3.250110
+
+energy loss: 0.101709
+force loss: 3.246977
+
+energy loss: 0.104062
+force loss: 3.243674
+
+energy loss: 0.105875
+force loss: 3.240066
+
+energy loss: 0.106482
+force loss: 3.236606
+
+energy loss: 0.106843
+force loss: 3.234007
+
+energy loss: 0.108133
+force loss: 3.231277
+
+energy loss: 0.105887
+force loss: 3.227988
+
+energy loss: 0.105576
+force loss: 3.223058
+
+energy loss: 0.106052
+force loss: 3.221239
+
+energy loss: 0.105902
+force loss: 3.219829
+
+energy loss: 0.105939
+force loss: 3.217198
+
+energy loss: 0.105849
+force loss: 3.213530
+
+energy loss: 0.105586
+force loss: 3.210607
+
+energy loss: 0.102540
+force loss: 3.207863
+
+energy loss: 0.102414
+force loss: 3.203711
+
+energy loss: 0.100649
+force loss: 3.199237
+
+energy loss: 0.099631
+force loss: 3.197438
+
+energy loss: 0.098120
+force loss: 3.195967
+
+energy loss: 0.096809
+force loss: 3.192977
+
+energy loss: 0.095789
+force loss: 3.191259
+
+energy loss: 0.095483
+force loss: 3.188957
+
+energy loss: 0.093778
+force loss: 3.185431
+
+energy loss: 0.096512
+force loss: 3.180101
+
+energy loss: 0.097868
+force loss: 3.177667
+
+energy loss: 0.101687
+force loss: 3.173786
+
+energy loss: 0.102181
+force loss: 3.172316
+
+energy loss: 0.102611
+force loss: 3.171160
+
+energy loss: 0.101751
+force loss: 3.168094
+
+energy loss: 0.103513
+force loss: 3.165619
+
+energy loss: 0.100945
+force loss: 3.161064
+
+energy loss: 0.100287
+force loss: 3.158483
+
+energy loss: 0.100438
+force loss: 3.155082
+
+energy loss: 0.101195
+force loss: 3.152803
+
+energy loss: 0.100817
+force loss: 3.148926
+
+energy loss: 0.102272
+force loss: 3.145398
+
+energy loss: 0.104369
+force loss: 3.143074
+
+energy loss: 0.107353
+force loss: 3.140261
+
+energy loss: 0.106218
+force loss: 3.137565
+
+energy loss: 0.106131
+force loss: 3.136011
+
+energy loss: 0.106124
+force loss: 3.133405
+
+energy loss: 0.105249
+force loss: 3.129825
+
+energy loss: 0.108586
+force loss: 3.126857
+
+energy loss: 0.111699
+force loss: 3.124424
+
+energy loss: 0.111433
+force loss: 3.121638
+
+energy loss: 0.108150
+force loss: 3.119254
+
+energy loss: 0.109051
+force loss: 3.116830
+
+energy loss: 0.106946
+force loss: 3.114673
+
+energy loss: 0.107080
+force loss: 3.111910
+
+energy loss: 0.106992
+force loss: 3.109148
+
+energy loss: 0.108171
+force loss: 3.106262
+
+energy loss: 0.111139
+force loss: 3.102432
+
+energy loss: 0.110909
+force loss: 3.097917
+
+energy loss: 0.112473
+force loss: 3.095163
+
+energy loss: 0.111073
+force loss: 3.091293
+
+energy loss: 0.115592
+force loss: 3.087348
+
+energy loss: 0.119028
+force loss: 3.084052
+
+energy loss: 0.118155
+force loss: 3.081803
+
+energy loss: 0.119433
+force loss: 3.078115
+
+energy loss: 0.117377
+force loss: 3.074277
+
+energy loss: 0.115872
+force loss: 3.071659
+
+energy loss: 0.114693
+force loss: 3.068560
+
+energy loss: 0.112891
+force loss: 3.065874
+
+energy loss: 0.112308
+force loss: 3.062419
+
+energy loss: 0.109092
+force loss: 3.058723
+
+energy loss: 0.110930
+force loss: 3.054013
+
+energy loss: 0.112830
+force loss: 3.050081
+
+energy loss: 0.109548
+force loss: 3.047127
+
+energy loss: 0.108863
+force loss: 3.045106
+
+energy loss: 0.110491
+force loss: 3.040641
+
+energy loss: 0.107702
+force loss: 3.037612
+
+energy loss: 0.104611
+force loss: 3.034483
+
+energy loss: 0.102427
+force loss: 3.031992
+
+energy loss: 0.101917
+force loss: 3.030099
+
+energy loss: 0.102610
+force loss: 3.026837
+
+energy loss: 0.097915
+force loss: 3.023804
+
+energy loss: 0.096252
+force loss: 3.018327
+
+energy loss: 0.095384
+force loss: 3.015270
+
+energy loss: 0.094223
+force loss: 3.011323
+
+energy loss: 0.093324
+force loss: 3.005816
+
+energy loss: 0.088342
+force loss: 3.002085
+
+energy loss: 0.085358
+force loss: 2.995807
+
+energy loss: 0.085079
+force loss: 2.989117
+
+energy loss: 0.087046
+force loss: 2.982831
+
+energy loss: 0.086459
+force loss: 2.976928
+
+energy loss: 0.086522
+force loss: 2.970763
+
+energy loss: 0.088958
+force loss: 2.965131
+
+energy loss: 0.089480
+force loss: 2.957698
+
+energy loss: 0.085516
+force loss: 2.953327
+
+energy loss: 0.082223
+force loss: 2.949632
+
+energy loss: 0.082161
+force loss: 2.941210
+
+energy loss: 0.080874
+force loss: 2.936222
+
+energy loss: 0.080799
+force loss: 2.931270
+
+energy loss: 0.082409
+force loss: 2.926070
+
+energy loss: 0.083919
+force loss: 2.918607
+
+energy loss: 0.083832
+force loss: 2.911405
+
+energy loss: 0.085379
+force loss: 2.907739
+
+energy loss: 0.086022
+force loss: 2.902243
+
+energy loss: 0.084129
+force loss: 2.898612
+
+energy loss: 0.083411
+force loss: 2.894598
+
+energy loss: 0.083193
+force loss: 2.890366
+
+energy loss: 0.082458
+force loss: 2.885075
+
+energy loss: 0.082890
+force loss: 2.879788
+
+energy loss: 0.083294
+force loss: 2.872763
+
+energy loss: 0.082844
+force loss: 2.866146
+
+energy loss: 0.083583
+force loss: 2.861549
+
+energy loss: 0.082236
+force loss: 2.856275
+
+energy loss: 0.082483
+force loss: 2.850967
+
+energy loss: 0.083223
+force loss: 2.845971
+
+energy loss: 0.084289
+force loss: 2.838472
+
+energy loss: 0.086316
+force loss: 2.831427
+
+energy loss: 0.086141
+force loss: 2.827125
+
+energy loss: 0.086937
+force loss: 2.821018
+
+energy loss: 0.086960
+force loss: 2.815070
+
+energy loss: 0.084079
+force loss: 2.811931
+
+energy loss: 0.084459
+force loss: 2.806264
+
+energy loss: 0.086147
+force loss: 2.800577
+
+energy loss: 0.085629
+force loss: 2.797150
+
+energy loss: 0.084763
+force loss: 2.792406
+
+energy loss: 0.079656
+force loss: 2.784517
+
+energy loss: 0.078065
+force loss: 2.779007
+
+energy loss: 0.074979
+force loss: 2.774412
+
+energy loss: 0.073304
+force loss: 2.768591
+
+energy loss: 0.073418
+force loss: 2.762667
+
+energy loss: 0.073100
+force loss: 2.756292
+
+energy loss: 0.072920
+force loss: 2.750612
+
+energy loss: 0.072999
+force loss: 2.745868
+
+energy loss: 0.074216
+force loss: 2.741562
+
+energy loss: 0.073614
+force loss: 2.736741
+
+energy loss: 0.073310
+force loss: 2.731044
+
+energy loss: 0.076828
+force loss: 2.725947
+
+energy loss: 0.080121
+force loss: 2.721006
+
+energy loss: 0.081326
+force loss: 2.716591
+
+energy loss: 0.082691
+force loss: 2.713234
+
+energy loss: 0.087236
+force loss: 2.708035
+
+energy loss: 0.088700
+force loss: 2.703517
+
+energy loss: 0.088301
+force loss: 2.698531
+
+energy loss: 0.093388
+force loss: 2.690628
+
+energy loss: 0.089148
+force loss: 2.686701
+
+energy loss: 0.091054
+force loss: 2.681938
+
+energy loss: 0.086794
+force loss: 2.676991
+
+energy loss: 0.087513
+force loss: 2.672282
+
+energy loss: 0.088767
+force loss: 2.667544
+
+energy loss: 0.087901
+force loss: 2.664047
+
+energy loss: 0.085784
+force loss: 2.660837
+
+energy loss: 0.084007
+force loss: 2.657788
+
+energy loss: 0.083109
+force loss: 2.653344
+
+energy loss: 0.083508
+force loss: 2.647568
+
+energy loss: 0.083291
+force loss: 2.642003
+
+energy loss: 0.084668
+force loss: 2.635871
+
+energy loss: 0.084601
+force loss: 2.631896
+
+energy loss: 0.081758
+force loss: 2.627719
+
+energy loss: 0.082467
+force loss: 2.623256
+
+energy loss: 0.079060
+force loss: 2.617902
+
+energy loss: 0.077740
+force loss: 2.611594
+
+energy loss: 0.078423
+force loss: 2.605105
+
+energy loss: 0.079641
+force loss: 2.598198
+
+energy loss: 0.078027
+force loss: 2.591671
+
+energy loss: 0.080542
+force loss: 2.585253
+
+energy loss: 0.080808
+force loss: 2.578644
+
+energy loss: 0.081887
+force loss: 2.573799
+
+energy loss: 0.081294
+force loss: 2.570389
+
+energy loss: 0.083221
+force loss: 2.566246
+
+energy loss: 0.081831
+force loss: 2.560298
+
+energy loss: 0.082107
+force loss: 2.556388
+
+energy loss: 0.080962
+force loss: 2.551662
+
+energy loss: 0.079186
+force loss: 2.548759
+
+energy loss: 0.080049
+force loss: 2.542813
+
+energy loss: 0.079722
+force loss: 2.539509
+
+energy loss: 0.078395
+force loss: 2.535012
+
+energy loss: 0.078852
+force loss: 2.531025
+
+energy loss: 0.079016
+force loss: 2.527414
+
+energy loss: 0.080919
+force loss: 2.521696
+
+energy loss: 0.081086
+force loss: 2.515564
+
+energy loss: 0.083344
+force loss: 2.509385
+
+energy loss: 0.083874
+force loss: 2.505258
+
+energy loss: 0.087489
+force loss: 2.500381
+
+energy loss: 0.087701
+force loss: 2.495994
+
+energy loss: 0.087550
+force loss: 2.490616
+
+energy loss: 0.089715
+force loss: 2.486387
+
+energy loss: 0.090603
+force loss: 2.482691
+
+energy loss: 0.090882
+force loss: 2.477138
+
+energy loss: 0.090233
+force loss: 2.472741
+
+energy loss: 0.090885
+force loss: 2.469307
+
+energy loss: 0.090145
+force loss: 2.467059
+
+energy loss: 0.091112
+force loss: 2.463426
+
+energy loss: 0.088851
+force loss: 2.458882
+
+energy loss: 0.089103
+force loss: 2.454457
+
+energy loss: 0.085620
+force loss: 2.447719
+
+energy loss: 0.084237
+force loss: 2.443575
+
+energy loss: 0.083581
+force loss: 2.440655
+
+energy loss: 0.083298
+force loss: 2.434951
+
+energy loss: 0.082628
+force loss: 2.432054
+
+energy loss: 0.082505
+force loss: 2.427316
+
+energy loss: 0.081174
+force loss: 2.422990
+
+energy loss: 0.081206
+force loss: 2.419664
+
+energy loss: 0.081932
+force loss: 2.415128
+
+energy loss: 0.081825
+force loss: 2.410700
+
+energy loss: 0.082737
+force loss: 2.407706
+
+energy loss: 0.083017
+force loss: 2.404550
+
+energy loss: 0.084334
+force loss: 2.401182
+
+energy loss: 0.084106
+force loss: 2.398452
+
+energy loss: 0.083932
+force loss: 2.394941
+
+energy loss: 0.082409
+force loss: 2.392421
+
+energy loss: 0.083461
+force loss: 2.388900
+
+energy loss: 0.081308
+force loss: 2.384809
+
+energy loss: 0.081949
+force loss: 2.381689
+
+energy loss: 0.083025
+force loss: 2.378037
+
+energy loss: 0.083652
+force loss: 2.374466
+
+energy loss: 0.085188
+force loss: 2.370428
+
+energy loss: 0.086889
+force loss: 2.366853
+
+energy loss: 0.086504
+force loss: 2.363280
+
+energy loss: 0.088161
+force loss: 2.359952
+
+energy loss: 0.089368
+force loss: 2.357291
+
+energy loss: 0.091048
+force loss: 2.355044
+
+energy loss: 0.090276
+force loss: 2.351689
+
+energy loss: 0.088731
+force loss: 2.348906
+
+energy loss: 0.088242
+force loss: 2.345401
+
+energy loss: 0.088125
+force loss: 2.341548
+
+energy loss: 0.089457
+force loss: 2.338272
+
+energy loss: 0.089389
+force loss: 2.334790
+
+energy loss: 0.088136
+force loss: 2.331197
+
+energy loss: 0.089466
+force loss: 2.328042
+
+energy loss: 0.090414
+force loss: 2.324671
+
+energy loss: 0.090840
+force loss: 2.321744
+
+energy loss: 0.089840
+force loss: 2.319079
+
+energy loss: 0.091374
+force loss: 2.317291
+
+energy loss: 0.090509
+force loss: 2.314697
+
+energy loss: 0.090285
+force loss: 2.312514
+
+energy loss: 0.090395
+force loss: 2.311117
+
+energy loss: 0.090386
+force loss: 2.309400
+
+energy loss: 0.088855
+force loss: 2.307621
+
+energy loss: 0.088083
+force loss: 2.304643
+
+energy loss: 0.086967
+force loss: 2.300636
+
+energy loss: 0.084711
+force loss: 2.297021
+
+energy loss: 0.083600
+force loss: 2.292949
+
+energy loss: 0.083835
+force loss: 2.289623
+
+energy loss: 0.083065
+force loss: 2.287305
+
+energy loss: 0.085576
+force loss: 2.283063
+
+energy loss: 0.084265
+force loss: 2.280406
+
+energy loss: 0.083344
+force loss: 2.277728
+
+energy loss: 0.082793
+force loss: 2.275450
+
+energy loss: 0.083203
+force loss: 2.271179
+
+energy loss: 0.084205
+force loss: 2.268255
+
+energy loss: 0.085624
+force loss: 2.265311
+
+energy loss: 0.086193
+force loss: 2.262769
+
+energy loss: 0.085732
+force loss: 2.260329
+
+energy loss: 0.086994
+force loss: 2.257617
+
+energy loss: 0.086251
+force loss: 2.254991
+
+energy loss: 0.084670
+force loss: 2.252073
+
+energy loss: 0.084015
+force loss: 2.249115
+
+energy loss: 0.083524
+force loss: 2.246543
+
+energy loss: 0.083624
+force loss: 2.243708
+
+energy loss: 0.083764
+force loss: 2.241587
+
+energy loss: 0.082274
+force loss: 2.238591
+
+energy loss: 0.081048
+force loss: 2.236837
+
+energy loss: 0.080548
+force loss: 2.235080
+
+energy loss: 0.080228
+force loss: 2.233843
+
+energy loss: 0.078822
+force loss: 2.231857
+
+energy loss: 0.079193
+force loss: 2.230036
+
+energy loss: 0.079366
+force loss: 2.228251
+
+energy loss: 0.079579
+force loss: 2.227137
+
+energy loss: 0.078183
+force loss: 2.226131
+
+energy loss: 0.078714
+force loss: 2.224793
+
+energy loss: 0.077801
+force loss: 2.223203
+
+energy loss: 0.077373
+force loss: 2.221642
+
+energy loss: 0.076604
+force loss: 2.220263
+
+energy loss: 0.077038
+force loss: 2.218554
+
+energy loss: 0.076589
+force loss: 2.217341
+
+energy loss: 0.076754
+force loss: 2.215839
+
+energy loss: 0.076894
+force loss: 2.214588
+
+energy loss: 0.077364
+force loss: 2.212846
+
+energy loss: 0.077109
+force loss: 2.211647
+
+energy loss: 0.077488
+force loss: 2.210456
+
+energy loss: 0.078073
+force loss: 2.209220
+
+energy loss: 0.077361
+force loss: 2.208097
+
+energy loss: 0.076328
+force loss: 2.206395
+
+energy loss: 0.075975
+force loss: 2.205031
+
+energy loss: 0.076558
+force loss: 2.203485
+
+energy loss: 0.076790
+force loss: 2.201601
+
+energy loss: 0.076465
+force loss: 2.199770
+
+energy loss: 0.076008
+force loss: 2.198522
+
+energy loss: 0.075800
+force loss: 2.197327
+
+energy loss: 0.076543
+force loss: 2.196272
+
+energy loss: 0.076572
+force loss: 2.195108
+
+energy loss: 0.075518
+force loss: 2.194155
+
+energy loss: 0.075115
+force loss: 2.193700
+
+energy loss: 0.076144
+force loss: 2.192560
+
+energy loss: 0.076051
+force loss: 2.191320
+
+energy loss: 0.076064
+force loss: 2.189895
+
+energy loss: 0.076011
+force loss: 2.188024
+
+energy loss: 0.075101
+force loss: 2.186535
+
+energy loss: 0.074637
+force loss: 2.185728
+
+energy loss: 0.075355
+force loss: 2.184661
+
+energy loss: 0.075373
+force loss: 2.183177
+
+energy loss: 0.074579
+force loss: 2.181718
+
+energy loss: 0.073195
+force loss: 2.179959
+
+energy loss: 0.072166
+force loss: 2.178760
+
+energy loss: 0.071856
+force loss: 2.177816
+
+energy loss: 0.072521
+force loss: 2.176583
+
+energy loss: 0.071705
+force loss: 2.175588
+
+energy loss: 0.071489
+force loss: 2.174560
+
+energy loss: 0.071181
+force loss: 2.173290
+
+energy loss: 0.071645
+force loss: 2.171811
+
+energy loss: 0.071500
+force loss: 2.170561
+
+energy loss: 0.071090
+force loss: 2.168965
+
+energy loss: 0.070638
+force loss: 2.167880
+
+energy loss: 0.071053
+force loss: 2.167119
+
+energy loss: 0.071874
+force loss: 2.165935
+
+energy loss: 0.071541
+force loss: 2.164758
+
+energy loss: 0.071241
+force loss: 2.163702
+
+energy loss: 0.071618
+force loss: 2.162467
+
+energy loss: 0.071609
+force loss: 2.161080
+
+energy loss: 0.071522
+force loss: 2.159628
+
+energy loss: 0.071890
+force loss: 2.157999
+
+energy loss: 0.072190
+force loss: 2.157238
+
+energy loss: 0.072486
+force loss: 2.155962
+
+energy loss: 0.071910
+force loss: 2.154453
+
+energy loss: 0.072556
+force loss: 2.153211
+
+energy loss: 0.071699
+force loss: 2.151779
+
+energy loss: 0.072700
+force loss: 2.150324
+
+energy loss: 0.072204
+force loss: 2.149073
+
+energy loss: 0.072803
+force loss: 2.147137
+
+energy loss: 0.072562
+force loss: 2.145396
+
+energy loss: 0.072239
+force loss: 2.144301
+
+energy loss: 0.072406
+force loss: 2.142758
+
+energy loss: 0.072104
+force loss: 2.141868
+
+energy loss: 0.071601
+force loss: 2.140529
+
+energy loss: 0.071935
+force loss: 2.139817
+
+energy loss: 0.070662
+force loss: 2.138551
+
+energy loss: 0.070211
+force loss: 2.137474
+
+energy loss: 0.069978
+force loss: 2.136059
+
+energy loss: 0.069463
+force loss: 2.134847
+
+energy loss: 0.069315
+force loss: 2.133563
+
+energy loss: 0.070015
+force loss: 2.132157
+
+energy loss: 0.069922
+force loss: 2.130746
+
+energy loss: 0.071003
+force loss: 2.128882
+
+energy loss: 0.072288
+force loss: 2.127239
+
+energy loss: 0.071909
+force loss: 2.126571
+
+energy loss: 0.070529
+force loss: 2.125380
+
+energy loss: 0.071142
+force loss: 2.123994
+
+energy loss: 0.069683
+force loss: 2.122216
+
+energy loss: 0.071527
+force loss: 2.120574
+
+energy loss: 0.071155
+force loss: 2.119278
+
+energy loss: 0.070980
+force loss: 2.117851
+
+energy loss: 0.070875
+force loss: 2.115999
+
+energy loss: 0.071368
+force loss: 2.113907
+
+energy loss: 0.071096
+force loss: 2.111672
+
+energy loss: 0.070817
+force loss: 2.110096
+
+energy loss: 0.070910
+force loss: 2.109151
+
+energy loss: 0.071206
+force loss: 2.108082
+
+energy loss: 0.071206
+force loss: 2.106501
+
+energy loss: 0.070371
+force loss: 2.105875
+
+energy loss: 0.070010
+force loss: 2.105372
+
+energy loss: 0.069209
+force loss: 2.104752
+
+energy loss: 0.069742
+force loss: 2.103253
+
+energy loss: 0.069908
+force loss: 2.101412
+
+energy loss: 0.069161
+force loss: 2.099975
+
+energy loss: 0.069713
+force loss: 2.098441
+
+energy loss: 0.068842
+force loss: 2.097508
+
+energy loss: 0.068160
+force loss: 2.096268
+
+energy loss: 0.068152
+force loss: 2.095005
+
+energy loss: 0.068463
+force loss: 2.093935
+
+energy loss: 0.068629
+force loss: 2.093025
+
+energy loss: 0.068019
+force loss: 2.092232
+
+energy loss: 0.067565
+force loss: 2.090256
+
+energy loss: 0.067424
+force loss: 2.088627
+
+energy loss: 0.067634
+force loss: 2.086845
+
+energy loss: 0.067608
+force loss: 2.085329
+
+energy loss: 0.067469
+force loss: 2.084533
+
+energy loss: 0.068378
+force loss: 2.082416
+
+energy loss: 0.068492
+force loss: 2.080785
+
+energy loss: 0.068965
+force loss: 2.079396
+
+energy loss: 0.069002
+force loss: 2.077737
+
+energy loss: 0.068353
+force loss: 2.076630
+
+energy loss: 0.067848
+force loss: 2.075068
+
+energy loss: 0.067196
+force loss: 2.074324
+
+energy loss: 0.066273
+force loss: 2.072223
+
+energy loss: 0.066126
+force loss: 2.071280
+
+energy loss: 0.065588
+force loss: 2.069767
+
+energy loss: 0.065133
+force loss: 2.068482
+
+energy loss: 0.064682
+force loss: 2.067218
+
+energy loss: 0.064648
+force loss: 2.065713
+
+energy loss: 0.064522
+force loss: 2.064669
+
+energy loss: 0.064109
+force loss: 2.064029
+
+energy loss: 0.063991
+force loss: 2.063307
+
+energy loss: 0.063297
+force loss: 2.062190
+
+energy loss: 0.063267
+force loss: 2.061365
+
+energy loss: 0.062554
+force loss: 2.060738
+
+energy loss: 0.062481
+force loss: 2.060050
+
+energy loss: 0.061209
+force loss: 2.058385
+
+energy loss: 0.061791
+force loss: 2.056827
+
+energy loss: 0.061345
+force loss: 2.056045
+
+energy loss: 0.060896
+force loss: 2.055297
+
+energy loss: 0.061228
+force loss: 2.054507
+
+energy loss: 0.061075
+force loss: 2.053879
+
+energy loss: 0.060978
+force loss: 2.053488
+
+energy loss: 0.062417
+force loss: 2.052207
+
+energy loss: 0.061718
+force loss: 2.051050
+
+energy loss: 0.062095
+force loss: 2.050061
+
+energy loss: 0.062297
+force loss: 2.049372
+
+energy loss: 0.062129
+force loss: 2.048781
+
+energy loss: 0.062752
+force loss: 2.047607
+
+energy loss: 0.062162
+force loss: 2.046515
+
+energy loss: 0.061705
+force loss: 2.045316
+
+energy loss: 0.060361
+force loss: 2.043623
+
+energy loss: 0.059829
+force loss: 2.042521
+
+energy loss: 0.059091
+force loss: 2.041352
+
+energy loss: 0.059878
+force loss: 2.039960
+
+energy loss: 0.059240
+force loss: 2.038999
+
+energy loss: 0.059593
+force loss: 2.037474
+
+energy loss: 0.059349
+force loss: 2.036690
+
+energy loss: 0.058625
+force loss: 2.035292
+
+energy loss: 0.058943
+force loss: 2.033375
+
+energy loss: 0.058558
+force loss: 2.031881
+
+energy loss: 0.058672
+force loss: 2.030497
+
+energy loss: 0.058576
+force loss: 2.029090
+
+energy loss: 0.058204
+force loss: 2.027924
+
+energy loss: 0.058648
+force loss: 2.026625
+
+energy loss: 0.058801
+force loss: 2.025392
+
+energy loss: 0.058809
+force loss: 2.024357
+
+energy loss: 0.059482
+force loss: 2.023071
+
+energy loss: 0.059248
+force loss: 2.021918
+
+energy loss: 0.058702
+force loss: 2.021265
+
+energy loss: 0.059039
+force loss: 2.020722
+
+energy loss: 0.058928
+force loss: 2.020304
+
+energy loss: 0.059095
+force loss: 2.019871
+
+energy loss: 0.058470
+force loss: 2.019181
+
+energy loss: 0.058503
+force loss: 2.018515
+
+energy loss: 0.058892
+force loss: 2.017841
+
+energy loss: 0.058009
+force loss: 2.016490
+
+energy loss: 0.058119
+force loss: 2.015511
+
+energy loss: 0.058473
+force loss: 2.015090
+
+energy loss: 0.058110
+force loss: 2.014222
+
+energy loss: 0.057940
+force loss: 2.012599
+
+energy loss: 0.057832
+force loss: 2.011662
+
+energy loss: 0.057118
+force loss: 2.010268
+
+energy loss: 0.057320
+force loss: 2.009440
+
+energy loss: 0.057350
+force loss: 2.008828
+
+energy loss: 0.057295
+force loss: 2.007782
+
+energy loss: 0.057856
+force loss: 2.006890
+
+energy loss: 0.058156
+force loss: 2.006337
+
+energy loss: 0.058126
+force loss: 2.005935
+
+energy loss: 0.058868
+force loss: 2.004905
+
+energy loss: 0.059546
+force loss: 2.004316
+
+energy loss: 0.059976
+force loss: 2.003284
+
+energy loss: 0.059765
+force loss: 2.002694
+
+energy loss: 0.059927
+force loss: 2.001630
+
+energy loss: 0.060118
+force loss: 2.001084
+
+energy loss: 0.060202
+force loss: 2.000885
+
+energy loss: 0.060924
+force loss: 1.999797
+
+energy loss: 0.060994
+force loss: 1.999104
+
+energy loss: 0.061246
+force loss: 1.998353
+
+energy loss: 0.061440
+force loss: 1.997435
+
+energy loss: 0.061348
+force loss: 1.997024
+
+energy loss: 0.061458
+force loss: 1.995897
+
+energy loss: 0.061982
+force loss: 1.993941
+
+energy loss: 0.062326
+force loss: 1.992422
+
+energy loss: 0.061534
+force loss: 1.991601
+
+energy loss: 0.062016
+force loss: 1.990311
+
+energy loss: 0.062338
+force loss: 1.989141
+
+energy loss: 0.062405
+force loss: 1.988546
+
+energy loss: 0.063904
+force loss: 1.987153
+
+energy loss: 0.063516
+force loss: 1.986377
+
+energy loss: 0.063664
+force loss: 1.985832
+
+energy loss: 0.063962
+force loss: 1.985199
+
+energy loss: 0.063980
+force loss: 1.984701
+
+energy loss: 0.064337
+force loss: 1.984030
+
+energy loss: 0.064199
+force loss: 1.983322
+
+energy loss: 0.065354
+force loss: 1.982741
+
+energy loss: 0.065714
+force loss: 1.981999
+
+energy loss: 0.066050
+force loss: 1.981472
+
+energy loss: 0.065244
+force loss: 1.980751
+
+energy loss: 0.065714
+force loss: 1.979393
+
+energy loss: 0.066657
+force loss: 1.978388
+
+energy loss: 0.066972
+force loss: 1.977337
+
+energy loss: 0.067691
+force loss: 1.976546
+
+energy loss: 0.068969
+force loss: 1.975410
+
+energy loss: 0.068952
+force loss: 1.974738
+
+energy loss: 0.069414
+force loss: 1.973570
+
+energy loss: 0.069631
+force loss: 1.973065
+
+energy loss: 0.070901
+force loss: 1.972178
+
+energy loss: 0.071073
+force loss: 1.971688
+
+energy loss: 0.070945
+force loss: 1.971128
+
+energy loss: 0.071496
+force loss: 1.970210
+
+energy loss: 0.071828
+force loss: 1.969330
+
+energy loss: 0.072240
+force loss: 1.968744
