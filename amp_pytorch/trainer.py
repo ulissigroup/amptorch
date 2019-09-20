@@ -7,12 +7,13 @@ import copy
 from amp.utilities import Logger
 import matplotlib.pyplot as plt
 import torch.nn as nn
-import torch 
+import torch
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
 
 
 class Trainer:
+
     """Class utilized to train a given model through a training loop method.
 
     Parameters

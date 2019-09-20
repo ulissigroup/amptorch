@@ -9,6 +9,7 @@ from amp_pytorch.model_skorch import CustomLoss
 from amp_pytorch.skorch_data import AtomsDataset, factorize_data, collate_amp
 
 
+
 forcetraining = True
 data = AtomsDataset("../datasets/water/water.extxyz", descriptor=Gaussian(),
         cores=1, forcetraining=forcetraining)
