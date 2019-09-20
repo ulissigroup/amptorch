@@ -12,7 +12,6 @@ from pre_data import AtomsDataset, collate_amp
 # from data_preprocess import AtomsDataset, collate_amp
 
 
-
 # images = ase.io.read("../datasets/water/water.extxyz", ":")
 images = ase.io.read("../datasets/COCu/COCu_pbc_500.traj", ":")
 batch_size = 100
