@@ -32,8 +32,6 @@ offset_atoms.set_calculator(EMT())
 e0 = offset_atoms.get_potential_energy()
 for displacement in distances:
     atoms = Atoms("CuCu", [(0, 0, 0), (0, 0, displacement)])
-    atoms.set_calculator(EMT())
-    atoms.get_potential_energy()
     energy = atoms.get_potential_energy() - e0
     force = atoms.get_forces()
     energies.append(energy)

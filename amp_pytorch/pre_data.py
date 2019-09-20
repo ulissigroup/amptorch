@@ -22,7 +22,6 @@ __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
 
 
-
 class AtomsDataset(Dataset):
     """
     PyTorch inherited abstract class that specifies how the training data is to be preprocessed and

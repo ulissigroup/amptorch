@@ -19,6 +19,7 @@ __email__ = "mshuaibi@andrew.cmu.edu"
 
 
 
+
 class Dense(nn.Linear):
     """Constructs and applies a dense layer with an activation function (when
     available) y=activation(Ax+b)

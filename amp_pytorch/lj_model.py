@@ -15,7 +15,6 @@ import matplotlib.pyplot as plt
 from itertools import combinations, permutations, product
 
 
-
 class lj_optim:
     def __init__(self, data, params, params_dict, cutoff, forcetraining=True):
         if not os.path.exists("results"):
