@@ -128,7 +128,7 @@ def multiple_runs(images, filename, dir, num_images, num_iters, temp):
 '''Runs multiple simulations of resampled LJ models and saves corresponding
 trajectory files'''
 def multiple_samples(images, sample_images, filename, dir, num_images,
-        num_samples, num_iters, temp, lj, fine_tune):
+        num_samples, num_iters, temp, lj, fine_tune=None):
     sample_points = random.sample(range(100), num_samples)
     data = [images[idx] for idx in range(num_images)]
     for idx in sample_points:
@@ -144,20 +144,18 @@ def multiple_samples(images, sample_images, filename, dir, num_images,
 
 # define training images
 images0 = ase.io.read("../datasets/COCu/COCu_pbc_300K.traj", ":")
-images_LJ = ase.io.read("MD_results/COCu/pbc_300K/MLMD_COCu_pbc_300K_LJ_1.traj", ":")
-images_ML = ase.io.read("MD_results/COCu/pbc_300K/MLMD_COCu_pbc_300K_1.traj", ":")
+images_LJ = ase.io.read("MD_results/COCu/pbc_300K/MLMD_COCu_pbc_300K_val_LJ_1.traj", ":")
+images_ML = ase.io.read("MD_results/COCu/pbc_300K/MLMD_COCu_pbc_300K_val_1.traj", ":")
 
-multiple_runs(images0, filename="MLMD_COCu_pbc_300K_val",
-        dir="MD_results/COCu/pbc_300K/", num_images=100, num_iters=2, temp=300)
+# multiple_runs(images0, filename="MLMD_COCu_pbc_300K_val",
+        # dir="MD_results/COCu/pbc_300K/", num_images=100, num_iters=2, temp=300)
 
-# samples = [10, 20, 30]
-# for i in samples:
-    # multiple_samples(images0, images_LJ, filename="MLMD_COCu_pbc_300K_ft",
-            # dir="MD_results/COCu/pbc_300K/", num_images=100, num_samples=i,
-            # num_iters=3, temp=300, lj=True,
-            # fine_tune="results/trained_models/MLMD_COCu_pbc_300K_LJ_1.pt")
+samples = [10, 20]
+for i in samples:
+    multiple_samples(images0, images_LJ, filename="MLMD_COCu_pbc_300K_val_cl",
+            dir="MD_results/COCu/pbc_300K/", num_images=100, num_samples=i,
+            num_iters=2, temp=300, lj=True)
 
-    # multiple_samples(images0, images_ML, filename="MLMD_COCu_pbc_300K_ft",
-                # dir="MD_results/COCu/pbc_300K/", num_images=100, num_samples=i,
-                # num_iters=3, temp=300, lj=False,
-                # fine_tune="results/trained_models/MLMD_COCu_pbc_300K_1.pt")
+    multiple_samples(images0, images_ML, filename="MLMD_COCu_pbc_300K_val_cl",
+                dir="MD_results/COCu/pbc_300K/", num_images=100, num_samples=i,
+                num_iters=2, temp=300, lj=False)
