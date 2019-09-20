@@ -39,11 +39,11 @@ class Dense(nn.Linear):
 
     def reset_parameters(self):
         """Weight initialization scheme"""
-        # init.constant_(self.weight, 0.05)
+        init.constant_(self.weight, 0.05)
         init.constant_(self.bias, 0)
 
         # xavier_uniform_(self.weight, gain=np.sqrt(1/2))
-        kaiming_uniform_(self.weight, nonlinearity="tanh")
+        # kaiming_uniform_(self.weight, nonlinearity="tanh")
         # if self.bias is not None:
             # fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
             # bound = 1 / np.sqrt(fan_in)
@@ -179,7 +179,7 @@ class FullNN(nn.Module):
             """Reshapes the force tensor into a Qx3 matrix containing all the force
             predictions in the same order and shape as the target forces calculated
             from AMP."""
-        return energy_pred, force_pred
+        return [energy_pred, force_pred]
 
 
 class CustomLoss(nn.Module):
