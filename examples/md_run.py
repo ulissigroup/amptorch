@@ -69,7 +69,6 @@ def ml_lj(IMAGES, filename, count, temp, dir="MD_results/", const_t=False,
             params_dict,
             lj_model,
         ]
-
     # define the number of threads to parallelize training across
     torch.set_num_threads(1)
     # define calculator, model, and descriptor
@@ -162,4 +161,3 @@ multiple_runs(images0, filename="MLMD_COCu_pbc_300K_val",
                 # dir="MD_results/COCu/pbc_300K/", num_images=100, num_samples=i,
                 # num_iters=3, temp=300, lj=False,
                 # fine_tune="results/trained_models/MLMD_COCu_pbc_300K_1.pt")
-
