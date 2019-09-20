@@ -188,7 +188,6 @@ class AMPModel:
         ).to(self.device)
         if self.fine_tune is not None:
             model.load_state_dict(torch.load(self.fine_tune))
-
         self.log("Activation Function: %s" % model.activation_fn)
         self.log("Loss Function: %s" % self.lossfunction)
         # Define the optimizer and implement any optimization settings
