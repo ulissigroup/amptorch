@@ -4,6 +4,7 @@ from ase import Atoms
 import ase
 import torch
 import torch.nn as nn
+from torch.nn import Tanh, Softplus
 import torch.optim as optim
 import numpy as np
 from amp_pytorch.NN_model import CustomLoss
@@ -28,6 +29,7 @@ calc = AMP(model=AMPModel(IMAGES, descriptor=Gaussian(), cores=1,
 
 # define the convergence criteria
 calc.model.convergence = {"energy": 0.02, "force": None}
+calc.model.activation_fn = Tanh
 
 # train the model
 calc.train(overwrite=True)

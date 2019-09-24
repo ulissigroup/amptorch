@@ -83,7 +83,8 @@ class AMP(Calculator):
         dataloader = DataLoader(
             dataset, batch_size, collate_fn=dataset.collate_test, shuffle=False
         )
-        model = FullNN(unique_atoms, architecture, "cpu", forcetraining=True)
+        model = FullNN(unique_atoms, architecture, "cpu", forcetraining=True,
+                activation_fn=self.model.activation_fn)
         model.load_state_dict(torch.load("amptorch.pt"))
 
         for batch in dataloader:

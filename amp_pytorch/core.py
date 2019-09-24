@@ -11,6 +11,7 @@ import copy
 import torch.optim as optim
 from torch.utils.data import DataLoader
 import torch.nn as nn
+from torch.nn import Tanh
 from amp.utilities import Logger
 from amp.descriptor.gaussian import Gaussian
 import matplotlib.pyplot as plt
@@ -65,6 +66,8 @@ class AMPModel:
     optimizer: object
         Define the training optimizer to be utilized for the regression.
         default: optim.LBFGS
+    activation_fn: object
+        Define the activation function to be used within the hidden layers
     scheduler: object
         Specify whether a learning rate decay scheme is to be utilized during
         training.
@@ -90,8 +93,9 @@ class AMPModel:
         force_coefficient=0,
         criterion=CustomLoss,
         optimizer=optim.LBFGS,
+        activation_fn=Tanh,
         scheduler=None,
-        lr=1,
+        lr=1e-2,
         criteria={"energy": 0.02, "force": 0.02},
     ):
         if not os.path.exists("results"):
@@ -108,6 +112,7 @@ class AMPModel:
         self.force_coefficient = force_coefficient
         self.lossfunction = criterion
         self.optimizer = optimizer
+        self.activation_fn = activation_fn
         self.scheduler = scheduler
         self.lr = lr
         self.convergence = criteria
@@ -182,8 +187,8 @@ class AMPModel:
         architecture = copy.copy(self.structure)
         architecture.insert(0, fp_length)
         model = FullNN(
-            self.unique_atoms, architecture, self.device, self.forcetraining
-        ).to(self.device)
+            self.unique_atoms, architecture, self.device, self.forcetraining,
+            self.activation_fn).to(self.device)
 
         self.log("Activation Function: %s" % model.activation_fn)
         self.log("Loss Function: %s" % self.lossfunction)

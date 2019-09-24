@@ -7,3 +7,4 @@
 *.pdf
 *.pt
 *.OUTCAR
+examples/MD_results/movies
