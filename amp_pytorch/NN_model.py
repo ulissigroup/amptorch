@@ -198,7 +198,6 @@ class CustomLoss(nn.Module):
         force_targets=None,
     ):
         MSE_loss = nn.MSELoss(reduction="sum")
-        L1_loss = nn.L1Loss(reduction="sum")
         energy_per_atom = torch.div(energy_pred, num_atoms)
         targets_per_atom = torch.div(energy_targets, num_atoms)
         energy_loss = MSE_loss(energy_per_atom, targets_per_atom)
@@ -213,8 +212,9 @@ class CustomLoss(nn.Module):
             force_loss = (self.alpha / 3) * MSE_loss(
                 force_pred_per_atom, force_targets_per_atom
             )
-            custom_addition = L1_loss(force_pred, force_targets)/(1 +
-                    self.alpha*L1_loss(force_pred, force_targets))
-            loss = energy_loss + force_loss + custom_addition
+            custom = torch.log(torch.cosh(force_pred_per_atom -
+                force_targets_per_atom))
+            custom_force = torch.sum(custom)
+            loss = energy_loss + custom_force
             # loss = energy_loss + force_loss
         return loss if self.alpha > 0 else energy_loss
