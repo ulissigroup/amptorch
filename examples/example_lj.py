@@ -116,26 +116,3 @@ force_targets = np.concatenate([image.get_forces() for image in IMAGES])
 data_size = np.arange(10, 110, 10)
 cutoff = 5.876798323827276
 torch.set_num_threads(1)
-
-MSE_e_data = []
-MSE_f_data = []
-MSE_e_lj_data = []
-MSE_f_lj_data = []
-for size in data_size:
-    MSE_e, MSE_f = trainer(images=images, count=size, optimizer=False)
-    MSE_e_lj, MSE_f_lj = trainer(images=images, count=size, optimizer=True)
-    MSE_e_data.append(MSE_e)
-    MSE_f_data.append(MSE_f)
-    MSE_e_lj_data.append(MSE_e_lj)
-    MSE_f_lj_data.append(MSE_f_lj)
-MSE_e_data = np.array(MSE_e_data).reshape(-1, 1)
-MSE_f_data = np.array(MSE_e_data).reshape(-1, 1)
-MSE_e_lj_data = np.array(MSE_e_lj_data).reshape(-1, 1)
-MSE_f_lj_data = np.array(MSE_f_lj_data).reshape(-1, 1)
-print(MSE_e_data)
-print(MSE_e_lj_data)
-print(MSE_f_data)
-print(MSE_f_lj_data)
-
-create_learning_plot(MSE_e_data, MSE_e_lj_data, "energy_COCu_2")
-create_learning_plot(MSE_f_data, MSE_f_lj_data, "force_COCu_2")

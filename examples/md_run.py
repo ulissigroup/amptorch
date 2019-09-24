@@ -56,8 +56,8 @@ def ml_lj(IMAGES, filename, count, temp, dir="MD_results/", const_t=False,
         params_dict = {"C": [], "O": [], "Cu": []}
         lj_model = lj_optim(IMAGES, p0, params_dict, cutoff)
         # fitted_params = lj_model.fit(method="L-BFGS-B")
-        fitted_params = lj_model.fit()
-        # fitted_params = p0
+        # fitted_params = lj_model.fit()
+        fitted_params = p0
         lj_energies, lj_forces, num_atoms = lj_model.lj_pred(
             IMAGES, fitted_params, params_dict
         )
@@ -91,7 +91,7 @@ def ml_lj(IMAGES, filename, count, temp, dir="MD_results/", const_t=False,
     # calc.model.fine_tune = fine_tune
     # calc.model.optimizer = optim.SGD
     calc.model.val_frac = 0.2
-    calc.model.structure = [20, 20, 20]
+    calc.model.structure = [5, 5, 5]
 
     # train the model
     calc.train(overwrite=True)
@@ -144,18 +144,19 @@ def multiple_samples(images, sample_images, filename, dir, num_images,
 
 # define training images
 images0 = ase.io.read("../datasets/COCu/COCu_pbc_300K.traj", ":")
-images_LJ = ase.io.read("MD_results/COCu/pbc_300K/MLMD_COCu_pbc_300K_val_LJ_1.traj", ":")
-images_ML = ase.io.read("MD_results/COCu/pbc_300K/MLMD_COCu_pbc_300K_val_1.traj", ":")
+# images0 = ase.io.read("../datasets/COCu/COCu_pbc_aimd_300K/1.OUTCAR", ":")
+# images_LJ = ase.io.read("MD_results/COCu/pbc_300K/val_cl1/MLMD_COCu_pbc_300K_val_cl_LJ_1.traj", ":")
+# images_ML = ase.io.read("MD_results/COCu/pbc_300K/val_cl1/MLMD_COCu_pbc_300K_val_cl_1.traj", ":")
 
-# multiple_runs(images0, filename="MLMD_COCu_pbc_300K_val",
-        # dir="MD_results/COCu/pbc_300K/", num_images=100, num_iters=2, temp=300)
+multiple_runs(images0, filename="MLMD_COCu_pbc_300K_cl2",
+        dir="MD_results/COCu/pbc_300K/val_cl1/", num_images=100, num_iters=2, temp=300)
 
-samples = [10, 20]
-for i in samples:
-    multiple_samples(images0, images_LJ, filename="MLMD_COCu_pbc_300K_val_cl",
-            dir="MD_results/COCu/pbc_300K/", num_images=100, num_samples=i,
-            num_iters=2, temp=300, lj=True)
+# samples = [20]
+# for i in samples:
+    # multiple_samples(images0, images_LJ, filename="test_lj_resample",
+            # dir="MD_results/COCu/pbc_300K/", num_images=100, num_samples=i,
+            # num_iters=1, temp=300, lj=True)
 
-    multiple_samples(images0, images_ML, filename="MLMD_COCu_pbc_300K_val_cl",
-                dir="MD_results/COCu/pbc_300K/", num_images=100, num_samples=i,
-                num_iters=2, temp=300, lj=False)
+    # multiple_samples(images0, images_ML, filename="test_resample",
+                # dir="MD_results/COCu/pbc_300K/", num_images=100, num_samples=i,
+                # num_iters=1, temp=300, lj=False)

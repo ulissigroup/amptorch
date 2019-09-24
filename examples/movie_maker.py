@@ -37,11 +37,11 @@ def retrieve_files(prefix, num_images):
         files.append(file_LJ)
     return files
 
-location = "MD_results/COCu/pbc_300K/"
+location = "MD_results/COCu/pbc_300K/val_cl1/"
 # location = "../datasets/COCu/"
-destination = "MD_results/movies/COCu/pbc_300K/"
-files = retrieve_files("MLMD_COCu_pbc_300K_val", 2)
-# files = ["COCu_pbc_300K"]
+destination = "MD_results/movies/COCu/pbc_300K/cl1/"
+# files = retrieve_files("MLMD_COCu_pbc_300K_aimd_cl1", 2)
+files = ["MLMD_COCu_pbc_300K_val_cl_20_resample_1", "MLMD_COCu_pbc_300K_val_cl_LJ_20_resample_1"]
 
 for file in files:
     create_movie(location, destination, file)
