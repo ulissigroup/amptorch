@@ -102,7 +102,7 @@ class FullNN(nn.Module):
     """
 
     def __init__(
-        self, unique_atoms, architecture, device, forcetraining, require_grd=True
+        self, unique_atoms, architecture, device, forcetraining, activation_fn, require_grd=True
     ):
 
         super(FullNN, self).__init__()
@@ -122,6 +122,7 @@ class FullNN(nn.Module):
                     n_input_nodes=input_length,
                     n_layers=n_layers,
                     n_hidden_size=n_hidden_size,
+                    activation=activation_fn
                 )
             )
         self.elementwise_models = elementwise_models
