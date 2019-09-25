@@ -38,6 +38,7 @@ class Dense(nn.Linear):
 
     def reset_parameters(self):
         """Weight initialization scheme"""
+        # init.constant_(self.weight, 0.05)
         init.constant_(self.bias, 0)
 
         # xavier_uniform_(self.weight, gain=np.sqrt(1/2))
@@ -211,6 +212,10 @@ class CustomLoss(nn.Module):
             force_loss = (self.alpha / 3) * MSE_loss(
                 force_pred_per_atom, force_targets_per_atom
             )
+            custom_2 = torch.log(torch.cosh(force_pred_per_atom -
+                force_targets_per_atom))
+            custom_force_2 = torch.sum(custom_2)
+            # loss = energy_loss + custom_force_2
             loss = energy_loss + force_loss
         return loss if self.alpha > 0 else energy_loss
 
