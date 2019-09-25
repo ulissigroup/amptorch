@@ -37,6 +37,7 @@ calc.model.convergence = {"energy": 0.05, "force": 0.02}
 # calc.model.fine_tune = "results/trained_models/amptorch.pt"
 calc.model.structure = [20, 20, 20]
 calc.model.batch_size = 400
+calc.lr = 1
 
 # train the model
 calc.train(overwrite=True)
