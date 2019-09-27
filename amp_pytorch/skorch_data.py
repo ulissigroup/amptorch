@@ -187,7 +187,7 @@ class AtomsDataset(Dataset):
                 ] = fprime
                 dim1_start += dim1
                 dim2_start += dim2
-            sparse.save_npz('sparse_matrix.npz', test)
+            # sparse.save_npz('sparse_matrix.npz', test)
         if self.forcetraining:
             for idx, force in enumerate(forces_dataset):
                 forces_dataset[idx] = force/scaling_sd

@@ -7,9 +7,9 @@ from torch.utils.data import Dataset, DataLoader
 from amp.descriptor.gaussian import Gaussian
 from functools import lru_cache
 # Pre-process data
-from pre_data import AtomsDataset, collate_amp
+# from pre_data import AtomsDataset, collate_amp
 # Original
-# from data_preprocess import AtomsDataset, collate_amp
+from data_preprocess import AtomsDataset, collate_amp
 
 
 # images = ase.io.read("../datasets/water/water.extxyz", ":")

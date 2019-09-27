@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
-from amp_pytorch.NN_model import CustomLoss
+from amp_pytorch.NN_model import CustomLoss, LogCoshLoss
 from amp_pytorch import AMP
 from amp_pytorch.core import AMPModel
 from amp.descriptor.gaussian import Gaussian
@@ -18,7 +18,6 @@ from ase.calculators.emt import EMT
 
 # define training images
 IMAGES = "../datasets/water/water.extxyz"
-# IMAGES = "../datasets/COCu/COCu_pbc_500.traj"
 images = ase.io.read(IMAGES, ":")
 IMAGES = []
 for i in range(400):
@@ -33,11 +32,13 @@ calc = AMP(model=AMPModel(IMAGES, descriptor=Gaussian(), cores=1,
     force_coefficient=0.3))
 
 # calc.model.val_frac = 0.3
-calc.model.convergence = {"energy": 0.05, "force": 0.02}
+calc.model.convergence = {"energy": 0.005, "force": 0.02}
 # calc.model.fine_tune = "results/trained_models/amptorch.pt"
-calc.model.structure = [20, 20, 20]
+calc.model.structure = [5, 5]
 calc.model.batch_size = 400
 calc.lr = 1
+# calc.criterion = LogCoshLoss
+calc.criterion = CustomLoss
 
 # train the model
 calc.train(overwrite=True)
