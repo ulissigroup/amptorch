@@ -283,8 +283,6 @@ class Trainer:
                         loss.backward()
                         return loss
 
-                    self.optimizer.step(closure)
-
                     mse_loss = nn.MSELoss(reduction="sum")
                     energy_pred, force_pred = self.model(input_data, fp_primes)
                     raw_preds = (energy_pred * self.sd_scaling) + self.mean_scaling
@@ -292,6 +290,8 @@ class Trainer:
                     target_per_atom = torch.div(target, num_of_atoms)
                     energy_loss = mse_loss(raw_preds_per_atom, target_per_atom)
                     energy_mse += torch.tensor(energy_loss.item())
+
+                    self.optimizer.step(closure)
 
                     if forcetraining:
                         force_pred = force_pred * self.sd_scaling
@@ -326,7 +326,7 @@ class Trainer:
 
                     # terminates when error stagnates
                     if (abs(force_rmse - previous_force_rmse) <= 1e-5):
-                        early_stop = True 
+                        early_stop = True
                     elif force_rmse < best_train_force_loss:
                         best_train_energy_loss = energy_rmse
                         best_train_force_loss = force_rmse
