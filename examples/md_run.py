@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
-from amp_pytorch.NN_model import CustomLoss
+from amp_pytorch.NN_model import CustomLoss, LogCoshLoss
 from amp_pytorch import AMP
 from amp_pytorch.core import AMPModel
 from amp.descriptor.gaussian import Gaussian, make_symmetry_functions
@@ -90,6 +90,7 @@ def ml_lj(IMAGES, filename, count, temp, dir="MD_results/", const_t=False,
     calc.model.lr = 1e-2
     # calc.model.fine_tune = fine_tune
     # calc.model.optimizer = optim.SGD
+    calc.model.criterion = LogCoshLoss
     calc.model.val_frac = 0.2
     calc.model.structure = [20, 20, 20]
 
@@ -144,21 +145,21 @@ def multiple_samples(images, sample_images, filename, dir, num_images,
 
 # define training images
 images0 = ase.io.read("../datasets/COCu/COCu_pbc_300K.traj", ":")
-images_aimd = ase.io.read("../datasets/COCu/COCu_pbc_aimd_300K/1.OUTCAR", ":")
-# images_LJ = ase.io.read("MD_results/COCu/pbc_300K/val_cl1/MLMD_COCu_pbc_300K_val_cl_LJ_1.traj", ":")
-# images_ML = ase.io.read("MD_results/COCu/pbc_300K/val_cl1/MLMD_COCu_pbc_300K_val_cl_1.traj", ":")
+# images_aimd = ase.io.read("../datasets/COCu/COCu_pbc_aimd_300K/1.OUTCAR", ":")
+images_LJ = ase.io.read("MD_results/COCu/pbc_300K/val_cl2/MLMD_COCu_pbc_300K_cl2_LJ_1.traj",":")
+images_ML = ase.io.read("MD_results/COCu/pbc_300K/val_cl2/MLMD_COCu_pbc_300K_cl2_1.traj", ":")
 
-multiple_runs(images0, filename="MLMD_COCu_pbc_300K_cl2",
-        dir="MD_results/COCu/pbc_300K/val/", num_images=100, num_iters=2, temp=300)
-multiple_runs(images_aimd, filename="MLMD_COCu_pbc_300K_aimd_cl2",
-        dir="MD_results/COCu/pbc_300K/aimd/", num_images=100, num_iters=2, temp=300)
+# multiple_runs(images0, filename="MLMD_COCu_pbc_300K_cl2",
+        # dir="MD_results/COCu/pbc_300K/val/", num_images=100, num_iters=2, temp=300)
+# multiple_runs(images_aimd, filename="MLMD_COCu_pbc_300K_aimd_cl2",
+        # dir="MD_results/COCu/pbc_300K/aimd/", num_images=100, num_iters=2, temp=300)
 
-# samples = [20]
-# for i in samples:
-    # multiple_samples(images0, images_LJ, filename="test_lj_resample",
-            # dir="MD_results/COCu/pbc_300K/", num_images=100, num_samples=i,
-            # num_iters=1, temp=300, lj=True)
+samples = [10]
+for i in samples:
+    multiple_samples(images0, images_LJ, filename="MLMD_COCu_pbc_300K_cl2",
+            dir="MD_results/COCu/pbc_300K/val_cl2/", num_images=100, num_samples=i,
+            num_iters=2, temp=300, lj=True)
 
-    # multiple_samples(images0, images_ML, filename="test_resample",
-                # dir="MD_results/COCu/pbc_300K/", num_images=100, num_samples=i,
-                # num_iters=1, temp=300, lj=False)
+    multiple_samples(images0, images_ML, filename="MLMD_COCu_pbc_300K_cl2",
+                dir="MD_results/COCu/pbc_300K/val_cl2/", num_images=100, num_samples=i,
+                num_iters=2, temp=300, lj=False)
