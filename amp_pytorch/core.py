@@ -16,6 +16,7 @@ from amp.utilities import Logger
 from amp.descriptor.gaussian import Gaussian
 import matplotlib.pyplot as plt
 from amp_pytorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
+# from amp_pytorch.pre_data import AtomsDataset, factorize_data, collate_amp
 from amp_pytorch.NN_model import FullNN, CustomLoss
 from amp_pytorch.trainer import Trainer
 

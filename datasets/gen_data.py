@@ -8,13 +8,11 @@ from ase.visualize import view
 import ase.io
 from ase.calculators.emt import EMT
 
-# from asap3 import EMT
 from ase.build import fcc110, fcc111, fcc100, add_adsorbate, molecule
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md import VelocityVerlet, Langevin, nvtberendsen
 from ase.optimize import QuasiNewton
 from ase.constraints import FixAtoms, Hookean
-# from asap3 import EMT
 
 from amp import Amp
 from amp.descriptor.gaussian import Gaussian
@@ -37,7 +35,8 @@ def generate_data(count, filename, temp, hook, cons_t=False):
         slab.set_constraint(cons)
     slab.center(vacuum=13., axis=2)
     slab.set_calculator(EMT())
-    slab.set_pbc([True, True, False])
+    slab.get_forces()
+    # slab.set_pbc([True, True, False])
     dyn = QuasiNewton(slab)
     dyn.run(fmax=0.05)
     traj.write(slab)
@@ -45,9 +44,9 @@ def generate_data(count, filename, temp, hook, cons_t=False):
         dyn = Langevin(slab, 1.0 * units.fs, temp * units.kB, 0.002)
     else:
         dyn = VelocityVerlet(slab, dt=1.0 * units.fs)
-    for step in range(count - 1):
+    for step in range(count):
         dyn.run(20)
         traj.write(slab)
 
 
-generate_data(500, "COCu/COCu_nopbc_300K.traj", temp=300.0, hook=False, cons_t=True)
+generate_data(500, "COCu/COCu_pbc_300K_.traj", temp=300.0, hook=False, cons_t=True)

@@ -40,15 +40,27 @@ def retrieve_files(prefix, num_images):
     return files
 
 
-location = "MD_results/COCu/pbc_300K/val_cl2/"
+location = "MD_results/COCu/pbc_300K/val/"
 # location = "../datasets/COCu/"
-destination = "MD_results/movies/COCu/pbc_300K/cl2/"
+destination = "MD_results/movies/COCu/pbc_300K/val/"
 # files = retrieve_files("MLMD_COCu_pbc_300K_val", 2)
 files = [
-    "MLMD_COCu_pbc_300K_cl2_LJ_5_resample_1",
-    "MLMD_COCu_pbc_300K_cl2_LJ_5_resample_2",
-    "MLMD_COCu_pbc_300K_cl2_5_resample_1",
-    "MLMD_COCu_pbc_300K_cl2_5_resample_2",
+    # "MLMD_COCu_pbc_300K_val_1",
+    # "MLMD_COCu_pbc_300K_val_2",
+    # "MLMD_COCu_pbc_300K_val_LJ_1",
+    # "MLMD_COCu_pbc_300K_val_LJ_2",
+    # "MLMD_COCu_pbc_300K_LJ_5_resample_1",
+    # "MLMD_COCu_pbc_300K_LJ_5_resample_2",
+    # "MLMD_COCu_pbc_300K_LJ_10_resample_1",
+    # "MLMD_COCu_pbc_300K_LJ_10_resample_2",
+    # "MLMD_COCu_pbc_300K_5_resample_1",
+    "MLMD_COCu_pbc_300K_5_resample_2",
+    "MLMD_COCu_pbc_300K_10_resample_1",
+    "MLMD_COCu_pbc_300K_10_resample_2",
+    # "MLMD_COCu_pbc_300K_cl2_3_resample_1",
+    # "MLMD_COCu_pbc_300K_cl2_3_resample_2",
+    # "MLMD_COCu_pbc_300K_cl2_LJ_3_resample_1",
+    # "MLMD_COCu_pbc_300K_cl2_LJ_3_resample_2",
 ]
 
 for file in files:

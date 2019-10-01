@@ -68,11 +68,20 @@ def kde_plots(data0, data1, data2, filename):
     # plt.savefig("MD_results/plots/" + filename + "_kde.png", dpi=300)
     plt.show()
 
+def energy_plots(data0, data1):
+    fig, ax = plt.subplots(figsize=(14.15, 10))
+    num_images = range(len(data0))
+    plt.plot(num_images, data0, label='emt')
+    plt.plot(num_images, data1, label='ml')
+    plt.legend(fontsize=20)
+    plt.xlabel('image', size=20)
+    plt.ylabel('Energy, eV', size=20)
+    plt.show()
 
 # images_emt = ase.io.read("../datasets/COCu/COCu_pbc.traj", ":")
 images_emt = ase.io.read("../datasets/COCu/COCu_pbc_300K.traj", ":")
 images0 = []
-for i in range(100):
+for i in range(101):
     images0.append(images_emt[i])
 
 images1 = ase.io.read("MD_results/COCu/pbc_300K/val_cl2/MLMD_COCu_pbc_300K_cl2_5_resample_1.traj", ":")
@@ -80,29 +89,27 @@ images2 = ase.io.read("MD_results/COCu/pbc_300K/val_cl2/MLMD_COCu_pbc_300K_cl2_L
 
 for image in images1:
     image.set_calculator(EMT())
-for image in images2:
-    image.set_calculator(EMT())
-
-forces0 = np.array([np.amax(np.abs(image.get_forces())) for image in images0]).reshape(
-    -1, 1
-)
-forces1 = np.array([np.amax(np.abs(image.get_forces())) for image in images1]).reshape(
-    -1, 1
-)
-forces2 = np.array([np.amax(np.abs(image.get_forces())) for image in images2]).reshape(
-    -1, 1
-)
-# forces2_2 = np.array([np.amax(np.abs(image.get_forces())) for image in
-    # images2_2]).reshape(
+# for image in images2:
+    # image.set_calculator(EMT())
+images2 = images2[1:]
+images0 = images0[1:]
+# forces0 = np.array([np.amax(np.abs(image.get_forces())) for image in images0]).reshape(
     # -1, 1
 # )
+# forces1 = np.array([np.amax(np.abs(image.get_forces())) for image in images1]).reshape(
+    # -1, 1
+# )
+# forces2 = np.array([np.amax(np.abs(image.get_forces())) for image in images2]).reshape(
+    # -1, 1
+# )
+energy0 = np.array([image.get_potential_energy() for image in images0])
+# energy1 = np.array([image.get_potential_energy() for image in images1])
+energy2 = np.array([image.get_potential_energy() for image in images2])
 
-# kde_plots(forces0, forces1, None, "COCu_ML_emt_F")
-kde_plots(np.log10(forces0), np.log10(forces1), np.log10(forces2),
-        "COCu_cl2")
+energy_plots(energy0, energy2)
+# kde_plots(forces0, forces1, forces2, 'test')
+# kde_plots(np.log10(forces0), np.log10(forces1), np.log10(forces2),
+        # "test")
 # kde_plots(np.log10(forces0), None, None,
         # "COCu_emt")
 # kde_plots(forces0, forces1, forces2_2, "COCu_ALL_emt_logF")
-# kde_plots(energy0, energy2, energy1, "COCu_ALL2_emt_energy")
-# kde_plots(np.log10(energy0), np.log10(energy1), None, "COCu_LJ_emt_E")
-# kde_plots(np.log10(energy0), np.log10(energy1), np.log10(energy2), "COCu_ALL_emt_E")
