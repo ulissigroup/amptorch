@@ -103,6 +103,7 @@ def md_run(images, count, calc, filename, dir, temp, cons_t=False):
     traj = ase.io.Trajectory("".join([dir, filename, ".traj"]), "w")
     slab = copy.deepcopy(images[0])
     slab.set_calculator(calc)
+    slab.get_forces()
     traj.write(slab)
     if cons_t is True:
         dyn = Langevin(slab, 1.0 * units.fs, temp * units.kB, 0.002)
@@ -146,20 +147,20 @@ def multiple_samples(images, sample_images, filename, dir, num_images,
 # define training images
 images0 = ase.io.read("../datasets/COCu/COCu_pbc_300K.traj", ":")
 # images_aimd = ase.io.read("../datasets/COCu/COCu_pbc_aimd_300K/1.OUTCAR", ":")
-images_LJ = ase.io.read("MD_results/COCu/pbc_300K/val_cl2/MLMD_COCu_pbc_300K_cl2_LJ_1.traj",":")
-images_ML = ase.io.read("MD_results/COCu/pbc_300K/val_cl2/MLMD_COCu_pbc_300K_cl2_1.traj", ":")
+images_LJ = ase.io.read("MD_results/COCu/pbc_300K/val_cl2/MLMD_COCu_pbc_300K_cl2_LJ_1.traj", ":")
+images_ML = ase.io.read("MD_results/COCu/pbc_300K/val_cl2/MLMD_COCu_pbc_300K_cl2_1.traj",  ":")
 
-# multiple_runs(images0, filename="MLMD_COCu_pbc_300K_cl2",
-        # dir="MD_results/COCu/pbc_300K/val/", num_images=100, num_iters=2, temp=300)
-# multiple_runs(images_aimd, filename="MLMD_COCu_pbc_300K_aimd_cl2",
-        # dir="MD_results/COCu/pbc_300K/aimd/", num_images=100, num_iters=2, temp=300)
+# multiple_runs(images0, filename="MLMD_COCu_pbc_300K_cl2_redo",
+        # dir="MD_results/COCu/pbc_300K/val_cl2/", num_images=100, num_iters=2, temp=300)
+# multiple_runs(images_aimd, filename="MLMD_COCu_pbc_300K_cl2_redo",
+        # dir="MD_results/COCu/pbc_300K/val_cl2/", num_images=100, num_iters=2, temp=300)
 
-samples = [10]
+samples = [5]
 for i in samples:
-    multiple_samples(images0, images_LJ, filename="MLMD_COCu_pbc_300K_cl2",
-            dir="MD_results/COCu/pbc_300K/val_cl2/", num_images=100, num_samples=i,
-            num_iters=2, temp=300, lj=True)
+    multiple_samples(images0, images_LJ, filename="MLMD_COCu_300K_cl2",
+            dir="MD_results/COCu/pbc_300K/val_cl2/paper/", num_images=100, num_samples=i,
+            num_iters=3, temp=300, lj=False)
 
-    multiple_samples(images0, images_ML, filename="MLMD_COCu_pbc_300K_cl2",
-                dir="MD_results/COCu/pbc_300K/val_cl2/", num_images=100, num_samples=i,
-                num_iters=2, temp=300, lj=False)
+    multiple_samples(images0, images_ML, filename="MLMD_COCu_300K_cl2",
+                dir="MD_results/COCu/pbc_300K/val_cl2/paper/", num_images=100, num_samples=i,
+                num_iters=3, temp=300, lj=True)

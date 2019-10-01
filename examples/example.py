@@ -18,6 +18,7 @@ from ase.calculators.emt import EMT
 
 # define training images
 IMAGES = "../datasets/water/water.extxyz"
+# IMAGES = "../datasets/COCu/COCu_pbc_300K.traj"
 images = ase.io.read(IMAGES, ":")
 IMAGES = []
 for i in range(400):
@@ -35,7 +36,7 @@ calc = AMP(model=AMPModel(IMAGES, descriptor=Gaussian(), cores=1,
 calc.model.convergence = {"energy": 0.005, "force": 0.02}
 # calc.model.fine_tune = "results/trained_models/amptorch.pt"
 calc.model.structure = [5, 5]
-calc.model.batch_size = 400
+calc.model.batch_size = 100
 calc.lr = 1
 # calc.criterion = LogCoshLoss
 calc.criterion = CustomLoss
