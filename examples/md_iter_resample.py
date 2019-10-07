@@ -87,7 +87,7 @@ def ml_lj(IMAGES, filename, count, temp, dir="MD_results/", const_t=False,
 
     # calc.model.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     calc.model.convergence = {"energy": 0.002, "force": 0.02}
-    calc.model.lr = 1e-2
+    calc.model.lr = 1e-3
     # calc.model.fine_tune = fine_tune
     # calc.model.optimizer = optim.SGD
     calc.model.criterion = LogCoshLoss
@@ -113,44 +113,38 @@ def md_run(images, count, calc, filename, dir, temp, cons_t=False):
         dyn.run(20)
         traj.write(slab)
 
-
-'''Runs multiple simulations of ML and LJ models and saves corresponding
-trajectory files'''
-def multiple_runs(images, filename, dir, num_images, num_iters, temp):
-    data = []
-    for idx in range(num_images):
-        data.append(images[idx])
-    for i in range(num_iters):
-        lj_name = filename + "_LJ_%s" % str(i+1)
-        ml_name = filename + "_%s" % str(i+1)
-        ml_lj(data, ml_name, count=num_images, dir=dir, temp=temp, const_t=True, lj=False)
-        ml_lj(data, lj_name, count=num_images, dir=dir, temp=temp, const_t=True, lj=True)
-
-
 '''Runs multiple simulations of resampled LJ models and saves corresponding
 trajectory files'''
-def multiple_samples(images, sample_images, filename, dir, num_images,
-        num_samples, num_iters, temp, lj, fine_tune=None):
-    sample_points = random.sample(range(num_images), num_samples)
+def sampler(images, sample_images, filename, dir, num_images,
+        num_samples, i, temp, lj, fine_tune=None):
+    sample_points = random.sample(range(1, num_images), num_samples)
     data = [images[idx] for idx in range(num_images)]
     for idx in sample_points:
         sample_images[idx].set_calculator(EMT())
         data.append(sample_images[idx])
-    for i in range(num_iters):
-        name = filename+"_%s_resample_%s" % (num_samples, str(i+1))
-        if lj:
-            name = filename+"_LJ_%s_resample_%s" % (num_samples, str(i+1))
-        ml_lj(data, name, count=num_images, dir=dir, temp=temp, const_t=True,
-                lj=lj, fine_tune=fine_tune)
+    name = filename+"_%s_iter_%s" % (num_samples, str(i+1))
+    if lj:
+        name = filename+"_LJ_%s_iter_%s" % (num_samples, str(i+1))
+    ml_lj(data, name, count=num_images, dir=dir, temp=temp, const_t=True,
+            lj=lj, fine_tune=fine_tune)
 
+def iterative_sampler(images, sample_images, sample, filename, dir, iter, lj):
+    resample_images = sample_images
+    for i in range(iter):
+        sampler(images, resample_images, filename, dir=dir, num_images=100,
+                num_samples=sample, i=i, temp=300, lj=True)
+        if lj:
+            resample_images = ase.io.read(dir+filename+"_LJ_%s_iter_%s.traj" % (sample,
+                str(i+1)), ":")
+        else:
+            resample_images = ase.io.read(dir+filename+"_%s_iter_%s.traj" %
+                    (sample, str(i+1)), ":")
 
 # define training images
 images0 = ase.io.read("../datasets/COCu/COCu_pbc_300K.traj", ":")
-# images_aimd = ase.io.read("../datasets/COCu/COCu_pbc_aimd_300K/1.OUTCAR", ":")
-# images_LJ = ase.io.read("MD_results/COCu/pbc_300K/val_cl2/MLMD_COCu_pbc_300K_cl2_LJ_1.traj", ":")
-# images_ML = ase.io.read("MD_results/COCu/pbc_300K/val_cl2/MLMD_COCu_pbc_300K_cl2_1.traj",  ":")
+images_LJ = ase.io.read("MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_LJ_2.traj", ":")
+# images_ML = ase.io.read("MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_2.traj",  ":")
 
-multiple_runs(images0, filename="MLMD_COCu_pbc_300K_l2amp",
-        dir="MD_results/COCu/pbc_300K/l2amp/paper/", num_images=100, num_iters=3, temp=300)
-# multiple_runs(images_aimd, filename="MLMD_COCu_pbc_300K_cl2_redo",
-        # dir="MD_results/COCu/pbc_300K/val_cl2/", num_images=100, num_iters=2, temp=300)
+iterative_sampler(images0, images_LJ, sample=5,
+        filename='MLMD_COCu_pbc_300K_logcosh', dir=
+        "MD_results/COCu/pbc_300K/logcosh/paper/", iter=5, lj=True)
