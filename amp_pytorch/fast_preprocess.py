@@ -12,7 +12,7 @@ import torch
 from torch.utils.data import Dataset, SubsetRandomSampler
 from amp.utilities import hash_images, assign_cores
 from amp.model import calculate_fingerprints_range
-from amp.descriptor.gaussian import Gaussian
+from amp.descriptor.gaussian import Gaussian, make_symmetry_functions
 from amp_simple_nn.convert import make_amp_descriptors_simple_nn
 from functools import lru_cache
 import ase
@@ -56,6 +56,7 @@ class AtomsDataset(Dataset):
         self,
         images,
         descriptor,
+        Gs,
         cores,
         forcetraining,
         lj_data=None,
@@ -63,6 +64,7 @@ class AtomsDataset(Dataset):
     ):
         self.images = images
         self.descriptor = descriptor
+        self.Gs = Gs
         self.atom_images = self.images
         self.forcetraining = forcetraining
         self.lj = False
@@ -76,16 +78,38 @@ class AtomsDataset(Dataset):
             extension = os.path.splitext(images)[1]
             if extension != (".traj" or ".db"):
                 self.atom_images = ase.io.read(images, ":")
+        self.elements = self.unique()
         self.hashed_images = hash_images(self.atom_images)
         self.parallel = {"cores": cores}
         if cores > 1:
             self.parallel = {"cores": assign_cores(cores), "envcommand": envcommand}
         print("Calculating fingerprints...")
+        t=time.time()
+        if Gs:
+            G2_etas = Gs['G2_etas']
+            G2_rs_s = Gs['G2_rs_s']
+            G4_etas = Gs['G4_etas']
+            G4_zetas = Gs['G4_zetas']
+            G4_gammas = Gs['G4_gammas']
+            cutoff = Gs['cutoff']
+            make_amp_descriptors_simple_nn(self.atom_images, G2_etas, G2_rs_s,
+                    G4_etas, G4_zetas, G4_gammas, cutoff)
+            G = make_symmetry_functions(elements=self.elements, type='G2',
+                    etas=G2_etas)
+            G += make_symmetry_functions(elements=self.elements, type='G4',
+                    etas=G4_etas, zetas=G4_zetas, gammas=G4_gammas)
+            # for g in G:
+                # g['Rs'] = 0.0
+            self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
+        else:
+            # default amp settings
+            self.descriptor = self.descriptor()
         self.descriptor.calculate_fingerprints(
             self.hashed_images,
             parallel=self.parallel,
             calculate_derivatives=forcetraining,
         )
+        print(time.time()-t)
         print("Fingerprints Calculated!")
         self.fprange = calculate_fingerprints_range(self.descriptor, self.hashed_images)
 
@@ -96,6 +120,8 @@ class AtomsDataset(Dataset):
     def __getitem__(self, index):
         hash_name = list(self.hashed_images.keys())[index]
         image_fingerprint = self.descriptor.fingerprints[hash_name]
+        print(image_fingerprint[0])
+        sys.exit()
         fprange = self.fprange
         # fingerprint scaling to [-1,1]
         for i, (atom, afp) in enumerate(image_fingerprint):
@@ -189,7 +215,9 @@ class AtomsDataset(Dataset):
 
     def unique(self):
         """Returns the unique elements contained in the training dataset"""
-        return list(self.fprange.keys())
+        elements = list(set([atom.symbol for atoms in self.atom_images for atom
+            in atoms]))
+        return elements
 
     def fp_length(self):
         """Computes the fingerprint length of the training images"""

@@ -223,7 +223,7 @@ class LogCoshLoss(nn.Module):
     Computer Physics Communications 207 (2016) 310-324"""
 
     def __init__(self, force_coefficient=0):
-        super(CustomLoss, self).__init__()
+        super(LogCoshLoss, self).__init__()
         self.alpha = force_coefficient
 
     def forward(
