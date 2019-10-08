@@ -22,7 +22,7 @@ IMAGES = "../../datasets/water/water.extxyz"
 # IMAGES = "../../datasets/COCu/COCu_pbc_300K.traj"
 images = ase.io.read(IMAGES, ":")
 IMAGES = []
-for i in range(100):
+for i in range(400):
     IMAGES.append(images[i])
 
 elements = set([atom.symbol for atoms in images for atom in atoms])
@@ -39,7 +39,7 @@ torch.set_num_threads(1)
 # define calculator, model, and descriptor
 # turn force training on by defining a force coefficient>0
 # define the number of cores to parallelize across for fingerprint calculations
-calc = AMP(model=AMPModel(images, descriptor=Gaussian, Gs=GSF, cores=1,
+calc = AMP(model=AMPModel(IMAGES, descriptor=Gaussian, Gs=GSF, cores=1,
     force_coefficient=0.3))
 
 # calc.model.val_frac = 0.3

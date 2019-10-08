@@ -14,9 +14,10 @@ import torch.nn as nn
 import torch
 from amp.utilities import Logger
 from amp.descriptor.gaussian import Gaussian
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from amp_pytorch.fast_preprocess import AtomsDataset, factorize_data, collate_amp
-# from amp_pytorch.pre_data import AtomsDataset, factorize_data, collate_amp
 from amp_pytorch.NN_model import FullNN, CustomLoss
 from amp_pytorch.trainer import Trainer
 
