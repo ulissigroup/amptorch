@@ -223,7 +223,7 @@ def factorize_data(training_data):
     # Construct a sparse matrix with dimensions PQx3Q, if forcetraining is on.
     if forcetraining:
         image_forces = []
-        fprimes = torch.zeros(fp_length * atoms_in_batch, 3 * atoms_in_batch)
+        #fprimes = torch.zeros(fp_length * atoms_in_batch, 3 * atoms_in_batch)
         fprimes_inds = torch.LongTensor(2, 0)
         fprimes_vals = torch.FloatTensor()
         dim1_start = 0
