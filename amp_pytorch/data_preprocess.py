@@ -252,7 +252,9 @@ def factorize_data(training_data):
     # Construct a sparse matrix with dimensions PQx3Q, if forcetraining is on.
     if forcetraining:
         image_forces = []
-        fprimes = torch.zeros(fp_length * atoms_in_batch, 3 * atoms_in_batch)
+        #fprimes = torch.zeros(fp_length * atoms_in_batch, 3 * atoms_in_batch)
+        fprimes_inds = torch.LongTensor(2, 0)
+        fprimes_vals = torch.FloatTensor()
         dim1_start = 0
         dim2_start = 0
     for idx, image in enumerate(training_data):
@@ -268,14 +270,25 @@ def factorize_data(training_data):
             fprime = image[4]
             dim1 = fprime.shape[0]
             dim2 = fprime.shape[1]
-            fprimes[
-                dim1_start : dim1 + dim1_start, dim2_start : dim2 + dim2_start
-            ] = fprime
+            #fprimes[
+            #    dim1_start : dim1 + dim1_start, dim2_start : dim2 + dim2_start
+            #] = fprime
+            if not fprime.is_sparse:
+                fprime = fprime.to_sparse()
+            s_fprime_inds = fprime._indices() + torch.LongTensor([[dim1_start],
+                                                                  [dim2_start]])
+            # build the matrix of values
+            s_fprime_vals = fprime._values()
+            # concatinate them
+            fprimes_inds = torch.cat((fprimes_inds, s_fprime_inds), axis=1)
+            fprimes_vals = torch.cat((fprimes_vals, s_fprime_vals))
             dim1_start += dim1
             dim2_start += dim2
             image_forces.append(torch.from_numpy(image[3]))
     if forcetraining:
-        sparse_fprimes = fprimes.to_sparse()
+        #sparse_fprimes = fprimes.to_sparse()
+        sparse_fprimes = torch.sparse.FloatTensor(fprimes_inds, fprimes_vals,
+                                                   torch.Size([dim1_start, dim2_start]))
         image_forces = torch.cat(image_forces).float()
 
     return (
