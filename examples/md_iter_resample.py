@@ -132,7 +132,7 @@ def iterative_sampler(images, sample_images, sample, filename, dir, iter, lj):
     resample_images = sample_images
     for i in range(iter):
         sampler(images, resample_images, filename, dir=dir, num_images=100,
-                num_samples=sample, i=i, temp=300, lj=True)
+                num_samples=sample, i=i, temp=300, lj=lj)
         if lj:
             resample_images = ase.io.read(dir+filename+"_LJ_%s_iter_%s.traj" % (sample,
                 str(i+1)), ":")
@@ -142,9 +142,9 @@ def iterative_sampler(images, sample_images, sample, filename, dir, iter, lj):
 
 # define training images
 images0 = ase.io.read("../datasets/COCu/COCu_pbc_300K.traj", ":")
-images_LJ = ase.io.read("MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_LJ_2.traj", ":")
+images_LJ = ase.io.read("MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_2.traj", ":")
 # images_ML = ase.io.read("MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_2.traj",  ":")
 
 iterative_sampler(images0, images_LJ, sample=5,
         filename='MLMD_COCu_pbc_300K_logcosh', dir=
-        "MD_results/COCu/pbc_300K/logcosh/paper/", iter=5, lj=True)
+        "MD_results/COCu/pbc_300K/logcosh/paper/", iter=5, lj=False)
