@@ -22,7 +22,7 @@ import os
 
 
 def ml_lj(IMAGES, filename, count, temp, dir="MD_results/", const_t=False,
-        lj=False, fine_tune=None):
+        lj=False, fine_tune=None, activation_fn='l2amp'):
     if not os.path.exists(dir):
         os.mkdir(dir)
     elements = ['C', 'Cu', 'O']
@@ -90,7 +90,10 @@ def ml_lj(IMAGES, filename, count, temp, dir="MD_results/", const_t=False,
     calc.model.lr = 1e-3
     # calc.model.fine_tune = fine_tune
     # calc.model.optimizer = optim.SGD
-    calc.model.criterion = LogCoshLoss
+    if activation_fn == 'logcosh':
+        calc.model.criterion = LogCoshLoss
+    elif activation_fn == 'l2amp':
+        calc.model.criterion = CustomLoss
     calc.model.val_frac = 0.2
     calc.model.structure = [20, 20, 20]
 
@@ -116,7 +119,7 @@ def md_run(images, count, calc, filename, dir, temp, cons_t=False):
 '''Runs multiple simulations of resampled LJ models and saves corresponding
 trajectory files'''
 def multiple_samples(images, sample_images, filename, dir, num_images,
-        num_samples, num_iters, temp, lj, fine_tune=None):
+        num_samples, num_iters, temp, lj, activation_fn, fine_tune=None):
     sample_points = random.sample(range(1, num_images), num_samples)
     data = [images[idx] for idx in range(num_images)]
     for idx in sample_points:
@@ -127,7 +130,7 @@ def multiple_samples(images, sample_images, filename, dir, num_images,
         if lj:
             name = filename+"_LJ_%s_resample_%s" % (num_samples, str(i+1))
         ml_lj(data, name, count=num_images, dir=dir, temp=temp, const_t=True,
-                lj=lj, fine_tune=fine_tune)
+                lj=lj, activation_fn=activation_fn, fine_tune=fine_tune)
 
 # define training images
 images0 = ase.io.read("../datasets/COCu/COCu_pbc_300K.traj", ":")
@@ -138,8 +141,8 @@ samples = [10]
 for i in samples:
     multiple_samples(images0, images_LJ, filename="MLMD_COCu_pbc_300K_l2amp",
             dir="MD_results/COCu/pbc_300K/l2amp/paper/", num_images=100, num_samples=i,
-            num_iters=3, temp=300, lj=True)
+            num_iters=3, temp=300, lj=True, activation_fn='l2amp')
 
     multiple_samples(images0, images_ML, filename="MLMD_COCu_pbc_300K_l2amp",
                 dir="MD_results/COCu/pbc_300K/l2amp/paper/", num_images=100, num_samples=i,
-                num_iters=3, temp=300, lj=False)
+                num_iters=3, temp=300, lj=False, activation_fn='l2amp')
