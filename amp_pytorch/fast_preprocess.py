@@ -84,7 +84,6 @@ class AtomsDataset(Dataset):
         if cores > 1:
             self.parallel = {"cores": assign_cores(cores), "envcommand": envcommand}
         print("Calculating fingerprints...")
-        t=time.time()
         if Gs:
             G2_etas = Gs['G2_etas']
             G2_rs_s = Gs['G2_rs_s']
@@ -109,7 +108,6 @@ class AtomsDataset(Dataset):
             parallel=self.parallel,
             calculate_derivatives=forcetraining,
         )
-        print(time.time()-t)
         print("Fingerprints Calculated!")
         self.fprange = calculate_fingerprints_range(self.descriptor, self.hashed_images)
 

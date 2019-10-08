@@ -107,12 +107,6 @@ IMAGES = []
 for i in range(100):
     IMAGES.append(images[i])
 
-energy_targets = np.array([image.get_potential_energy() for image in IMAGES]).reshape(
-    -1, 1
-)
-force_targets = np.array([np.amax(np.abs(image.get_forces())) for image in IMAGES])
-force_targets = np.concatenate([image.get_forces() for image in IMAGES])
-
 data_size = np.arange(10, 110, 10)
 cutoff = 5.876798323827276
 torch.set_num_threads(1)

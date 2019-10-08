@@ -5,6 +5,8 @@ import sys
 import time
 import copy
 from amp.utilities import Logger
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import torch.nn as nn
 import torch

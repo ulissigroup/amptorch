@@ -22,7 +22,7 @@ import os
 
 
 def ml_lj(IMAGES, filename, count, temp, dir="MD_results/", const_t=False,
-        lj=False, fine_tune=None):
+        lj=False, fine_tune=None, activation_fn='l2amp'):
     if not os.path.exists(dir):
         os.mkdir(dir)
     elements = ['C', 'Cu', 'O']
@@ -90,7 +90,10 @@ def ml_lj(IMAGES, filename, count, temp, dir="MD_results/", const_t=False,
     calc.model.lr = 1e-3
     # calc.model.fine_tune = fine_tune
     # calc.model.optimizer = optim.SGD
-    calc.model.criterion = LogCoshLoss
+    if activation_fn == 'l2amp':
+        calc.model.criterion = CustomLoss
+    elif activation_fn == 'logcosh':
+        calc.model.criterion = LogCoshLoss
     calc.model.val_frac = 0.2
     calc.model.structure = [20, 20, 20]
 
@@ -116,7 +119,7 @@ def md_run(images, count, calc, filename, dir, temp, cons_t=False):
 '''Runs multiple simulations of resampled LJ models and saves corresponding
 trajectory files'''
 def sampler(images, sample_images, filename, dir, num_images,
-        num_samples, i, temp, lj, fine_tune=None):
+        num_samples, i, temp, lj, activation_fn, fine_tune=None):
     sample_points = random.sample(range(1, num_images), num_samples)
     data = [images[idx] for idx in range(num_images)]
     for idx in sample_points:
@@ -126,13 +129,15 @@ def sampler(images, sample_images, filename, dir, num_images,
     if lj:
         name = filename+"_LJ_%s_iter_%s" % (num_samples, str(i+1))
     ml_lj(data, name, count=num_images, dir=dir, temp=temp, const_t=True,
-            lj=lj, fine_tune=fine_tune)
+            lj=lj, fine_tune=fine_tune, activation_fn=activation_fn)
 
-def iterative_sampler(images, sample_images, sample, filename, dir, iter, lj):
+def iterative_sampler(images, sample_images, sample, filename, dir, iter, lj,
+        activation_fn):
     resample_images = sample_images
     for i in range(iter):
         sampler(images, resample_images, filename, dir=dir, num_images=100,
-                num_samples=sample, i=i, temp=300, lj=lj)
+                num_samples=sample, i=i, temp=300, lj=lj,
+                activation_fn=activation_fn)
         if lj:
             resample_images = ase.io.read(dir+filename+"_LJ_%s_iter_%s.traj" % (sample,
                 str(i+1)), ":")
@@ -142,9 +147,10 @@ def iterative_sampler(images, sample_images, sample, filename, dir, iter, lj):
 
 # define training images
 images0 = ase.io.read("../datasets/COCu/COCu_pbc_300K.traj", ":")
-images_LJ = ase.io.read("MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_2.traj", ":")
+images_LJ = ase.io.read("MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_LJ_2.traj", ":")
 # images_ML = ase.io.read("MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_2.traj",  ":")
 
 iterative_sampler(images0, images_LJ, sample=5,
-        filename='MLMD_COCu_pbc_300K_logcosh', dir=
-        "MD_results/COCu/pbc_300K/logcosh/paper/", iter=5, lj=False)
+        filename='MLMD_COCu_pbc_300K_logcosh_2', dir=
+        "MD_results/COCu/pbc_300K/logcosh/paper/", iter=5, lj=False,
+        activation_fn='logcosh')

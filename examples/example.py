@@ -18,10 +18,10 @@ from ase.calculators.emt import EMT
 
 # define training images
 # IMAGES = "../datasets/water/water.extxyz"
-# IMAGES = "../datasets/COCu/COCu_pbc_300K.traj"
+IMAGES = "../datasets/COCu/COCu_pbc_300K.traj"
 images = ase.io.read(IMAGES, ":")
 IMAGES = []
-for i in range(100):
+for i in range(2):
     IMAGES.append(images[i])
 
 G2_etas = [0.005]
