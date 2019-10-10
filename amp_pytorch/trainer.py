@@ -58,6 +58,7 @@ class Trainer:
         atoms_dataloader,
         rmse_criteria,
         scalings,
+        label,
     ):
         self.model = model
         self.device = device
@@ -70,6 +71,7 @@ class Trainer:
         self.rmse_criteria = rmse_criteria
         self.sd_scaling = scalings[0]
         self.mean_scaling = scalings[1]
+        self.label = label
 
     def train_model(self):
         "Training loop"
@@ -82,9 +84,8 @@ class Trainer:
         previous_force_rmse = 1e8
         previous_energy_rmse = 1e8
         early_stop = False
-        log = Logger("results/results-log.txt")
-        log_epoch = Logger("results/epoch-log.txt")
-        # log("Model: %s" % self.model)
+        log = Logger("results/logs/"+self.label+".txt")
+        log_epoch = Logger("results/logs/epochs/"+self.label+".txt")
 
         since = time.time()
         log_epoch("-" * 50)
@@ -107,7 +108,7 @@ class Trainer:
         epoch = 0
         convergence = False
         # while not convergence:
-        while epoch <= 1000:
+        while epoch <= 1:
             log_epoch("{} Epoch {}".format(time.asctime(), epoch + 1))
             log_epoch("-" * 30)
 

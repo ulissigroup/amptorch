@@ -5,20 +5,19 @@ methods allow the visualization of the results.
 """
 
 import time
-import sys
 import os
 import copy
+import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
-import torch.nn as nn
-import torch
-from amp.utilities import Logger
-from amp.descriptor.gaussian import Gaussian
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from amp_pytorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
-# from amp_pytorch.pre_data import AtomsDataset, factorize_data, collate_amp
-from amp_pytorch.NN_model import FullNN, CustomLoss
-from amp_pytorch.trainer import Trainer
+from amp.descriptor.gaussian import Gaussian
+from .utils import Logger
+from .NN_model import FullNN, CustomLoss
+from .data_preprocess import AtomsDataset, collate_amp
+from .trainer import Trainer
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
@@ -88,7 +87,8 @@ class AMPModel:
         batch_size=None,
         structure=[3, 5],
         val_frac=0,
-        descriptor=Gaussian(),
+        descriptor=Gaussian,
+        Gs=None,
         force_coefficient=0,
         criterion=CustomLoss,
         optimizer=optim.LBFGS,
@@ -96,12 +96,19 @@ class AMPModel:
         lr=1,
         criteria={"energy": 0.02, "force": 0.02},
         lj_data=None,
-        fine_tune=None
+        fine_tune=None,
+        label='amptorch',
+        save_logs=True
     ):
         if not os.path.exists("results"):
             os.mkdir("results")
-        self.log = Logger("results/results-log.txt")
-        self.log_epoch = Logger("results/epoch-log.txt")
+        if not os.path.exists("results/logs"):
+            os.mkdir("results/logs")
+            os.mkdir("results/logs/epochs")
+        self.save_logs = save_logs
+        self.label = label
+        self.log = Logger("results/logs/"+label+".txt")
+        self.log_epoch = Logger("results/logs/epochs/"+label+".txt")
         self.log(time.asctime())
 
         self.filename = datafile
@@ -119,6 +126,7 @@ class AMPModel:
         self.convergence = criteria
         self.lj_data = lj_data
         self.fine_tune = fine_tune
+        self.Gs = Gs
 
         self.forcetraining = False
         if force_coefficient > 0:
@@ -127,6 +135,7 @@ class AMPModel:
         self.training_data = AtomsDataset(
             self.filename,
             descriptor=self.descriptor,
+            Gs=Gs,
             cores=cores,
             forcetraining=self.forcetraining,
             lj_data=self.lj_data,
@@ -146,7 +155,7 @@ class AMPModel:
 
         training_data = self.training_data
         self.unique_atoms = training_data.unique()
-        fp_length = training_data.fp_length()
+        fp_length = training_data.fp_length
         dataset_size = len(training_data)
 
         if self.batch_size is None:
@@ -217,9 +226,13 @@ class AMPModel:
             self.atoms_dataloader,
             self.convergence,
             self.scalings,
+            self.label,
         )
 
         self.trained_model = self.trainer.train_model()
+        if not self.save_logs:
+            os.remove("results/logs/"+self.label+".txt")
+            os.remove("results/logs/epoch_logs"+self.label+".txt")
         return self.trained_model
 
     def parity_plot(self, data="energy"):

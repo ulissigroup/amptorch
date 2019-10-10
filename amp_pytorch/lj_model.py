@@ -1,18 +1,11 @@
-import sys
 import os
 import time
+from itertools import product
 import numpy as np
-from scipy.optimize import minimize, shgo
-import ase
-from ase import Atoms
-from ase.build import molecule
-from ase.calculators.emt import EMT
-from ase.calculators.lj import LennardJones
-from ase.neighborlist import NeighborList, NewPrimitiveNeighborList
-from amp_pytorch.neighbors import get_distances
-from amp.utilities import Logger
+from scipy.optimize import minimize
+from ase.neighborlist import NeighborList
+from .utils import Logger
 import matplotlib.pyplot as plt
-from itertools import combinations, permutations, product
 
 
 class lj_optim:
@@ -78,9 +71,6 @@ class lj_optim:
             e_offsets = {}
             for pair in possible_pairs:
                 joint_pair = pair[0] + pair[1]
-                # offset_atoms = Atoms(pair, [(0, 0, 0), (0, 0, 1e6)])
-                # offset_atoms.set_calculator(EMT())
-                # e0 = offset_atoms.get_potential_energy()
                 e0 = 0.5 * (params_dict[pair[0]][2] + params_dict[pair[1]][2])
                 e_offsets[joint_pair] = e0
             params = []
@@ -134,7 +124,6 @@ class lj_optim:
         return predicted_energies, predicted_forces, num_atoms
 
     def objective_fn(self, params, target_energies, target_forces):
-        t = time.time()
         predicted_energies, predicted_forces, num_atoms = self.lj_pred(
             self.data, params, self.params_dict)
         data_size = target_energies.shape[1]
@@ -152,7 +141,6 @@ class lj_optim:
             MSE = MSE_energy + 0.3 * MSE_forces
         else:
             MSE = MSE_energy
-        print(MSE)
         return MSE
 
     def lj_param_check(self):

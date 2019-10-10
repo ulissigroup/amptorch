@@ -21,41 +21,36 @@ from ase.calculators.emt import EMT
 IMAGES = "../datasets/COCu/COCu_pbc_300K.traj"
 images = ase.io.read(IMAGES, ":")
 IMAGES = []
-for i in range(2):
+for i in range(100):
     IMAGES.append(images[i])
 
-G2_etas = [0.005]
-G2_rs_s = [0] * 4
-G4_etas = [0.005]
-G4_zetas = [1., 4.]
-G2_gammas = [1., -1]
-cutoff = 6
+# define symmetry functions to be used
+GSF = {}
+GSF["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
+GSF["G2_rs_s"] = [0] * 4
+GSF["G4_etas"] = [0.005]
+GSF["G4_zetas"] = [1.0, 4.0]
+GSF["G4_gammas"] = [1.0, -1]
+GSF["cutoff"] = 6.5
 
 # define the number of threads to parallelize training across
 torch.set_num_threads(1)
-# define calculator, model, and descriptor
-# turn force training on by defining a force coefficient>0
-# define the number of cores to parallelize across for fingerprint calculations
-calc = AMP(model=AMPModel(IMAGES, descriptor=Gaussian(), cores=1,
-    force_coefficient=0.3))
-
-# calc.model.val_frac = 0.3
+calc = AMP(
+    model=AMPModel(
+        IMAGES,
+        descriptor=Gaussian,
+        Gs=GSF,
+        cores=1,
+        force_coefficient=0.3,
+        lj_data=None,
+    )
+)
+# define model settings
+calc.model.val_frac = 0.2
 calc.model.convergence = {"energy": 0.005, "force": 0.02}
-# calc.model.fine_tune = "results/trained_models/amptorch.pt"
 calc.model.structure = [5, 5]
-calc.model.batch_size = 100
 calc.lr = 1
-# calc.criterion = LogCoshLoss
 calc.criterion = CustomLoss
 
 # train the model
 calc.train(overwrite=True)
-# plotting
-# calc.train() needs to be run whenever plotting occurs.
-# calc.model.parity_plot("energy")
-# calc.model.plot_residuals("energy")
-
-# predictions
-# energy_predictions = np.concatenate([calc.get_potential_energy(image) for image in images[:10]])
-# forces_predictions = np.concatenate([calc.get_forces(image) for image in images[:10]])
-

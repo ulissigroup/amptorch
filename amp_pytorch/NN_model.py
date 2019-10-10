@@ -2,17 +2,15 @@
 Networks as understood from Behler and Parrinello's works. A model instance is
 constructed based off the unique number of atoms in the dataset."""
 
-import time
 import sys
-from collections import defaultdict, OrderedDict
-import numpy as np
+from collections import defaultdict
 import torch
 import torch.nn as nn
-from torch.nn import init
 from torch.nn import Tanh, Softplus, LeakyReLU
+from torch.nn import init
 from torch.nn.init import xavier_uniform_, kaiming_uniform_
 from torch.autograd import grad
-from amp.utilities import Logger
+from .utils import Logger
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"

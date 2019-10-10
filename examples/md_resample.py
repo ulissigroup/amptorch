@@ -21,43 +21,20 @@ from ase.visualize import view
 import os
 
 
-def ml_lj(IMAGES, filename, count, temp, dir="MD_results/", const_t=False,
+def ml_lj(IMAGES, filename, count, temp, GSF, dir="MD_results/", const_t=False,
         lj=False, fine_tune=None, activation_fn='l2amp'):
     if not os.path.exists(dir):
         os.mkdir(dir)
-    elements = ['C', 'Cu', 'O']
-    G2_etas = np.logspace(np.log10(0.05), np.log10(5.0), num=8)
-    G4_etas = np.array([0.005])
-    G4_zetas = np.array([1.0, 4.0])
-    G4_gammas = np.array([1, -1])
-    G = make_symmetry_functions(elements=elements, type="G2", etas=G2_etas)
-    G = make_symmetry_functions(
-        elements=elements, type="G4", etas=G4_etas, zetas=G4_zetas, gammas=G4_gammas
-    )
     # lj optimization
     lj_data = None
-    cutoff = 5.876798323827276
+    cutoff = GSF['cutoff']
     if lj:
-        # eV_kcalmol = 0.043372093
-        p0 = [
-            2.042,
-            2.950e-11,
-            -1.29265e-2,
-            -1.945,
-            2.6944e-3,
-            6.399e-3,
-            2.331,
-            5.559e-2,
-            2.398e-2
-        ]
         p0 = [2.08022879, 1.89536258e-11, -5.47894512e-3, -2.10675310,
                 1.94943321e-3, 7.18881277e-3, 2.29444069, 1.00651095e-1,
                 3.624737e-2]
         params_dict = {"C": [], "O": [], "Cu": []}
         lj_model = lj_optim(IMAGES, p0, params_dict, cutoff)
-        # fitted_params = lj_model.fit(method="L-BFGS-B")
         fitted_params = lj_model.fit()
-        # fitted_params = p0
         lj_energies, lj_forces, num_atoms = lj_model.lj_pred(
             IMAGES, fitted_params, params_dict
         )
@@ -69,27 +46,23 @@ def ml_lj(IMAGES, filename, count, temp, dir="MD_results/", const_t=False,
             params_dict,
             lj_model,
         ]
-    # define the number of threads to parallelize training across
     torch.set_num_threads(1)
-    # define calculator, model, and descriptor
-    # turn force training on by defining a force coefficient>0
-    # define the number of cores to parallelize across for fingerprint calculations
     calc = AMP(
         model=AMPModel(
             IMAGES,
-            descriptor=Gaussian(Gs=G, cutoff=cutoff),
+            descriptor=Gaussian,
+            Gs=GSF,
             cores=1,
             force_coefficient=0.3,
             lj_data=lj_data,
+            label=filename,
+            save_logs=True,
         ),
-        label="".join([filename, ".pt"]),
     )
 
     # calc.model.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     calc.model.convergence = {"energy": 0.002, "force": 0.02}
     calc.model.lr = 1e-3
-    # calc.model.fine_tune = fine_tune
-    # calc.model.optimizer = optim.SGD
     if activation_fn == 'logcosh':
         calc.model.criterion = LogCoshLoss
     elif activation_fn == 'l2amp':
@@ -119,7 +92,7 @@ def md_run(images, count, calc, filename, dir, temp, cons_t=False):
 '''Runs multiple simulations of resampled LJ models and saves corresponding
 trajectory files'''
 def multiple_samples(images, sample_images, filename, dir, num_images,
-        num_samples, num_iters, temp, lj, activation_fn, fine_tune=None):
+        num_samples, num_iters, temp, lj, GSF, activation_fn, fine_tune=None):
     sample_points = random.sample(range(1, num_images), num_samples)
     data = [images[idx] for idx in range(num_images)]
     for idx in sample_points:
@@ -129,7 +102,7 @@ def multiple_samples(images, sample_images, filename, dir, num_images,
         name = filename+"_%s_resample_%s" % (num_samples, str(i+1))
         if lj:
             name = filename+"_LJ_%s_resample_%s" % (num_samples, str(i+1))
-        ml_lj(data, name, count=num_images, dir=dir, temp=temp, const_t=True,
+        ml_lj(data, name, count=num_images, dir=dir, temp=temp, GSF=GSF, const_t=True,
                 lj=lj, activation_fn=activation_fn, fine_tune=fine_tune)
 
 # define training images
@@ -137,12 +110,20 @@ images0 = ase.io.read("../datasets/COCu/COCu_pbc_300K.traj", ":")
 images_LJ = ase.io.read("MD_results/COCu/pbc_300K/l2amp/paper/MLMD_COCu_pbc_300K_l2amp_LJ_3.traj", ":")
 images_ML = ase.io.read("MD_results/COCu/pbc_300K/l2amp/paper/MLMD_COCu_pbc_300K_l2amp_2.traj", ":")
 
-samples = [10]
+GSF = {}
+GSF['G2_etas'] = np.logspace(np.log10(0.05), np.log10(5.0), num=6)
+GSF['G2_rs_s'] = [0] * 4
+GSF['G4_etas'] = np.array([0.005])
+GSF['G4_zetas'] = np.array([1.0, 4.0])
+GSF['G4_gammas'] = np.array([1, -1])
+GSF['cutoff'] = 6.5
+
+samples = [5]
 for i in samples:
     multiple_samples(images0, images_LJ, filename="MLMD_COCu_pbc_300K_l2amp",
-            dir="MD_results/COCu/pbc_300K/l2amp/paper/", num_images=100, num_samples=i,
-            num_iters=3, temp=300, lj=True, activation_fn='l2amp')
+            dir="MD_results/COCu/pbc_300K/", num_images=100, num_samples=i,
+            num_iters=3, temp=300, lj=False, GSF=GSF, activation_fn='l2amp')
 
-    multiple_samples(images0, images_ML, filename="MLMD_COCu_pbc_300K_l2amp",
-                dir="MD_results/COCu/pbc_300K/l2amp/paper/", num_images=100, num_samples=i,
-                num_iters=3, temp=300, lj=False, activation_fn='l2amp')
+    # multiple_samples(images0, images_ML, filename="MLMD_COCu_pbc_300K_l2amp",
+                # dir="MD_results/COCu/pbc_300K/", num_images=100, num_samples=i,
+                # num_iters=3, temp=300, lj=False, activation_fn='l2amp')

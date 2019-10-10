@@ -6,16 +6,16 @@ import time
 import numpy as np
 import os
 from torch.utils.data import DataLoader
-from amp.utilities import Logger
+from .utils import Logger
 from amp.descriptor.gaussian import Gaussian
-from amp_pytorch.data_preprocess import (
+from .data_preprocess import (
     AtomsDataset,
     TestDataset,
     factorize_data,
     collate_amp,
 )
-from amp_pytorch.NN_model import FullNN, CustomLoss
-from amp_pytorch.trainer import Trainer
+from .NN_model import FullNN, CustomLoss
+from .trainer import Trainer
 from ase.calculators.calculator import Calculator, Parameters
 import torch
 
@@ -39,20 +39,23 @@ class AMP(Calculator):
 
     implemented_properties = ["energy", "forces"]
 
-    def __init__(self, model, label="amptorch.pt"):
+    def __init__(self, model):
         Calculator.__init__(self)
 
         if not os.path.exists("results/trained_models"):
             os.mkdir("results/trained_models")
-        self.log = Logger("results/results-log.txt")
+        self.save_logs = model.save_logs
+        label = model.label
+        self.log = Logger("results/logs/"+label+".txt")
         self.log("Filename: %s" % label)
         self.model = model
-        self.label = "".join(["results/trained_models/", label])
+        self.label = "".join(["results/trained_models/", label, ".pt"])
         self.fp_scaling = self.model.training_data.fprange
         self.target_sd = self.model.scalings[0]
         self.target_mean = self.model.scalings[1]
         self.parallel = self.model.training_data.parallel
         self.lj = self.model.training_data.lj
+        self.Gs = self.model.training_data.Gs
         if self.lj:
             self.fitted_params = self.model.lj_data[3]
             self.params_dict = self.model.lj_data[4]
@@ -72,8 +75,8 @@ class AMP(Calculator):
     def calculate(self, atoms, properties, system_changes):
         Calculator.calculate(self, atoms, properties, system_changes)
         dataset = TestDataset(
-            atoms, self.model.descriptor, self.fp_scaling, self.parallel
-        )
+            images=atoms, descriptor=self.model.descriptor, Gs=self.Gs,
+            fprange=self.fp_scaling, parallel=self.parallel)
         fp_length = dataset.fp_length()
         unique_atoms = dataset.unique()
         architecture = copy.copy(self.model.structure)
