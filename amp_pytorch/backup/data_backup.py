@@ -12,7 +12,7 @@ import torch
 from torch.utils.data import Dataset, SubsetRandomSampler
 from amp.utilities import hash_images, assign_cores
 from amp.model import calculate_fingerprints_range
-from amp.descriptor.gaussian import Gaussian, make_symmetry_functions
+from amp.descriptor.gaussian import Gaussian
 from amp_simple_nn.convert import make_amp_descriptors_simple_nn
 from functools import lru_cache
 import ase
@@ -56,7 +56,6 @@ class AtomsDataset(Dataset):
         self,
         images,
         descriptor,
-        Gs,
         cores,
         forcetraining,
         lj_data=None,
@@ -64,7 +63,6 @@ class AtomsDataset(Dataset):
     ):
         self.images = images
         self.descriptor = descriptor
-        self.Gs = Gs
         self.atom_images = self.images
         self.forcetraining = forcetraining
         self.lj = False
@@ -78,31 +76,11 @@ class AtomsDataset(Dataset):
             extension = os.path.splitext(images)[1]
             if extension != (".traj" or ".db"):
                 self.atom_images = ase.io.read(images, ":")
-        self.elements = self.unique()
         self.hashed_images = hash_images(self.atom_images)
         self.parallel = {"cores": cores}
         if cores > 1:
             self.parallel = {"cores": assign_cores(cores), "envcommand": envcommand}
         print("Calculating fingerprints...")
-        if Gs:
-            G2_etas = Gs['G2_etas']
-            G2_rs_s = Gs['G2_rs_s']
-            G4_etas = Gs['G4_etas']
-            G4_zetas = Gs['G4_zetas']
-            G4_gammas = Gs['G4_gammas']
-            cutoff = Gs['cutoff']
-            make_amp_descriptors_simple_nn(self.atom_images, G2_etas, G2_rs_s,
-                    G4_etas, G4_zetas, G4_gammas, cutoff)
-            G = make_symmetry_functions(elements=self.elements, type='G2',
-                    etas=G2_etas)
-            G += make_symmetry_functions(elements=self.elements, type='G4',
-                    etas=G4_etas, zetas=G4_zetas, gammas=G4_gammas)
-            # for g in G:
-                # g['Rs'] = 0.0
-            self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
-        else:
-            # default amp settings
-            self.descriptor = self.descriptor()
         self.descriptor.calculate_fingerprints(
             self.hashed_images,
             parallel=self.parallel,
@@ -118,8 +96,6 @@ class AtomsDataset(Dataset):
     def __getitem__(self, index):
         hash_name = list(self.hashed_images.keys())[index]
         image_fingerprint = self.descriptor.fingerprints[hash_name]
-        print(image_fingerprint[0])
-        sys.exit()
         fprange = self.fprange
         # fingerprint scaling to [-1,1]
         for i, (atom, afp) in enumerate(image_fingerprint):
@@ -213,9 +189,7 @@ class AtomsDataset(Dataset):
 
     def unique(self):
         """Returns the unique elements contained in the training dataset"""
-        elements = list(set([atom.symbol for atoms in self.atom_images for atom
-            in atoms]))
-        return elements
+        return list(self.fprange.keys())
 
     def fp_length(self):
         """Computes the fingerprint length of the training images"""
@@ -268,17 +242,16 @@ def factorize_data(training_data):
     fingerprint_dataset = []
     energy_dataset = []
     num_of_atoms = []
-    fp_length = len(training_data[0][0][0][1])
     for image in training_data:
         num_atom = float(len(image[0]))
         num_of_atoms.append(num_atom)
-    atoms_in_batch = int(sum(num_of_atoms))
     image_forces = None
     sparse_fprimes = None
     # Construct a sparse matrix with dimensions PQx3Q, if forcetraining is on.
     if forcetraining:
         image_forces = []
-        fprimes = torch.zeros(fp_length * atoms_in_batch, 3 * atoms_in_batch)
+        fprimes_inds = torch.LongTensor(2, 0)
+        fprimes_vals = torch.FloatTensor()
         dim1_start = 0
         dim2_start = 0
     for idx, image in enumerate(training_data):
@@ -292,16 +265,25 @@ def factorize_data(training_data):
         energy_dataset.append(image_potential_energy)
         if forcetraining:
             fprime = image[4]
+            # build the matrix of indices
+            # the indices need to be offset by dim1 and dim2
+            if not fprime.is_sparse:
+                fprime = fprime.to_sparse()
             dim1 = fprime.shape[0]
             dim2 = fprime.shape[1]
-            fprimes[
-                dim1_start : dim1 + dim1_start, dim2_start : dim2 + dim2_start
-            ] = fprime
+            s_fprime_inds = fprime._indices() + torch.LongTensor([[dim1_start],
+                [dim2_start]])
+            # build the matrix of values
+            s_fprime_vals = fprime._values()
+            # concatenate them
+            fprimes_inds = torch.cat((fprimes_inds, s_fprime_inds), axis=1)
+            fprimes_vals = torch.cat((fprimes_vals, s_fprime_vals))
             dim1_start += dim1
             dim2_start += dim2
             image_forces.append(torch.from_numpy(image[3]))
     if forcetraining:
-        sparse_fprimes = fprimes.to_sparse()
+        sparse_fprimes = torch.sparse.FloatTensor(fprimes_inds, fprimes_vals,
+                torch.Size([dim1_start, dim2_start]))
         image_forces = torch.cat(image_forces).float()
 
     return (
@@ -443,27 +425,30 @@ class TestDataset(Dataset):
         """
         fingerprint_dataset = []
         num_of_atoms = []
-        fp_length = self.fp_length
         for image in training_data:
             num_of_atoms.append(image[2])
-        atoms_in_batch = int(sum(num_of_atoms))
         # Construct a sparse matrix with dimensions PQx3Q
-        fprimes = torch.zeros(fp_length * atoms_in_batch, 3 * atoms_in_batch)
+        fprimes_inds = torch.LongTensor(2, 0)
+        fprimes_vals = torch.FloatTensor()
         dim1_start = 0
         dim2_start = 0
         for idx, image in enumerate(training_data):
             fprime = image[1]
             dim1 = fprime.shape[0]
             dim2 = fprime.shape[1]
-            fprimes[
-                dim1_start : dim1 + dim1_start, dim2_start : dim2 + dim2_start
-            ] = fprime
+            if not fprime.is_sparse:
+                fprime = fprime.to_sparse()
+            s_fprime_inds = fprime._indices() + torch.LongTensor([[dim1_start],
+                    [dim2_start]])
+            s_fprime_vals = fprime._values()
+            fprimes_inds = torch.cat((fprimes_inds, s_fprime_inds), axis=1)
+            fprimes_vals = torch.cat((fprimes_vals, s_fprime_vals))
             dim1_start += dim1
             dim2_start += dim2
             image_fingerprint = image[0]
             fingerprint_dataset.append(image_fingerprint)
-        sparse_fprimes = fprimes.to_sparse()
-        # sys.exit()
+        sparse_fprimes = torch.sparse.FloatTensor(fprimes_inds, fprimes_vals,
+                torch.Size([dim1_start, dim2_start]))
 
         element_specific_fingerprints = {}
         model_input_data = []

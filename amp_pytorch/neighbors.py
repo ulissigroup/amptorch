@@ -1,30 +1,6 @@
-import sys
-import time
-import numpy as np
 import torch
 from ase.neighborlist import neighbor_list
-from ase import Atoms
-from amp.utilities import hash_images
-from amp.descriptor.gaussian import Gaussian
 
-atoms = [
-    Atoms(
-        symbols="PdOPd2",
-        pbc=np.array([False, False, False], dtype=bool),
-        cell=np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]),
-        positions=np.array(
-            [[0.0, 1.0, 0.0], [1.0, 2.0, 1.0], [-1.0, 1.0, 2.0], [1.0, 3.0, 2.0]]
-        ),
-    ),
-    Atoms(
-        symbols="PdO",
-        pbc=np.array([True, False, False], dtype=bool),
-        cell=np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]),
-        positions=np.array([[2.0, 1.0, -1.0], [1.0, 2.0, 1.0]]),
-    ),
-]
-
-atoms = atoms[0]
 def get_distances(atoms, cutoff):
     first_atom_idx, second_atom_idx, shift_vector = neighbor_list(
         "ijS", atoms, cutoff, self_interaction=False
@@ -42,7 +18,6 @@ def get_distances(atoms, cutoff):
     distance_vec = neighbor_positions - first_atom_positions
     offsets = torch.mm(shift_vector, cell)
     distance_vec += offsets
-    distances = torch.norm(distance_vec, dim=1).numpy().reshape(-1, 1)
     pairs = torch.cat(
         (first_atom_idx.reshape(-1, 1), second_atom_idx.reshape(-1, 1)), 1
     ).numpy()
