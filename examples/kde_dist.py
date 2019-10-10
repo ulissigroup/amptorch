@@ -116,19 +116,19 @@ for i in range(101):
     images0.append(images_emt[i])
 
 images1 = \
-ase.io.read("MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_5_iter_1.traj", ":")
+ase.io.read("MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_2_5_iter_1.traj", ":")
 
 images2 = \
-ase.io.read("MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_5_iter_2.traj", ":")
+ase.io.read("MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_2_5_iter_2.traj", ":")
 
 images3 = \
-ase.io.read("MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_5_iter_3.traj", ":")
+ase.io.read("MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_2_5_iter_3.traj", ":")
 
 images4 = \
-ase.io.read("MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_5_iter_4.traj", ":")
+ase.io.read("MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_2_5_iter_4.traj", ":")
 
 images5 = \
-ase.io.read("MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_5_iter_5.traj", ":")
+ase.io.read("MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_2_5_iter_5.traj", ":")
 
 
 for idx, image in enumerate(images1):

@@ -14,10 +14,8 @@ import torch.nn as nn
 import torch
 from amp.utilities import Logger
 from amp.descriptor.gaussian import Gaussian
-import matplotlib
-matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from amp_pytorch.fast_preprocess import AtomsDataset, factorize_data, collate_amp
+from amp_pytorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
 from amp_pytorch.NN_model import FullNN, CustomLoss
 from amp_pytorch.trainer import Trainer
 
@@ -89,8 +87,7 @@ class AMPModel:
         batch_size=None,
         structure=[3, 5],
         val_frac=0,
-        descriptor=Gaussian,
-        Gs=None,
+        descriptor=Gaussian(),
         force_coefficient=0,
         criterion=CustomLoss,
         optimizer=optim.LBFGS,
@@ -121,7 +118,6 @@ class AMPModel:
         self.convergence = criteria
         self.lj_data = lj_data
         self.fine_tune = fine_tune
-        self.Gs = Gs
 
         self.forcetraining = False
         if force_coefficient > 0:
@@ -130,7 +126,6 @@ class AMPModel:
         self.training_data = AtomsDataset(
             self.filename,
             descriptor=self.descriptor,
-            Gs=Gs,
             cores=cores,
             forcetraining=self.forcetraining,
             lj_data=self.lj_data,
