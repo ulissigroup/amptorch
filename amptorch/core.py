@@ -57,8 +57,7 @@ class AMPTorch:
         Descriptor to be utilized to calculate fingerprints and
         fingerprintprimes. default: Gaussian
     Gs: object
-        Symmetry function parameters to be used. Default: None - defaulting to
-        AMP's default symmetry function.
+        Symmetry function parameters to be used.
     force_coefficient: float
         Define the force coefficient to be utilized in the loss function. A
         coefficient > 0 indicates force training is turned on.

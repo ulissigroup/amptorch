@@ -16,12 +16,12 @@ from amp.descriptor.gaussian import Gaussian
 IMAGES = "../datasets/water/water.extxyz"
 images = ase.io.read(IMAGES, ":")
 IMAGES = []
-for i in range(300):
+for i in range(100):
     IMAGES.append(images[i])
 
 # define symmetry functions to be used
 GSF = {}
-GSF["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
+GSF["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=8)
 GSF["G2_rs_s"] = [0] * 4
 GSF["G4_etas"] = [0.005]
 GSF["G4_zetas"] = [1.0, 4.0]
@@ -38,7 +38,7 @@ calc = AMP(
         descriptor=Gaussian,
         Gs=GSF,
         cores=1,
-        force_coefficient=0,
+        force_coefficient=0.3,
         lj_data=None,
         label='example',
         save_logs=True
@@ -47,8 +47,8 @@ calc = AMP(
 # define model settings
 calc.model.structure = [3, 5]
 # calc.model.val_frac = 0.2
+# calc.model.convergence = {'energy': 0.02, 'force': 0.02}
 calc.model.epochs = 10
-calc.model.structure = [5, 5]
 calc.lr = 1
 calc.criterion = CustomLoss
 calc.optimizer = optim.LBFGS
