@@ -521,7 +521,7 @@ def make_force_header(log):
 
 
 def make_energy_header(log):
-    header = "%5s %24s %12s %12s %7s"
+    header = "%5s %24s %12s %7s"
     log(header % ("Epoch", "Time", "Loss", "EnergyRMSE"))
     log(header % ("=" * 5, "=" * 24, "=" * 12, "=" * 12))
 

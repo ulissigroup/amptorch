@@ -16,7 +16,7 @@ from amp.descriptor.gaussian import Gaussian
 IMAGES = "../datasets/water/water.extxyz"
 images = ase.io.read(IMAGES, ":")
 IMAGES = []
-for i in range(100):
+for i in range(300):
     IMAGES.append(images[i])
 
 # define symmetry functions to be used
@@ -38,15 +38,15 @@ calc = AMP(
         descriptor=Gaussian,
         Gs=GSF,
         cores=1,
-        force_coefficient=0.3,
+        force_coefficient=0,
         lj_data=None,
         label='example',
-        save_logs=False
+        save_logs=True
     )
 )
 # define model settings
 calc.model.structure = [3, 5]
-calc.model.val_frac = 0.2
+# calc.model.val_frac = 0.2
 calc.model.epochs = 10
 calc.model.structure = [5, 5]
 calc.lr = 1

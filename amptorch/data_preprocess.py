@@ -234,14 +234,17 @@ class AtomsDataset(Dataset):
         energy = self.energy_dataset[index]
         atom_count = int(self.num_of_atoms[index])
         idx_hash = self.index_hashes[index]
-        if self.store_primes:
-            fprime = sparse.load_npz(
-                open("./stored-primes/" + idx_hash, "rb")
-            )
-            fprime = torch.tensor(fprime.toarray())
-        else:
-            fprime = self.sparse_fprimes[index]
-        forces = self.forces_dataset[index]
+        fprime = None
+        forces = None
+        if self.forcetraining:
+            if self.store_primes:
+                fprime = sparse.load_npz(
+                    open("./stored-primes/" + idx_hash, "rb")
+                )
+                fprime = torch.tensor(fprime.toarray())
+            else:
+                fprime = self.sparse_fprimes[index]
+            forces = self.forces_dataset[index]
         unique_atoms = self.unique_atoms
         return (
             fingerprint,
