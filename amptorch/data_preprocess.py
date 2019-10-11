@@ -31,21 +31,32 @@ class AtomsDataset(Dataset):
         Training data to be utilized for the regression model.
 
     descriptor: object
-        Scheme to be utilized for computing fingerprints
+        Scheme to be utilized for computing fingerprints.
+
+    Gs: object
+        Symmetry function parameters to be used for hashing and fingerprinting.
 
     cores: int
         Specify the number of cores to use for parallelization of fingerprint
-        calculations
+        calculations.
 
     forcetraining: float
         Flag to specify whether force training is to be performed - dataset
         will then compute the necessary information - fingerprint derivatives,
         etc.
 
+    lj_data: list
+        Energies and forces to be subtracted off from targets, allowing the
+        model to learn the difference. default: None
+
     envcommand: string
         For parallel processing across nodes, a command can be supplied here to
         load the appropriate environment before starting workers.
         default: None
+
+    store_primes: Boolean
+        True to save fingerprintprimes matrices for faster preprocessing.
+        Default: False
 
 
     """
@@ -73,7 +84,6 @@ class AtomsDataset(Dataset):
             self.lj_forces = np.squeeze(lj_data[1])
             self.num_atoms = np.array(lj_data[2])
             self.lj = True
-
         if self.store_primes:
             if not os.path.isdir("./stored-primes/"):
                 os.mkdir("stored-primes")
@@ -87,29 +97,26 @@ class AtomsDataset(Dataset):
         if cores > 1:
             self.parallel = {"cores": assign_cores(cores), "envcommand": envcommand}
         print("Calculating fingerprints...")
-        if Gs:
-            G2_etas = Gs["G2_etas"]
-            G2_rs_s = Gs["G2_rs_s"]
-            G4_etas = Gs["G4_etas"]
-            G4_zetas = Gs["G4_zetas"]
-            G4_gammas = Gs["G4_gammas"]
-            cutoff = Gs["cutoff"]
-            make_amp_descriptors_simple_nn(
-                self.atom_images, Gs
-            )
-            G = make_symmetry_functions(
-                    elements=self.elements, type="G2", etas=G2_etas
-                    )
-            G += make_symmetry_functions(
-                elements=self.elements,
-                type="G4",
-                etas=G4_etas,
-                zetas=G4_zetas,
-                gammas=G4_gammas,
-            )
-            self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
-        else:
-            self.descriptor = self.descriptor()
+        G2_etas = Gs["G2_etas"]
+        G2_rs_s = Gs["G2_rs_s"]
+        G4_etas = Gs["G4_etas"]
+        G4_zetas = Gs["G4_zetas"]
+        G4_gammas = Gs["G4_gammas"]
+        cutoff = Gs["cutoff"]
+        make_amp_descriptors_simple_nn(
+            self.atom_images, Gs
+        )
+        G = make_symmetry_functions(
+                elements=self.elements, type="G2", etas=G2_etas
+                )
+        G += make_symmetry_functions(
+            elements=self.elements,
+            type="G4",
+            etas=G4_etas,
+            zetas=G4_zetas,
+            gammas=G4_gammas,
+        )
+        self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
         self.descriptor.calculate_fingerprints(
             self.hashed_images,
             parallel=self.parallel,

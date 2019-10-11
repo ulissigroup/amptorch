@@ -12,7 +12,7 @@ The implementation currently relies on *Amp* to carry out fingerprint/fingerprin
 
 In addition to the package requirements of *Amp*, PyTorch v1.2 must be installed as well. Ensure the repository is added to your PYTHONPATH.
 
-AS AMPTorch is a work in progress, please feel free to report any issues/suggestions/feedback/questions and we'll try to address them or get back to you as soon as possible.
+As AMPTorch is a work in progress, please feel free to report any issues/suggestions/feedback/questions and we'll try to address them or get back to you as soon as possible.
 
 *Amp* documentation can be found at: https://amp.readthedocs.io/.
 
