@@ -56,6 +56,7 @@ class AMP(Calculator):
         self.parallel = self.model.training_data.parallel
         self.lj = self.model.training_data.lj
         self.Gs = self.model.training_data.Gs
+        self.log("Symmetry function parameters: %s" % self.Gs)
         if self.lj:
             self.fitted_params = self.model.lj_data[3]
             self.params_dict = self.model.lj_data[4]

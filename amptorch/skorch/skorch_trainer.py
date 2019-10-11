@@ -7,8 +7,8 @@ from skorch.dataset import CVSplit
 from skorch.callbacks import Checkpoint, EpochScoring
 import skorch.callbacks.base
 from amp.descriptor.gaussian import Gaussian
-from amp_pytorch.model_skorch import FullNN, CustomLoss
-from amp_pytorch.skorch_data import AtomsDataset, factorize_data, collate_amp
+from amptorch.skorch.model_skorch import FullNN, CustomLoss
+from amptorch.skorch.skorch_data import AtomsDataset, factorize_data, collate_amp
 from skorch.utils import to_numpy
 
 
@@ -53,7 +53,7 @@ def forces_score(net, X, y):
     return force_rmse
 
 forcetraining = True
-data = AtomsDataset("../datasets/water/water.extxyz", descriptor=Gaussian(),
+data = AtomsDataset("../../datasets/water/water.extxyz", descriptor=Gaussian(),
         cores=1, forcetraining=forcetraining)
 scalings = data.scalings
 unique_atoms = data.unique_atoms
