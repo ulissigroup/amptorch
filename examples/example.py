@@ -7,9 +7,9 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
-from amp_pytorch.NN_model import CustomLoss, LogCoshLoss
-from amp_pytorch import AMP
-from amp_pytorch.core import AMPModel
+from amptorch.NN_model import CustomLoss, LogCoshLoss
+from amptorch import AMP
+from amptorch.core import AMPTorch
 from amp.descriptor.gaussian import Gaussian
 from ase.visualize import view
 from amp_simple_nn.convert import make_amp_descriptors_simple_nn
@@ -36,7 +36,7 @@ GSF["cutoff"] = 6.5
 # define the number of threads to parallelize training across
 torch.set_num_threads(1)
 calc = AMP(
-    model=AMPModel(
+    model=AMPTorch(
         IMAGES,
         descriptor=Gaussian,
         Gs=GSF,
