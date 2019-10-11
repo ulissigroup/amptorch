@@ -82,7 +82,6 @@ class AtomsDataset(Dataset):
             if extension != (".traj" or ".db"):
                 self.atom_images = ase.io.read(images, ":")
         self.elements = self.unique()
-        # self.hashed_images = hash_images(self.atom_images)
         self.hashed_images = hash_images(self.atom_images, Gs=Gs)
         self.parallel = {"cores": cores}
         if cores > 1:
@@ -95,9 +94,6 @@ class AtomsDataset(Dataset):
             G4_zetas = Gs["G4_zetas"]
             G4_gammas = Gs["G4_gammas"]
             cutoff = Gs["cutoff"]
-            # make_amp_descriptors_simple_nn(
-                # self.atom_images, G2_etas, G2_rs_s, G4_etas, G4_zetas, G4_gammas, cutoff
-            # )
             make_amp_descriptors_simple_nn(
                 self.atom_images, Gs
             )
@@ -111,8 +107,6 @@ class AtomsDataset(Dataset):
                 zetas=G4_zetas,
                 gammas=G4_gammas,
             )
-            # for g in G:
-                # g['Rs'] = 0.0
             self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
         else:
             self.descriptor = self.descriptor()
@@ -453,7 +447,7 @@ class TestDataset(Dataset):
                 self.atom_images = ase.io.read(images, ":")
         self.fprange = fprange
         self.unique_atoms = self.unique()
-        self.hashed_images = hash_images(self.atom_images)
+        self.hashed_images = hash_images(self.atom_images, Gs)
         if Gs:
             G2_etas = Gs["G2_etas"]
             G2_rs_s = Gs["G2_rs_s"]
@@ -461,9 +455,7 @@ class TestDataset(Dataset):
             G4_zetas = Gs["G4_zetas"]
             G4_gammas = Gs["G4_gammas"]
             cutoff = Gs["cutoff"]
-            make_amp_descriptors_simple_nn(
-                self.atom_images, G2_etas, G2_rs_s, G4_etas, G4_zetas, G4_gammas, cutoff
-            )
+            make_amp_descriptors_simple_nn(self.atom_images, Gs)
             G = make_symmetry_functions(elements=self.unique_atoms, type="G2", etas=G2_etas)
             G += make_symmetry_functions(
                 elements=self.unique_atoms,
