@@ -258,11 +258,11 @@ def get_hash(atoms, Gs):
     return hash
 
 
-def factorize_data(traj):
+def factorize_data(traj, Gs):
     new_traj = []
     if os.path.isdir("amp-data-fingerprint-primes.ampdb/"):
         for image in traj:
-            hash = get_hash(image)
+            hash = get_hash(image, Gs)
             if os.path.isfile(
                 "amp-data-fingerprint-primes.ampdb/loose/" + hash
             ) and os.path.isfile("amp-data-fingerprints.ampdb/loose/" + hash):
@@ -274,7 +274,7 @@ def factorize_data(traj):
     return new_traj
 
 
-def convert_simple_nn_fps(traj, delete_old=True):
+def convert_simple_nn_fps(traj, Gs, delete_old=True):
     from multiprocessing import Pool
 
     # make the directories
@@ -287,34 +287,22 @@ def convert_simple_nn_fps(traj, delete_old=True):
     if not os.path.isdir("./amp-data-fingerprint-primes.ampdb/loose"):
         os.mkdir("amp-data-fingerprint-primes.ampdb/loose")
     # perform the reorganization
-    """
-    for i, image in enumerate(traj):
-        pic = pickle.load(open('./data/data{}.pickle'.format(i + 1), 'rb'))
-        im_hash = get_hash(image)
-        x_list = reorganize_simple_nn_fp(image, pic['x'])
-        pickle.dump(x_list, open('./amp-fingerprints.ampdb/loose/' + im_hash, 'wb'))
-        del x_list  # free up memory just in case
-        x_der_dict = reorganize_simple_nn_derivative(image, pic['dx'])
-        pickle.dump(x_der_dict, open('./amp-fingerprint-primes.ampdb/loose/' + im_hash, 'wb'))
-        del x_der_dict  # free up memory just in case
-        if delete_old:  # in case disk space is an issue
-            os.remove('./data/data{}.pickle'.format(i + 1))
-    """
+    l_trajs = list(enumerate(traj))
     if len(traj) > 1:
         with Pool(10) as p:
-            l_trajs = list(enumerate(traj))
+            l_trajs = [image + (Gs, ) for image in l_trajs]
             p.map(reorganize, l_trajs)
     else:
-        image = (0, traj[0])
+        image = (0, traj[0], Gs)
         reorganize(image)
     if delete_old:
         os.rmdir("./data")
 
 
 def reorganize(inp, delete_old=True):
-    i, image = inp
+    i, image, Gs = inp
     pic = pickle.load(open("./data/data{}.pickle".format(i + 1), "rb"))
-    im_hash = get_hash(image)
+    im_hash = get_hash(image, Gs)
     x_list = reorganize_simple_nn_fp(image, pic["x"])
     pickle.dump(x_list, open("./amp-data-fingerprints.ampdb/loose/" + im_hash, "wb"))
     del x_list  # free up memory just in case
@@ -359,12 +347,20 @@ def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all"):
     returns:
         None
     """
-    descriptors = list(Gs.values())
+    # order descriptors for simple_nn
+    descriptors = (
+        Gs["G2_etas"],
+        Gs["G2_rs_s"],
+        Gs["G4_etas"],
+        Gs["cutoff"],
+        Gs["G4_zetas"],
+        Gs["G4_gammas"],
+    )
     # handle inputs
     if type(traj) != list:
         traj = [traj]
 
-    traj = factorize_data(traj)
+    traj = factorize_data(traj, Gs)
     calculated = False
     if len(traj) > 0:
         from simple_nn.features.symmetry_function import Symmetry_function
@@ -430,27 +426,19 @@ def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all"):
     return calculated
 
 
-# def make_amp_descriptors_simple_nn(
-    # traj, g2_etas, g2_rs_s, g4_etas, g4_zetas, g4_gammas, cutoff
-# ):
-def make_amp_descriptors_simple_nn(
-    traj, Gs
-):
+def make_amp_descriptors_simple_nn(traj, Gs):
     """
     uses simple_nn to make descriptors in the amp format.
     Only creates the same symmetry functions for each element
     for now.
     """
-    # c = cutoff
     calculated = make_simple_nn_fps(
         traj,
         Gs,
-        # (g2_etas, g2_rs_s, g4_etas, cutoff, g4_zetas, g4_gammas),
         clean_up_directory=True,
     )
-    sys.exit()
     if calculated:
-        convert_simple_nn_fps(traj, delete_old=True)
+        convert_simple_nn_fps(traj, Gs, delete_old=True)
 
 
 class Logger:
