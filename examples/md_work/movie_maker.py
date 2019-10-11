@@ -41,7 +41,7 @@ def retrieve_files(prefix, num_images):
 
 
 location = "MD_results/COCu/pbc_300K/l2amp/paper/"
-# location = "../datasets/COCu/"
+# location = "../../datasets/COCu/"
 destination = "MD_results/movies/COCu/pbc_300K/l2amp/"
 files = retrieve_files("MLMD_COCu_pbc_300K_l2amp", 3)
 

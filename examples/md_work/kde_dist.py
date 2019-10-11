@@ -109,8 +109,8 @@ def energy_plots(data0, data1):
     plt.ylabel('Energy, eV', size=20)
     plt.show()
 
-# images_emt = ase.io.read("../datasets/COCu/COCu_pbc.traj", ":")
-images_emt = ase.io.read("../datasets/COCu/COCu_pbc_300K.traj", ":")
+# images_emt = ase.io.read("../../datasets/COCu/COCu_pbc.traj", ":")
+images_emt = ase.io.read("../../datasets/COCu/COCu_pbc_300K.traj", ":")
 images0 = []
 for i in range(101):
     images0.append(images_emt[i])
