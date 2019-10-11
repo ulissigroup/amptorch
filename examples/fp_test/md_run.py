@@ -76,6 +76,7 @@ def ml_lj(IMAGES, filename, count, temp, GSF, dir="MD_results/", const_t=False,
 
     # train the model
     calc.train(overwrite=True)
+    sys.exit()
     md_run(IMAGES, count, calc, filename, dir, temp, const_t)
 
 def md_run(images, count, calc, filename, dir, temp, cons_t=False):
@@ -110,7 +111,7 @@ def multiple_runs(images, filename, dir, num_images, num_iters, temp,
                 # GSF=GSF, const_t=True, lj=True, activation_fn=activation_fn)
 
 GSF = {}
-GSF['G2_etas'] = np.logspace(np.log10(0.05), np.log10(5.0), num=8)
+GSF['G2_etas'] = np.logspace(np.log10(0.05), np.log10(5.0), num=5)
 GSF['G2_rs_s'] = [0] * 4
 GSF['G4_etas'] = np.array([0.005])
 GSF['G4_zetas'] = np.array([1.0, 4.0])
