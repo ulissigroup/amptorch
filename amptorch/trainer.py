@@ -365,7 +365,8 @@ class Trainer:
                             force_rmse, phase)
                     # terminates when error stagnates
                     if abs(force_rmse - previous_force_rmse) <= 1e-5:
-                        early_stop = True
+                        pass
+                        # early_stop = True
                     elif force_rmse < best_train_force_loss:
                         best_train_energy_loss = energy_rmse
                         best_train_force_loss = force_rmse
