@@ -78,6 +78,9 @@ class AMPTorch:
     criteria: dict
         Define the training convergence criteria.
         default: {'energy':0.02, "force":0.02}
+    epochs: int
+        If present, train the model for this number of epochs.
+        default: None
     lj_data: list
         Energies and forces to be subtracted off from targets, allowing the
         model to learn the difference. default: None
@@ -107,6 +110,7 @@ class AMPTorch:
         scheduler=None,
         lr=1,
         criteria={"energy": 0.02, "force": 0.02},
+        epochs=None,
         lj_data=None,
         fine_tune=None,
         label='amptorch',
@@ -135,6 +139,7 @@ class AMPTorch:
         self.scheduler = scheduler
         self.lr = lr
         self.convergence = criteria
+        self.epochs = epochs
         self.lj_data = lj_data
         self.fine_tune = fine_tune
         self.Gs = Gs
@@ -236,6 +241,7 @@ class AMPTorch:
             self.scheduler,
             self.atoms_dataloader,
             self.convergence,
+            self.epochs,
             self.scalings,
             self.label,
         )
@@ -243,7 +249,7 @@ class AMPTorch:
         self.trained_model = self.trainer.train_model()
         if not self.save_logs:
             os.remove("results/logs/"+self.label+".txt")
-            os.remove("results/logs/epoch_logs"+self.label+".txt")
+            os.remove("results/logs/epochs/"+self.label+"-calc.txt")
         return self.trained_model
 
     def parity_plot(self, data="energy"):

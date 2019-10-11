@@ -9,19 +9,12 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 import matplotlib.pyplot as plt
-from .NN_model import CustomLoss
-from . import AMP
-from .core import AMPTorch
+from amptorch.NN_model import CustomLoss
+from amptorch. import AMP
+from amptorch.core import AMPTorch
 from ase.calculators.emt import EMT
 from amp.descriptor.gaussian import Gaussian
-from .lj_model import lj_optim
-
-
-def gen_data(images, count):
-    IMAGES = []
-    for i in range(count):
-        IMAGES.append(images[i])
-    return IMAGES
+from amptroch.lj_model import lj_optim
 
 
 def trainer(images, count, optimizer=False):

@@ -11,14 +11,9 @@ from amptorch.NN_model import CustomLoss, LogCoshLoss
 from amptorch import AMP
 from amptorch.core import AMPTorch
 from amp.descriptor.gaussian import Gaussian
-from ase.visualize import view
-from amp_simple_nn.convert import make_amp_descriptors_simple_nn
-from ase.build import molecule
-from ase.calculators.emt import EMT
 
 # define training images
-# IMAGES = "../datasets/water/water.extxyz"
-IMAGES = "../datasets/COCu/COCu_pbc_300K.traj"
+IMAGES = "../datasets/water/water.extxyz"
 images = ase.io.read(IMAGES, ":")
 IMAGES = []
 for i in range(100):
@@ -35,6 +30,8 @@ GSF["cutoff"] = 6.5
 
 # define the number of threads to parallelize training across
 torch.set_num_threads(1)
+
+# declare the calculator and corresponding model to be used
 calc = AMP(
     model=AMPTorch(
         IMAGES,
@@ -43,14 +40,18 @@ calc = AMP(
         cores=1,
         force_coefficient=0.3,
         lj_data=None,
+        label='example',
+        save_logs=False
     )
 )
 # define model settings
+calc.model.structure = [3, 5]
 calc.model.val_frac = 0.2
-calc.model.convergence = {"energy": 0.005, "force": 0.02}
+calc.model.epochs = 10
 calc.model.structure = [5, 5]
 calc.lr = 1
 calc.criterion = CustomLoss
+calc.optimizer = optim.LBFGS
 
 # train the model
 calc.train(overwrite=True)
