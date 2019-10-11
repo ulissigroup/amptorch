@@ -290,7 +290,7 @@ def convert_simple_nn_fps(traj, Gs, delete_old=True):
     l_trajs = list(enumerate(traj))
     if len(traj) > 1:
         with Pool(10) as p:
-            l_trajs = [image + (Gs, ) for image in l_trajs]
+            l_trajs = [image + (Gs,) for image in l_trajs]
             p.map(reorganize, l_trajs)
     else:
         image = (0, traj[0], Gs)
@@ -432,18 +432,13 @@ def make_amp_descriptors_simple_nn(traj, Gs):
     Only creates the same symmetry functions for each element
     for now.
     """
-    calculated = make_simple_nn_fps(
-        traj,
-        Gs,
-        clean_up_directory=True,
-    )
+    calculated = make_simple_nn_fps(traj, Gs, clean_up_directory=True)
     if calculated:
         convert_simple_nn_fps(traj, Gs, delete_old=True)
 
 
 class Logger:
     """Logger that can also deliver timing information.
-
     Parameters
     ----------
     file : str
@@ -517,3 +512,45 @@ class MetaDict(dict):
     """
 
     metadata = {}
+
+
+def make_force_header(log):
+    header = "%5s %24s %12s %12s %12s"
+    log(header % ("Epoch", "Time", "Loss", "EnergyRMSE", "ForceRMSE"))
+    log(header % ("=" * 5, "=" * 24, "=" * 12, "=" * 12, "=" * 12))
+
+
+def make_energy_header(log):
+    header = "%5s %24s %12s %12s %7s"
+    log(header % ("Epoch", "Time", "Loss", "EnergyRMSE"))
+    log(header % ("=" * 5, "=" * 24, "=" * 12, "=" * 12))
+
+
+def make_val_force_header(log):
+    header = "%5s %24s %12s %12s %12s %7s"
+    log(header % ("Epoch", "Time", "Loss", "EnergyRMSE", "ForceRMSE", "Phase"))
+    log(header % ("=" * 5, "=" * 24, "=" * 12, "=" * 12, "=" * 12, "=" * 7))
+
+
+def make_val_energy_header(log):
+    header = "%5s %24s %12s %12s %7s"
+    log(header % ("Epoch", "Time", "Loss", "EnergyRMSE", "Phase"))
+    log(header % ("=" * 5, "=" * 24, "=" * 12, "=" * 12, "=" * 7))
+
+
+def log_force_results(log, epoch, now, loss, energy_rmse, force_rmse, phase):
+    if type(loss) is str:
+        log(
+            "%5i %19s %12s %12.4e %12.4e %7s"
+            % (epoch, now, loss, energy_rmse, force_rmse, phase)
+        )
+    else:
+        log(
+                   "%5i %19s %12.4e %12.4e %12.4e %7s"
+                    % (epoch, now, loss, energy_rmse, force_rmse, phase)
+                )
+def log_energy_results(log, epoch, now, loss, energy_rmse, phase):
+    if type(loss) is str:
+        log("%5i %19s %12s %12.4e %7s" % (epoch, now, loss, energy_rmse, phase))
+    else:
+        log("%5i %19s %12.4e %12.4e %7s" % (epoch, now, loss, energy_rmse, phase))

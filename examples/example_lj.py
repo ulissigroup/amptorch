@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from .NN_model import CustomLoss
 from . import AMP
-from .core import AMPModel
+from .core import AMPTorch
 from ase.calculators.emt import EMT
 from amp.descriptor.gaussian import Gaussian
 from .lj_model import lj_optim
@@ -64,7 +64,7 @@ def trainer(images, count, optimizer=False):
         ]
 
         calc = AMP(
-            model=AMPModel(
+            model=AMPTorch(
                 data,
                 descriptor=Gaussian,
                 Gs=GSF,
@@ -75,7 +75,7 @@ def trainer(images, count, optimizer=False):
         )
     else:
         calc = AMP(
-            model=AMPModel(
+            model=AMPTorch(
                 data,
                 descriptor=Gaussian
                 Gs=GSF,

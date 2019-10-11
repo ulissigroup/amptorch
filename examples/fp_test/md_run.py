@@ -7,11 +7,11 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
-from amp_pytorch.NN_model import CustomLoss, LogCoshLoss
-from amp_pytorch import AMP
-from amp_pytorch.core import AMPModel
+from amptorch.NN_model import CustomLoss, LogCoshLoss
+from amptorch import AMP
+from amptorch.core import AMPTorch
 from amp.descriptor.gaussian import Gaussian, make_symmetry_functions
-from amp_pytorch.lj_model import lj_optim
+from amptorch.lj_model import lj_optim
 import ase.io
 from ase import units
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
@@ -51,7 +51,7 @@ def ml_lj(IMAGES, filename, count, temp, GSF, dir="MD_results/", const_t=False,
     # define the number of threads to parallelize training across
     torch.set_num_threads(1)
     calc = AMP(
-        model=AMPModel(
+        model=AMPTorch(
             IMAGES,
             descriptor=Gaussian,
             Gs=GSF,

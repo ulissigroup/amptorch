@@ -1,5 +1,5 @@
 """
-core.py: AMPModel defines the core backbone to the training scheme. Model
+core.py: AMPTorch defines the core backbone to the training scheme. Model
 parameters are defined, a train method carrys out the training, and plotting
 methods allow the visualization of the results.
 """
@@ -23,7 +23,7 @@ __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
 
 
-class AMPModel:
+class AMPTorch:
     """Model class used to define the Neural Network architecture and regression
     training scheme
 
@@ -55,7 +55,10 @@ class AMPModel:
         purposes. default: 0
     descriptor: object
         Descriptor to be utilized to calculate fingerprints and
-        fingerprintprimes. default: Gaussian()
+        fingerprintprimes. default: Gaussian
+    Gs: object
+        Symmetry function parameters to be used. Default: None - defaulting to
+        AMP's default symmetry function.
     force_coefficient: float
         Define the force coefficient to be utilized in the loss function. A
         coefficient > 0 indicates force training is turned on.
@@ -71,10 +74,19 @@ class AMPModel:
         training.
         default: None
     lr: float
-        Define the model learning rate. default:1
+        Define the model learning rate. default: 1
     criteria: dict
         Define the training convergence criteria.
         default: {'energy':0.02, "force":0.02}
+    lj_data: list
+        Energies and forces to be subtracted off from targets, allowing the
+        model to learn the difference. default: None
+    fine_tune: str
+        model parameters to be loaded and used for transfer learning
+    label: str
+        Label to be used to save model parameters and logs. default: amptorch
+    save_logs: boolean
+        True to save logs to a .txt file. False to not save logs. default: True
 
     """
 
@@ -108,7 +120,6 @@ class AMPModel:
         self.save_logs = save_logs
         self.label = label
         self.log = Logger("results/logs/"+label+".txt")
-        self.log_epoch = Logger("results/logs/epochs/"+label+".txt")
         self.log(time.asctime())
 
         self.filename = datafile
