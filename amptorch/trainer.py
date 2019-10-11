@@ -49,6 +49,9 @@ class Trainer:
         training
     rmse_criteria: dict
         Training convergence criteria
+    epochs: int
+        If present, number of epochs to train for. Overrides convergence
+        criteria.
     scalings: list
         Scalings applied to the dataset to normalize the energy targets.
         Training scalings will be utilized for calculating predicted
@@ -66,6 +69,7 @@ class Trainer:
         scheduler,
         atoms_dataloader,
         rmse_criteria,
+        epochs,
         scalings,
         label,
     ):
@@ -78,6 +82,7 @@ class Trainer:
         self.scheduler = scheduler
         self.atoms_dataloader = atoms_dataloader
         self.rmse_criteria = rmse_criteria
+        self.epochs = epochs
         self.sd_scaling = scalings[0]
         self.mean_scaling = scalings[1]
         self.label = label
@@ -122,7 +127,7 @@ class Trainer:
         epoch = 0
         convergence = False
         # while not convergence:
-        while epoch <= 1:
+        while epoch <= self.epochs:
 
             if validation:
                 for phase in ["train", "val"]:

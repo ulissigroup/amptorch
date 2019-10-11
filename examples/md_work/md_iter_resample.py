@@ -205,7 +205,7 @@ def iterative_sampler(
 
 
 # define training images
-images0 = ase.io.read("../datasets/COCu/COCu_pbc_300K.traj", ":")
+images0 = ase.io.read("../../datasets/COCu/COCu_pbc_300K.traj", ":")
 images_LJ = ase.io.read(
     "MD_results/COCu/pbc_300K/logcosh/paper/MLMD_COCu_pbc_300K_logcosh_LJ_2.traj", ":"
 )
