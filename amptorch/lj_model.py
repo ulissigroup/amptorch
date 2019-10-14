@@ -9,17 +9,20 @@ import matplotlib.pyplot as plt
 
 
 class lj_optim:
-    def __init__(self, data, params, params_dict, cutoff, forcetraining=True):
+    def __init__(self, filename, data, params, params_dict, cutoff, forcetraining=True):
         if not os.path.exists("results"):
             os.mkdir("results")
+        if not os.path.exists("results/logs"):
+            os.mkdir("results/logs")
+        self.filename = filename
         self.data = data
         self.p0 = params
         self.params_dict = params_dict
         self.forcetraining = forcetraining
         self.cutoff = cutoff
 
-    def fit(self, filename="results/lj_log.txt", method="Nelder-Mead"):
-        log = Logger(filename)
+    def fit(self, method="Nelder-Mead"):
+        log = Logger("results/logs/" + self.filename + ".txt")
         self.target_energies = np.array(
             [(atoms.get_potential_energy()) for atoms in self.data]
         ).reshape(1, -1)
@@ -125,22 +128,22 @@ class lj_optim:
 
     def objective_fn(self, params, target_energies, target_forces):
         predicted_energies, predicted_forces, num_atoms = self.lj_pred(
-            self.data, params, self.params_dict)
+            self.data, params, self.params_dict
+        )
         data_size = target_energies.shape[1]
         num_atoms_f = np.array([[i] * i for i in num_atoms]).reshape(-1, 1)
         num_atoms = np.array(num_atoms)
-        # MSE_energy = np.mean((target_energies - predicted_energies) ** 2)
-        # MSE_forces = (1 / (3*data_size)) * ((target_forces - predicted_forces) ** 2).sum()
         MSE_energy = (1 / data_size) * (
-        ((target_energies - predicted_energies) / num_atoms) ** 2
+            ((target_energies - predicted_energies) / num_atoms) ** 2
         ).sum()
         MSE_forces = (1 / data_size) * (
-        ((target_forces - predicted_forces) / np.sqrt(3 * num_atoms_f)) ** 2
+            ((target_forces - predicted_forces) / np.sqrt(3 * num_atoms_f)) ** 2
         ).sum()
         if self.forcetraining:
             MSE = MSE_energy + 0.3 * MSE_forces
         else:
             MSE = MSE_energy
+        print(MSE)
         return MSE
 
     def lj_param_check(self):
@@ -163,19 +166,25 @@ class lj_optim:
         return params_dict
 
     def logresults(self, log, data, cutoff, p0, params_dict, results, optim_time):
+        log("%s" % time.asctime())
         log("-" * 50)
         log("LJ-Parameter Optimization")
-        log("Fits provided data to the Lennard Jones model")
-        log("%s" % time.asctime())
-        log("Dataset size: %s" % len(data))
-        log("cutoff radius: %s" % (cutoff))
         log(
             "inital LJ parameter guess [sig, eps]: %s"
             % self.params_to_dict(p0, params_dict)
         )
-        log("Optimizer results: \n %s \n" % results)
+        log(
+            "Optimizer results: \n fun: %s \n message: %s \n nfev: %s \n nit: %s \n success: %s"
+            % (
+                results["fun"],
+                results["message"],
+                results["nfev"],
+                results["nit"],
+                results["success"],
+            )
+        )
         log("Fitted LJ parameters: %s \n" % self.params_to_dict(results.x, params_dict))
-        log("Optimization time: %s" % optim_time)
+        log("Optimization time: %s \n" % optim_time)
 
     def parity(self, predicted_energies, predicted_forces):
         fig = plt.figure(figsize=(7.0, 7.0))

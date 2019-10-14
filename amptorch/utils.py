@@ -275,7 +275,7 @@ def factorize_data(traj, Gs):
 
 
 def convert_simple_nn_fps(traj, Gs, delete_old=True):
-    from multiprocessing import Pool
+    from multiprocessing import Pool, cpu_count
 
     # make the directories
     if not os.path.isdir("./amp-data-fingerprints.ampdb"):
@@ -289,7 +289,7 @@ def convert_simple_nn_fps(traj, Gs, delete_old=True):
     # perform the reorganization
     l_trajs = list(enumerate(traj))
     if len(traj) > 1:
-        with Pool(10) as p:
+        with Pool(cpu_count()) as p:
             l_trajs = [image + (Gs,) for image in l_trajs]
             p.map(reorganize, l_trajs)
     else:
@@ -423,7 +423,7 @@ def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all"):
             for file in files:
                 os.remove(file)
         calculated = True
-    return calculated
+    return traj, calculated
 
 
 def make_amp_descriptors_simple_nn(traj, Gs):
@@ -432,7 +432,7 @@ def make_amp_descriptors_simple_nn(traj, Gs):
     Only creates the same symmetry functions for each element
     for now.
     """
-    calculated = make_simple_nn_fps(traj, Gs, clean_up_directory=True)
+    traj, calculated = make_simple_nn_fps(traj, Gs, clean_up_directory=True)
     if calculated:
         convert_simple_nn_fps(traj, Gs, delete_old=True)
 
