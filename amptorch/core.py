@@ -76,10 +76,11 @@ class AMPTorch:
         Define the model learning rate. default: 1
     criteria: dict
         Define the training convergence criteria.
-        default: {'energy':0.02, "force":0.02}
+        default: {'energy':0, "force":0}
     epochs: int
-        If present, train the model for this number of epochs.
-        default: None
+        If present, train the model for this number of epochs. If epochs or
+        criteria are not defined the model will train until error stagnates.
+        default: 1e10
     lj_data: list
         Energies and forces to be subtracted off from targets, allowing the
         model to learn the difference. default: None
@@ -108,8 +109,8 @@ class AMPTorch:
         optimizer=optim.LBFGS,
         scheduler=None,
         lr=1,
-        criteria={"energy": 0.02, "force": 0.02},
-        epochs=None,
+        criteria={"energy": 0, "force": 0},
+        epochs=1e10,
         lj_data=None,
         fine_tune=None,
         label='amptorch',
@@ -123,7 +124,6 @@ class AMPTorch:
         self.save_logs = save_logs
         self.label = label
         self.log = Logger("results/logs/"+label+".txt")
-        self.log(time.asctime())
 
         self.filename = datafile
         self.batch_size = batch_size
@@ -160,7 +160,9 @@ class AMPTorch:
         self.sd_scaling = self.scalings[0]
         self.mean_scaling = self.scalings[1]
 
-        self.log("-" * 50)
+        if not lj_data:
+            self.log(time.asctime())
+            self.log("-" * 50)
         self.log("LJ Data: %s" % (True if lj_data is not None else None))
         self.log("Force Training: %s - %s" % (self.forcetraining, force_coefficient))
 

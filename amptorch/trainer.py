@@ -124,10 +124,10 @@ class Trainer:
 
         since = time.time()
         print("Training Initiated!")
+        self.epochs -= 1
         epoch = 0
         convergence = False
-        # while not convergence:
-        while epoch <= self.epochs:
+        while not convergence:
 
             if validation:
                 for phase in ["train", "val"]:
@@ -248,7 +248,7 @@ class Trainer:
                             )
                             convergence = (
                                 energy_convergence and force_convergence
-                            ) or early_stop
+                            ) or early_stop or (epoch >= self.epochs)
                     else:
                         if phase == 'train':
                             log_energy_results(log_epoch, epoch, now, loss,
@@ -266,7 +266,7 @@ class Trainer:
                             previous_energy_rmse = energy_rmse
                             convergence = (
                                 best_val_energy_loss <= self.rmse_criteria["energy"]
-                            ) or early_stop
+                            ) or early_stop or (epoch >= self.epochs)
 
                 print()
 
@@ -365,8 +365,7 @@ class Trainer:
                             force_rmse, phase)
                     # terminates when error stagnates
                     if abs(force_rmse - previous_force_rmse) <= 1e-5:
-                        pass
-                        # early_stop = True
+                        early_stop = True
                     elif force_rmse < best_train_force_loss:
                         best_train_energy_loss = energy_rmse
                         best_train_force_loss = force_rmse
@@ -380,7 +379,7 @@ class Trainer:
                     )
                     convergence = (
                         energy_convergence and force_convergence
-                    ) or early_stop
+                    ) or early_stop or (epoch >= self.epochs)
                 else:
                     log_energy_results(log_epoch, epoch, now, loss,
                             energy_rmse, phase)
@@ -393,7 +392,7 @@ class Trainer:
                     previous_energy_rmse = energy_rmse
                     convergence = (
                         best_train_energy_loss <= self.rmse_criteria["energy"]
-                    ) or early_stop
+                    ) or early_stop or (epoch >= self.epochs)
 
             epoch += 1
 
