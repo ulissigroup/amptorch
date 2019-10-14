@@ -143,7 +143,6 @@ class lj_optim:
             MSE = MSE_energy + 0.3 * MSE_forces
         else:
             MSE = MSE_energy
-        print(MSE)
         return MSE
 
     def lj_param_check(self):
