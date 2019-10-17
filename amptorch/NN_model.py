@@ -205,15 +205,13 @@ class CustomLoss(nn.Module):
         return loss if self.alpha > 0 else energy_loss
 
 
-class LogCoshLoss(nn.Module):
+class TanhLoss(nn.Module):
     """Custom loss function to be optimized by the regression. Includes aotmic
-    energy and force contributions.
+    energy and force contributions."""
 
-    Eq. (26) in A. Khorshidi, A.A. Peterson /
-    Computer Physics Communications 207 (2016) 310-324"""
 
     def __init__(self, force_coefficient=0):
-        super(LogCoshLoss, self).__init__()
+        super(TanhLoss, self).__init__()
         self.alpha = force_coefficient
 
     def forward(
@@ -240,8 +238,6 @@ class LogCoshLoss(nn.Module):
             )
             force_pred_per_atom = torch.div(force_pred, num_atoms_force)
             force_targets_per_atom = torch.div(force_targets, num_atoms_force)
-            force_loss = torch.sum(
-                torch.log(torch.cosh(force_pred_per_atom - force_targets_per_atom))
-            )
+            force_loss = torch.sum(torch.tanh(torch.abs(force_pred_per_atom - force_targets_per_atom)))
             loss = energy_loss + force_loss
         return loss if self.alpha > 0 else energy_loss
