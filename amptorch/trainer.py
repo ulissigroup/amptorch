@@ -235,13 +235,10 @@ class Trainer:
                             log_force_results(log_epoch, epoch, now, '', energy_rmse,
                                               force_rmse, phase)
                         if phase == "val":
-                            if abs(force_rmse - previous_force_rmse) <= 1e-7:
-                                early_stop = True
-                            elif force_rmse < best_val_force_loss:
+                            if force_rmse < best_val_force_loss:
                                 best_val_energy_loss = energy_rmse
                                 best_val_force_loss = force_rmse
                                 best_model_wts = copy.deepcopy(self.model.state_dict())
-                            previous_force_rmse = force_rmse
                             energy_convergence = (
                                 best_val_force_loss <= self.rmse_criteria["energy"]
                             )
@@ -250,7 +247,14 @@ class Trainer:
                             )
                             convergence = (
                                 energy_convergence and force_convergence
-                            ) or early_stop or (epoch >= self.epochs)
+                            ) or (epoch >= self.epochs)
+                        else:
+                            # early stop when training force error stagnates
+                            if abs(force_rmse - previous_force_rmse) <= 1e-7:
+                                early_stop = True
+                            previous_force_rmse = force_rmse
+                            convergence = early_stop
+
                     else:
                         if phase == 'train':
                             log_energy_results(log_epoch, epoch, now, loss,
@@ -260,15 +264,19 @@ class Trainer:
                                                energy_rmse, phase)
 
                         if phase == "val":
-                            if abs(energy_rmse - previous_energy_rmse) <= 1e-7:
-                                convergence = True
-                            elif energy_rmse < best_val_energy_loss:
+                            if energy_rmse < best_val_energy_loss:
                                 best_val_energy_loss = energy_rmse
                                 best_model_wts = copy.deepcopy(self.model.state_dict())
-                            previous_energy_rmse = energy_rmse
                             convergence = (
                                 best_val_energy_loss <= self.rmse_criteria["energy"]
                             ) or early_stop or (epoch >= self.epochs)
+                        else:
+                            # early stop when training energy error stagnates
+                            if abs(energy_rmse - previous_energy_rmse) <= 1e-7:
+                                early_stop = True
+                            previous_energy_rmse = energy_rmse
+                            convergence = early_stop
+
 
                 print()
 
