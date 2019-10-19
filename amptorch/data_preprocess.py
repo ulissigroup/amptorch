@@ -4,6 +4,7 @@ Functions are included to factorize the data and organize it accordingly in
 'collate_amp' as needed to be fed into the PyTorch required DataLoader class"""
 
 import sys
+import time
 import copy
 import os
 import numpy as np
@@ -281,6 +282,8 @@ class AtomsDataset(Dataset):
         energy_dataset = torch.tensor(energy_dataset)
         scaling_mean = torch.mean(energy_dataset)
         scaling_sd = torch.std(energy_dataset, dim=0)
+        # scaling_sd = 1
+        # scaling_mean = 0
         return [scaling_sd, scaling_mean]
 
     def unique(self):
@@ -458,27 +461,24 @@ class TestDataset(Dataset):
         self.fprange = fprange
         self.unique_atoms = self.unique()
         self.hashed_images = hash_images(self.atom_images, Gs)
-        if Gs:
-            G2_etas = Gs["G2_etas"]
-            G2_rs_s = Gs["G2_rs_s"]
-            G4_etas = Gs["G4_etas"]
-            G4_zetas = Gs["G4_zetas"]
-            G4_gammas = Gs["G4_gammas"]
-            cutoff = Gs["cutoff"]
-            make_amp_descriptors_simple_nn(self.atom_images, Gs)
-            G = make_symmetry_functions(elements=self.unique_atoms, type="G2", etas=G2_etas)
-            G += make_symmetry_functions(
-                elements=self.unique_atoms,
-                type="G4",
-                etas=G4_etas,
-                zetas=G4_zetas,
-                gammas=G4_gammas,
-            )
-            # for g in G:
-            # g['Rs'] = 0.0
-            self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
-        else:
-            self.descriptor = self.descriptor()
+        G2_etas = Gs["G2_etas"]
+        G2_rs_s = Gs["G2_rs_s"]
+        G4_etas = Gs["G4_etas"]
+        G4_zetas = Gs["G4_zetas"]
+        G4_gammas = Gs["G4_gammas"]
+        cutoff = Gs["cutoff"]
+        make_amp_descriptors_simple_nn(self.atom_images, Gs)
+        G = make_symmetry_functions(elements=self.unique_atoms, type="G2", etas=G2_etas)
+        G += make_symmetry_functions(
+            elements=self.unique_atoms,
+            type="G4",
+            etas=G4_etas,
+            zetas=G4_zetas,
+            gammas=G4_gammas,
+        )
+        # for g in G:
+        # g['Rs'] = 0.0
+        self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
         self.descriptor.calculate_fingerprints(
             self.hashed_images, parallel=parallel, calculate_derivatives=True
         )
