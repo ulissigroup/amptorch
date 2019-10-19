@@ -111,7 +111,7 @@ class lj_optim:
                 eps_n = params[neighbors][:, 1]
                 sig = (sig_1 + sig_n) / 2
                 eps = np.sqrt(eps_1 * eps_n)
-                r2 = (d ** 2).sum(1)
+                r2 = (d ** 2).sum(1)+1e-10
                 c6 = (sig ** 2 / r2) ** 3
                 c6[r2 > self.cutoff ** 2] = 0.0
                 c12 = c6 ** 2
