@@ -2,8 +2,10 @@
 arguments"""
 
 import torch
+import numpy as np
 import torch.nn as nn
 import sys
+import os
 import time
 import copy
 from .utils import (
@@ -18,9 +20,42 @@ from .utils import (
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+# from matplotlib.lines import Line2D
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
+
+
+def plot_grad_flow(named_parameters):
+    '''Plots the gradients flowing through different layers in the net during training.
+    Can be used for checking for possible gradient vanishing / exploding problems.
+    Usage: Plug this function in Trainer class after loss.backwards() as
+    "plot_grad_flow(self.model.named_parameters())" to visualize the gradient flow'''
+    ave_grads = []
+    max_grads = []
+    layers = []
+    for n, p in named_parameters:
+        if(p.requires_grad) and ("bias" not in n):
+            layers.append(n)
+            ave_grads.append(p.grad.abs().mean())
+            max_grads.append(p.grad.abs().max())
+    plt.bar(np.arange(len(max_grads)), max_grads,
+            alpha=0.1, lw=1, color="c")
+    plt.bar(np.arange(len(max_grads)), ave_grads,
+            alpha=0.1, lw=1, color="b")
+    plt.hlines(0, 0, len(ave_grads)+1, lw=2, color="k")
+    plt.xticks(range(0, len(ave_grads), 1), layers, rotation="vertical")
+    plt.xlim(left=0, right=len(ave_grads))
+    # zoom in on the lower gradient regions
+    # plt.ylim(bottom=-0.001, top=0.02)
+    plt.xlabel("Layers")
+    plt.ylabel("average gradient")
+    plt.title("Gradient flow")
+    plt.grid(True)
+    plt.legend([Line2D([0], [0], color="c", lw=4),
+                Line2D([0], [0], color="b", lw=4),
+                Line2D([0], [0], color="k", lw=4)], ['max-gradient', 'mean-gradient', 'zero-gradient'])
+    plt.show()
 
 
 class Trainer:
@@ -192,6 +227,7 @@ class Trainer:
 
                         if phase == "train":
                             loss = self.optimizer.step(closure)
+                            # plot_grad_flow(self.model.named_parameters())
                         now = time.asctime()
 
                         energy_pred, force_pred = self.model(input_data, fp_primes)
@@ -221,12 +257,12 @@ class Trainer:
 
                     energy_mse /= self.dataset_size[phase]
                     energy_rmse = torch.sqrt(energy_mse)
-                    plot_energy_loss[phase].append(torch.log10(energy_rmse))
+                    plot_energy_loss[phase].append(energy_rmse)
                     print("%s energy loss: %f" % (phase, energy_rmse))
                     if forcetraining:
                         force_mse /= self.dataset_size[phase]
                         force_rmse = torch.sqrt(force_mse)
-                        plot_force_loss[phase].append(torch.log10(force_rmse))
+                        plot_force_loss[phase].append(force_rmse)
                         print("%s force loss: %f" % (phase, force_rmse))
                         if phase == 'train':
                             log_force_results(log_epoch, epoch, now, loss,
@@ -234,7 +270,12 @@ class Trainer:
                         else:
                             log_force_results(log_epoch, epoch, now, '', energy_rmse,
                                               force_rmse, phase)
-                        if phase == "val":
+                        if phase == "train":
+                            # early stop when training force error stagnates
+                            if abs(force_rmse - previous_force_rmse) <= 1e-7:
+                                early_stop = True
+                            previous_force_rmse = force_rmse
+                        elif phase == "val":
                             if force_rmse < best_val_force_loss:
                                 best_val_energy_loss = energy_rmse
                                 best_val_force_loss = force_rmse
@@ -247,13 +288,7 @@ class Trainer:
                             )
                             convergence = (
                                 energy_convergence and force_convergence
-                            ) or (epoch >= self.epochs)
-                        else:
-                            # early stop when training force error stagnates
-                            if abs(force_rmse - previous_force_rmse) <= 1e-7:
-                                early_stop = True
-                            previous_force_rmse = force_rmse
-                            convergence = early_stop
+                            ) or (epoch >= self.epochs) or early_stop
 
                     else:
                         if phase == 'train':
@@ -262,21 +297,18 @@ class Trainer:
                         else:
                             log_energy_results(log_epoch, epoch, now, '',
                                                energy_rmse, phase)
-
-                        if phase == "val":
+                        if phase == "train":
+                            # early stop when training energy error stagnates
+                            if abs(energy_rmse - previous_energy_rmse) <= 1e-7:
+                                early_stop = True
+                            previous_energy_rmse = energy_rmse
+                        elif phase == "val":
                             if energy_rmse < best_val_energy_loss:
                                 best_val_energy_loss = energy_rmse
                                 best_model_wts = copy.deepcopy(self.model.state_dict())
                             convergence = (
                                 best_val_energy_loss <= self.rmse_criteria["energy"]
                             ) or early_stop or (epoch >= self.epochs)
-                        else:
-                            # early stop when training energy error stagnates
-                            if abs(energy_rmse - previous_energy_rmse) <= 1e-7:
-                                early_stop = True
-                            previous_energy_rmse = energy_rmse
-                            convergence = early_stop
-
 
                 print()
 
@@ -366,12 +398,12 @@ class Trainer:
 
                 energy_mse /= self.dataset_size
                 energy_rmse = torch.sqrt(energy_mse)
-                plot_energy_loss[phase].append(torch.log10(energy_rmse))
+                plot_energy_loss[phase].append(energy_rmse)
                 print("energy loss: %f" % energy_rmse)
                 if forcetraining:
                     force_mse /= self.dataset_size
                     force_rmse = torch.sqrt(force_mse)
-                    plot_force_loss[phase].append(torch.log10(force_rmse))
+                    plot_force_loss[phase].append(force_rmse)
                     print("force loss: %f\n" % force_rmse)
                     log_force_results(log_epoch, epoch, now, loss, energy_rmse,
                             force_rmse, phase)
@@ -427,19 +459,20 @@ class Trainer:
             if forcetraining:
                 log("Best training force loss: {:4f}".format(best_train_force_loss))
         log("")
-        # plt.title("RMSE vs. Epoch")
-        # plt.xlabel("Epoch #")
-        # plt.ylabel("log(RMSE)")
-        # plot_epoch_x = list(range(1, epoch + 1))
-        # plt.plot(plot_epoch_x, plot_energy_loss['train'], label="energy train")
-        # if validation:
-        # plt.plot(plot_epoch_x, plot_energy_loss['val'], label="energy val")
-        # if forcetraining:
-        # plt.plot(plot_epoch_x, plot_force_loss['train'], label="force train")
-        # if validation:
-        # plt.plot(plot_epoch_x, plot_force_loss['val'], label="force val")
-        # plt.legend()
-        # plt.savefig('results/error_epoch.pdf')
-        # plt.show()
+        if not os.path.exists("results/training_plots"):
+            os.mkdir("results/training_plots")
+        plt.title("RMSE vs. Epoch")
+        plt.xlabel("Epoch #")
+        plt.ylabel("RMSE")
+        plot_epoch_x = list(range(1, epoch + 1))
+        plt.plot(plot_epoch_x, plot_energy_loss['train'], label="energy train")
+        if validation:
+            plt.plot(plot_epoch_x, plot_energy_loss['val'], label="energy val")
+        if forcetraining:
+            plt.plot(plot_epoch_x, plot_force_loss['train'], label="force train")
+            if validation:
+                plt.plot(plot_epoch_x, plot_force_loss['val'], label="force val")
+        plt.legend()
+        plt.savefig('results/training_plots/'+self.label+'.pdf')
         self.model.load_state_dict(best_model_wts)
         return self.model

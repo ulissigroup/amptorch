@@ -2,7 +2,6 @@
 
 import copy
 import sys
-import time
 import numpy as np
 import os
 from torch.utils.data import DataLoader
@@ -62,7 +61,7 @@ class AMP(Calculator):
             self.params_dict = self.model.lj_data[4]
             self.lj_model = self.model.lj_data[5]
 
-    def train(self, overwrite=False):
+    def train(self, overwrite=True):
 
         self.trained_model = self.model.train()
         if os.path.exists(self.label):
