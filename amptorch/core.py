@@ -10,9 +10,6 @@ import copy
 import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 from amp.descriptor.gaussian import Gaussian
 from .utils import Logger
 from .NN_model import FullNN, CustomLoss
@@ -116,11 +113,8 @@ class AMPTorch:
         label='amptorch',
         save_logs=True
     ):
-        if not os.path.exists("results"):
-            os.mkdir("results")
         if not os.path.exists("results/logs"):
-            os.mkdir("results/logs")
-            os.mkdir("results/logs/epochs")
+            os.makedirs("results/logs/epochs")
         self.save_logs = save_logs
         self.label = label
         self.log = Logger("results/logs/"+label+".txt")
@@ -252,99 +246,3 @@ class AMPTorch:
             os.remove("results/logs/"+self.label+".txt")
             os.remove("results/logs/epochs/"+self.label+"-calc.txt")
         return self.trained_model
-
-    def parity_plot(self, data="energy"):
-        """Constructs a parity plot"""
-        model = self.trained_model
-        model.eval()
-        targets = []
-        device = self.device
-        model = model.to(device)
-        for sample in self.atoms_dataloader:
-            inputs = sample[0]
-            fp_primes = sample[3]
-            for element in self.unique_atoms:
-                inputs[element][0] = inputs[element][0].to(device).requires_grad_(True)
-            targets = sample[1]
-            targets = targets.to(device)
-            force_targets = sample[4]
-            if self.forcetraining:
-                force_targets = force_targets.to(device)
-            inputs = [inputs, len(targets)]
-            energy_pred, force_pred = model(inputs, fp_primes)
-        fig = plt.figure(figsize=(7.0, 7.0))
-        ax = fig.add_subplot(111)
-        if data == "energy":
-            scaled_pred = (energy_pred * self.sd_scaling) + self.mean_scaling
-            energy_targets = targets.reshape(-1, 1)
-            energy_min = min(targets)
-            energy_max = max(targets)
-            energy_targets = energy_targets.detach().cpu().numpy()
-            scaled_pred = scaled_pred.detach().cpu().numpy()
-            ax.plot(energy_targets, scaled_pred, "bo", markersize=3)
-            ax.plot([energy_min, energy_max], [energy_min, energy_max], "r-", lw=0.3)
-            ax.set_xlabel("ab initio energy, eV")
-            ax.set_ylabel("PyTorch energy, eV")
-            ax.set_title("Energies")
-            fig.savefig("results/parity_plot.pdf")
-        if data == "forces":
-            force_pred = force_pred.reshape(-1, 1)
-            force_pred *= self.sd_scaling
-            force_targets = force_targets.reshape(-1, 1)
-            force_min = min(force_targets)
-            force_max = max(force_targets)
-            force_pred = force_pred.detach().cpu().numpy()
-            force_targets = force_targets.detach().cpu().numpy()
-            ax.plot(force_targets, force_pred, "bo", markersize=3)
-            ax.plot([force_min, force_max], [force_min, force_max], "r-", lw=0.3)
-            ax.set_xlabel("ab initio forces, eV/A")
-            ax.set_ylabel("PyTorch forces, eV/A")
-            ax.set_title("Forces")
-            fig.savefig("results/parity_plot_forces.pdf")
-        plt.show()
-
-    def plot_residuals(self, data="energy"):
-        """Constructs a residual plot"""
-        model = self.trained_model
-        model.eval()
-        targets = []
-        device = self.device
-        model = model.to(device)
-        for sample in self.atoms_dataloader:
-            inputs = sample[0]
-            fp_primes = sample[3]
-            for element in self.unique_atoms:
-                inputs[element][0] = inputs[element][0].to(device).requires_grad_(True)
-            targets = sample[1]
-            force_targets = sample[4]
-            targets = targets.to(device)
-            if self.forcetraining:
-                force_targets = force_targets.to(device)
-            inputs = [inputs, len(targets)]
-            energy_pred, force_pred = model(inputs, fp_primes)
-        fig = plt.figure(figsize=(7.0, 7.0))
-        ax = fig.add_subplot(111)
-        if data == "energy":
-            scaled_pred = (energy_pred * self.sd_scaling) + self.mean_scaling
-            energy_targets = targets.reshape(-1, 1)
-            energy_targets = energy_targets.detach().cpu().numpy()
-            scaled_pred = scaled_pred.detach().cpu().numpy()
-            residual = abs(energy_targets - scaled_pred)
-            ax.plot(energy_targets, residual, "bo", markersize=3)
-            ax.set_xlabel("ab initio energy, eV")
-            ax.set_ylabel("|ab initio energy - PyTorch energy|, eV")
-            ax.set_title("Energy Residuals")
-            fig.savefig("results/residual_plot_e.pdf")
-        if data == "forces":
-            force_pred = force_pred.reshape(-1, 1)
-            force_pred *= self.sd_scaling
-            force_targets = force_targets.reshape(-1, 1)
-            force_pred = force_pred.detach().cpu().numpy()
-            force_targets = force_targets.detach().cpu().numpy()
-            residual = abs(force_targets - force_pred)
-            ax.plot(force_targets, residual, "bo", markersize=3)
-            ax.set_xlabel("ab initio force, eV/A")
-            ax.set_ylabel("|ab initio force - PyTorch force|, eV/A")
-            ax.set_title("Force Residuals")
-            fig.savefig("results/residual_plot_f.pdf")
-        plt.show()

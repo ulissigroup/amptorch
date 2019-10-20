@@ -282,8 +282,6 @@ class AtomsDataset(Dataset):
         energy_dataset = torch.tensor(energy_dataset)
         scaling_mean = torch.mean(energy_dataset)
         scaling_sd = torch.std(energy_dataset, dim=0)
-        # scaling_sd = 1
-        # scaling_mean = 0
         return [scaling_sd, scaling_mean]
 
     def unique(self):

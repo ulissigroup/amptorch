@@ -220,7 +220,7 @@ class Trainer:
                                 energy_pred, _ = self.model(input_data)
                                 loss = self.criterion(
                                     energy_pred, scaled_target, num_of_atoms,
-                                    self.model
+                                    model=self.model
                                 )
                             loss.backward()
                             return loss
@@ -361,7 +361,7 @@ class Trainer:
                             energy_pred, _ = self.model(input_data)
                             loss = self.criterion(
                                 energy_pred, scaled_target, num_of_atoms,
-                                self.model
+                                model=self.model
                             )
                         loss.backward()
                         return loss
@@ -459,8 +459,8 @@ class Trainer:
             if forcetraining:
                 log("Best training force loss: {:4f}".format(best_train_force_loss))
         log("")
-        if not os.path.exists("results/training_plots"):
-            os.mkdir("results/training_plots")
+        if not os.path.exists("results/plots/training"):
+            os.mkdir("results/plots/training")
         plt.title("RMSE vs. Epoch")
         plt.xlabel("Epoch #")
         plt.ylabel("RMSE")
@@ -473,6 +473,6 @@ class Trainer:
             if validation:
                 plt.plot(plot_epoch_x, plot_force_loss['val'], label="force val")
         plt.legend()
-        plt.savefig('results/training_plots/'+self.label+'.pdf')
+        plt.savefig('results/plots/training/'+self.label+'.pdf')
         self.model.load_state_dict(best_model_wts)
         return self.model
