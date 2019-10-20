@@ -62,7 +62,6 @@ class AMP(Calculator):
             self.lj_model = self.model.lj_data[5]
 
     def train(self, overwrite=True):
-
         self.trained_model = self.model.train()
         if os.path.exists(self.label):
             if overwrite is False:
@@ -92,6 +91,7 @@ class AMP(Calculator):
             model = FullNN(unique_atoms, architecture, "cpu",
                     forcetraining=True)
         model.load_state_dict(torch.load(self.label))
+        model.eval()
 
         for batch in dataloader:
             input_data = [batch[0], len(batch[1])]
