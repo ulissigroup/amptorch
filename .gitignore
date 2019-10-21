@@ -5,6 +5,9 @@
 *.amp
 *.txt
 *.pdf
-*.pt
 *.OUTCAR
-examples/MD_results/movies
+*.pt
+*.gif
+*.tar
+*.out
+stored-primes/
