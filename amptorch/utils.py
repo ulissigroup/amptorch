@@ -1,4 +1,5 @@
 import sys
+import copy
 import time
 import os
 import pickle
@@ -347,24 +348,28 @@ def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all"):
     returns:
         None
     """
-    # order descriptors for simple_nn
-    descriptors = (
-        Gs["G2_etas"],
-        Gs["G2_rs_s"],
-        Gs["G4_etas"],
-        Gs["cutoff"],
-        Gs["G4_zetas"],
-        Gs["G4_gammas"],
-    )
     # handle inputs
     if type(traj) != list:
         traj = [traj]
 
-    traj = factorize_data(traj, Gs)
+    G = copy.deepcopy(Gs)
+    traj = factorize_data(traj, G)
     calculated = False
     if len(traj) > 0:
         from simple_nn.features.symmetry_function import Symmetry_function
 
+        # order descriptors for simple_nn
+        cutoff = G["cutoff"]
+        G["G2_etas"] = [a * cutoff for a in G["G2_etas"]]
+        G["G4_etas"] = [a * cutoff for a in G["G4_etas"]]
+        descriptors = (
+            G["G2_etas"],
+            G["G2_rs_s"],
+            G["G4_etas"],
+            G["cutoff"],
+            G["G4_zetas"],
+            G["G4_gammas"],
+        )
         # clean up any previous runs
         if os.path.isdir("./data"):
             shutil.rmtree("./data")

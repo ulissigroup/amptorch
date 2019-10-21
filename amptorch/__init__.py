@@ -115,5 +115,5 @@ class AMP(Calculator):
             if properties == ['forces']:
                 forces += lj_forces
 
-        self.results["energy"] = energy
+        self.results["energy"] = float(energy)
         self.results["forces"] = forces
