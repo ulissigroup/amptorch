@@ -1,6 +1,7 @@
 from amptorch.utils import make_amp_descriptors_simple_nn
 import os
 from amp.descriptor.gaussian import Gaussian, make_symmetry_functions
+from amp.descriptor.cutoffs import Cosine
 from ase.calculators.singlepoint import SinglePointCalculator as sp
 from ase.build import molecule
 import numpy as np
@@ -33,20 +34,22 @@ G += make_symmetry_functions(elements=elements, type='G4',
                              gammas=[+1., -1.])
 G = {'O': G}
 
-print(G)
 hashes = hash_images(images)
 
-make_amp_descriptors_simple_nn(images,Gs)
+make_amp_descriptors_simple_nn(images, Gs)
 
 with open('amp-data-fingerprints.ampdb/loose/c5a47a176b1eae977e8b8a725391b28c', 'rb') as f:
     simple_nn = load(f)
 os.system('rm amp-data-fingerprints.ampdb/loose/c5a47a176b1eae977e8b8a725391b28c')
 
-descriptor = Gaussian(elements=['O'], Gs = G, cutoff=Gs["cutoff"])
+descriptor = Gaussian(elements=['O'], Gs = G, cutoff=Cosine(Gs["cutoff"]))
 descriptor.calculate_fingerprints(hashes, calculate_derivatives=True)
 with open('amp-data-fingerprints.ampdb/loose/d9d38c18635919f905dcc85729b6389b', 'rb') as f:
     amp = load(f)
 
 for s,am in zip(simple_nn, amp):
-    print(s[1])
-    print(am[1])
+    print(np.array(s[1]) - np.array(am[1]))
+    #if sum(np.array(s[1]) - np.array(am[1])) != 0.:
+    #    raise Exception('simple_nn amp fingerprint comparison failed')
+
+
