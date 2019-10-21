@@ -97,7 +97,8 @@ def calculate_fingerprints_range(fp, images):
 
 
 def make_params_file(
-    elements, etas, rs_s, g4_eta=4, cutoff=6.5, g4_zeta=[1.0, 4.0], g4_gamma=[1, -1]
+    elements, etas, rs_s, g4_eta=4, cutoff=6.5, g4_zeta=[1.0, 4.0], g4_gamma=[1, -1],
+    convert_from_amp=True
 ):
     """
     makes a params file for simple_NN. This is the file containing
@@ -124,6 +125,9 @@ def make_params_file(
     returns:
         None
     """
+    if convert_from_amp:
+        etas = [a / cutoff ** 2 for a in etas]
+        g4_eta = [a / cutoff ** 2 for a in g4_eta]
     if len(etas) != len(rs_s):
         raise ValueError('the length of the etas list must be equal to the'
                          'length of the rs_s list')
@@ -136,24 +140,35 @@ def make_params_file(
                 for eta, Rs in zip(etas, rs_s):
                     f.write(
                         "2 {} 0 {} {} {} 0.0\n".format(
-                            species, cutoff, np.round(eta, 6), Rs
+                            #species, cutoff, np.round(eta, 6), Rs
+                            species, cutoff, eta, Rs
                         )
                     )
             # G4
+            """
             for i in range(1, len(elements) + 1):
-                n = i
-                while True:
-                    for eta in g4_eta:
-                        for lamda in g4_gamma:
-                            for zeta in g4_zeta:
+                for eta in g4_eta:
+                    for lamda in g4_gamma:
+                        for zeta in g4_zeta:
+                            for j in range(i, len(elements) + 1):
                                 f.write(
                                     "4 {} {} {} {} {} {}\n".format(
-                                        i, n, cutoff, np.round(eta, 6), zeta, lamda
+                                        #i, j, cutoff, np.round(eta, 6), zeta, lamda
+                                        i, j, cutoff, eta, zeta, lamda
                                     )
                                 )
-                    n += 1
-                    if n > len(elements):
-                        break
+            """
+            for eta in g4_eta:
+                for zeta in g4_zeta:
+                    for lamda in g4_gamma:
+                        for i in range(1, len(elements) + 1):
+                            for j in range(i, len(elements) + 1):
+                                f.write(
+                                    "4 {} {} {} {} {} {}\n".format(
+                                        #i, j, cutoff, np.round(eta, 6), zeta, lamda
+                                        i, j, cutoff, eta, zeta, lamda
+                                    )
+                                )
 
 
 def reorganize_simple_nn_derivative(image, dx_dict):
