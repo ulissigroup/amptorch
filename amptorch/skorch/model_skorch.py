@@ -2,17 +2,22 @@
 Networks as understood from Behler and Parrinello's works. A model instance is
 constructed based off the unique number of atoms in the dataset."""
 
+import time
 import sys
 from collections import defaultdict, OrderedDict
+import numpy as np
 import torch
 import torch.nn as nn
 from torch.nn import init
 from torch.nn import Tanh, Softplus, LeakyReLU
 from torch.nn.init import xavier_uniform_, kaiming_uniform_
 from torch.autograd import grad
+from amp.utilities import Logger
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
+
+
 
 
 class Dense(nn.Linear):
@@ -34,7 +39,7 @@ class Dense(nn.Linear):
 
     def reset_parameters(self):
         """Weight initialization scheme"""
-        # init.constant_(self.weight, 0.5)
+        # init.constant_(self.weight, 0.05)
         init.constant_(self.bias, 0)
 
         # xavier_uniform_(self.weight, gain=np.sqrt(1/2))
@@ -102,9 +107,8 @@ class FullNN(nn.Module):
     """
 
     def __init__(
-        self, unique_atoms, architecture, device, forcetraining, activation_fn, require_grd=True
+        self, unique_atoms, architecture, device, forcetraining, require_grd=True
     ):
-
         super(FullNN, self).__init__()
         self.device = device
         self.unique_atoms = unique_atoms
@@ -122,13 +126,12 @@ class FullNN(nn.Module):
                     n_input_nodes=input_length,
                     n_layers=n_layers,
                     n_hidden_size=n_hidden_size,
-                    activation=activation_fn
                 )
             )
         self.elementwise_models = elementwise_models
         self.activation_fn = elementwise_models[0].activation
 
-    def forward(self, inputs, fprimes=None):
+    def forward(self, inputs):
         """Forward pass through the model - predicting energy and forces
         accordingly.
 
@@ -138,6 +141,8 @@ class FullNN(nn.Module):
 
         input_data = inputs[0]
         batch_size = inputs[1]
+        if self.forcetraining:
+            fprimes = inputs[-1]
         energy_pred = torch.zeros(batch_size, 1).to(self.device)
         force_pred = None
         # Constructs an Nx1 empty tensor to store element energy contributions
@@ -147,6 +152,7 @@ class FullNN(nn.Module):
             idx = torch.tensor([]).to(self.device)
         for index, element in enumerate(self.unique_atoms):
             model_inputs = input_data[element][0]
+            model_inputs.requires_grad = True
             contribution_index = torch.tensor(input_data[element][1]).to(self.device)
             atomwise_outputs = self.elementwise_models[index].forward(model_inputs)
             energy_pred.index_add_(0, contribution_index, atomwise_outputs)
@@ -173,7 +179,7 @@ class FullNN(nn.Module):
             """Reshapes the force tensor into a Qx3 matrix containing all the force
             predictions in the same order and shape as the target forces calculated
             from AMP."""
-        return energy_pred, force_pred
+        return [energy_pred, force_pred]
 
 
 class CustomLoss(nn.Module):
@@ -189,18 +195,20 @@ class CustomLoss(nn.Module):
 
     def forward(
         self,
-        energy_pred,
-        energy_targets,
-        num_atoms,
-        force_pred=None,
-        force_targets=None,
-    ):
+        prediction,
+        target):
+
+        energy_pred = prediction[0]
+        energy_targets = target[0]
+        num_atoms = target[1]
         MSE_loss = nn.MSELoss(reduction="sum")
         energy_per_atom = torch.div(energy_pred, num_atoms)
         targets_per_atom = torch.div(energy_targets, num_atoms)
         energy_loss = MSE_loss(energy_per_atom, targets_per_atom)
 
         if self.alpha > 0:
+            force_pred = prediction[1]
+            force_targets = target[-1]
             num_atoms_force = torch.cat([idx.repeat(int(idx)) for idx in num_atoms])
             num_atoms_force = torch.sqrt(
                 num_atoms_force.reshape(len(num_atoms_force), 1)
@@ -210,5 +218,37 @@ class CustomLoss(nn.Module):
             force_loss = (self.alpha / 3) * MSE_loss(
                 force_pred_per_atom, force_targets_per_atom
             )
+            loss = energy_loss + force_loss
+        return loss if self.alpha > 0 else energy_loss
+
+class LogCoshLoss(nn.Module):
+    def __init__(self, force_coefficient=0):
+        super(CustomLoss, self).__init__()
+        self.alpha = force_coefficient
+
+    def forward(
+        self,
+        prediction,
+        target):
+
+        energy_pred = prediction[0]
+        energy_targets = target[0]
+        num_atoms = target[1]
+        MSE_loss = nn.MSELoss(reduction="sum")
+        energy_per_atom = torch.div(energy_pred, num_atoms)
+        targets_per_atom = torch.div(energy_targets, num_atoms)
+        energy_loss = MSE_loss(energy_per_atom, targets_per_atom)
+
+        if self.alpha > 0:
+            force_pred = prediction[1]
+            force_targets = target[-1]
+            num_atoms_force = torch.cat([idx.repeat(int(idx)) for idx in num_atoms])
+            num_atoms_force = torch.sqrt(
+                num_atoms_force.reshape(len(num_atoms_force), 1)
+            )
+            force_pred_per_atom = torch.div(force_pred, num_atoms_force)
+            force_targets_per_atom = torch.div(force_targets, num_atoms_force)
+            force_loss = torch.sum(torch.log(torch.cosh(force_pred_per_atom -
+                force_targets_per_atom)))
             loss = energy_loss + force_loss
         return loss if self.alpha > 0 else energy_loss
