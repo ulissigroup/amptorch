@@ -460,7 +460,7 @@ class Trainer:
                 log("Best training force loss: {:4f}".format(best_train_force_loss))
         log("")
         if not os.path.exists("results/plots/training"):
-            os.mkdir("results/plots/training")
+            os.makedirs("results/plots/training")
         plt.title("RMSE vs. Epoch")
         plt.xlabel("Epoch #")
         plt.ylabel("RMSE")

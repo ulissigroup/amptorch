@@ -2,14 +2,14 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-def parity_plot(calc, images, label, data="energy", save=False):
+def parity_plot(calc, images, label, data="energy"):
     """Constructs a parity plot"""
     fig = plt.figure(figsize=(7.0, 7.0))
     ax = fig.add_subplot(111)
     targets = []
     preds = []
     if not os.path.exists("results/plots/parity"):
-        os.mkdirs("results/plots/parity")
+        os.makedirs("results/plots/parity")
     if data == "energy":
         for image in images:
             targets.append(image.get_potential_energy())
@@ -24,8 +24,7 @@ def parity_plot(calc, images, label, data="energy", save=False):
         ax.set_xlabel("ab initio energy, eV")
         ax.set_ylabel("PyTorch energy, eV")
         ax.set_title("Energies")
-        if save:
-            fig.savefig("results/plots/parity/parity_E_"+label+".pdf")
+        fig.savefig("results/plots/parity/parity_E_"+label+".pdf")
     if data == "forces":
         for image in images:
             targets.append(image.get_forces().reshape(-1, 1))
@@ -40,5 +39,4 @@ def parity_plot(calc, images, label, data="energy", save=False):
         ax.set_xlabel("ab initio forces, eV/A")
         ax.set_ylabel("PyTorch forces, eV/A")
         ax.set_title("Forces")
-        if save:
-            fig.savefig("results/plots/parity/parity_F_"+label+".pdf")
+        fig.savefig("results/plots/parity/parity_F_"+label+".pdf")
