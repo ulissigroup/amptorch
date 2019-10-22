@@ -118,7 +118,6 @@ class AtomsDataset(Dataset):
         )
         for g in G:
             g['Rs'] = G2_rs_s
-        G = {"O": G, "H": G}
         self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
         self.descriptor.calculate_fingerprints(
             self.hashed_images,
