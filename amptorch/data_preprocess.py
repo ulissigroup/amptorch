@@ -241,9 +241,6 @@ class AtomsDataset(Dataset):
 
     def __getitem__(self, index):
         fingerprint = self.fingerprint_dataset[index]
-        print(fingerprint[0])
-        print(len(fingerprint[0][1]))
-        sys.exit()
         energy = self.energy_dataset[index]
         atom_count = int(self.num_of_atoms[index])
         idx_hash = self.index_hashes[index]

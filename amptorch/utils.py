@@ -120,14 +120,14 @@ def make_params_file(
             list is passed in the values of the list will be used
             as eta values
         cutoff (float):
-            the distance in angstroms at which you'd like to cut 
+            the distance in angstroms at which you'd like to cut
             off the descriptors
     returns:
         None
     """
-    # if len(etas) != len(rs_s):
-        # raise ValueError('the length of the etas list must be equal to the'
-                         # 'length of the rs_s list')
+    if len(etas) != len(rs_s):
+        raise ValueError('the length of the etas list must be equal to the'
+                         'length of the rs_s list')
     if type(g4_eta) == int:
         g4_eta = np.logspace(-4, -1, num=g4_eta)
     for element in elements:
