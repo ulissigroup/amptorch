@@ -136,6 +136,7 @@ def make_params_file(
     for element in elements:
         with open("params_{}".format(element), "w") as f:
             # G2
+            """
             for species in range(1, len(elements) + 1):
                 for eta, Rs in zip(etas, rs_s):
                     f.write(
@@ -144,6 +145,16 @@ def make_params_file(
                             species, cutoff, eta, Rs
                         )
                     )
+            """
+            for eta, Rs in zip(etas, rs_s):
+                for species in range(1, len(elements) + 1):
+                    f.write(
+                        "2 {} 0 {} {} {} 0.0\n".format(
+                            #species, cutoff, np.round(eta, 6), Rs
+                            species, cutoff, eta, Rs
+                        )
+                    )
+
             # G4
             """
             for i in range(1, len(elements) + 1):
@@ -235,7 +246,6 @@ def reorganize_simple_nn_fp(image, x_dict):
     for element, full_arr in x_dict.items():
         for i, fp in enumerate(full_arr):
             true_i = sym_dict[element][i]
-            print(i)
             fp_l.append((element, list(fp)))
     """
     for i, sym in enumerate(syms):

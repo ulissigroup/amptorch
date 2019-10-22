@@ -20,9 +20,9 @@ atoms.set_calculator(sp(atoms=atoms, energy = -1,
 
 Gs = {}
 images = [atoms]
-Gs["G2_etas"] = [0.005]
-Gs["G2_rs_s"] = [0]
-Gs["G4_etas"] = [0.005]
+Gs["G2_etas"] = [0.005, 1]
+Gs["G2_rs_s"] = [0] * 2
+Gs["G4_etas"] = [0.005] * 4
 Gs["G4_zetas"] = [1., 4.]
 Gs["G4_gammas"] = [1., -1.]
 Gs["cutoff"] = 6.5
@@ -30,11 +30,11 @@ Gs["cutoff"] = 6.5
 
 elements = ['O', 'H']
 G = make_symmetry_functions(elements=elements, type='G2',
-                            etas=[0.005])
+                            etas=Gs["G2_etas"])
 G += make_symmetry_functions(elements=elements, type='G4',
-                             etas=[0.005],
-                             zetas=[1., 4.],
-                             gammas=[+1., -1.])
+                             etas=Gs["G4_etas"],
+                             zetas=Gs["G4_zetas"],
+                             gammas=Gs["G4_gammas"])
 G = {'O': G,
      'H':G
      }
@@ -58,8 +58,11 @@ with open('amp-data-fingerprints.ampdb/loose/'+stock_image_hash, 'rb') as f:
     amp = load(f)
 os.system('rm amp-data-fingerprints.ampdb/loose/'+stock_image_hash)
 
+#print(amp)
+#print(simple_nn)
 
 for s,am in zip(simple_nn, amp):
+    print([round(a,5) for a in np.array(s[1]) - np.array(am[1])])
     check = [round(a,5) == 0. for a in np.array(s[1]) - np.array(am[1])]
     if not (check == [True] * len(check)):
         raise Exception('test failed')
