@@ -3,7 +3,7 @@ import copy
 import time
 import os
 import pickle
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 import shutil
 import numpy as np
 from ase import io
@@ -99,7 +99,7 @@ def calculate_fingerprints_range(fp, images):
 
 def make_params_file(
     elements, etas, rs_s, g4_eta=4, cutoff=6.5, g4_zeta=[1.0, 4.0], g4_gamma=[1, -1]
-):
+    ):
     """
     makes a params file for simple_NN. This is the file containing
     the descriptors. This function makes g2 descriptos for the eta
@@ -125,6 +125,9 @@ def make_params_file(
     returns:
         None
     """
+    # if len(etas) != len(rs_s):
+        # raise ValueError('the length of the etas list must be equal to the'
+                         # 'length of the rs_s list')
     if type(g4_eta) == int:
         g4_eta = np.logspace(-4, -1, num=g4_eta)
     for element in elements:
@@ -134,24 +137,20 @@ def make_params_file(
                 for eta, Rs in zip(etas, rs_s):
                     f.write(
                         "2 {} 0 {} {} {} 0.0\n".format(
-                            species, cutoff, np.round(eta, 6), Rs
+                            species, cutoff, eta, Rs
                         )
                     )
             # G4
-            for i in range(1, len(elements) + 1):
-                n = i
-                while True:
-                    for eta in g4_eta:
-                        for lamda in g4_gamma:
-                            for zeta in g4_zeta:
+            for eta in g4_eta:
+                for zeta in g4_zeta:
+                    for lamda in g4_gamma:
+                        for i in range(1, len(elements) + 1):
+                            for j in range(i, len(elements) + 1):
                                 f.write(
                                     "4 {} {} {} {} {} {}\n".format(
-                                        i, n, cutoff, np.round(eta, 6), zeta, lamda
+                                        i, j, cutoff, eta, zeta, lamda
                                     )
                                 )
-                    n += 1
-                    if n > len(elements):
-                        break
 
 
 def reorganize_simple_nn_derivative(image, dx_dict):
@@ -165,9 +164,11 @@ def reorganize_simple_nn_derivative(image, dx_dict):
             a dictionary of the fingerprint derivatives from simple_nn
     """
     # TODO check for bugs
-    d = defaultdict(list)
-    sym_dict = defaultdict(list)
+    d = OrderedDict()
+    sym_dict = OrderedDict()
     syms = image.get_chemical_symbols()
+    for sym in syms:
+        sym_dict[sym] = []
     for i, sym in enumerate(syms):
         sym_dict[sym].append(i)
     # the structure is:
@@ -178,6 +179,8 @@ def reorganize_simple_nn_derivative(image, dx_dict):
             for sf in arr_t:
                 for j, dir_arr in enumerate(sf):
                     for k, derivative in enumerate(dir_arr):
+                        if (true_i, element, j, syms[j], k) not in d:
+                            d[(true_i, element, j, syms[j], k)] = []
                         d[(true_i, element, j, syms[j], k)].append(derivative)
     zero_keys = []
     for key, derivatives in d.items():
@@ -186,7 +189,7 @@ def reorganize_simple_nn_derivative(image, dx_dict):
             zero_keys.append(key)
     for key in zero_keys:
         del d[key]
-    d = dict(d)
+    d = OrderedDict(d)
     return d
 
 
@@ -204,14 +207,16 @@ def reorganize_simple_nn_fp(image, x_dict):
     # the structure is:
     # [elements][atom i][symetry function #][fp]
     fp_l = []
-    sym_dict = defaultdict(list)
+    sym_dict = OrderedDict()
     syms = image.get_chemical_symbols()
+    for sym in syms:
+        sym_dict[sym] = []
     for i, sym in enumerate(syms):
         sym_dict[sym].append(i)
-    for element, full_arr in x_dict.items():
-        for i, fp in enumerate(full_arr):
-            true_i = sym_dict[i]
-            fp_l.append((element, list(fp)))
+    for i, sym in enumerate(syms):
+        simple_nn_index = sym_dict[sym].index(i)
+        fp = x_dict[sym][simple_nn_index]
+        fp_l.append((sym, list(fp)))
     return fp_l
 
 
@@ -360,8 +365,8 @@ def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all"):
 
         # order descriptors for simple_nn
         cutoff = G["cutoff"]
-        G["G2_etas"] = [a * cutoff for a in G["G2_etas"]]
-        G["G4_etas"] = [a * cutoff for a in G["G4_etas"]]
+        G["G2_etas"] = [a / cutoff**2 for a in G["G2_etas"]]
+        G["G4_etas"] = [a / cutoff**2 for a in G["G4_etas"]]
         descriptors = (
             G["G2_etas"],
             G["G2_rs_s"],
@@ -431,13 +436,13 @@ def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all"):
     return traj, calculated
 
 
-def make_amp_descriptors_simple_nn(traj, Gs):
+def make_amp_descriptors_simple_nn(traj, Gs, elements):
     """
     uses simple_nn to make descriptors in the amp format.
     Only creates the same symmetry functions for each element
     for now.
     """
-    traj, calculated = make_simple_nn_fps(traj, Gs, clean_up_directory=True)
+    traj, calculated = make_simple_nn_fps(traj, Gs, elements=elements, clean_up_directory=True)
     if calculated:
         convert_simple_nn_fps(traj, Gs, delete_old=True)
 
