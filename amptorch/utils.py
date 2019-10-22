@@ -272,17 +272,17 @@ def get_hash(atoms, Gs):
         string += "%3d" % number
     for number in atoms.get_positions().flatten():
         string += "%.15f" % number
-    #for number in gs_values[0]:
-    #    string += "%.15f" % number
-    #for number in gs_values[1]:
-    #    string += "%.15f" % number
-    #for number in gs_values[2]:
-    #    string += "%.15f" % number
-    #for number in gs_values[3]:
-    #    string += "%.15f" % number
-    #for number in gs_values[4]:
-    #    string += "%.15f" % number
-    #string += "%.15f" % gs_values[5]
+    for number in gs_values[0]:
+        string += "%.15f" % number
+    for number in gs_values[1]:
+        string += "%.15f" % number
+    for number in gs_values[2]:
+        string += "%.15f" % number
+    for number in gs_values[3]:
+        string += "%.15f" % number
+    for number in gs_values[4]:
+        string += "%.15f" % number
+    string += "%.15f" % gs_values[5]
 
     md5 = hashlib.md5(string.encode("utf-8"))
     hash = md5.hexdigest()

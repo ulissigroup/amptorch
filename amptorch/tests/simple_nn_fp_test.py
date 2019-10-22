@@ -40,30 +40,27 @@ G = {'O': G,
      }
 
 hashes = stock_hash(images)
+stock_image_hash = list(hashes.keys())[0]
+new_image_hash = list(new_hash(images, Gs).keys())[0]
+
 
 os.system('rm amp-data-fingerprints.ampdb/loose/*')
 make_amp_descriptors_simple_nn(images, Gs, elements=elements)
 
 
-with open('amp-data-fingerprints.ampdb/loose/'+new_hash(atoms, Gs), 'rb') as f:
+with open('amp-data-fingerprints.ampdb/loose/'+new_image_hash, 'rb') as f:
     simple_nn = load(f)
-os.system('rm amp-data-fingerprints.ampdb/loose/'+new_hash(atoms, Gs))
+os.system('rm amp-data-fingerprints.ampdb/loose/'+new_image_hash)
 
 descriptor = Gaussian(elements=['O', 'H'], Gs=G, cutoff=Cosine(Gs["cutoff"]))
 descriptor.calculate_fingerprints(hashes, calculate_derivatives=True)
-with open('amp-data-fingerprints.ampdb/loose/'+stock_hash(atoms), 'rb') as f:
+with open('amp-data-fingerprints.ampdb/loose/'+stock_image_hash, 'rb') as f:
     amp = load(f)
-os.system('rm amp-data-fingerprints.ampdb/loose/'+stock_hash(atoms))
+os.system('rm amp-data-fingerprints.ampdb/loose/'+stock_image_hash)
 
-print(simple_nn)
-print(amp)
 
 for s,am in zip(simple_nn, amp):
-    pass
-    #print(np.array(s[1]) - np.array(am[1]))
-    #print(s[1])
-    #print(am[1])
-    #if sum(np.array(s[1]) - np.array(am[1])) != 0.:
-    #    raise Exception('simple_nn amp fingerprint comparison failed')
-
-
+    check = [round(a,5) == 0. for a in np.array(s[1]) - np.array(am[1])]
+    if not (check == [True] * len(check)):
+        raise Exception('test failed')
+print('pass')
