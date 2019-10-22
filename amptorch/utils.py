@@ -241,7 +241,6 @@ def reorganize_simple_nn_fp(image, x_dict):
     for i, sym in enumerate(syms):
         simple_nn_index = sym_dict[sym].index(i)
         fp = x_dict[sym][simple_nn_index]
-        print(x_dict[sym][simple_nn_index])
         fp_l.append((sym, list(fp)))
     return fp_l
 
@@ -273,17 +272,17 @@ def get_hash(atoms, Gs):
         string += "%3d" % number
     for number in atoms.get_positions().flatten():
         string += "%.15f" % number
-    for number in gs_values[0]:
-        string += "%.15f" % number
-    for number in gs_values[1]:
-        string += "%.15f" % number
-    for number in gs_values[2]:
-        string += "%.15f" % number
-    for number in gs_values[3]:
-        string += "%.15f" % number
-    for number in gs_values[4]:
-        string += "%.15f" % number
-    string += "%.15f" % gs_values[5]
+    #for number in gs_values[0]:
+    #    string += "%.15f" % number
+    #for number in gs_values[1]:
+    #    string += "%.15f" % number
+    #for number in gs_values[2]:
+    #    string += "%.15f" % number
+    #for number in gs_values[3]:
+    #    string += "%.15f" % number
+    #for number in gs_values[4]:
+    #    string += "%.15f" % number
+    #string += "%.15f" % gs_values[5]
 
     md5 = hashlib.md5(string.encode("utf-8"))
     hash = md5.hexdigest()
@@ -415,7 +414,6 @@ def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all"):
                 atom_types = list(set(atom_types))
         else:
             atom_types = elements
-        print(atom_types)
 
         make_params_file(atom_types, *descriptors, convert_from_amp=True)
 
