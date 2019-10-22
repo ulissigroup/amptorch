@@ -71,6 +71,7 @@ def test_calcs():
         ),
     ]
 
+    [a.get_potential_energy() for a in images]
     # Parameters
     hiddenlayers = {"O": (2,), "Pd": (2,), "Cu": (2,)}
 
