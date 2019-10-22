@@ -1,0 +1,17 @@
+language: python
+os:
+  - linux
+rvm:
+  - 3.6
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gfortran
+install:
+  - pip install git+https://github.com/medford-group/SIMPLE-NN
+  - pip install .
+script:
+  - python3 ./amptorch/tests/consistency_test.py 
+  - python3 ./simple_nn_fp_test.py
