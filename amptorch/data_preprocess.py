@@ -105,7 +105,7 @@ class AtomsDataset(Dataset):
         G4_gammas = Gs["G4_gammas"]
         cutoff = Gs["cutoff"]
         make_amp_descriptors_simple_nn(
-            self.atom_images, Gs
+            self.atom_images, Gs, self.elements
         )
         G = make_symmetry_functions(
                 elements=self.elements, type="G2", etas=G2_etas
