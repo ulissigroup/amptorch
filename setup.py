@@ -11,7 +11,6 @@ setup(name='amptorch',
       url='https://github.com/ulissigroup/amptorch',
       #scripts=['lammps_interface/bin/py_wrapped_packmol.py'],
       packages=find_packages(),
-      install_requires=['spglib', 'torch','ase','scipy',
-                        'amp-atomistics'],
+      install_requires=['spglib', 'torch','ase','scipy'],
      )
 
