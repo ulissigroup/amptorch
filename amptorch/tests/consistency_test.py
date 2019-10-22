@@ -79,7 +79,7 @@ def test_calcs():
     Gs["G2_etas"] = [0.2]
     Gs["G2_rs_s"] = [0]
     Gs["G4_etas"] = [0.4]
-    Gs["G4_zetas"] = [0.6]
+    Gs["G4_zetas"] = [1]
     Gs["G4_gammas"] = [0.4]
     Gs["cutoff"] = 6.5
 
