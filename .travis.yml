@@ -15,4 +15,4 @@ install:
   - pip install .
 script:
   - python3 ./amptorch/tests/consistency_test.py 
-  - python3 ./simple_nn_fp_test.py
+  - python3 ./amptorch/tests/simple_nn_fp_test.py
