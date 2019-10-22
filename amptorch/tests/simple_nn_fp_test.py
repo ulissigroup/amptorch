@@ -6,9 +6,12 @@ from ase.calculators.singlepoint import SinglePointCalculator as sp
 from ase.build import molecule
 import numpy as np
 from pickle import load
-from amp.utilities import hash_images
+from amp.utilities import hash_images as stock_hash
+from amptorch.utils import hash_images as new_hash
 
-atoms = molecule('O3')
+
+atoms = molecule('H2O')
+print(atoms)
 atoms.set_cell([10,10,10])
 atoms.set_pbc = [True] * 3
 
@@ -25,30 +28,41 @@ Gs["G4_gammas"] = [1., -1.]
 Gs["cutoff"] = 6.5
 
 
-elements = ['O']
+elements = ['O', 'H']
 G = make_symmetry_functions(elements=elements, type='G2',
                             etas=[0.005])
 G += make_symmetry_functions(elements=elements, type='G4',
                              etas=[0.005],
                              zetas=[1., 4.],
                              gammas=[+1., -1.])
-G = {'O': G}
+G = {'O': G,
+     'H':G
+     }
 
-hashes = hash_images(images)
+hashes = stock_hash(images)
 
-make_amp_descriptors_simple_nn(images, Gs)
+os.system('rm amp-data-fingerprints.ampdb/loose/*')
+make_amp_descriptors_simple_nn(images, Gs, elements=elements)
 
-with open('amp-data-fingerprints.ampdb/loose/c5a47a176b1eae977e8b8a725391b28c', 'rb') as f:
+
+with open('amp-data-fingerprints.ampdb/loose/'+new_hash(atoms, Gs), 'rb') as f:
     simple_nn = load(f)
-os.system('rm amp-data-fingerprints.ampdb/loose/c5a47a176b1eae977e8b8a725391b28c')
+os.system('rm amp-data-fingerprints.ampdb/loose/'+new_hash(atoms, Gs))
 
-descriptor = Gaussian(elements=['O'], Gs = G, cutoff=Cosine(Gs["cutoff"]))
+descriptor = Gaussian(elements=['O', 'H'], Gs=G, cutoff=Cosine(Gs["cutoff"]))
 descriptor.calculate_fingerprints(hashes, calculate_derivatives=True)
-with open('amp-data-fingerprints.ampdb/loose/d9d38c18635919f905dcc85729b6389b', 'rb') as f:
+with open('amp-data-fingerprints.ampdb/loose/'+stock_hash(atoms), 'rb') as f:
     amp = load(f)
+os.system('rm amp-data-fingerprints.ampdb/loose/'+stock_hash(atoms))
+
+print(simple_nn)
+print(amp)
 
 for s,am in zip(simple_nn, amp):
-    print(np.array(s[1]) - np.array(am[1]))
+    pass
+    #print(np.array(s[1]) - np.array(am[1]))
+    #print(s[1])
+    #print(am[1])
     #if sum(np.array(s[1]) - np.array(am[1])) != 0.:
     #    raise Exception('simple_nn amp fingerprint comparison failed')
 
