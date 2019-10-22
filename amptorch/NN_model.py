@@ -83,7 +83,6 @@ class MLP(nn.Module):
         Arguments:
             inputs (torch.Tensor): NN inputs
         """
-
         return self.model_net(inputs)
 
 
@@ -188,6 +187,7 @@ class CustomLoss(nn.Module):
         targets_per_atom = torch.div(energy_targets, num_atoms)
         energy_loss = MSE_loss(energy_per_atom, targets_per_atom)
         l2_reg = torch.autograd.Variable(torch.FloatTensor(1), requires_grad=True)
+        reg_lambda = 0
         for W in model.parameters():
             l2_reg = l2_reg + W.norm(2)
 
@@ -201,9 +201,9 @@ class CustomLoss(nn.Module):
             force_loss = (self.alpha / 3) * MSE_loss(
                 force_pred_per_atom, force_targets_per_atom
             )
-            loss = 0.5 * (energy_loss + force_loss)
+            loss = 0.5 * (energy_loss + force_loss) + reg_lambda * l2_reg
         else:
-            loss = 0.5 * energy_loss
+            loss = 0.5 * energy_loss + reg_lambda * l2_reg
         return loss
 
 
