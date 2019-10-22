@@ -2,7 +2,7 @@ import sys
 import time
 import os
 import pickle
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 import shutil
 import numpy as np
 from ase import io
@@ -182,9 +182,11 @@ def reorganize_simple_nn_derivative(image, dx_dict):
             a dictionary of the fingerprint derivatives from simple_nn
     """
     # TODO check for bugs
-    d = defaultdict(list)
-    sym_dict = defaultdict(list)
+    d = OrderedDict()
+    sym_dict = OrderedDict()
     syms = image.get_chemical_symbols()
+    for sym in syms:
+        sym_dict[sym] = []
     for i, sym in enumerate(syms):
         sym_dict[sym].append(i)
     # the structure is:
@@ -195,6 +197,8 @@ def reorganize_simple_nn_derivative(image, dx_dict):
             for sf in arr_t:
                 for j, dir_arr in enumerate(sf):
                     for k, derivative in enumerate(dir_arr):
+                        if (true_i, element, j, syms[j], k) not in d:
+                            d[(true_i, element, j, syms[j], k)] = []
                         d[(true_i, element, j, syms[j], k)].append(derivative)
     zero_keys = []
     for key, derivatives in d.items():
@@ -203,7 +207,7 @@ def reorganize_simple_nn_derivative(image, dx_dict):
             zero_keys.append(key)
     for key in zero_keys:
         del d[key]
-    d = dict(d)
+    d = OrderedDict(d)
     return d
 
 
@@ -221,14 +225,24 @@ def reorganize_simple_nn_fp(image, x_dict):
     # the structure is:
     # [elements][atom i][symetry function #][fp]
     fp_l = []
-    sym_dict = defaultdict(list)
+    sym_dict = OrderedDict()
     syms = image.get_chemical_symbols()
+    for sym in syms:
+        sym_dict[sym] = []
     for i, sym in enumerate(syms):
         sym_dict[sym].append(i)
+    """
     for element, full_arr in x_dict.items():
         for i, fp in enumerate(full_arr):
-            true_i = sym_dict[i]
+            true_i = sym_dict[element][i]
+            print(i)
             fp_l.append((element, list(fp)))
+    """
+    for i, sym in enumerate(syms):
+        simple_nn_index = sym_dict[sym].index(i)
+        fp = x_dict[sym][simple_nn_index]
+        print(x_dict[sym][simple_nn_index])
+        fp_l.append((sym, list(fp)))
     return fp_l
 
 
@@ -401,6 +415,7 @@ def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all"):
                 atom_types = list(set(atom_types))
         else:
             atom_types = elements
+        print(atom_types)
 
         make_params_file(atom_types, *descriptors, convert_from_amp=True)
 
@@ -444,13 +459,13 @@ def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all"):
     return traj, calculated
 
 
-def make_amp_descriptors_simple_nn(traj, Gs):
+def make_amp_descriptors_simple_nn(traj, Gs, elements):
     """
     uses simple_nn to make descriptors in the amp format.
     Only creates the same symmetry functions for each element
     for now.
     """
-    traj, calculated = make_simple_nn_fps(traj, Gs, clean_up_directory=True)
+    traj, calculated = make_simple_nn_fps(traj, Gs, elements=elements, clean_up_directory=True)
     if calculated:
         convert_simple_nn_fps(traj, Gs, delete_old=True)
 
