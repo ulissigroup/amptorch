@@ -1,4 +1,5 @@
 import sys
+import copy
 import time
 import os
 import pickle
@@ -97,9 +98,8 @@ def calculate_fingerprints_range(fp, images):
 
 
 def make_params_file(
-    elements, etas, rs_s, g4_eta=4, cutoff=6.5, g4_zeta=[1.0, 4.0], g4_gamma=[1, -1],
-    convert_from_amp=True
-):
+    elements, etas, rs_s, g4_eta=4, cutoff=6.5, g4_zeta=[1.0, 4.0], g4_gamma=[1, -1]
+    ):
     """
     makes a params file for simple_NN. This is the file containing
     the descriptors. This function makes g2 descriptos for the eta
@@ -120,14 +120,11 @@ def make_params_file(
             list is passed in the values of the list will be used
             as eta values
         cutoff (float):
-            the distance in angstroms at which you'd like to cut 
+            the distance in angstroms at which you'd like to cut
             off the descriptors
     returns:
         None
     """
-    if convert_from_amp:
-        etas = [a / cutoff ** 2 for a in etas]
-        g4_eta = [a / cutoff ** 2 for a in g4_eta]
     if len(etas) != len(rs_s):
         raise ValueError('the length of the etas list must be equal to the'
                          'length of the rs_s list')
@@ -136,16 +133,6 @@ def make_params_file(
     for element in elements:
         with open("params_{}".format(element), "w") as f:
             # G2
-            """
-            for species in range(1, len(elements) + 1):
-                for eta, Rs in zip(etas, rs_s):
-                    f.write(
-                        "2 {} 0 {} {} {} 0.0\n".format(
-                            #species, cutoff, np.round(eta, 6), Rs
-                            species, cutoff, eta, Rs
-                        )
-                    )
-            """
             for eta, Rs in zip(etas, rs_s):
                 for species in range(1, len(elements) + 1):
                     f.write(
@@ -156,19 +143,6 @@ def make_params_file(
                     )
 
             # G4
-            """
-            for i in range(1, len(elements) + 1):
-                for eta in g4_eta:
-                    for lamda in g4_gamma:
-                        for zeta in g4_zeta:
-                            for j in range(i, len(elements) + 1):
-                                f.write(
-                                    "4 {} {} {} {} {} {}\n".format(
-                                        #i, j, cutoff, np.round(eta, 6), zeta, lamda
-                                        i, j, cutoff, eta, zeta, lamda
-                                    )
-                                )
-            """
             for eta in g4_eta:
                 for zeta in g4_zeta:
                     for lamda in g4_gamma:
@@ -176,7 +150,6 @@ def make_params_file(
                             for j in range(i, len(elements) + 1):
                                 f.write(
                                     "4 {} {} {} {} {} {}\n".format(
-                                        #i, j, cutoff, np.round(eta, 6), zeta, lamda
                                         i, j, cutoff, eta, zeta, lamda
                                     )
                                 )
@@ -242,12 +215,6 @@ def reorganize_simple_nn_fp(image, x_dict):
         sym_dict[sym] = []
     for i, sym in enumerate(syms):
         sym_dict[sym].append(i)
-    """
-    for element, full_arr in x_dict.items():
-        for i, fp in enumerate(full_arr):
-            true_i = sym_dict[element][i]
-            fp_l.append((element, list(fp)))
-    """
     for i, sym in enumerate(syms):
         simple_nn_index = sym_dict[sym].index(i)
         fp = x_dict[sym][simple_nn_index]
@@ -388,24 +355,28 @@ def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all"):
     returns:
         None
     """
-    # order descriptors for simple_nn
-    descriptors = (
-        Gs["G2_etas"],
-        Gs["G2_rs_s"],
-        Gs["G4_etas"],
-        Gs["cutoff"],
-        Gs["G4_zetas"],
-        Gs["G4_gammas"],
-    )
     # handle inputs
     if type(traj) != list:
         traj = [traj]
 
-    traj = factorize_data(traj, Gs)
+    G = copy.deepcopy(Gs)
+    traj = factorize_data(traj, G)
     calculated = False
     if len(traj) > 0:
         from simple_nn.features.symmetry_function import Symmetry_function
 
+        # order descriptors for simple_nn
+        cutoff = G["cutoff"]
+        G["G2_etas"] = [a / cutoff**2 for a in G["G2_etas"]]
+        G["G4_etas"] = [a / cutoff**2 for a in G["G4_etas"]]
+        descriptors = (
+            G["G2_etas"],
+            G["G2_rs_s"],
+            G["G4_etas"],
+            G["cutoff"],
+            G["G4_zetas"],
+            G["G4_gammas"],
+        )
         # clean up any previous runs
         if os.path.isdir("./data"):
             shutil.rmtree("./data")
@@ -425,7 +396,7 @@ def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all"):
         else:
             atom_types = elements
 
-        make_params_file(atom_types, *descriptors, convert_from_amp=True)
+        make_params_file(atom_types, *descriptors)
 
         # build the descriptor object
         descriptor = Symmetry_function()
