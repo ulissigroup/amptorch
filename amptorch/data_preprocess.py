@@ -104,10 +104,8 @@ class AtomsDataset(Dataset):
         G4_zetas = Gs["G4_zetas"]
         G4_gammas = Gs["G4_gammas"]
         cutoff = Gs["cutoff"]
-        # TODO Resolve Simple_NN ordering bug, defaulting to amp for time being
-        # make_amp_descriptors_simple_nn(
-            # self.atom_images, Gs
-        # )
+        make_amp_descriptors_simple_nn(
+            self.atom_images, Gs, self.elements)
         G = make_symmetry_functions(
                 elements=self.elements, type="G2", etas=G2_etas
                 )
@@ -118,6 +116,9 @@ class AtomsDataset(Dataset):
             zetas=G4_zetas,
             gammas=G4_gammas,
         )
+        for g in G:
+            g['Rs'] = G2_rs_s
+        G = {"O": G, "H": G}
         self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
         self.descriptor.calculate_fingerprints(
             self.hashed_images,
@@ -240,6 +241,9 @@ class AtomsDataset(Dataset):
 
     def __getitem__(self, index):
         fingerprint = self.fingerprint_dataset[index]
+        print(fingerprint[0])
+        print(len(fingerprint[0][1]))
+        sys.exit()
         energy = self.energy_dataset[index]
         atom_count = int(self.num_of_atoms[index])
         idx_hash = self.index_hashes[index]
