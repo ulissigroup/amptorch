@@ -466,7 +466,7 @@ class TestDataset(Dataset):
         G4_zetas = Gs["G4_zetas"]
         G4_gammas = Gs["G4_gammas"]
         cutoff = Gs["cutoff"]
-        make_amp_descriptors_simple_nn(self.atom_images, Gs)
+        make_amp_descriptors_simple_nn(self.atom_images, Gs, self.unique_atoms)
         G = make_symmetry_functions(elements=self.unique_atoms, type="G2", etas=G2_etas)
         G += make_symmetry_functions(
             elements=self.unique_atoms,
