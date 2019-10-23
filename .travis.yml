@@ -14,5 +14,4 @@ install:
   - pip install git+https://bitbucket.org/andrewpeterson/amp.git
   - pip install .
 script:
-  - python3 ./amptorch/tests/consistency_test.py 
-  - python3 ./amptorch/tests/simple_nn_fp_test.py
+  - python3 ./amptorch/tests/test_script.py 
