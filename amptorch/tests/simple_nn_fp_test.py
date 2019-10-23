@@ -62,7 +62,3 @@ def test_fp_match():
         for s, am in zip(simple_nn, amp):
             for i, j in zip(s[1], am[1]):
                 assert abs(i - j) <= 1e-5, "Fingerprints do not match!"
-
-
-if __name__ == "__main__":
-    test_fp_match()
