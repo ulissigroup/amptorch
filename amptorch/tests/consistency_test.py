@@ -3,6 +3,7 @@ Force and energy calculation consistency test to be verified against AMP's
 calculations
 """
 
+import os
 import numpy as np
 from torch.nn import init
 from torch.utils.data import DataLoader
@@ -12,7 +13,8 @@ from collections import OrderedDict
 from amp import Amp
 from amp.descriptor.gaussian import Gaussian, make_symmetry_functions
 from amp.model.neuralnetwork import NeuralNetwork
-from amp.utilities import hash_images
+from amptorch.utils import hash_images
+from amptorch.gaussian import Gaussian as DummyGaussian
 from amp.model import calculate_fingerprints_range
 from amptorch import core
 from amptorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
@@ -78,8 +80,8 @@ def test_calcs():
     Gs["G2_etas"] = [0.2]
     Gs["G2_rs_s"] = [0]
     Gs["G4_etas"] = [0.4]
-    Gs["G4_zetas"] = [0.6]
-    Gs["G4_gammas"] = [0.4]
+    Gs["G4_zetas"] = [1]
+    Gs["G4_gammas"] = [1]
     Gs["cutoff"] = 6.5
 
     elements = ["O", "Pd", "Cu"]
@@ -92,7 +94,7 @@ def test_calcs():
         zetas=Gs["G4_zetas"],
         gammas=Gs["G4_gammas"],
     )
-    hashed_images = hash_images(images)
+    hashed_images = hash_images(images, Gs)
     descriptor = Gaussian(Gs=G, cutoff=Gs["cutoff"])
     descriptor.calculate_fingerprints(hashed_images, calculate_derivatives=True)
     fingerprints_range = calculate_fingerprints_range(descriptor, hashed_images)
@@ -105,7 +107,7 @@ def test_calcs():
                     [
                         (
                             1,
-                            np.matrix(
+                            np.array(
                                 [
                                     [0.5, 0.5],
                                     [0.5, 0.5],
@@ -130,7 +132,7 @@ def test_calcs():
                     [
                         (
                             1,
-                            np.matrix(
+                            np.array(
                                 [
                                     [0.5, 0.5],
                                     [0.5, 0.5],
@@ -145,7 +147,7 @@ def test_calcs():
                                 ]
                             ),
                         ),
-                        (2, np.matrix([[0.5], [0.5], [0.5]])),
+                        (2, np.array([[0.5], [0.5], [0.5]])),
                     ]
                 ),
             ),
@@ -155,7 +157,7 @@ def test_calcs():
                     [
                         (
                             1,
-                            np.matrix(
+                            np.array(
                                 [
                                     [0.5, 0.5],
                                     [0.5, 0.5],
@@ -170,7 +172,7 @@ def test_calcs():
                                 ]
                             ),
                         ),
-                        (2, np.matrix([[0.5], [0.5], [0.5]])),
+                        (2, np.array([[0.5], [0.5], [0.5]])),
                     ]
                 ),
             ),
@@ -185,10 +187,27 @@ def test_calcs():
         ]
     )
 
-    # Testing pure-python and fortran versions of Gaussian-neural force call
+    calc = Amp(
+        descriptor,
+        model=NeuralNetwork(
+            hiddenlayers=hiddenlayers,
+            weights=weights,
+            scalings=scalings,
+            activation="linear",
+            fprange=fingerprints_range,
+            mode="atom-centered",
+            fortran=False,
+        ),
+        logging=False,
+    )
+
+    amp_energies = [calc.get_potential_energy(image) for image in images]
+    amp_forces = [calc.get_forces(image) for image in images]
+    amp_forces = np.concatenate(amp_forces)
+
     device = "cpu"
     dataset = AtomsDataset(
-        images, descriptor=Gaussian, Gs=Gs, cores=1, forcetraining=True
+        images, descriptor=DummyGaussian, Gs=Gs, cores=1, forcetraining=True
     )
     fp_length = dataset.fp_length
     batch_size = len(dataset)
@@ -208,23 +227,6 @@ def test_calcs():
         fp_primes = batch[3]
         energy_pred, force_pred = model(input_data, fp_primes)
 
-    calc = Amp(
-        descriptor,
-        model=NeuralNetwork(
-            hiddenlayers=hiddenlayers,
-            weights=weights,
-            scalings=scalings,
-            activation="linear",
-            fprange=fingerprints_range,
-            mode="atom-centered",
-            fortran=False,
-        ),
-    )
-
-    amp_energies = [calc.get_potential_energy(image) for image in images]
-    amp_forces = [calc.get_forces(image) for image in images]
-    amp_forces = np.concatenate(amp_forces)
-
     for idx, i in enumerate(amp_energies):
         assert round(i, 4) == round(
             energy_pred.tolist()[idx][0], 4
@@ -238,7 +240,3 @@ def test_calcs():
                 % (idx + 1, idx_d, value, force_pred.tolist()[idx][idx_d])
             )
     print("Force predictions are correct!")
-
-
-if __name__ == "__main__":
-    test_calcs()
