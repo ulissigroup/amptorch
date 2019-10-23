@@ -21,3 +21,6 @@ As AMPTorch is a work in progress, please feel free to report any issues/suggest
 - *Amp*: Atomistic Machine-Learning Package, https://bitbucket.org/andrewpeterson/amp
 - Khorshidi & Peterson, “Amp: A modular approach to machine learning in atomistic simulations”, Computer Physics Communications 207:310-324, 2016. DOI:10.1016/j.cpc.2016.05.010
 - PyTorch, https://pytorch.org/
+
+[![Build Status](https://travis-ci.org/ulissigroup/amptorch.svg?branch=master)](https://travis-ci.org/ulissigroup/amptorch)
+[![Coverage Status](https://coveralls.io/repos/github/ulissigroup/amptorch/badge.svg?branch=master)](https://coveralls.io/github/ulissigroup/amptorch?branch=master)
