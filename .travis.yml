@@ -14,6 +14,6 @@ install:
   - pip install git+https://bitbucket.org/andrewpeterson/amp.git
   - pip install .
 script:
-  - python3 ./amptorch/tests/test_script.py 
+  - coverage run ./amptorch/tests/test_script.py 
 after_success:
   - coveralls
