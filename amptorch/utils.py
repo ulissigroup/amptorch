@@ -559,10 +559,76 @@ def log_force_results(log, epoch, now, loss, energy_rmse, force_rmse, phase):
     else:
         log(
                    "%5i %19s %12.4e %12.4e %12.4e %7s"
-                    % (epoch, now, loss, energy_rmse, force_rmse, phase)
+            % (epoch, now, loss, energy_rmse, force_rmse, phase)
                 )
 def log_energy_results(log, epoch, now, loss, energy_rmse, phase):
     if type(loss) is str:
         log("%5i %19s %12s %12.4e %7s" % (epoch, now, loss, energy_rmse, phase))
     else:
         log("%5i %19s %12.4e %12.4e %7s" % (epoch, now, loss, energy_rmse, phase))
+
+def dict2cutoff(dct):
+    """This function converts a dictionary (which was created with the
+    to_dict method of one of the cutoff classes) into an instantiated
+    version of the class. Modeled after ASE's dict2constraint function.
+    """
+    if len(dct) != 2:
+        raise RuntimeError('Cutoff dictionary must have only two values,'
+                           ' "name" and "kwargs".')
+    return globals()[dct['name']](**dct['kwargs'])
+
+class Cosine(object):
+    """Cosine functional form suggested by Behler.
+
+    Parameters
+    ---------
+    Rc : float
+        Radius above which neighbor interactions are ignored.
+    """
+
+    def __init__(self, Rc):
+
+        self.Rc = Rc
+
+    def __call__(self, Rij):
+        """
+        Parameters
+        ----------
+        Rij : float
+            Distance between pair atoms.
+
+        Returns
+        -------
+        float
+            The value of the cutoff function.
+        """
+        if Rij > self.Rc:
+            return 0.
+        else:
+            return 0.5 * (np.cos(np.pi * Rij / self.Rc) + 1.)
+
+    def prime(self, Rij):
+        """Derivative (dfc_dRij) of the Cosine cutoff function with respect to Rij.
+
+        Parameters
+        ----------
+        Rij : float
+            Distance between pair atoms.
+
+        Returns
+        -------
+        float
+            The value of derivative of the cutoff function.
+        """
+        if Rij > self.Rc:
+            return 0.
+        else:
+            return -0.5 * np.pi / self.Rc * np.sin(np.pi * Rij / self.Rc)
+
+    def todict(self):
+        return {'name': 'Cosine',
+                'kwargs': {'Rc': self.Rc}}
+
+    def __repr__(self):
+        return ('<Cosine cutoff with Rc=%.3f from amp.descriptor.cutoffs>'
+                % self.Rc)
