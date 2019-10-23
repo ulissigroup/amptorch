@@ -1,0 +1,15 @@
+language: python
+os:
+  - linux
+rvm:
+  - 3.6
+addons:
+  apt:
+    packages:
+    - gfortran
+install:
+  - pip install git+https://github.com/medford-group/SIMPLE-NN
+  - pip install git+https://bitbucket.org/andrewpeterson/amp.git
+  - pip install .
+script:
+  - python3 ./amptorch/tests/test_script.py 
