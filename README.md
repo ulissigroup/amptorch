@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ulissigroup/amptorch.svg?branch=master)](https://travis-ci.org/ulissigroup/amptorch)
+[![Coverage Status](https://coveralls.io/repos/github/ulissigroup/amptorch/badge.svg?branch=master)](https://coveralls.io/github/ulissigroup/amptorch?branch=master)
 # AMP - PyTorch Implementation
 
 PyTorch is an open-source machine learning (ML) module for Python that provides flexibility and ease in developing, training, and optimizing various ML models (https://pytorch.org). The following package contains a PyTorch implementation of the *Amp* code that seeks to provide enhanced performance, speed, and flexibility as compared to the original code. The implementation will do so by benefiting from state-of-the-art machine learning methods and capabilities to be optimized in conjunction with high-throughput supercomputers.
@@ -21,6 +23,3 @@ As AMPTorch is a work in progress, please feel free to report any issues/suggest
 - *Amp*: Atomistic Machine-Learning Package, https://bitbucket.org/andrewpeterson/amp
 - Khorshidi & Peterson, “Amp: A modular approach to machine learning in atomistic simulations”, Computer Physics Communications 207:310-324, 2016. DOI:10.1016/j.cpc.2016.05.010
 - PyTorch, https://pytorch.org/
-
-[![Build Status](https://travis-ci.org/ulissigroup/amptorch.svg?branch=master)](https://travis-ci.org/ulissigroup/amptorch)
-[![Coverage Status](https://coveralls.io/repos/github/ulissigroup/amptorch/badge.svg?branch=master)](https://coveralls.io/github/ulissigroup/amptorch?branch=master)
