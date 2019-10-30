@@ -7,21 +7,23 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
-from amptorch.NN_model import CustomLoss, LogCoshLoss
+from amptorch.NN_model import CustomLoss
 from amptorch import AMP
 from amptorch.core import AMPTorch
-from amp.descriptor.gaussian import Gaussian
+#from amp.descriptor.gaussian import Gaussian
+from amptorch.gaussian import Gaussian
 
 # define training images
-IMAGES = "../datasets/water/water.extxyz"
-images = ase.io.read(IMAGES, ":")
+#IMAGES = "../datasets/water/water.extxyz"
+IMAGES = "/home/bcomer3/data/simple_NN/nn_trains/psi4/fixed_md.traj"
+images = ase.io.read(IMAGES, "101:-101:50")
 IMAGES = []
-for i in range(100):
+for i in range(len(images)):
     IMAGES.append(images[i])
 
 # define symmetry functions to be used
 GSF = {}
-GSF["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=8)
+GSF["G2_etas"] = np.logspace(np.log10(0.05), np.log10(80.0), num=4)
 GSF["G2_rs_s"] = [0] * 4
 GSF["G4_etas"] = [0.005]
 GSF["G4_zetas"] = [1.0, 4.0]
@@ -37,8 +39,9 @@ calc = AMP(
         IMAGES,
         descriptor=Gaussian,
         Gs=GSF,
-        cores=1,
-        force_coefficient=0.3,
+        cores=6,
+        device='cpu',
+        force_coefficient=2,
         lj_data=None,
         label='example',
         save_logs=True

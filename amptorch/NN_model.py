@@ -8,7 +8,7 @@ import torch
 import torch.nn as nn
 from torch.nn import Tanh, Softplus, LeakyReLU
 from torch.nn import init
-from torch.nn.init import xavier_uniform_, kaiming_uniform_
+from torch.nn.init import xavier_uniform_, kaiming_uniform_, xavier_normal_
 from torch.autograd import grad
 from .utils import Logger
 
@@ -37,6 +37,8 @@ class Dense(nn.Linear):
         """Weight initialization scheme"""
         init.constant_(self.bias, 0)
         kaiming_uniform_(self.weight, nonlinearity="tanh")
+        # kaiming_uniform_(self.weight, nonlinearity="leaky_relu")
+        # xavier_normal_(self.weight)
 
     def forward(self, inputs):
         neuron_output = super(Dense, self).forward(inputs)
@@ -64,6 +66,8 @@ class MLP(nn.Module):
         n_layers=2,
         n_hidden_size=2,
         activation=Tanh,
+        # activation=LeakyReLU,
+        # activation=Softplus,
     ):
         super(MLP, self).__init__()
         if isinstance(n_hidden_size, int):
@@ -287,3 +291,59 @@ class TanhLoss(nn.Module):
             )
             loss = energy_loss + force_loss
         return loss if self.alpha > 0 else energy_loss
+
+class WeightedCustomLoss(nn.Module):
+    """Custom loss function to be optimized by the regression. Includes atomic
+    energy and force contributions.
+
+    Eq. (26) in A. Khorshidi, A.A. Peterson /
+    Computer Physics Communications 207 (2016) 310-324"""
+
+    def __init__(self, force_coefficient=0):
+        super(WeightedCustomLoss, self).__init__()
+        self.alpha = force_coefficient
+
+    def forward(
+        self,
+        energy_pred,
+        energy_targets,
+        num_atoms,
+        force_pred=None,
+        force_targets=None,
+        model=None,
+        weights=None
+    ):
+        MSE_loss = weighted_mse_loss
+        MSE_loss_c = nn.MSELoss(reduction="sum")
+        energy_per_atom = torch.div(energy_pred, num_atoms)
+        targets_per_atom = torch.div(energy_targets, num_atoms)
+        energy_loss = MSE_loss(energy_per_atom, targets_per_atom, weights[:,0])
+        l2_reg = torch.autograd.Variable(torch.FloatTensor(1), requires_grad=True)
+        reg_lambda = 0
+        for W in model.parameters():
+            l2_reg = l2_reg + W.norm(2)
+
+        if self.alpha > 0:
+            weights_atoms_force =  torch.cat([w.repeat(int(idx)) for w, idx in\
+                                              zip(weights[:,1], num_atoms)])
+            weights_atoms_force = weights_atoms_force.reshape(len(weights_atoms_force),1)
+            num_atoms_force = torch.cat([idx.repeat(int(idx)) for idx in num_atoms])
+            num_atoms_force = torch.sqrt(
+                num_atoms_force.reshape(len(num_atoms_force), 1)
+            )
+            force_pred_per_atom = torch.div(force_pred, num_atoms_force)
+            force_targets_per_atom = torch.div(force_targets, num_atoms_force)
+            force_loss = (self.alpha) * MSE_loss(force_pred_per_atom,
+                                           force_targets_per_atom,
+                                           weights_atoms_force)
+
+            loss = 0.5 * (energy_loss + force_loss) + reg_lambda * l2_reg
+        else:
+            loss = 0.5 * energy_loss + reg_lambda * l2_reg
+        return loss
+
+def weighted_mse_loss(input, target, weight):
+    out = torch.sum(weight.reshape(len(input), 1) * (input - target) ** 2, axis=0) # sum to make one column
+    #out = weight.reshape(len(input), 1) * (input - target) ** 2
+    return out.mean()
+

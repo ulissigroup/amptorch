@@ -22,8 +22,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 # from matplotlib.lines import Line2D
 
+
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
+
 
 
 def plot_grad_flow(named_parameters):
@@ -107,6 +109,8 @@ class Trainer:
         epochs,
         scalings,
         label,
+        weighted=False,
+        save_interval=1000,
     ):
         self.model = model
         self.device = device
@@ -121,6 +125,8 @@ class Trainer:
         self.sd_scaling = scalings[0]
         self.mean_scaling = scalings[1]
         self.label = label
+        self.weighted = weighted
+        self.save_interval = save_interval
 
     def train_model(self):
         "Training loop"
@@ -164,6 +170,13 @@ class Trainer:
         convergence = False
         while not convergence:
 
+            print('epoch: {}'.format(epoch))
+            if not os.path.isdir('results/models'):
+                os.mkdir('results/models')
+            if not (epoch % self.save_interval):
+                torch.save(self.model.state_dict(),
+                           'models/epoch{}.pt'.format(epoch))
+
             if validation:
                 for phase in ["train", "val"]:
 
@@ -188,6 +201,8 @@ class Trainer:
                         num_of_atoms = (
                             data_sample[2].reshape(batch_size, 1).to(self.device)
                         )
+                        if self.weighted:
+                            weights = data_sample[-1].to(self.device)
                         for element in self.unique_atoms:
                             input_data[0][element][0] = (
                                 input_data[0][element][0]
@@ -208,20 +223,38 @@ class Trainer:
                                 energy_pred, force_pred = self.model(
                                     input_data, fp_primes
                                 )
-                                loss = self.criterion(
-                                    energy_pred,
-                                    scaled_target,
-                                    num_of_atoms,
-                                    force_pred,
-                                    scaled_forces,
-                                    self.model,
-                                )
+                                if self.weighted:
+                                    loss = self.criterion(
+                                        energy_pred,
+                                        scaled_target,
+                                        num_of_atoms,
+                                        force_pred,
+                                        scaled_forces,
+                                        self.model,
+                                        weights=weights,
+                                    )
+                                else:
+                                    loss = self.criterion(
+                                        energy_pred,
+                                        scaled_target,
+                                        num_of_atoms,
+                                        force_pred,
+                                        scaled_forces,
+                                        self.model,
+                                    )
                             else:
                                 energy_pred, _ = self.model(input_data)
-                                loss = self.criterion(
-                                    energy_pred, scaled_target, num_of_atoms,
-                                    model=self.model
-                                )
+                                if self.weighted:
+                                    loss = self.criterion(
+                                        energy_pred, scaled_target, num_of_atoms,
+                                        model=self.model,
+                                        weights=weights
+                                    )
+                                else:
+                                    loss = self.criterion(
+                                        energy_pred, scaled_target, num_of_atoms,
+                                        model=self.model
+                                    )
                             loss.backward()
                             return loss
 
@@ -272,7 +305,8 @@ class Trainer:
                                               force_rmse, phase)
                         if phase == "train":
                             # early stop when training force error stagnates
-                            if abs(force_rmse - previous_force_rmse) <= 1e-7:
+                            if abs(force_rmse - previous_force_rmse) <= 1e-5 and \
+                                abs(energy_rmse - previous_energy_rmse) <= 1e-5:
                                 early_stop = True
                             previous_force_rmse = force_rmse
                         elif phase == "val":
@@ -332,6 +366,8 @@ class Trainer:
                     scaled_target = (target - self.mean_scaling) / self.sd_scaling
                     num_of_atoms = data_sample[2].reshape(batch_size, 1).to(self.device)
                     fp_primes = data_sample[3]
+                    if self.weighted:
+                        weights = data_sample[-1]
 
                     if forcetraining:
                         fp_primes = fp_primes.to(self.device)
@@ -349,20 +385,37 @@ class Trainer:
                         self.optimizer.zero_grad()
                         if forcetraining:
                             energy_pred, force_pred = self.model(input_data, fp_primes)
-                            loss = self.criterion(
-                                energy_pred,
-                                scaled_target,
-                                num_of_atoms,
-                                force_pred,
-                                scaled_forces,
-                                self.model,
-                            )
+                            if self.weighted:
+                                loss = self.criterion(
+                                    energy_pred,
+                                    scaled_target,
+                                    num_of_atoms,
+                                    force_pred,
+                                    scaled_forces,
+                                    self.model,
+                                    weights=weights
+                                )
+                            else:
+                                loss = self.criterion(
+                                    energy_pred,
+                                    scaled_target,
+                                    num_of_atoms,
+                                    force_pred,
+                                    scaled_forces,
+                                    self.model,
+                                )
                         else:
                             energy_pred, _ = self.model(input_data)
-                            loss = self.criterion(
-                                energy_pred, scaled_target, num_of_atoms,
-                                model=self.model
-                            )
+                            if welf.weighted:
+                                loss = self.criterion(
+                                    energy_pred, scaled_target, num_of_atoms,
+                                    model=self.model, weights=weights
+                                )
+                            else:
+                                loss = self.criterion(
+                                    energy_pred, scaled_target, num_of_atoms,
+                                    model=self.model
+                                )
                         loss.backward()
                         return loss
 
@@ -408,7 +461,8 @@ class Trainer:
                     log_force_results(log_epoch, epoch, now, loss, energy_rmse,
                             force_rmse, phase)
                     # terminates when error stagnates
-                    if abs(force_rmse - previous_force_rmse) <= 1e-7:
+                    if abs(force_rmse - previous_force_rmse) <= 1e-7 and \
+                            abs(energy_rmse - previous_energy_rmse)<= 1e-5:
                         early_stop = True
                     elif force_rmse < best_train_force_loss:
                         best_train_energy_loss = energy_rmse

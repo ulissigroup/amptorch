@@ -14,6 +14,7 @@ from amp.descriptor.gaussian import Gaussian
 from .utils import Logger
 from .NN_model import FullNN, CustomLoss
 from .data_preprocess import AtomsDataset, collate_amp
+from .weighted_data_preprocess import WeightedAtomsDataset, weighted_collate_amp
 from .trainer import Trainer
 
 __author__ = "Muhammed Shuaibi"
@@ -111,11 +112,15 @@ class AMPTorch:
         lj_data=None,
         fine_tune=None,
         label='amptorch',
-        save_logs=True
+        save_logs=True,
+        save_interval=1000,
+        store_primes=False,
+        weights_dict=None
     ):
         if not os.path.exists("results/logs"):
             os.makedirs("results/logs/epochs")
         self.save_logs = save_logs
+        self.save_interval = save_interval
         self.label = label
         self.log = Logger("results/logs/"+label+".txt")
 
@@ -136,20 +141,35 @@ class AMPTorch:
         self.lj_data = lj_data
         self.fine_tune = fine_tune
         self.Gs = Gs
+        self.store_primes = store_primes
+        self.weights_dict = weights_dict
 
         self.forcetraining = False
         if force_coefficient > 0:
             self.forcetraining = True
+        self.weighted = (self.weights_dict is not None)
 
-        self.training_data = AtomsDataset(
-            self.filename,
-            descriptor=self.descriptor,
-            Gs=Gs,
-            cores=cores,
-            forcetraining=self.forcetraining,
-            lj_data=self.lj_data,
-            envcommand=envcommand,
-        )
+        if not self.weighted:
+            self.training_data = AtomsDataset(
+                self.filename,
+                descriptor=self.descriptor,
+                Gs=Gs,
+                cores=cores,
+                forcetraining=self.forcetraining,
+                lj_data=self.lj_data,
+                envcommand=envcommand,
+                store_primes=store_primes,)
+        else:
+            self.training_data = WeightedAtomsDataset(
+                self.filename,
+                descriptor=self.descriptor,
+                Gs=Gs,
+                cores=cores,
+                forcetraining=self.forcetraining,
+                lj_data=self.lj_data,
+                envcommand=envcommand,
+                store_primes=store_primes,
+                weights_dict=weights_dict)
         self.scalings = self.training_data.scalings()
         self.sd_scaling = self.scalings[0]
         self.mean_scaling = self.scalings[1]
@@ -168,6 +188,11 @@ class AMPTorch:
         self.unique_atoms = training_data.unique()
         fp_length = training_data.fp_length
         dataset_size = len(training_data)
+        if self.weighted:
+            collate_function = weighted_collate_amp
+        else:
+            collate_function = collate_amp
+
 
         if self.batch_size is None:
             self.batch_size = dataset_size
@@ -191,7 +216,7 @@ class AMPTorch:
                 x: DataLoader(
                     training_data,
                     self.batch_size,
-                    collate_fn=collate_amp,
+                    collate_fn=collate_function,
                     sampler=samplers[x],
                 )
                 for x in ["train", "val"]
@@ -200,7 +225,7 @@ class AMPTorch:
         else:
             self.log("Training Data = %d" % dataset_size)
             self.atoms_dataloader = DataLoader(
-                training_data, self.batch_size, collate_fn=collate_amp, shuffle=False
+                training_data, self.batch_size, collate_fn=collate_function, shuffle=False
             )
         architecture = copy.copy(self.structure)
         architecture.insert(0, fp_length)
@@ -239,6 +264,8 @@ class AMPTorch:
             self.epochs,
             self.scalings,
             self.label,
+            weighted=self.weighted,
+            save_interval=self.save_interval,
         )
 
         self.trained_model = self.trainer.train_model()

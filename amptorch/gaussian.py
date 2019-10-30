@@ -298,6 +298,7 @@ class FileDatabase:
                 time.sleep(0.2)
                 tries += 1
             else:
+
                 return contents
         raise IOError('Too many file read attempts.')
 
