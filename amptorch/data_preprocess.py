@@ -13,9 +13,12 @@ from torch.utils.data import Dataset, SubsetRandomSampler
 import scipy.sparse as sparse
 import ase
 from amp.utilities import assign_cores
-from amp.descriptor.gaussian import make_symmetry_functions
-from .utils import make_amp_descriptors_simple_nn, \
-        calculate_fingerprints_range, hash_images
+from .gaussian import make_symmetry_functions
+from .utils import (
+    make_amp_descriptors_simple_nn,
+    calculate_fingerprints_range,
+    hash_images,
+)
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
@@ -71,7 +74,7 @@ class AtomsDataset(Dataset):
         forcetraining,
         lj_data=None,
         envcommand=None,
-        store_primes=False
+        store_primes=False,
     ):
         self.images = images
         self.descriptor = descriptor
@@ -104,11 +107,8 @@ class AtomsDataset(Dataset):
         G4_zetas = Gs["G4_zetas"]
         G4_gammas = Gs["G4_gammas"]
         cutoff = Gs["cutoff"]
-        make_amp_descriptors_simple_nn(
-            self.atom_images, Gs, self.elements)
-        G = make_symmetry_functions(
-                elements=self.elements, type="G2", etas=G2_etas
-                )
+        make_amp_descriptors_simple_nn(self.atom_images, Gs, self.elements)
+        G = make_symmetry_functions(elements=self.elements, type="G2", etas=G2_etas)
         G += make_symmetry_functions(
             elements=self.elements,
             type="G4",
@@ -116,8 +116,8 @@ class AtomsDataset(Dataset):
             zetas=G4_zetas,
             gammas=G4_gammas,
         )
-        for g in G:
-            g['Rs'] = G2_rs_s
+        for g in list(G):
+            g["Rs"] = G2_rs_s
         self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
         self.descriptor.calculate_fingerprints(
             self.hashed_images,
@@ -125,12 +125,11 @@ class AtomsDataset(Dataset):
             calculate_derivatives=forcetraining,
         )
         print("Fingerprints Calculated!")
-        self.fprange = calculate_fingerprints_range(
-                    self.descriptor, self.hashed_images)
+        self.fprange = calculate_fingerprints_range(self.descriptor, self.hashed_images)
         # perform preprocessing
-        self.unique_atoms, self.fingerprint_dataset, self.energy_dataset,\
-            self.num_of_atoms, self.sparse_fprimes, self.forces_dataset,\
-            self.index_hashes = self.preprocess_data()
+        self.unique_atoms, self.fingerprint_dataset, self.energy_dataset, self.num_of_atoms, self.sparse_fprimes, self.forces_dataset, self.index_hashes = (
+            self.preprocess_data()
+        )
 
     def __len__(self):
         return len(self.hashed_images)
@@ -247,9 +246,7 @@ class AtomsDataset(Dataset):
         forces = None
         if self.forcetraining:
             if self.store_primes:
-                fprime = sparse.load_npz(
-                    open("./stored-primes/" + idx_hash, "rb")
-                )
+                fprime = sparse.load_npz(open("./stored-primes/" + idx_hash, "rb"))
                 fprime = torch.tensor(fprime.toarray())
             else:
                 fprime = self.sparse_fprimes[index]
@@ -287,8 +284,9 @@ class AtomsDataset(Dataset):
 
     def unique(self):
         """Returns the unique elements contained in the training dataset"""
-        elements = list(sorted(set([atom.symbol for atoms in self.atom_images for atom
-            in atoms])))
+        elements = list(
+            sorted(set([atom.symbol for atoms in self.atom_images for atom in atoms]))
+        )
         return elements
 
     def fp_length(self):
@@ -475,8 +473,8 @@ class TestDataset(Dataset):
             zetas=G4_zetas,
             gammas=G4_gammas,
         )
-        # for g in G:
-        # g['Rs'] = 0.0
+        for g in G:
+            g["Rs"] = 0.0
         self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
         self.descriptor.calculate_fingerprints(
             self.hashed_images, parallel=parallel, calculate_derivatives=True
@@ -532,7 +530,9 @@ class TestDataset(Dataset):
         return (image_fingerprint, fingerprintprimes, num_atoms)
 
     def unique(self):
-        elements = list(self.fprange.keys())
+        elements = list(
+                    sorted(set([atom.symbol for atoms in self.atom_images for atom in atoms]))
+                )
         return elements
 
     def fp_length(self):
