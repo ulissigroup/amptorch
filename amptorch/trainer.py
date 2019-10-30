@@ -175,7 +175,7 @@ class Trainer:
                 os.mkdir('results/models')
             if not (epoch % self.save_interval):
                 torch.save(self.model.state_dict(),
-                           'models/epoch{}.pt'.format(epoch))
+                           'results/models/epoch{}.pt'.format(epoch))
 
             if validation:
                 for phase in ["train", "val"]:
