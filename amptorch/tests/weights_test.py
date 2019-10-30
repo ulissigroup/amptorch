@@ -12,22 +12,29 @@ from amptorch import AMP
 from amptorch.core import AMPTorch
 from amptorch.utils import get_hash
 from pickle import load
-#from amp.descriptor.gaussian import Gaussian
+from ase.calculators.emt import EMT
+from ase.build import molecule
+# from amp.descriptor.gaussian import Gaussian
 from amptorch.gaussian import Gaussian
 
 
 def test_weighting():
     # define training images
-    IMAGES = "../../datasets/water/water.extxyz"
-    images = ase.io.read(IMAGES, ":6")
-    IMAGES = []
-    for i in range(len(images)):
-        IMAGES.append(images[i])
+    N2 = molecule('N2')
+    images = []
+    for i in np.linspace(-.1,1,10):
+        image = N2.copy()
+        image.set_cell([10,10,10])
+        image.center()
+        image[1].position[2] += i
+        image.set_calculator(EMT())
+        image.get_forces()
+        images.append(image)
 
     # define symmetry functions to be used
     GSF = {}
-    GSF["G2_etas"] = [0.005]
-    GSF["G2_rs_s"] = [0]
+    GSF["G2_etas"] = [0.005, 1]
+    GSF["G2_rs_s"] = [0, 0]
     GSF["G4_etas"] = [0.005]
     GSF["G4_zetas"] = [1.0, 4.0]
     GSF["G4_gammas"] = [1.0, -1]
@@ -43,7 +50,7 @@ def test_weighting():
     # declare the calculator and corresponding model to be used
     calc = AMP(
         model=AMPTorch(
-            IMAGES,
+            images,
             descriptor=Gaussian,
             Gs=GSF,
             cores=6,
