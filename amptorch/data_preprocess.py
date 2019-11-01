@@ -71,7 +71,8 @@ class AtomsDataset(Dataset):
         forcetraining,
         lj_data=None,
         envcommand=None,
-        store_primes=False
+        store_primes=False,
+        db_path='./',
     ):
         self.images = images
         self.descriptor = descriptor
@@ -80,6 +81,7 @@ class AtomsDataset(Dataset):
         self.forcetraining = forcetraining
         self.store_primes = store_primes
         self.lj = False
+        self.db_path = db_path
         if lj_data is not None:
             self.lj_energies = np.squeeze(lj_data[0])
             self.lj_forces = np.squeeze(lj_data[1])
@@ -105,7 +107,7 @@ class AtomsDataset(Dataset):
         G4_gammas = Gs["G4_gammas"]
         cutoff = Gs["cutoff"]
         make_amp_descriptors_simple_nn(
-            self.atom_images, Gs, self.elements)
+            self.atom_images, Gs, self.elements, db_path=self.db_path)
         G = make_symmetry_functions(
                 elements=self.elements, type="G2", etas=G2_etas
                 )
@@ -118,7 +120,7 @@ class AtomsDataset(Dataset):
         )
         for g in G:
             g['Rs'] = G2_rs_s
-        self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
+        self.descriptor = self.descriptor(Gs=G, cutoff=cutoff, db_path=self.db_path)
         self.descriptor.calculate_fingerprints(
             self.hashed_images,
             parallel=self.parallel,

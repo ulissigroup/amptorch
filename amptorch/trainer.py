@@ -4,6 +4,7 @@ arguments"""
 import torch
 import numpy as np
 import torch.nn as nn
+from amptorch.NN_model import CustomLoss, weighted_mse_loss
 import sys
 import os
 import time
@@ -269,6 +270,9 @@ class Trainer:
                         raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
                         target_per_atom = torch.div(target, num_of_atoms)
                         energy_loss = mse_loss(raw_preds_per_atom, target_per_atom)
+                        w_energy_loss = weighted_mse_loss(raw_preds_per_atom,
+                                                          target_per_atom,
+                                            torch.FloatTensor([1.] * len(target_per_atom)))
                         energy_mse += torch.tensor(energy_loss.item())
 
                         if forcetraining:
@@ -286,6 +290,8 @@ class Trainer:
                             force_loss = mse_loss(
                                 force_pred_per_atom, force_targets_per_atom
                             )
+                            w_f = weighted_mse_loss(force_pred_per_atom, force_targets_per_atom,
+                                            torch.FloatTensor([1.] * len(force_pred_per_atom)))
                             force_mse += torch.tensor(force_loss.item())
 
                     energy_mse /= self.dataset_size[phase]
@@ -428,6 +434,7 @@ class Trainer:
                     energy_mse += torch.tensor(energy_loss.item())
 
                     loss = self.optimizer.step(closure)
+                    print("loss function value: %f" % loss.item())
                     now = time.asctime()
 
                     if forcetraining:
@@ -462,12 +469,13 @@ class Trainer:
                             force_rmse, phase)
                     # terminates when error stagnates
                     if abs(force_rmse - previous_force_rmse) <= 1e-7 and \
-                            abs(energy_rmse - previous_energy_rmse)<= 1e-5:
+                            abs(energy_rmse - previous_energy_rmse)<= 1e-7:
                         early_stop = True
                     elif force_rmse < best_train_force_loss:
                         best_train_energy_loss = energy_rmse
                         best_train_force_loss = force_rmse
                         best_model_wts = copy.deepcopy(self.model.state_dict())
+                    previous_energy_rmse = energy_rmse
                     previous_force_rmse = force_rmse
                     energy_convergence = (
                         best_train_energy_loss <= self.rmse_criteria["energy"]

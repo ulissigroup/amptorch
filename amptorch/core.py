@@ -115,7 +115,8 @@ class AMPTorch:
         save_logs=True,
         save_interval=1000,
         store_primes=False,
-        weights_dict=None
+        weights_dict=None,
+        db_path='./',
     ):
         if not os.path.exists("results/logs"):
             os.makedirs("results/logs/epochs")
@@ -143,6 +144,7 @@ class AMPTorch:
         self.Gs = Gs
         self.store_primes = store_primes
         self.weights_dict = weights_dict
+        self.db_path = db_path
 
         self.forcetraining = False
         if force_coefficient > 0:
@@ -158,7 +160,8 @@ class AMPTorch:
                 forcetraining=self.forcetraining,
                 lj_data=self.lj_data,
                 envcommand=envcommand,
-                store_primes=store_primes,)
+                store_primes=store_primes,
+                db_path=self.db_path,)
         else:
             self.training_data = WeightedAtomsDataset(
                 self.filename,
@@ -169,7 +172,8 @@ class AMPTorch:
                 lj_data=self.lj_data,
                 envcommand=envcommand,
                 store_primes=store_primes,
-                weights_dict=weights_dict)
+                weights_dict=weights_dict,
+                db_path=self.db_path,)
         self.scalings = self.training_data.scalings()
         self.sd_scaling = self.scalings[0]
         self.mean_scaling = self.scalings[1]

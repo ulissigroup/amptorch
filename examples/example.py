@@ -14,11 +14,11 @@ from amptorch.core import AMPTorch
 from amptorch.gaussian import Gaussian
 
 # define training images
-#IMAGES = "../datasets/water/water.extxyz"
-IMAGES = "/home/bcomer3/data/simple_NN/nn_trains/psi4/fixed_md.traj"
-images = ase.io.read(IMAGES, "101:-101:50")
+IMAGES = "../datasets/water/water.extxyz"
+#IMAGES = "/home/bcomer3/data/simple_NN/nn_trains/psi4/fixed_md.traj"
+images = ase.io.read(IMAGES, ":")
 IMAGES = []
-for i in range(len(images)):
+for i in range(360):
     IMAGES.append(images[i])
 
 # define symmetry functions to be used
@@ -39,19 +39,20 @@ calc = AMP(
         IMAGES,
         descriptor=Gaussian,
         Gs=GSF,
-        cores=6,
+        cores=1,
         device='cpu',
-        force_coefficient=2,
+        force_coefficient=0.3,
         lj_data=None,
         label='example',
-        save_logs=True
+        save_logs=True,
+        db_path='/home/bcomer3/data/fps/',
     )
 )
 # define model settings
 calc.model.structure = [3, 5]
 # calc.model.val_frac = 0.2
 # calc.model.convergence = {'energy': 0.02, 'force': 0.02}
-calc.model.epochs = 10
+# calc.model.epochs = 10
 calc.lr = 1
 calc.criterion = CustomLoss
 calc.optimizer = optim.LBFGS

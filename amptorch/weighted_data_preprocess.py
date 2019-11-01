@@ -73,6 +73,7 @@ class WeightedAtomsDataset(Dataset):
         envcommand=None,
         store_primes=False,
         weights_dict=None,
+        db_path='./',
     ):
         self.images = images
         self.descriptor = descriptor
@@ -82,6 +83,7 @@ class WeightedAtomsDataset(Dataset):
         self.store_primes = store_primes
         self.lj = False
         self.weights_dict = weights_dict
+        self.db_path=db_path
         if lj_data is not None:
             self.lj_energies = np.squeeze(lj_data[0])
             self.lj_forces = np.squeeze(lj_data[1])
@@ -120,7 +122,7 @@ class WeightedAtomsDataset(Dataset):
         )
         for g in G:
             g['Rs'] = G2_rs_s
-        self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
+        self.descriptor = self.descriptor(Gs=G, cutoff=cutoff, db_path=self.db_path)
         self.descriptor.calculate_fingerprints(
             self.hashed_images,
             parallel=self.parallel,

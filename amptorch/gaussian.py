@@ -58,7 +58,7 @@ class Gaussian(object):
 
     def __init__(self, cutoff=Cosine(6.5), Gs=None, dblabel=None,
                  elements=None, version=None, fortran=True,
-                 mode='atom-centered'):
+                 db_path='.', mode='atom-centered'):
 
         # Check of the version of descriptor, particularly if restarting.
         compatibleversions = ['2015.12', ]
@@ -98,6 +98,7 @@ class Gaussian(object):
         p.elements = elements
 
         self.dblabel = dblabel
+        self.db_path = db_path
         self.fortran = fortran
         self.parent = None  # Can hold a reference to main Amp instance.
 
@@ -147,18 +148,18 @@ class Gaussian(object):
         # if not hasattr(self, 'neighborlist'):
             # calc = NeighborlistCalculator(cutoff=p.cutoff['kwargs']['Rc'])
             # self.neighborlist = \
-                # Data(filename='%s-neighborlists' % self.dblabel,
+                # Data(filename=self.db_path + '%s-neighborlists' % self.dblabel,
                      # calculator=calc)
         # self.neighborlist.calculate_items(images, parallel=parallel, log=log)
 
         if not hasattr(self, 'fingerprints'):
-            self.fingerprints = Data(filename='%s-fingerprints'
+            self.fingerprints = Data(filename=self.db_path + '%s-fingerprints'
                                      % self.dblabel,
                                      calculator=None)
         if calculate_derivatives:
             if not hasattr(self, 'fingerprintprimes'):
                 self.fingerprintprimes = \
-                    Data(filename='%s-fingerprint-primes'
+                    Data(filename=self.db_path + '%s-fingerprint-primes'
                          % self.dblabel,
                          calculator=None)
 

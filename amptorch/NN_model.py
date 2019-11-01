@@ -36,6 +36,7 @@ class Dense(nn.Linear):
     def reset_parameters(self):
         """Weight initialization scheme"""
         init.constant_(self.bias, 0)
+        # torch.manual_seed(5504)
         kaiming_uniform_(self.weight, nonlinearity="tanh")
         # kaiming_uniform_(self.weight, nonlinearity="leaky_relu")
         # xavier_normal_(self.weight)
@@ -344,6 +345,8 @@ class WeightedCustomLoss(nn.Module):
 
 def weighted_mse_loss(input, target, weight):
     out = torch.sum(weight.reshape(len(input), 1) * (input - target) ** 2, axis=0) # sum to make one column
+    #out = torch.sum((input - target) ** 2, axis=0)
+    #out = weight.reshape(len(input), 1) * (input - target) ** 2
     #out = weight.reshape(len(input), 1) * (input - target) ** 2
     return out.mean()
 
