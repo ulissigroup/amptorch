@@ -127,7 +127,7 @@ class AtomsDataset(Dataset):
         print("Fingerprints Calculated!")
         self.fprange = calculate_fingerprints_range(self.descriptor, self.hashed_images)
         # perform preprocessing
-        self.unique_atoms, self.fingerprint_dataset, self.energy_dataset, self.num_of_atoms, self.sparse_fprimes, self.forces_dataset, self.index_hashes = (
+        self.fingerprint_dataset, self.energy_dataset, self.num_of_atoms, self.sparse_fprimes, self.forces_dataset, self.index_hashes = (
             self.preprocess_data()
         )
 
@@ -135,7 +135,6 @@ class AtomsDataset(Dataset):
         return len(self.hashed_images)
 
     def preprocess_data(self):
-        unique_atoms = []
         fingerprint_dataset = []
         fprimes_dataset = []
         energy_dataset = np.array([])
@@ -149,8 +148,6 @@ class AtomsDataset(Dataset):
             fprange = self.fprange
             # fingerprint scaling to [-1,1]
             for i, (atom, afp) in enumerate(image_fingerprint):
-                if atom not in unique_atoms:
-                    unique_atoms.append(atom)
                 _afp = copy.copy(afp)
                 fprange_atom = fprange[atom]
                 for _ in range(np.shape(_afp)[0]):
@@ -228,7 +225,6 @@ class AtomsDataset(Dataset):
             num_of_atoms = np.append(num_of_atoms, float(len(image_fingerprint)))
 
         return (
-            unique_atoms,
             fingerprint_dataset,
             energy_dataset,
             num_of_atoms,
@@ -251,7 +247,7 @@ class AtomsDataset(Dataset):
             else:
                 fprime = self.sparse_fprimes[index]
             forces = self.forces_dataset[index]
-        unique_atoms = self.unique_atoms
+        unique_atoms = self.elements
         return (
             fingerprint,
             energy,
@@ -448,7 +444,9 @@ class TestDataset(Dataset):
     """
 
     def __init__(self, images, descriptor, Gs, fprange, parallel, envcommand=None):
-        self.images = [images]
+        self.images = images
+        if type(images) is not list:
+            self.images = [images]
         self.descriptor = descriptor
         self.atom_images = self.images
         if isinstance(images, str):
@@ -531,8 +529,8 @@ class TestDataset(Dataset):
 
     def unique(self):
         elements = list(
-                    sorted(set([atom.symbol for atoms in self.atom_images for atom in atoms]))
-                )
+            sorted(set([atom.symbol for atoms in self.atom_images for atom in atoms]))
+        )
         return elements
 
     def fp_length(self):

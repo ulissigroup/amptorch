@@ -1,3 +1,4 @@
+import copy
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -5,6 +6,7 @@ import matplotlib.pyplot as plt
 def parity_plot(calc, images, label, data="energy"):
     # TODO Parity plots without the calc.get_property(). Batch computation via
     # model forward pass
+    images = copy.deepcopy(images)
     """Constructs a parity plot"""
     fig = plt.figure(figsize=(7.0, 7.0))
     ax = fig.add_subplot(111)
