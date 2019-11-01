@@ -201,9 +201,9 @@ class CustomLoss(nn.Module):
             force_loss = (self.alpha / 3) * MSE_loss(
                 force_pred_per_atom, force_targets_per_atom
             )
-            loss = 0.5 * (energy_loss + force_loss) + reg_lambda * l2_reg
+            loss = 0.5 * (energy_loss + force_loss)
         else:
-            loss = 0.5 * energy_loss + reg_lambda * l2_reg
+            loss = 0.5 * energy_loss
         return loss
 
 
@@ -282,8 +282,8 @@ class TanhLoss(nn.Module):
             )
             force_pred_per_atom = torch.div(force_pred, num_atoms_force)
             force_targets_per_atom = torch.div(force_targets, num_atoms_force)
-            force_loss = torch.sum(
+            force_loss = (1/3)*torch.sum(
                 torch.tanh(torch.abs(force_pred_per_atom - force_targets_per_atom))
             )
-            loss = energy_loss + force_loss
+            loss = energy_loss + self.alpha*force_loss
         return loss if self.alpha > 0 else energy_loss
