@@ -2,31 +2,44 @@
 
 import sys
 from ase import Atoms
-import ase
 import torch
+import numpy as np
 import torch.nn as nn
 import torch.optim as optim
-import numpy as np
-from amptorch.NN_model import CustomLoss, LogCoshLoss
+from ase.calculators.emt import EMT
+from amptorch.NN_model import CustomLoss
 from amptorch import AMP
 from amptorch.core import AMPTorch
-from amp.descriptor.gaussian import Gaussian
+from amptorch.analysis import parity_plot
+from amptorch.gaussian import Gaussian
+from ase.visualize import view
 
 # define training images
-IMAGES = "../datasets/water/water.extxyz"
-images = ase.io.read(IMAGES, ":")
-IMAGES = []
-for i in range(100):
-    IMAGES.append(images[i])
+distances = np.linspace(2, 5, 100)
+label = "example"
+images = []
+for l in distances:
+    image = Atoms(
+        "CuCO",
+        [
+            (-l * np.sin(0.65), l * np.cos(0.65), 0),
+            (0, 0, 0),
+            (l * np.sin(0.65), l * np.cos(0.65), 0),
+        ],
+    )
+    image.set_cell([10, 10, 10])
+    image.wrap(pbc=True)
+    image.set_calculator(EMT())
+    images.append(image)
 
 # define symmetry functions to be used
-GSF = {}
-GSF["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=8)
-GSF["G2_rs_s"] = [0] * 4
-GSF["G4_etas"] = [0.005]
-GSF["G4_zetas"] = [1.0, 4.0]
-GSF["G4_gammas"] = [1.0, -1]
-GSF["cutoff"] = 6.5
+Gs = {}
+Gs["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
+Gs["G2_rs_s"] = [0] * 4
+Gs["G4_etas"] = [0.005]
+Gs["G4_zetas"] = [1.0]
+Gs["G4_gammas"] = [+1.0, -1]
+Gs["cutoff"] = 6.5
 
 # define the number of threads to parallelize training across
 torch.set_num_threads(1)
@@ -34,24 +47,32 @@ torch.set_num_threads(1)
 # declare the calculator and corresponding model to be used
 calc = AMP(
     model=AMPTorch(
-        IMAGES,
+        images,
         descriptor=Gaussian,
-        Gs=GSF,
+        Gs=Gs,
         cores=1,
         force_coefficient=0.3,
-        lj_data=None,
-        label='example',
-        save_logs=True
+        label=label,
+        save_logs=True,
     )
 )
 # define model settings
-calc.model.structure = [3, 5]
-# calc.model.val_frac = 0.2
-# calc.model.convergence = {'energy': 0.02, 'force': 0.02}
-calc.model.epochs = 10
-calc.lr = 1
-calc.criterion = CustomLoss
-calc.optimizer = optim.LBFGS
+calc.model.device = "cpu"
+calc.model.structure = [2, 2]
+calc.model.val_frac = 0
+calc.model.convergence = {
+    "energy": 0.02,
+    "force": 0.02,
+    "epochs": 1e10,
+    "early_stop": False,
+}
+calc.model.criterion = CustomLoss
+calc.model.optimizer = optim.LBFGS
+calc.model.lr = 1e-2
+calc.model.batch_size = None
+calc.model.fine_tune = None
 
 # train the model
 calc.train(overwrite=True)
+parity_plot(calc, images, data="energy", label=label)
+parity_plot(calc, images, data="forces", label=label)

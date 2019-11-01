@@ -72,12 +72,10 @@ class AMPTorch:
     lr: float
         Define the model learning rate. default: 1
     criteria: dict
-        Define the training convergence criteria.
-        default: {'energy':0, "force":0}
-    epochs: int
-        If present, train the model for this number of epochs. If epochs or
-        criteria are not defined the model will train until error stagnates.
-        default: 1e10
+        Define the training convergence criteria, including - rmse criteria,
+        early_stop and number of epochs. Training termination is achieved when
+        one of the applied settings are met.
+        default: {'energy':0, "force":0, "early_stop": False, "epochs": 1e10 }
     lj_data: list
         Energies and forces to be subtracted off from targets, allowing the
         model to learn the difference. default: None
@@ -106,18 +104,17 @@ class AMPTorch:
         optimizer=optim.LBFGS,
         scheduler=None,
         lr=1,
-        criteria={"energy": 0, "force": 0},
-        epochs=1e10,
+        criteria={"energy": 0, "force": 0, "epochs": 1e10, "early_stop": False},
         lj_data=None,
         fine_tune=None,
-        label='amptorch',
-        save_logs=True
+        label="amptorch",
+        save_logs=True,
     ):
-        if not os.path.exists("results/logs"):
+        if not os.path.exists("results/logs/epochs"):
             os.makedirs("results/logs/epochs")
         self.save_logs = save_logs
         self.label = label
-        self.log = Logger("results/logs/"+label+".txt")
+        self.log = Logger("results/logs/" + label + ".txt")
 
         self.filename = datafile
         self.batch_size = batch_size
@@ -132,7 +129,6 @@ class AMPTorch:
         self.scheduler = scheduler
         self.lr = lr
         self.convergence = criteria
-        self.epochs = epochs
         self.lj_data = lj_data
         self.fine_tune = fine_tune
         self.Gs = Gs
@@ -223,7 +219,7 @@ class AMPTorch:
         if self.scheduler:
             self.scheduler = self.scheduler(optimizer, step_size=7, gamma=0.1)
         self.log("Scheduler Info: %s" % self.scheduler)
-        self.log("RMSE criteria = {}".format(self.convergence))
+        self.log("Convergence criteria = {}".format(self.convergence))
         self.log("Model architecture: %s" % architecture)
 
         self.trainer = Trainer(
@@ -236,13 +232,12 @@ class AMPTorch:
             self.scheduler,
             self.atoms_dataloader,
             self.convergence,
-            self.epochs,
             self.scalings,
             self.label,
         )
 
         self.trained_model = self.trainer.train_model()
         if not self.save_logs:
-            os.remove("results/logs/"+self.label+".txt")
-            os.remove("results/logs/epochs/"+self.label+"-calc.txt")
+            os.remove("results/logs/" + self.label + ".txt")
+            os.remove("results/logs/epochs/" + self.label + "-calc.txt")
         return self.trained_model

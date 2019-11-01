@@ -86,7 +86,8 @@ class lj_optim:
             natoms = len(image)
             num_atoms.append(natoms)
 
-            self.n1 = NeighborList([self.cutoff / 2] * natoms, self_interaction=False)
+            self.n1 = NeighborList(
+                [self.cutoff / 2] * natoms, self_interaction=False)
             self.n1.update(image)
 
             positions = image.positions
@@ -102,7 +103,8 @@ class lj_optim:
                 neighbors, offsets = self.n1.get_neighbors(a1)
                 neighbor_elements = chemical_symbols[neighbors]
                 e0 = np.array(
-                    [e_offsets[base_element + elem] for elem in neighbor_elements]
+                    [e_offsets[base_element + elem]
+                        for elem in neighbor_elements]
                 )
                 cells = np.dot(offsets, cell)
                 d = positions[neighbors] + cells - positions[a1]
@@ -111,7 +113,7 @@ class lj_optim:
                 eps_n = params[neighbors][:, 1]
                 sig = (sig_1 + sig_n) / 2
                 eps = np.sqrt(eps_1 * eps_n)
-                r2 = (d ** 2).sum(1)+1e-10
+                r2 = (d ** 2).sum(1)
                 c6 = (sig ** 2 / r2) ** 3
                 c6[r2 > self.cutoff ** 2] = 0.0
                 c12 = c6 ** 2
@@ -122,7 +124,7 @@ class lj_optim:
                     forces[a2] += f2
             predicted_energies.append(energy)
             predicted_forces.append(forces)
-        predicted_energies = np.array(predicted_energies).reshape(1, -1)
+        predicted_energies = np.concatenate(np.array(predicted_energies).reshape(1, -1))
         predicted_forces = np.concatenate(predicted_forces)
         return predicted_energies, predicted_forces, num_atoms
 
@@ -160,7 +162,7 @@ class lj_optim:
     def params_to_dict(self, params, params_dict):
         idx = 0
         for keys in list(params_dict.keys()):
-            params_dict[keys] = params[idx : idx + 3]
+            params_dict[keys] = params[idx: idx + 3]
             idx += 3
         return params_dict
 
@@ -182,7 +184,8 @@ class lj_optim:
                 results["success"],
             )
         )
-        log("Fitted LJ parameters: %s \n" % self.params_to_dict(results.x, params_dict))
+        log("Fitted LJ parameters: %s \n" %
+            self.params_to_dict(results.x, params_dict))
         log("Optimization time: %s \n" % optim_time)
 
     def parity(self, predicted_energies, predicted_forces):
@@ -199,7 +202,8 @@ class lj_optim:
         force_min = min(target_forces)
         force_max = max(target_forces)
         ax.plot(target_energies, predicted_energies, "bo", markersize=3)
-        ax.plot([energy_min, energy_max], [energy_min, energy_max], "r-", lw=0.5)
+        ax.plot([energy_min, energy_max], [
+                energy_min, energy_max], "r-", lw=0.5)
         ax.set_xlabel("ab initio energy, eV")
         ax.set_ylabel("LJ energy, eV")
         ax.set_title("Energy")
