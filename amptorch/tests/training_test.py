@@ -54,7 +54,6 @@ def test_training():
             images,
             descriptor=Gaussian,
             Gs=Gs,
-            cores=1,
             force_coefficient=0.3,
             label=label,
             save_logs=True,
@@ -69,11 +68,10 @@ def test_training():
         "early_stop": False,
         "epochs": 1e10,
     }
-    calc.model.epochs = 1e10
+    calc.model.loader_params = {"batch_size": None, "shuffle": False, "num_workers": 0}
     calc.model.criterion = CustomLoss
     calc.model.optimizer = optim.LBFGS
     calc.model.lr = 1e-2
-    calc.model.batch_size = None
     calc.model.fine_tune = None
 
     calc.train(overwrite=True)
@@ -96,7 +94,6 @@ def test_training():
         descriptor=calc.model.descriptor,
         Gs=calc.model.training_data.Gs,
         fprange=calc.model.training_data.fprange,
-        parallel=calc.model.training_data.parallel,
     )
 
     test_hashes = list(dataset.hashed_images.keys())
@@ -129,10 +126,6 @@ def test_training():
         ):
             for i, j in zip(train_prime, test_prime):
                 assert abs(i - j) <= 1e-5, "Fingerprint primes do not match!"
-
-    # test plot creation
-    parity_plot(calc, images, data="energy", label=label)
-    parity_plot(calc, images, data="forces", label=label)
 
     num_of_atoms = 3
     calculated_energies = np.array(
