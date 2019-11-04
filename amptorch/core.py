@@ -117,6 +117,7 @@ class AMPTorch:
         store_primes=False,
         weights_dict=None,
         db_path='./',
+        maxtime=None
     ):
         if not os.path.exists("results/logs"):
             os.makedirs("results/logs/epochs")
@@ -145,6 +146,7 @@ class AMPTorch:
         self.store_primes = store_primes
         self.weights_dict = weights_dict
         self.db_path = db_path
+        self.maxtime = maxtime
 
         self.forcetraining = False
         if force_coefficient > 0:
@@ -270,6 +272,7 @@ class AMPTorch:
             self.label,
             weighted=self.weighted,
             save_interval=self.save_interval,
+            maxtime=self.maxtime
         )
 
         self.trained_model = self.trainer.train_model()

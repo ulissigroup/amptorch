@@ -267,14 +267,14 @@ def get_hash(atoms, Gs):
     return hash
 
 
-def factorize_data(traj, Gs):
+def factorize_data(traj, Gs, db_path='./'):
     new_traj = []
-    if os.path.isdir("amp-data-fingerprint-primes.ampdb/"):
+    if os.path.isdir(db_path + "/amp-data-fingerprint-primes.ampdb/"):
         for image in traj:
             hash = get_hash(image, Gs)
             if os.path.isfile(
-                "amp-data-fingerprint-primes.ampdb/loose/" + hash
-            ) and os.path.isfile("amp-data-fingerprints.ampdb/loose/" + hash):
+                db_path + "/amp-data-fingerprint-primes.ampdb/loose/" + hash
+            ) and os.path.isfile(db_path + "/amp-data-fingerprints.ampdb/loose/" + hash):
                 pass
             else:
                 new_traj.append(image)
@@ -294,10 +294,11 @@ def convert_simple_nn_fps(traj, Gs, delete_old=True, db_path='./'):
     if not os.path.isdir(db_path + "/amp-data-fingerprint-primes.ampdb"):
         os.mkdir(db_path + "/amp-data-fingerprint-primes.ampdb")
     if not os.path.isdir(db_path + "/amp-data-fingerprint-primes.ampdb/loose"):
-        os.mkdir(db_path + "amp-data-fingerprint-primes.ampdb/loose")
+        os.mkdir(db_path + "/amp-data-fingerprint-primes.ampdb/loose")
     # perform the reorganization
     l_trajs = list(enumerate(traj))
     if len(traj) > 1:
+        pass
         with Pool(cpu_count()) as p:
             func = partial(reorganize, db_path=db_path)
             l_trajs = [image + (Gs,) for image in l_trajs]
@@ -306,7 +307,10 @@ def convert_simple_nn_fps(traj, Gs, delete_old=True, db_path='./'):
         image = (0, traj[0], Gs)
         reorganize(image)
     if delete_old:
-        os.rmdir("./data")
+        try:
+            os.rmdir("./data")
+        except:
+            pass
 
 
 def reorganize(inp, delete_old=True, db_path='./'):
@@ -322,7 +326,10 @@ def reorganize(inp, delete_old=True, db_path='./'):
     )
     del x_der_dict  # free up memory just in case
     if delete_old:  # in case disk space is an issue
-        os.remove("./data/data{}.pickle".format(i + 1))
+        try:
+            os.remove("./data/data{}.pickle".format(i + 1))
+        except:
+            pass
 
 
 class DummySimple_nn(object):

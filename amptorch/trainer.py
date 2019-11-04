@@ -112,6 +112,7 @@ class Trainer:
         label,
         weighted=False,
         save_interval=1000,
+        maxtime = None
     ):
         self.model = model
         self.device = device
@@ -128,6 +129,7 @@ class Trainer:
         self.label = label
         self.weighted = weighted
         self.save_interval = save_interval
+        self.maxtime=maxtime
 
     def train_model(self):
         "Training loop"
@@ -314,6 +316,12 @@ class Trainer:
                             if abs(force_rmse - previous_force_rmse) <= 1e-5 and \
                                 abs(energy_rmse - previous_energy_rmse) <= 1e-5:
                                 early_stop = True
+                            time_elapsed = time.time() - since
+                            if self.maxtime is not None:
+                                if time_elapsed >= self.maxtime:
+                                    print('Maximum Time Reached') 
+                                    early_stop = True
+
                             previous_force_rmse = force_rmse
                         elif phase == "val":
                             if force_rmse < best_val_force_loss:
@@ -340,6 +348,7 @@ class Trainer:
                         if phase == "train":
                             # early stop when training energy error stagnates
                             if abs(energy_rmse - previous_energy_rmse) <= 1e-7:
+                                print('Maximum Time Reached')
                                 early_stop = True
                             previous_energy_rmse = energy_rmse
                         elif phase == "val":
@@ -468,9 +477,13 @@ class Trainer:
                     log_force_results(log_epoch, epoch, now, loss, energy_rmse,
                             force_rmse, phase)
                     # terminates when error stagnates
-                    if abs(force_rmse - previous_force_rmse) <= 1e-7 and \
-                            abs(energy_rmse - previous_energy_rmse)<= 1e-7:
+                    if abs(force_rmse - previous_force_rmse) <= 1e-5 and \
+                            abs(energy_rmse - previous_energy_rmse)<= 1e-5:
                         early_stop = True
+                    time_elapsed = time.time() - since
+                    if self.maxtime is not None:
+                        if time_elapsed >= self.maxtime:
+                             early_stop = True
                     elif force_rmse < best_train_force_loss:
                         best_train_energy_loss = energy_rmse
                         best_train_force_loss = force_rmse
@@ -492,6 +505,10 @@ class Trainer:
                     # terminates when error stagnates
                     if abs(energy_rmse - previous_energy_rmse) <= 1e-7:
                         convergence = True
+                    time_elapsed = time.time() - since
+                    if self.maxtime is not None:
+                        if time_elapsed >= self.maxtime:
+                             early_stop = True
                     elif energy_rmse < best_train_energy_loss:
                         best_train_energy_loss = energy_rmse
                         best_model_wts = copy.deepcopy(self.model.state_dict())

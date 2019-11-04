@@ -35,11 +35,13 @@ class Dense(nn.Linear):
 
     def reset_parameters(self):
         """Weight initialization scheme"""
-        init.constant_(self.bias, 0)
+        # init.constant_(self.bias, 0)
+        init.normal_(self.bias, std=0.1)
         # torch.manual_seed(5504)
-        kaiming_uniform_(self.weight, nonlinearity="tanh")
+        # kaiming_uniform_(self.weight, nonlinearity="tanh")
         # kaiming_uniform_(self.weight, nonlinearity="leaky_relu")
-        # xavier_normal_(self.weight)
+        xavier_normal_(self.weight, gain=0.25)
+        #xavier_normal_(self.bias)
 
     def forward(self, inputs):
         neuron_output = super(Dense, self).forward(inputs)
@@ -191,6 +193,7 @@ class CustomLoss(nn.Module):
         energy_per_atom = torch.div(energy_pred, num_atoms)
         targets_per_atom = torch.div(energy_targets, num_atoms)
         energy_loss = MSE_loss(energy_per_atom, targets_per_atom)
+        print(energy_loss)
         l2_reg = torch.autograd.Variable(torch.FloatTensor(1), requires_grad=True)
         reg_lambda = 0
         for W in model.parameters():
@@ -206,6 +209,7 @@ class CustomLoss(nn.Module):
             force_loss = (self.alpha / 3) * MSE_loss(
                 force_pred_per_atom, force_targets_per_atom
             )
+            print(force_loss)
             loss = 0.5 * (energy_loss + force_loss) + reg_lambda * l2_reg
         else:
             loss = 0.5 * energy_loss + reg_lambda * l2_reg
