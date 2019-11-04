@@ -37,8 +37,6 @@ class Trainer:
         NeuralNetwork model to be trained
     device: str
         Hardware to be utilized for training - CPU or GPU
-    unique_atoms: list
-        List of unique atoms contained in the training dataset.
     dataset_size: int
         Size of the training dataset
     criterion: object
@@ -62,7 +60,6 @@ class Trainer:
         self,
         model,
         device,
-        unique_atoms,
         dataset_size,
         criterion,
         optimizer,
@@ -74,7 +71,6 @@ class Trainer:
     ):
         self.model = model
         self.device = device
-        self.unique_atoms = unique_atoms
         self.dataset_size = dataset_size
         self.criterion = criterion
         self.optimizer = optimizer
@@ -143,7 +139,8 @@ class Trainer:
                         force_mse = 0.0
 
                     for data_sample in self.atoms_dataloader[phase]:
-                        input_data = [data_sample[0], len(data_sample[1])]
+                        unique_atoms = data_sample[3]
+                        input_data = [data_sample[0], len(data_sample[1]), unique_atoms]
                         target = data_sample[1].requires_grad_(False)
                         batch_size = len(target)
                         target = target.reshape(batch_size, 1).to(self.device)
@@ -151,18 +148,18 @@ class Trainer:
                         num_of_atoms = (
                             data_sample[2].reshape(batch_size, 1).to(self.device)
                         )
-                        for element in self.unique_atoms:
+                        for element in unique_atoms:
                             input_data[0][element][0] = (
                                 input_data[0][element][0]
                                 .to(self.device)
                                 .requires_grad_(True)
                             )
                         scaled_target = scaled_target.to(self.device)
-                        fp_primes = data_sample[3]
+                        fp_primes = data_sample[4]
 
                         if forcetraining:
                             fp_primes = fp_primes.to(self.device)
-                            image_forces = data_sample[4].to(self.device)
+                            image_forces = data_sample[5].to(self.device)
                             scaled_forces = image_forces / self.sd_scaling
 
                         def closure():
@@ -318,19 +315,20 @@ class Trainer:
                     force_mse = 0.0
 
                 for data_sample in self.atoms_dataloader:
-                    input_data = [data_sample[0], len(data_sample[1])]
+                    unique_atoms = data_sample[3]
+                    input_data = [data_sample[0], len(data_sample[1]), unique_atoms]
                     target = data_sample[1].requires_grad_(False)
                     batch_size = len(target)
                     target = target.reshape(batch_size, 1).to(self.device)
                     scaled_target = (target - self.mean_scaling) / self.sd_scaling
                     num_of_atoms = data_sample[2].reshape(batch_size, 1).to(self.device)
-                    fp_primes = data_sample[3]
+                    fp_primes = data_sample[4]
 
                     if forcetraining:
                         fp_primes = fp_primes.to(self.device)
-                        image_forces = data_sample[4].to(self.device)
+                        image_forces = data_sample[5].to(self.device)
                         scaled_forces = image_forces / self.sd_scaling
-                    for element in self.unique_atoms:
+                    for element in unique_atoms:
                         input_data[0][element][0] = (
                             input_data[0][element][0]
                             .to(self.device)

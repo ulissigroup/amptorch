@@ -31,14 +31,6 @@ class AMPTorch:
     device : str
         Hardware to be utilized for training - CPU or GPU.
         default: 'cpu'
-    cores : int
-        Specify the number of cores to use for parallelization of fingerprint
-        calculations. NOTE - To be replaced with PyTorch's parallelization
-        scheme upon fingerprint implementation
-    envommand: string
-        For parallel processing across nodes, a command can be supplied here to
-        load the appropriate environment before starting workers.
-        default=None. NOTE - See Above.
     batch_size: int
         Number of images in a training batch. None represents no batching,
         treating the entire dataset as one batch. default: None
@@ -92,9 +84,6 @@ class AMPTorch:
         self,
         datafile,
         device="cpu",
-        cores=1,
-        envcommand=None,
-        batch_size=None,
         structure=[3, 5],
         val_frac=0,
         descriptor=Gaussian,
@@ -102,9 +91,11 @@ class AMPTorch:
         force_coefficient=0,
         criterion=CustomLoss,
         optimizer=optim.LBFGS,
+        loader_params={"batch_size": None, "shuffle": False, "num_workers": 0},
         scheduler=None,
         lr=1,
-        criteria={"energy": 0, "force": 0, "epochs": 1e10, "early_stop": False},
+        criteria={"energy": 0, "force": 0,
+                  "epochs": 1e10, "early_stop": False},
         lj_data=None,
         fine_tune=None,
         label="amptorch",
@@ -117,11 +108,10 @@ class AMPTorch:
         self.log = Logger("results/logs/" + label + ".txt")
 
         self.filename = datafile
-        self.batch_size = batch_size
         self.device = device
-        self.batch_size = batch_size
         self.structure = structure
         self.val_frac = val_frac
+        self.loader_params = loader_params
         self.descriptor = descriptor
         self.force_coefficient = force_coefficient
         self.criterion = criterion
@@ -141,10 +131,8 @@ class AMPTorch:
             self.filename,
             descriptor=self.descriptor,
             Gs=Gs,
-            cores=cores,
             forcetraining=self.forcetraining,
             lj_data=self.lj_data,
-            envcommand=envcommand,
         )
         self.scalings = self.training_data.scalings()
         self.sd_scaling = self.scalings[0]
@@ -154,7 +142,8 @@ class AMPTorch:
             self.log(time.asctime())
             self.log("-" * 50)
         self.log("LJ Data: %s" % (True if lj_data is not None else None))
-        self.log("Force Training: %s - %s" % (self.forcetraining, force_coefficient))
+        self.log("Force Training: %s - %s" %
+                 (self.forcetraining, force_coefficient))
 
     def train(self):
         """Trains the model under the provided optimizer conditions until
@@ -165,11 +154,12 @@ class AMPTorch:
         fp_length = training_data.fp_length
         dataset_size = len(training_data)
 
-        if self.batch_size is None:
-            self.batch_size = dataset_size
+        if self.loader_params['batch_size'] is None:
+            self.loader_params['batch_size'] = len(training_data)
 
         if self.val_frac != 0:
-            samplers = training_data.create_splits(training_data, self.val_frac)
+            samplers = training_data.create_splits(
+                training_data, self.val_frac)
             dataset_size = {
                 "train": dataset_size - int(self.val_frac * dataset_size),
                 "val": int(self.val_frac * dataset_size),
@@ -180,15 +170,18 @@ class AMPTorch:
                 % (dataset_size["train"], dataset_size["val"])
             )
 
-            if self.batch_size is None:
-                self.batch_size = {x: dataset_size[x] for x in ["train", "val"]}
+            if self.loader_params['batch_size'] is len(training_data):
+                loader_dict = {}
+                for x in ['train', 'val']:
+                    self.loader_params['batch_size'] = dataset_size[x]
+                    loader_dict[x] = self.loader_params
 
             self.atoms_dataloader = {
                 x: DataLoader(
                     training_data,
-                    self.batch_size,
                     collate_fn=collate_amp,
                     sampler=samplers[x],
+                    **loader_dict[x]
                 )
                 for x in ["train", "val"]
             }
@@ -196,7 +189,7 @@ class AMPTorch:
         else:
             self.log("Training Data = %d" % dataset_size)
             self.atoms_dataloader = DataLoader(
-                training_data, self.batch_size, collate_fn=collate_amp, shuffle=False
+                training_data, collate_fn=collate_amp, **self.loader_params
             )
         architecture = copy.copy(self.structure)
         architecture.insert(0, fp_length)
@@ -225,7 +218,6 @@ class AMPTorch:
         self.trainer = Trainer(
             model,
             self.device,
-            self.unique_atoms,
             dataset_size,
             self.criterion(force_coefficient=self.force_coefficient),
             optimizer,
@@ -235,7 +227,6 @@ class AMPTorch:
             self.scalings,
             self.label,
         )
-
         self.trained_model = self.trainer.train_model()
         if not self.save_logs:
             os.remove("results/logs/" + self.label + ".txt")

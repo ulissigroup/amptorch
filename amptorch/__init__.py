@@ -52,7 +52,6 @@ class AMP(Calculator):
         self.fp_scaling = self.model.training_data.fprange
         self.target_sd = self.model.scalings[0]
         self.target_mean = self.model.scalings[1]
-        self.parallel = self.model.training_data.parallel
         self.lj = self.model.training_data.lj
         self.Gs = self.model.training_data.Gs
         self.log("Symmetry function parameters: %s" % self.Gs)
@@ -75,7 +74,7 @@ class AMP(Calculator):
         Calculator.calculate(self, atoms, properties, system_changes)
         dataset = TestDataset(
             images=atoms, descriptor=self.model.descriptor, Gs=self.Gs,
-            fprange=self.fp_scaling, parallel=self.parallel)
+            fprange=self.fp_scaling)
         fp_length = dataset.fp_length()
         unique_atoms = dataset.unique()
         architecture = copy.copy(self.model.structure)
@@ -94,7 +93,7 @@ class AMP(Calculator):
         model.eval()
 
         for batch in dataloader:
-            input_data = [batch[0], len(batch[1])]
+            input_data = [batch[0], len(batch[1]), unique_atoms]
             for element in unique_atoms:
                 input_data[0][element][0] = input_data[0][element][0].requires_grad_(
                     True
