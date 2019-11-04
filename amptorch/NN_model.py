@@ -124,6 +124,7 @@ class FullNN(nn.Module):
 
         input_data = inputs[0]
         batch_size = inputs[1]
+        batch_elements = inputs[2]
         energy_pred = torch.zeros(batch_size, 1).to(self.device)
         force_pred = None
         # Constructs an Nx1 empty tensor to store element energy contributions
@@ -131,7 +132,7 @@ class FullNN(nn.Module):
             fprimes = fprimes.to(self.device)
             dE_dFP = torch.tensor([]).to(self.device)
             idx = torch.tensor([]).to(self.device)
-        for index, element in enumerate(self.unique_atoms):
+        for index, element in enumerate(batch_elements):
             model_inputs = input_data[element][0]
             contribution_index = torch.tensor(input_data[element][1]).to(self.device)
             atomwise_outputs = self.elementwise_models[element].forward(model_inputs)
