@@ -70,7 +70,6 @@ calc = AMP(
         images,
         descriptor=Gaussian,
         Gs=Gs,
-        cores=1,
         force_coefficient=0.3,
         label=label,
         save_logs=True,
@@ -87,10 +86,10 @@ calc.model.convergence = {
     "epochs": 1e10,
     "early_stop": False,
 }
+calc.model.loader_params = {"batch_size": None, "shuffle": False, "num_workers": 0}
 calc.model.criterion = CustomLoss
 calc.model.optimizer = optim.LBFGS
 calc.model.lr = 1e-2
-calc.model.batch_size = None
 calc.model.fine_tune = None
 
 # train the model

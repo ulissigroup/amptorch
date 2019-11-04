@@ -66,11 +66,11 @@ def compute_forces(dir, files, type='max'):
         for image in images:
             image.set_calculator(EMT())
             if type=='max':
-                data.append(np.amax(np.abs(image.get_forces())))
+                data.append(np.log10(np.amax(np.abs(image.get_forces()))))
             else:
                 data.append(image.get_forces())
         if type=='max':
-            forces.append(np.log10(np.array(data)))
+            forces.append((np.array(data)))
         else:
             forces.append(np.array(data))
     return forces
@@ -84,18 +84,17 @@ forces0 = []
 for i in range(101):
     images0.append(images_emt[i])
     # forces0.append(images0[i].get_forces())
-    forces0.append(np.log10(np.array(np.amax(np.abs(images_emt[i].get_forces())))))
+    forces0.append(np.log10((np.array(np.amax(np.abs(images_emt[i].get_forces()))))))
 forces0 = np.array(forces0)
 
 files = [
-    "MLMD_COCu_pbc_300K_l2amp_8SF_1.traj",
-    "MLMD_COCu_pbc_300K_l2amp_8SF_LJ_1.traj",
-    "MLMD_COCu_pbc_300K_l2amp_8SF_5_resample_1.traj",
-    "MLMD_COCu_pbc_300K_l2amp_8SF_LJ_5_resample_1.traj",
-    # "MLMD_COCu_pbc_300K_l2reg_20SF_LJ_5_iter_5.traj",
+    "MLMD_COCu_pbc_300K_l2amp_6SF-1.traj",
+    "MLMD_COCu_pbc_300K_l2amp_6SF-LJ-1.traj",
+    "MLMD_COCu_pbc_300K_l2amp_6SF-2.traj",
+    "MLMD_COCu_pbc_300K_l2amp_6SF-LJ-2.traj"
 ]
 
-forces = compute_forces(dir="MD_results/COCu/pbc_300K/l2amp/paper/",
+forces = compute_forces(dir="MD_results/",
         files=files, type='max')
 # rmse_plots(forces0, forces, 5, "test")
 kde_plots(forces0, forces, "test")

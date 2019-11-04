@@ -1,25 +1,24 @@
-import sys
-import numpy as np
-import torch
-from ase.build import molecule
-from ase import Atoms, Atom
-from ase.calculators.emt import EMT
-from ase.calculators.lj import LennardJones
-from ase import units
-import ase.io
-from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
-from ase.optimize import QuasiNewton
-from ase.md import VelocityVerlet, Langevin
-import matplotlib.pyplot as plt
-from amp_pytorch.NN_model import CustomLoss
-from amp_pytorch import AMP
-from amp_pytorch.core import AMPModel
-from amp.descriptor.gaussian import Gaussian
-from amp_pytorch.lj_model import lj_optim
 from ase.visualize import view
-import seaborn as sns
-import random
-import scipy
+from amptorch.lj_model import lj_optim
+from amp.descriptor.gaussian import Gaussian
+from amptorch.core import AMPTorch
+from amptorch import AMP
+from amptorch.NN_model import CustomLoss
+from ase.md import VelocityVerlet, Langevin
+from ase.optimize import QuasiNewton
+from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
+from ase import units
+from ase.calculators.lj import LennardJones
+from ase.calculators.emt import EMT
+from ase import Atoms, Atom
+from ase.build import molecule
+import torch
+import numpy as np
+import sys
+import matplotlib.pyplot as plt
+import matplotlib
+
+matplotlib.use("Agg")
 
 distances = []
 energies = []
@@ -27,12 +26,15 @@ forces = []
 distances = np.linspace(1, 5, 100)
 images = []
 
-offset_atoms = Atoms("CuCu", [(0, 0, 0), (0, 0, 1000000)])
+offset_atoms = Atoms("CuC", [(0, 0, 0), (0, 0, 1000000)])
 offset_atoms.set_calculator(EMT())
 e0 = offset_atoms.get_potential_energy()
 for displacement in distances:
-    atoms = Atoms("CuCu", [(0, 0, 0), (0, 0, displacement)])
-    energy = atoms.get_potential_energy() - e0
+    atoms = Atoms("CuC", [(0, 0, 0), (0, 0, displacement)])
+    atoms.set_cell([10, 10, 10])
+    atoms.wrap(pbc=True)
+    atoms.set_calculator(EMT())
+    energy = atoms.get_potential_energy()
     force = atoms.get_forces()
     energies.append(energy)
     forces.append(force)
@@ -40,21 +42,6 @@ for displacement in distances:
 
 energies = np.array(energies)
 forces = np.array([np.amax(np.abs(force)) for force in forces]).reshape(-1, 1)
-
-def md_run(images, count, filename):
-    traj = ase.io.Trajectory(filename, "w")
-    image = images[0]
-    image.set_calculator(EMT())
-    image.get_potential_energy()
-    dyn = QuasiNewton(image, trajectory=(filename[:-5] + "_relax.traj"))
-    dyn.run(fmax=0.05)
-    traj.write(image)
-    MaxwellBoltzmannDistribution(image, 400.0 * units.kB)
-    # dyn = Langevin(image, 5*units.fs, 400.0*units.kB, 0.002)
-    dyn = VelocityVerlet(image, dt=1.0 * units.fs)
-    for step in range(count):
-        dyn.run(50)
-        traj.write(image)
 
 # training_idx = np.array(random.sample(range(len(k)), 20))
 training_idx = np.array([8, 10, 12, 14, 16, 18, 20, 22, 25, 27])
@@ -68,23 +55,14 @@ def train(train_images, test_images, lj=False):
     label = "bond_ml.pt"
     if lj:
         label = "bond_mllj.pt"
-        eV_kcalmol = 0.043372093
-        # p0 = [1.8, 5, 0, 1.8, 5, 0]
-        p0 = [1.8, 5, 1]
-        p0 = [1.38147567, -0.3407247, -2.15276909]
-        # p0 = [1.198875, 29.73048, 0]
+        p0 = [1.38147567, -0.3407247, -2.15276909, 0, 0 ,0]
         params_dict = {"Cu": [], "C": []}
         cutoff = 10
-        lj_model = lj_optim(train_images, p0, params_dict, cutoff)
-        # fitted_params = lj_model.fit(method="L-BFGS-B")
+        lj_model = lj_optim('test', train_images, p0, params_dict, cutoff)
         fitted_params = lj_model.fit()
-        # fitted_params = p0
         lj_energies, lj_forces, num_atoms = lj_model.lj_pred(
             train_images, fitted_params, params_dict
         )
-        # lj_energies, lj_forces, num_atoms = lj_model.lj_pred(
-        # test_images, fitted_params, params_dict
-        # )
         lj_data = [
             lj_energies,
             lj_forces,
@@ -96,35 +74,43 @@ def train(train_images, test_images, lj=False):
 
     torch.set_num_threads(1)
     calc = AMP(
-        model=AMPModel(
+        model=AMPTorch(
             train_images,
-            descriptor=Gaussian(),
+            descriptor=Gaussian,
+            Gs=Gs,
             cores=1,
             force_coefficient=0.3,
             lj_data=lj_data,
-        ),
-        label=label,
+            label=label,
+            save_logs=False,
+        )
     )
-    calc.model.convergence = {"energy": 0.001, "force": 0.001}
-    calc.model.lr = 0.1
+    # calc.model.convergence = {"energy": 0.001, "force": 0.001}
+    calc.model.lr = 1e-3
+    # calc.model.val_frac = 1e-1
+    calc.model.epochs = 100
+    calc.model.structure = [2, 2]
     calc.train(overwrite=True)
-    energy_pred = np.concatenate(
-        [calc.get_potential_energy(image) - e0 for image in test_images]
-    )
-    # force_pred = np.array(
-    # [np.amax(np.abs(calc.get_forces(image))) for image in test_images]
-    # ).reshape(-1, 1)
-    force_pred = 0
-    return energy_pred, force_pred
+    energy_pred = [calc.get_potential_energy(image) for image in test_images]
+    return energy_pred
 
 
-# ml_energy, ml_forces = train(training_images, images, lj=False)
-mllj_energy, mllj_forces = train(training_images, images, lj=True)
+Gs = {}
+Gs["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
+Gs["G2_rs_s"] = [0] * 4
+Gs["G4_etas"] = [0.005]
+Gs["G4_zetas"] = [1.0, 4.0]
+Gs["G4_gammas"] = [+1.0, -1.0]
+Gs["cutoff"] = 10
+
+ml_energy = train(training_images, images, lj=False)
+mllj_energy = train(training_images, images, lj=True)
 kb = 8.617e-5
 T = 10000
 en = np.exp(-1 * energies / (kb * T))
 en_sum = en.sum()
 boltz = en / en_sum
+
 
 def plot(name, ml_energy=None, lj_energy=None):
     fig, ax1 = plt.subplots(figsize=(15, 10))
@@ -132,8 +118,7 @@ def plot(name, ml_energy=None, lj_energy=None):
     ax1.set_ylabel("Energy, eV", color="k", fontsize=32)
     ax1.plot(distances, energies, color="k", linewidth=3)
     ax1.plot(
-        training_distances, training_energies, "ro", label="train data",
-        markersize=8
+        training_distances, training_energies, "ro", label="train data", markersize=8
     )
     ax1.tick_params(axis="y", labelcolor="k")
     # ax2 = ax1.twinx()
@@ -144,22 +129,20 @@ def plot(name, ml_energy=None, lj_energy=None):
         ax1.plot(distances, ml_energy, "m", label="ML", linewidth=3)
     if lj_energy is not None:
         ax1.plot(distances, mllj_energy, "g", label="ML-LJ", linewidth=3)
-    ax1.set_ylim(top=5)
-    ax1.set_ylim(bottom=-5)
-    ax1.tick_params(axis='both', labelsize=28)
+    ax1.set_ylim(top=10)
+    ax1.set_ylim(bottom=0)
+    ax1.tick_params(axis="both", labelsize=28)
     # ax2.tick_params(axis='both', labelsize=28)
     # plt.legend(fontsize=18)
-    ax1.annotate('actual', (4, 0), color='k', fontsize=30)
+    ax1.annotate("actual", (4, 0), color="k", fontsize=30)
     # ax1.annotate('Boltz. dist.', (1.9, 2), color='r', fontsize=30)
-    ax1.annotate('train data', (2, -4.7), color='r', fontsize=20)
-    if lj_energy is not None:
-        ax1.annotate('ML-LJ', (4, -1.2), color='g', fontsize=30)
-        ax1.annotate('ML', (4, -2.9), color='m', fontsize=30)
-    elif ml_energy is not None:
-        ax1.annotate('ML', (4, -2.9), color='m', fontsize=30)
+    ax1.annotate("train data", (2, -4.7), color="r", fontsize=20)
+    # if lj_energy is not None:
+        # ax1.annotate("ML-LJ", (4, -1.2), color="g", fontsize=30)
+        # ax1.annotate("ML", (4, -2.9), color="m", fontsize=30)
+    # elif ml_energy is not None:
+        # ax1.annotate("ML", (4, -2.9), color="m", fontsize=30)
     plt.savefig(name, dpi=300)
-    plt.show()
+    # plt.show()
 
-# plot('ml_only2.png')
-# plot('demo/ml.png', ml_energy,  None)
-plot('demo/ml_lj.png', None, mllj_energy)
+plot("test.png", ml_energy, mllj_energy)

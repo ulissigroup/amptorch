@@ -43,16 +43,16 @@ def retrieve_files(prefix, num_images):
 location = "MD_results/COCu/pbc_300K/l2amp/paper/"
 # location = "../../datasets/COCu/"
 destination = "MD_results/movies/COCu/pbc_300K/l2amp/"
-files = retrieve_files("MLMD_COCu_pbc_300K_l2amp", 3)
+# files = retrieve_files("MLMD_COCu_pbc_300K_log", 3)
 
-# files = [
-    # "MLMD_COCu_300K_logcosh_5_resample_1",
-    # "MLMD_COCu_300K_logcosh_5_resample_2",
-    # "MLMD_COCu_300K_logcosh_5_resample_3",
-    # "MLMD_COCu_300K_logcosh_LJ_5_resample_1",
-    # "MLMD_COCu_300K_logcosh_LJ_5_resample_2",
-    # "MLMD_COCu_300K_logcosh_LJ_5_resample_3",
-# ]
+files = [
+    "MLMD_COCu_pbc_300K_l2amp_8SF_1",
+    "MLMD_COCu_pbc_300K_l2amp_8SF_LJ_1",
+    "MLMD_COCu_pbc_300K_l2amp_8SF_5_resample_1",
+    "MLMD_COCu_pbc_300K_l2amp_8SF_5_resample_2",
+    "MLMD_COCu_pbc_300K_l2amp_8SF_LJ_5_resample_1",
+    "MLMD_COCu_pbc_300K_l2amp_8SF_LJ_5_resample_2",
+]
 
 for file in files:
     create_movie(location, destination, file)

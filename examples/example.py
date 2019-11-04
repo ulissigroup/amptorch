@@ -13,6 +13,7 @@ from amptorch.core import AMPTorch
 from amptorch.analysis import parity_plot
 from amptorch.gaussian import Gaussian
 from ase.visualize import view
+from ase.io import read
 
 # define training images
 distances = np.linspace(2, 5, 100)
@@ -50,7 +51,6 @@ calc = AMP(
         images,
         descriptor=Gaussian,
         Gs=Gs,
-        cores=1,
         force_coefficient=0.3,
         label=label,
         save_logs=True,
@@ -58,18 +58,21 @@ calc = AMP(
 )
 # define model settings
 calc.model.device = "cpu"
-calc.model.structure = [2, 2]
+calc.model.structure = [3, 10]
 calc.model.val_frac = 0
 calc.model.convergence = {
     "energy": 0.02,
     "force": 0.02,
-    "epochs": 1e10,
+    "epochs": 5,
     "early_stop": False,
 }
+calc.model.loader_params = {
+        "batch_size": None,
+        "shuffle": False,
+        "num_workers": 0}
 calc.model.criterion = CustomLoss
 calc.model.optimizer = optim.LBFGS
 calc.model.lr = 1e-2
-calc.model.batch_size = None
 calc.model.fine_tune = None
 
 # train the model
