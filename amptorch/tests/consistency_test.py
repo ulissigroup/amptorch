@@ -208,7 +208,7 @@ def test_calcs():
 
     device = "cpu"
     dataset = AtomsDataset(
-        images, descriptor=DummyGaussian, Gs=Gs, cores=1, forcetraining=True
+        images, descriptor=DummyGaussian, Gs=Gs, forcetraining=True
     )
     fp_length = dataset.fp_length
     batch_size = len(dataset)
@@ -220,12 +220,12 @@ def test_calcs():
             init.constant_(layer.weight, 0.5)
             init.constant_(layer.bias, 0.5)
     for batch in dataloader:
-        input_data = [batch[0], len(batch[1])]
+        input_data = [batch[0], len(batch[1]), batch[3]]
         for element in elements:
             input_data[0][element][0] = (
                 input_data[0][element][0].to(device).requires_grad_(True)
             )
-        fp_primes = batch[3]
+        fp_primes = batch[4]
         energy_pred, force_pred = model(input_data, fp_primes)
 
     for idx, i in enumerate(amp_energies):
