@@ -34,9 +34,10 @@ def generate_data(count, filename, temp, hook, cons_t=False):
     else:
         slab.set_constraint(cons)
     slab.center(vacuum=13., axis=2)
+    slab.set_pbc(True)
+    slab.wrap(pbc=[True]*3)
     slab.set_calculator(EMT())
     slab.get_forces()
-    # slab.set_pbc([True, True, False])
     dyn = QuasiNewton(slab)
     dyn.run(fmax=0.05)
     traj.write(slab)
@@ -49,4 +50,4 @@ def generate_data(count, filename, temp, hook, cons_t=False):
         traj.write(slab)
 
 
-generate_data(500, "COCu/COCu_pbc_3000K_.traj", temp=3000.0, hook=False, cons_t=True)
+generate_data(500, "COCu/COCu_pbc_300K_new.traj", temp=300.0, hook=False, cons_t=True)

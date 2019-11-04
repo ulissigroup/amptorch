@@ -32,7 +32,9 @@ def test_fp_match():
         Gs["G4_gammas"] = [1.0, -1.0]
         Gs["cutoff"] = 6.5
 
-        elements = ["O", "H"]
+        elements = list(
+            sorted(set([atom.symbol for atoms in images for atom in atoms]))
+        )
         G = make_symmetry_functions(elements=elements, type="G2", etas=Gs["G2_etas"])
         G += make_symmetry_functions(
             elements=elements,

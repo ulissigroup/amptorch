@@ -32,14 +32,6 @@ class AMPTorch:
     device : str
         Hardware to be utilized for training - CPU or GPU.
         default: 'cpu'
-    cores : int
-        Specify the number of cores to use for parallelization of fingerprint
-        calculations. NOTE - To be replaced with PyTorch's parallelization
-        scheme upon fingerprint implementation
-    envommand: string
-        For parallel processing across nodes, a command can be supplied here to
-        load the appropriate environment before starting workers.
-        default=None. NOTE - See Above.
     batch_size: int
         Number of images in a training batch. None represents no batching,
         treating the entire dataset as one batch. default: None
@@ -73,12 +65,10 @@ class AMPTorch:
     lr: float
         Define the model learning rate. default: 1
     criteria: dict
-        Define the training convergence criteria.
-        default: {'energy':0, "force":0}
-    epochs: int
-        If present, train the model for this number of epochs. If epochs or
-        criteria are not defined the model will train until error stagnates.
-        default: 1e10
+        Define the training convergence criteria, including - rmse criteria,
+        early_stop and number of epochs. Training termination is achieved when
+        one of the applied settings are met.
+        default: {'energy':0, "force":0, "early_stop": False, "epochs": 1e10 }
     lj_data: list
         Energies and forces to be subtracted off from targets, allowing the
         model to learn the difference. default: None
@@ -95,9 +85,6 @@ class AMPTorch:
         self,
         datafile,
         device="cpu",
-        cores=1,
-        envcommand=None,
-        batch_size=None,
         structure=[3, 5],
         val_frac=0,
         descriptor=Gaussian,
@@ -105,10 +92,11 @@ class AMPTorch:
         force_coefficient=0,
         criterion=CustomLoss,
         optimizer=optim.LBFGS,
+        loader_params={"batch_size": None, "shuffle": False, "num_workers": 0},
         scheduler=None,
         lr=1,
-        criteria={"energy": 0, "force": 0},
-        epochs=1e10,
+        criteria={"energy": 0, "force": 0,
+                  "epochs": 1e10, "early_stop": False},
         lj_data=None,
         fine_tune=None,
         label='amptorch',
@@ -119,19 +107,18 @@ class AMPTorch:
         db_path='./',
         maxtime=None
     ):
-        if not os.path.exists("results/logs"):
+        if not os.path.exists("results/logs/epochs"):
             os.makedirs("results/logs/epochs")
         self.save_logs = save_logs
         self.save_interval = save_interval
         self.label = label
-        self.log = Logger("results/logs/"+label+".txt")
+        self.log = Logger("results/logs/" + label + ".txt")
 
         self.filename = datafile
-        self.batch_size = batch_size
         self.device = device
-        self.batch_size = batch_size
         self.structure = structure
         self.val_frac = val_frac
+        self.loader_params = loader_params
         self.descriptor = descriptor
         self.force_coefficient = force_coefficient
         self.criterion = criterion
@@ -139,7 +126,6 @@ class AMPTorch:
         self.scheduler = scheduler
         self.lr = lr
         self.convergence = criteria
-        self.epochs = epochs
         self.lj_data = lj_data
         self.fine_tune = fine_tune
         self.Gs = Gs
@@ -184,7 +170,8 @@ class AMPTorch:
             self.log(time.asctime())
             self.log("-" * 50)
         self.log("LJ Data: %s" % (True if lj_data is not None else None))
-        self.log("Force Training: %s - %s" % (self.forcetraining, force_coefficient))
+        self.log("Force Training: %s - %s" %
+                 (self.forcetraining, force_coefficient))
 
     def train(self):
         """Trains the model under the provided optimizer conditions until
@@ -200,11 +187,12 @@ class AMPTorch:
             collate_function = collate_amp
 
 
-        if self.batch_size is None:
-            self.batch_size = dataset_size
+        if self.loader_params['batch_size'] is None:
+            self.loader_params['batch_size'] = len(training_data)
 
         if self.val_frac != 0:
-            samplers = training_data.create_splits(training_data, self.val_frac)
+            samplers = training_data.create_splits(
+                training_data, self.val_frac)
             dataset_size = {
                 "train": dataset_size - int(self.val_frac * dataset_size),
                 "val": int(self.val_frac * dataset_size),
@@ -215,8 +203,11 @@ class AMPTorch:
                 % (dataset_size["train"], dataset_size["val"])
             )
 
-            if self.batch_size is None:
-                self.batch_size = {x: dataset_size[x] for x in ["train", "val"]}
+            if self.loader_params['batch_size'] is len(training_data):
+                loader_dict = {}
+                for x in ['train', 'val']:
+                    self.loader_params['batch_size'] = dataset_size[x]
+                    loader_dict[x] = self.loader_params
 
             self.atoms_dataloader = {
                 x: DataLoader(
@@ -224,6 +215,7 @@ class AMPTorch:
                     self.batch_size,
                     collate_fn=collate_function,
                     sampler=samplers[x],
+                    **loader_dict[x]
                 )
                 for x in ["train", "val"]
             }
@@ -254,29 +246,26 @@ class AMPTorch:
         if self.scheduler:
             self.scheduler = self.scheduler(optimizer, step_size=7, gamma=0.1)
         self.log("Scheduler Info: %s" % self.scheduler)
-        self.log("RMSE criteria = {}".format(self.convergence))
+        self.log("Convergence criteria = {}".format(self.convergence))
         self.log("Model architecture: %s" % architecture)
 
         self.trainer = Trainer(
             model,
             self.device,
-            self.unique_atoms,
             dataset_size,
             self.criterion(force_coefficient=self.force_coefficient),
             optimizer,
             self.scheduler,
             self.atoms_dataloader,
             self.convergence,
-            self.epochs,
             self.scalings,
             self.label,
             weighted=self.weighted,
             save_interval=self.save_interval,
             maxtime=self.maxtime
         )
-
         self.trained_model = self.trainer.train_model()
         if not self.save_logs:
-            os.remove("results/logs/"+self.label+".txt")
-            os.remove("results/logs/epochs/"+self.label+"-calc.txt")
+            os.remove("results/logs/" + self.label + ".txt")
+            os.remove("results/logs/epochs/" + self.label + "-calc.txt")
         return self.trained_model

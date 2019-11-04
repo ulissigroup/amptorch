@@ -2,8 +2,8 @@
 
 import sys
 from ase import Atoms
-import ase
 import torch
+import numpy as np
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
@@ -36,26 +36,34 @@ torch.set_num_threads(1)
 # declare the calculator and corresponding model to be used
 calc = AMP(
     model=AMPTorch(
-        IMAGES,
+        images,
         descriptor=Gaussian,
-        Gs=GSF,
-        cores=1,
-        device='cpu',
+        Gs=Gs,
         force_coefficient=0.3,
-        lj_data=None,
-        label='example',
+        label=label,
         save_logs=True,
-        db_path='/home/bcomer3/data/fps/',
     )
 )
 # define model settings
-calc.model.structure = [3, 5]
-# calc.model.val_frac = 0.2
-# calc.model.convergence = {'energy': 0.02, 'force': 0.02}
-# calc.model.epochs = 10
-calc.lr = 1
-calc.criterion = CustomLoss
-calc.optimizer = optim.LBFGS
+calc.model.device = "cpu"
+calc.model.structure = [3, 10]
+calc.model.val_frac = 0
+calc.model.convergence = {
+    "energy": 0.02,
+    "force": 0.02,
+    "epochs": 5,
+    "early_stop": False,
+}
+calc.model.loader_params = {
+        "batch_size": None,
+        "shuffle": False,
+        "num_workers": 0}
+calc.model.criterion = CustomLoss
+calc.model.optimizer = optim.LBFGS
+calc.model.lr = 1e-2
+calc.model.fine_tune = None
 
 # train the model
 calc.train(overwrite=True)
+parity_plot(calc, images, data="energy", label=label)
+parity_plot(calc, images, data="forces", label=label)
