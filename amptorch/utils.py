@@ -98,7 +98,7 @@ def calculate_fingerprints_range(fp, images):
 
 
 def make_params_file(
-    elements, etas, rs_s, g4_eta=4, cutoff=6.5, g4_zeta=[1.0, 4.0], g4_gamma=[1, -1]
+    elements, fp_dir, etas, rs_s, g4_eta=4, cutoff=6.5, g4_zeta=[1.0, 4.0], g4_gamma=[1, -1]
     ):
     """
     makes a params file for simple_NN. This is the file containing
@@ -131,7 +131,7 @@ def make_params_file(
     if type(g4_eta) == int:
         g4_eta = np.logspace(-4, -1, num=g4_eta)
     for element in elements:
-        with open("params_{}".format(element), "w") as f:
+        with open(fp_dir+"/params_{}".format(element), "w") as f:
             # G2
             for eta, Rs in zip(etas, rs_s):
                 for species in range(1, len(elements) + 1):
@@ -282,8 +282,8 @@ def factorize_data(traj, Gs):
     return new_traj
 
 
-def convert_simple_nn_fps(traj, Gs, delete_old=True):
-    from multiprocessing import Pool, cpu_count
+def convert_simple_nn_fps(traj, Gs, cores, label, delete_old=True):
+    from multiprocessing import Pool
 
     # make the directories
     if not os.path.isdir("./amp-data-fingerprints.ampdb"):
@@ -296,20 +296,21 @@ def convert_simple_nn_fps(traj, Gs, delete_old=True):
         os.mkdir("amp-data-fingerprint-primes.ampdb/loose")
     # perform the reorganization
     l_trajs = list(enumerate(traj))
+    fp_dir = "data"+label
     if len(traj) > 1:
-        with Pool(cpu_count()) as p:
-            l_trajs = [image + (Gs,) for image in l_trajs]
+        with Pool(cores) as p:
+            l_trajs = [image + (Gs, label, fp_dir) for image in l_trajs]
             p.map(reorganize, l_trajs)
     else:
-        image = (0, traj[0], Gs)
+        image = (0, traj[0], Gs, label, fp_dir)
         reorganize(image)
     if delete_old:
-        os.rmdir("./data")
+        os.rmdir("./data"+label)
 
 
 def reorganize(inp, delete_old=True):
-    i, image, Gs = inp
-    pic = pickle.load(open("./data/data{}.pickle".format(i + 1), "rb"))
+    i, image, Gs, label, fp_dir = inp
+    pic = pickle.load(open(fp_dir+"/data{}.pickle".format(i + 1), "rb"))
     im_hash = get_hash(image, Gs)
     x_list = reorganize_simple_nn_fp(image, pic["x"])
     pickle.dump(x_list, open("./amp-data-fingerprints.ampdb/loose/" + im_hash, "wb"))
@@ -320,7 +321,7 @@ def reorganize(inp, delete_old=True):
     )
     del x_der_dict  # free up memory just in case
     if delete_old:  # in case disk space is an issue
-        os.remove("./data/data{}.pickle".format(i + 1))
+        os.remove(fp_dir+"/data{}.pickle".format(i + 1))
 
 
 class DummySimple_nn(object):
@@ -329,17 +330,17 @@ class DummySimple_nn(object):
     thinking it's attached to a simple_nn instance
     """
 
-    def __init__(self, atom_types):
+    def __init__(self, atom_types, dir):
         self.inputs = {
             "generate_features": True,
             "preprocess": False,
             "train_model": True,
             "atom_types": atom_types,
         }
-        self.logfile = open("simple_nn_log", "w")
+        self.logfile = open(dir+"/simple_nn_log", "w")
 
 
-def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all"):
+def make_simple_nn_fps(traj, Gs, label, clean_up_directory=True, elements="all"):
     """
     generates descriptors using simple_nn. The files are stored in the
     ./data folder. These descriptors will be in the simple_nn form and
@@ -377,15 +378,18 @@ def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all"):
             G["G4_zetas"],
             G["G4_gammas"],
         )
+        fp_dir = "./data"+label+"/"
+        if not os.path.isdir(fp_dir):
+            os.mkdir(fp_dir)
         # clean up any previous runs
-        if os.path.isdir("./data"):
-            shutil.rmtree("./data")
+        if os.path.isdir(fp_dir+"/data/"):
+            shutil.rmtree(fp_dir+"/data/")
 
         # set up the input files
-        io.write("simple_nn_input_traj.traj", traj)
-        with open("str_list", "w") as f:
+        io.write(fp_dir+"/simple_nn_input_traj.traj", traj)
+        with open(fp_dir+"/str_list", "w") as f:
             # simple_nn requires this file
-            f.write("simple_nn_input_traj.traj :")
+            f.write(fp_dir+"/simple_nn_input_traj.traj :")
 
         if elements == "all":
             atom_types = []
@@ -396,10 +400,10 @@ def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all"):
         else:
             atom_types = elements
 
-        make_params_file(atom_types, *descriptors)
+        make_params_file(atom_types, fp_dir, *descriptors)
 
         # build the descriptor object
-        descriptor = Symmetry_function()
+        descriptor = Symmetry_function(fp_dir=fp_dir)
         params = {a: "params_{}".format(a) for a in atom_types}
 
         descriptor.inputs = {
@@ -418,11 +422,11 @@ def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all"):
             "scale_scale": 1.0,
             "scale_rho": None,
         }
-        dummy_class = DummySimple_nn(atom_types=atom_types)
+        dummy_class = DummySimple_nn(atom_types=atom_types, dir=fp_dir)
         descriptor.parent = dummy_class
 
         # generate the descriptors
-        descriptor.generate()
+        descriptor.generate(label)
         if clean_up_directory:
             # clean the folder of all the junk
             files = [
@@ -433,20 +437,21 @@ def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all"):
             ]
             files += list(params.values())
             for file in files:
-                os.remove(file)
+                os.remove(fp_dir+"/"+file)
         calculated = True
     return traj, calculated
 
 
-def make_amp_descriptors_simple_nn(traj, Gs, elements):
+def make_amp_descriptors_simple_nn(traj, Gs, elements, cores, label):
     """
     uses simple_nn to make descriptors in the amp format.
     Only creates the same symmetry functions for each element
     for now.
     """
-    traj, calculated = make_simple_nn_fps(traj, Gs, elements=elements, clean_up_directory=True)
+    traj, calculated = make_simple_nn_fps(traj, Gs, elements=elements,
+            label=label, clean_up_directory=True)
     if calculated:
-        convert_simple_nn_fps(traj, Gs, delete_old=True)
+        convert_simple_nn_fps(traj, Gs, cores, label, delete_old=True)
 
 
 class Logger:
