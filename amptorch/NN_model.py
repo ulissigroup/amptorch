@@ -37,7 +37,7 @@ class Dense(nn.Linear):
         """Weight initialization scheme"""
         # init.constant_(self.bias, 0)
         init.normal_(self.bias)
-        torch.manual_seed(5504)
+        # torch.manual_seed(5504)
         # kaiming_uniform_(self.weight, nonlinearity="tanh")
         # kaiming_uniform_(self.weight, nonlinearity="leaky_relu")
         # xavier_normal_(self.weight, gain=0.25)
