@@ -45,6 +45,10 @@ class AtomsDataset(Dataset):
         will then compute the necessary information - fingerprint derivatives,
         etc.
 
+    cores: int
+        Number of cores to parallelize symmetry function
+        computation/reorganization.
+
     lj_data: list
         Energies and forces to be subtracted off from targets, allowing the
         model to learn the difference. default: None
@@ -57,13 +61,7 @@ class AtomsDataset(Dataset):
     """
 
     def __init__(
-        self,
-        images,
-        descriptor,
-        Gs,
-        forcetraining,
-        lj_data=None,
-        store_primes=False,
+        self, images, descriptor, Gs, forcetraining, label, cores, lj_data=None, store_primes=False
     ):
         self.images = images
         self.descriptor = descriptor
@@ -93,7 +91,8 @@ class AtomsDataset(Dataset):
         G4_zetas = Gs["G4_zetas"]
         G4_gammas = Gs["G4_gammas"]
         cutoff = Gs["cutoff"]
-        make_amp_descriptors_simple_nn(self.atom_images, Gs, self.elements)
+        make_amp_descriptors_simple_nn(self.atom_images, Gs, self.elements,
+                cores=cores, label=label)
         G = make_symmetry_functions(elements=self.elements, type="G2", etas=G2_etas)
         G += make_symmetry_functions(
             elements=self.elements,
@@ -106,8 +105,7 @@ class AtomsDataset(Dataset):
             g["Rs"] = G2_rs_s
         self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
         self.descriptor.calculate_fingerprints(
-            self.hashed_images,
-            calculate_derivatives=forcetraining,
+            self.hashed_images, calculate_derivatives=forcetraining
         )
         print("Fingerprints Calculated!")
         self.fprange = calculate_fingerprints_range(self.descriptor, self.hashed_images)
@@ -274,13 +272,23 @@ class AtomsDataset(Dataset):
         """Computes the fingerprint length of the training images"""
         return len(list(self.fprange.values())[0])
 
-    def create_splits(self, training_data, val_frac):
+    def create_splits(self, training_data, val_frac, resample=None):
         """Constructs a training and validation sampler to be utilized for
         constructing training and validation sets."""
         dataset_size = len(training_data)
+        if resample:
+            dataset_size -= resample
         indices = np.random.permutation(dataset_size)
         split = int(val_frac * dataset_size)
         train_idx, val_idx = indices[split:], indices[:split]
+        if resample:
+            sample_idx = np.random.permutation(
+                np.arange(dataset_size, dataset_size + resample)
+            )
+            split = int(val_frac * len(sample_idx))
+            train_idx = np.concatenate((train_idx,
+                    sample_idx[split:]))
+            val_idx = np.concatenate((val_idx, sample_idx[:split]))
         train_sampler = SubsetRandomSampler(train_idx)
         val_sampler = SubsetRandomSampler(val_idx)
 
@@ -288,7 +296,7 @@ class AtomsDataset(Dataset):
 
         return samplers
 
-
+# @profile
 def factorize_data(training_data):
     """
     Factorizes the dataset into separate lists.
@@ -366,6 +374,9 @@ def factorize_data(training_data):
         sparse_fprimes = torch.sparse.FloatTensor(
             fprimes_inds, fprimes_vals, torch.Size([dim1_start, dim2_start])
         )
+        sparsity = 1 - (
+                len(sparse_fprimes._values())/(sparse_fprimes.shape[0]*sparse_fprimes.shape[1])
+                )
         image_forces = torch.cat(image_forces).float()
 
     return (
@@ -377,7 +388,7 @@ def factorize_data(training_data):
         image_forces,
     )
 
-
+# @profile
 def collate_amp(training_data):
     """
     Reshuffling scheme that reads in raw data and organizes it into element
@@ -430,7 +441,7 @@ class TestDataset(Dataset):
 
     """
 
-    def __init__(self, images, descriptor, Gs, fprange):
+    def __init__(self, images, descriptor, Gs, fprange, label='example', cores=1):
         self.images = images
         if type(images) is not list:
             self.images = [images]
@@ -449,7 +460,8 @@ class TestDataset(Dataset):
         G4_zetas = Gs["G4_zetas"]
         G4_gammas = Gs["G4_gammas"]
         cutoff = Gs["cutoff"]
-        make_amp_descriptors_simple_nn(self.atom_images, Gs, self.unique_atoms)
+        make_amp_descriptors_simple_nn(self.atom_images, Gs, self.unique_atoms,
+                cores=cores, label=label)
         G = make_symmetry_functions(elements=self.unique_atoms, type="G2", etas=G2_etas)
         G += make_symmetry_functions(
             elements=self.unique_atoms,
