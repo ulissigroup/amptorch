@@ -47,6 +47,8 @@ class AMPTorch:
         fingerprintprimes. default: Gaussian
     Gs: object
         Symmetry function parameters to be used.
+    cores: int
+        Number of cores to parallelize across for Symmetry Function computation
     force_coefficient: float
         Define the force coefficient to be utilized in the loss function. A
         coefficient > 0 indicates force training is turned on.
@@ -88,10 +90,12 @@ class AMPTorch:
         val_frac=0,
         descriptor=Gaussian,
         Gs=None,
+        cores=1,
         force_coefficient=0,
         criterion=CustomLoss,
         optimizer=optim.LBFGS,
         loader_params={"batch_size": None, "shuffle": False, "num_workers": 0},
+        resample=None,
         scheduler=None,
         lr=1,
         criteria={"energy": 0, "force": 0,
@@ -112,6 +116,7 @@ class AMPTorch:
         self.structure = structure
         self.val_frac = val_frac
         self.loader_params = loader_params
+        self.resample = resample
         self.descriptor = descriptor
         self.force_coefficient = force_coefficient
         self.criterion = criterion
@@ -131,8 +136,10 @@ class AMPTorch:
             self.filename,
             descriptor=self.descriptor,
             Gs=Gs,
+            cores=cores,
             forcetraining=self.forcetraining,
             lj_data=self.lj_data,
+            label=label,
         )
         self.scalings = self.training_data.scalings()
         self.sd_scaling = self.scalings[0]
@@ -159,7 +166,7 @@ class AMPTorch:
 
         if self.val_frac != 0:
             samplers = training_data.create_splits(
-                training_data, self.val_frac)
+                training_data, self.val_frac, resample=self.resample)
             dataset_size = {
                 "train": dataset_size - int(self.val_frac * dataset_size),
                 "val": int(self.val_frac * dataset_size),

@@ -48,7 +48,7 @@ def test_fp_match():
         hashes = stock_hash(images)
         amp_hash = list(hashes.keys())[0]
 
-        make_amp_descriptors_simple_nn(images, Gs, elements=elements)
+        make_amp_descriptors_simple_nn(images, Gs, cores=1, label='test', elements=elements)
         s_nn_hash = list(new_hash(images, Gs).keys())[0]
 
         with open("amp-data-fingerprints.ampdb/loose/" + s_nn_hash, "rb") as f:
