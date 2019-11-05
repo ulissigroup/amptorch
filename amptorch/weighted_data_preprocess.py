@@ -12,8 +12,8 @@ import torch
 from torch.utils.data import Dataset, SubsetRandomSampler
 import scipy.sparse as sparse
 import ase
-from amp.utilities import assign_cores
-from amp.descriptor.gaussian import make_symmetry_functions
+#from amp.descriptor.gaussian import make_symmetry_functions
+from .gaussian import make_symmetry_functions
 from .utils import make_amp_descriptors_simple_nn, \
         calculate_fingerprints_range, hash_images
 
@@ -36,10 +36,6 @@ class WeightedAtomsDataset(Dataset):
 
     Gs: object
         Symmetry function parameters to be used for hashing and fingerprinting.
-
-    cores: int
-        Specify the number of cores to use for parallelization of fingerprint
-        calculations.
 
     forcetraining: float
         Flag to specify whether force training is to be performed - dataset
@@ -67,7 +63,6 @@ class WeightedAtomsDataset(Dataset):
         images,
         descriptor,
         Gs,
-        cores,
         forcetraining,
         lj_data=None,
         envcommand=None,
@@ -98,9 +93,6 @@ class WeightedAtomsDataset(Dataset):
                 self.atom_images = ase.io.read(images, ":")
         self.elements = self.unique()
         self.hashed_images = hash_images(self.atom_images, Gs=Gs)
-        self.parallel = {"cores": cores}
-        if cores > 1:
-            self.parallel = {"cores": assign_cores(cores), "envcommand": envcommand}
         print("Calculating fingerprints...")
         G2_etas = Gs["G2_etas"]
         G2_rs_s = Gs["G2_rs_s"]
@@ -125,7 +117,6 @@ class WeightedAtomsDataset(Dataset):
         self.descriptor = self.descriptor(Gs=G, cutoff=cutoff, db_path=self.db_path)
         self.descriptor.calculate_fingerprints(
             self.hashed_images,
-            parallel=self.parallel,
             calculate_derivatives=forcetraining,
         )
         print("Fingerprints Calculated!")
@@ -437,6 +428,7 @@ def weighted_collate_amp(training_data):
     model_input_data.append(element_specific_fingerprints)
     model_input_data.append(torch.tensor(energy_dataset))
     model_input_data.append(torch.FloatTensor(num_of_atoms))
+    model_input_data.append(unique_atoms)
     model_input_data.append(fp_primes)
     model_input_data.append(image_forces)
     model_input_data.append(torch.FloatTensor(weights))

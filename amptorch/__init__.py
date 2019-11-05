@@ -74,7 +74,7 @@ class AMP(Calculator):
         Calculator.calculate(self, atoms, properties, system_changes)
         dataset = TestDataset(
             images=atoms, descriptor=self.model.descriptor, Gs=self.Gs,
-            fprange=self.fp_scaling)
+            fprange=self.fp_scaling, db_path=self.model.db_path)
         fp_length = dataset.fp_length()
         unique_atoms = dataset.unique()
         architecture = copy.copy(self.model.structure)

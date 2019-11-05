@@ -199,7 +199,7 @@ class Trainer:
                         )
                         if self.weighted:
                             weights = data_sample[-1].to(self.device)
-                        for element in self.unique_atoms:
+                        for element in unique_atoms:
                             input_data[0][element][0] = (
                                 input_data[0][element][0]
                                 .to(self.device)
@@ -280,6 +280,8 @@ class Trainer:
                             force_loss = mse_loss(
                                 force_pred_per_atom, force_targets_per_atom
                             )
+                            if torch.isnan(force_loss):
+                                early_stop = True
                             w_f = weighted_mse_loss(force_pred_per_atom, force_targets_per_atom,
                                             torch.FloatTensor([1.] * len(force_pred_per_atom)))
                             force_mse += torch.tensor(force_loss.item())
@@ -290,6 +292,8 @@ class Trainer:
 
                     energy_mse /= self.dataset_size[phase]
                     energy_rmse = torch.sqrt(energy_mse)
+                    if torch.isnan(energy_rmse):
+                        early_stop = True
                     plot_energy_loss[phase].append(energy_rmse)
                     print("%s energy loss: %f" % (phase, energy_rmse))
                     if forcetraining:
@@ -321,6 +325,7 @@ class Trainer:
                             # early stop when training force error stagnates
                             if abs(force_rmse - previous_force_rmse) <= 1e-5 and \
                                 abs(energy_rmse - previous_energy_rmse) <= 1e-5:
+                                print('Early Stop Triggered')
                                 early_stop = True
                             time_elapsed = time.time() - since
                             if self.maxtime is not None:
@@ -398,7 +403,7 @@ class Trainer:
                     target = target.reshape(batch_size, 1).to(self.device)
                     scaled_target = (target - self.mean_scaling) / self.sd_scaling
                     num_of_atoms = data_sample[2].reshape(batch_size, 1).to(self.device)
-                    fp_primes = data_sample[3]
+                    fp_primes = data_sample[4]
                     if self.weighted:
                         weights = data_sample[-1]
 
@@ -488,11 +493,15 @@ class Trainer:
 
                 energy_mse /= self.dataset_size
                 energy_rmse = torch.sqrt(energy_mse)
+                if torch.isnan(energy_rmse):
+                    early_stop = True
                 plot_energy_loss[phase].append(energy_rmse)
                 print("energy loss: %f" % energy_rmse)
                 if forcetraining:
                     force_mse /= self.dataset_size
                     force_rmse = torch.sqrt(force_mse)
+                    if torch.isnan(force_rmse):
+                        early_stop = True
                     plot_force_loss[phase].append(force_rmse)
                     print("force loss: %f\n" % force_rmse)
                     log_force_results(
@@ -501,15 +510,19 @@ class Trainer:
                     # terminates when error stagnates
                     if abs(force_rmse - previous_force_rmse) <= 1e-5 and \
                             abs(energy_rmse - previous_energy_rmse)<= 1e-5:
+                        print('Early Stop Triggered')
                         early_stop = True
                     time_elapsed = time.time() - since
                     if self.maxtime is not None:
                         if time_elapsed >= self.maxtime:
                              early_stop = True
-                    elif force_rmse < best_train_force_loss:
+                    if torch.isnan(force_rmse):
+                        early_stop = True
+                    if force_rmse < best_train_force_loss:
                         best_train_energy_loss = energy_rmse
                         best_train_force_loss = force_rmse
                         best_model_wts = copy.deepcopy(self.model.state_dict())
+                    
                     previous_energy_rmse = energy_rmse
                     previous_force_rmse = force_rmse
                     previous_energy_rmse = energy_rmse
@@ -528,6 +541,7 @@ class Trainer:
                     log_energy_results(log_epoch, epoch, now, loss, energy_rmse, phase)
                     # terminates when error stagnates
                     if abs(energy_rmse - previous_energy_rmse) <= 1e-7:
+                        print('Early Stop Triggered')
                         convergence = True
                     time_elapsed = time.time() - since
                     if self.maxtime is not None:

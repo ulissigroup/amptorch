@@ -283,7 +283,8 @@ def factorize_data(traj, Gs, db_path='./'):
     return new_traj
 
 
-def convert_simple_nn_fps(traj, Gs, delete_old=True, db_path='./'):
+def convert_simple_nn_fps(traj, Gs, delete_old=True, style='amp',
+                          db_path='./'):
     from multiprocessing import Pool, cpu_count
 
     # make the directories
@@ -300,7 +301,7 @@ def convert_simple_nn_fps(traj, Gs, delete_old=True, db_path='./'):
     if len(traj) > 1:
         pass
         with Pool(cpu_count()) as p:
-            func = partial(reorganize, db_path=db_path)
+            func = partial(reorganize, db_path=db_path, style=style)
             l_trajs = [image + (Gs,) for image in l_trajs]
             p.map(func, l_trajs)
     else:
@@ -313,24 +314,33 @@ def convert_simple_nn_fps(traj, Gs, delete_old=True, db_path='./'):
             pass
 
 
-def reorganize(inp, delete_old=True, db_path='./'):
+def reorganize(inp, delete_old=True, db_path='./', style='amp'):
     i, image, Gs = inp
     pic = pickle.load(open("./data/data{}.pickle".format(i + 1), "rb"))
     im_hash = get_hash(image, Gs)
-    x_list = reorganize_simple_nn_fp(image, pic["x"])
-    pickle.dump(x_list, open(db_path + "/amp-data-fingerprints.ampdb/loose/" + im_hash, "wb"))
-    del x_list  # free up memory just in case
-    x_der_dict = reorganize_simple_nn_derivative(image, pic["dx"])
-    pickle.dump(
-        x_der_dict, open(db_path + "/amp-data-fingerprint-primes.ampdb/loose/" + im_hash, "wb")
-    )
-    del x_der_dict  # free up memory just in case
+    if style == 'amp':
+        x_list = reorganize_simple_nn_fp(image, pic["x"])
+        pickle.dump(x_list, open(db_path + \
+                                  "/amp-data-fingerprints.ampdb/loose/" + \
+                                  im_hash, "wb"))
+        del x_list  # free up memory just in case
+        x_der_dict = reorganize_simple_nn_derivative(image, pic["dx"])
+        pickle.dump(
+            x_der_dict, open(db_path + "/amp-data-fingerprint-primes.ampdb/loose/" + im_hash, "wb")
+        )
+        del x_der_dict  # free up memory just in case
+
+    elif sytle == 'amptorch':
+        x_list = reorganize_simple_nn_fp_torch(image, pic["x"])
+        
     if delete_old:  # in case disk space is an issue
         try:
             os.remove("./data/data{}.pickle".format(i + 1))
         except:
             pass
 
+def reorganize_simple_nn_fp_torch(image, x_dict):
+    pass
 
 class DummySimple_nn(object):
     """
@@ -348,7 +358,8 @@ class DummySimple_nn(object):
         self.logfile = open("simple_nn_log", "w")
 
 
-def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all"):
+def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all",
+                       db_path='./'):
     """
     generates descriptors using simple_nn. The files are stored in the
     ./data folder. These descriptors will be in the simple_nn form and
@@ -369,7 +380,7 @@ def make_simple_nn_fps(traj, Gs, clean_up_directory=True, elements="all"):
         traj = [traj]
 
     G = copy.deepcopy(Gs)
-    traj = factorize_data(traj, G)
+    traj = factorize_data(traj, G, db_path=db_path)
     calculated = False
     if len(traj) > 0:
         from simple_nn.features.symmetry_function import Symmetry_function
@@ -453,7 +464,9 @@ def make_amp_descriptors_simple_nn(traj, Gs, elements, db_path='./'):
     Only creates the same symmetry functions for each element
     for now.
     """
-    traj, calculated = make_simple_nn_fps(traj, Gs, elements=elements, clean_up_directory=True)
+    traj, calculated = make_simple_nn_fps(traj, Gs, elements=elements,
+                                          clean_up_directory=True, 
+                                          db_path=db_path)
     if calculated:
         convert_simple_nn_fps(traj, Gs, delete_old=True, db_path=db_path)
 

@@ -99,6 +99,7 @@ class AMPTorch:
                   "epochs": 1e10, "early_stop": False},
         lj_data=None,
         fine_tune=None,
+        cores=1,
         label='amptorch',
         save_logs=True,
         save_interval=1000,
@@ -133,6 +134,7 @@ class AMPTorch:
         self.weights_dict = weights_dict
         self.db_path = db_path
         self.maxtime = maxtime
+        self.cores = cores
 
         self.forcetraining = False
         if force_coefficient > 0:
@@ -144,10 +146,8 @@ class AMPTorch:
                 self.filename,
                 descriptor=self.descriptor,
                 Gs=Gs,
-                cores=cores,
                 forcetraining=self.forcetraining,
                 lj_data=self.lj_data,
-                envcommand=envcommand,
                 store_primes=store_primes,
                 db_path=self.db_path,)
         else:
@@ -155,10 +155,8 @@ class AMPTorch:
                 self.filename,
                 descriptor=self.descriptor,
                 Gs=Gs,
-                cores=cores,
                 forcetraining=self.forcetraining,
                 lj_data=self.lj_data,
-                envcommand=envcommand,
                 store_primes=store_primes,
                 weights_dict=weights_dict,
                 db_path=self.db_path,)
@@ -208,11 +206,16 @@ class AMPTorch:
                 for x in ['train', 'val']:
                     self.loader_params['batch_size'] = dataset_size[x]
                     loader_dict[x] = self.loader_params
+            else:
+                loader_dict = {}
+                for x in ['train', 'val']:
+                    loader_dict[x] = self.loader_params.copy()
+                    del loader_dict[x]['batch_size']
 
             self.atoms_dataloader = {
                 x: DataLoader(
                     training_data,
-                    self.batch_size,
+                    self.loader_params['batch_size'],
                     collate_fn=collate_function,
                     sampler=samplers[x],
                     **loader_dict[x]
@@ -223,7 +226,7 @@ class AMPTorch:
         else:
             self.log("Training Data = %d" % dataset_size)
             self.atoms_dataloader = DataLoader(
-                training_data, self.batch_size, collate_fn=collate_function, shuffle=False
+                training_data, self.loader_params['batch_size'], collate_fn=collate_function, shuffle=False
             )
         architecture = copy.copy(self.structure)
         architecture.insert(0, fp_length)

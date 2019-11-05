@@ -7,6 +7,7 @@ import numpy as np
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
+import ase
 from amptorch.NN_model import CustomLoss
 from amptorch import AMP
 from amptorch.core import AMPTorch
@@ -33,14 +34,17 @@ GSF["cutoff"] = 6.5
 # define the number of threads to parallelize training across
 torch.set_num_threads(1)
 
+label = 'example'
+cores=1
 # declare the calculator and corresponding model to be used
 calc = AMP(
     model=AMPTorch(
         images,
         descriptor=Gaussian,
-        Gs=Gs,
+        Gs=GSF,
         force_coefficient=0.3,
         label=label,
+        db_path='/storage/home/hhive1/bcomer3/data/mass_amps/fps/',
         save_logs=True,
     )
 )

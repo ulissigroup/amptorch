@@ -58,7 +58,7 @@ class Gaussian(object):
 
     def __init__(self, cutoff=Cosine(6.5), Gs=None, dblabel=None,
                  elements=None, version=None, fortran=True,
-                 db_path='.', mode='atom-centered'):
+                 db_path='./', mode='atom-centered'):
 
         # Check of the version of descriptor, particularly if restarting.
         compatibleversions = ['2015.12', ]
@@ -309,7 +309,9 @@ class FileDatabase:
         keypath = os.path.join(self.loosepath, key)
         if os.path.exists(keypath):
             with open(keypath, 'rb') as f:
-                return self._repeat_read(f)
+                result = self._repeat_read(f)
+                self._memdict[key] = result
+                return result
         elif os.path.exists(self.tarpath):
             with tarfile.open(self.tarpath) as tf:
                 return pickle.load(tf.extractfile(key))
