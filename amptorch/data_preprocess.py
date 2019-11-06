@@ -294,7 +294,6 @@ class AtomsDataset(Dataset):
 
         return samplers
 
-@profile
 def factorize_data(training_data):
     """
     Factorizes the dataset into separate lists.
@@ -335,8 +334,6 @@ def factorize_data(training_data):
     # Construct a sparse matrix with dimensions PQx3Q, if forcetraining is on.
     if forcetraining:
         image_forces = []
-        fprimes_inds = torch.LongTensor(2, 0)
-        fprimes_vals = torch.FloatTensor()
         dim1_start = 0
         dim2_start = 0
         total_entries = 0
@@ -373,8 +370,6 @@ def factorize_data(training_data):
             s_fprime_vals = fprime._values().type(torch.FloatTensor)
             num_entries = len(s_fprime_vals)
             # concatenate them
-            #fprimes_inds = torch.cat((fprimes_inds, s_fprime_inds), axis=1)
-            #fprimes_vals = torch.cat((fprimes_vals, s_fprime_vals))
             fprimes_inds[:, previous_entries:previous_entries + num_entries] = s_fprime_inds
             fprimes_vals[previous_entries:previous_entries + num_entries] = s_fprime_vals
             previous_entries += num_entries
