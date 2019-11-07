@@ -13,10 +13,10 @@ AMPTorch has been made to be similar to *Amp* as to require minimal learning for
 The implementation currently relies on *SIMPLE-NN* to carry out fingerprint/fingerprint derivative calculations. Such calculations will be directly implemented in the near future as to enhance the model's computational performance by taking advantage of PyTorch's ```autograd``` feature.
 
 Installation Instructions:
-git clone git@github.com:ulissigroup/amptorch.git
-pip install git+https://github.com/mshuaibii/SIMPLE-NN
-pip install git+https://bitbucket.org/andrewpeterson/amp.git
-pip install . 
+- git clone https://github.com/ulissigroup/amptorch.git
+- pip install https://github.com/mshuaibii/SIMPLE-NN.git
+- pip install git+https://bitbucket.org/andrewpeterson/amp.git
+- pip install . 
 
 
 As AMPTorch is a work in progress, please feel free to report any issues/suggestions/feedback/questions and we'll try to address them or get back to you as soon as possible.
