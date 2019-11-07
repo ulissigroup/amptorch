@@ -284,7 +284,7 @@ class TanhLoss(nn.Module):
             force_pred_per_atom = torch.div(force_pred, num_atoms_force)
             force_targets_per_atom = torch.div(force_targets, num_atoms_force)
             force_loss = (1/3)*torch.sum(
-                torch.tanh(torch.abs(force_pred_per_atom - force_targets_per_atom))
+                torch.tanh(2*torch.abs(force_pred_per_atom - force_targets_per_atom))
             )
             loss = energy_loss + self.alpha*force_loss
         return loss if self.alpha > 0 else energy_loss
