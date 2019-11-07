@@ -70,6 +70,7 @@ calc = AMP(
         images,
         descriptor=Gaussian,
         Gs=Gs,
+        cores=1,
         force_coefficient=0.3,
         label=label,
         save_logs=True,
