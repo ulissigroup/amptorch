@@ -231,7 +231,7 @@ class AtomsDataset(Dataset):
                 fprime = self.sparse_fprimes[index]
             forces = self.forces_dataset[index]
         unique_atoms = self.elements
-        return (
+        return [
             fingerprint,
             energy,
             atom_count,
@@ -239,7 +239,7 @@ class AtomsDataset(Dataset):
             forces,
             unique_atoms,
             self.forcetraining,
-        )
+        ]
 
     def scalings(self):
         """Computes the scaling factors used in the training dataset to
@@ -337,10 +337,18 @@ def factorize_data(training_data):
     # Construct a sparse matrix with dimensions PQx3Q, if forcetraining is on.
     if forcetraining:
         image_forces = []
-        fprimes_inds = torch.LongTensor(2, 0)
-        fprimes_vals = torch.FloatTensor()
         dim1_start = 0
         dim2_start = 0
+        # track the number of entries in the fprimes matrix
+        total_entries = 0
+        previous_entries = 0
+        for image in training_data:
+            image[3] = image[3].to_sparse() # presparify the fprimes
+            total_entries += len(image[3]._values())
+        # pre-define matrices filled with zeros
+        fprimes_inds = torch.zeros((2, total_entries), dtype=torch.int64)
+        fprimes_vals = torch.zeros((total_entries))
+
     for idx, image in enumerate(training_data):
         image_fingerprint = image[0]
         fingerprint_dataset.append(image_fingerprint)
@@ -362,11 +370,13 @@ def factorize_data(training_data):
             s_fprime_inds = fprime._indices() + torch.LongTensor(
                 [[dim1_start], [dim2_start]]
             )
+            num_entries = len(s_fprime_vals)
             # build the matrix of values
             s_fprime_vals = fprime._values().type(torch.FloatTensor)
-            # concatenate them
-            fprimes_inds = torch.cat((fprimes_inds, s_fprime_inds), axis=1)
-            fprimes_vals = torch.cat((fprimes_vals, s_fprime_vals))
+            # fill in the entries
+            fprimes_inds[:, previous_entries:previous_entries + num_entries] = s_fprime_inds
+            fprimes_vals[previous_entries:previous_entries + num_entries] = s_fprime_vals
+            previous_entries += num_entries
             dim1_start += dim1
             dim2_start += dim2
             image_forces.append((image[4]))
