@@ -198,6 +198,7 @@ class AMPTorch:
             self.atoms_dataloader = DataLoader(
                 training_data, collate_fn=collate_amp, **self.loader_params
             )
+        self.log("Resampled Points = %s" % self.resample)
         architecture = copy.copy(self.structure)
         architecture.insert(0, fp_length)
         model = FullNN(
