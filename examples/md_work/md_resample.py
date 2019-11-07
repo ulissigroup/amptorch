@@ -23,6 +23,7 @@ from ase.md import VelocityVerlet, Langevin
 from ase.calculators.emt import EMT
 from ase.visualize import view
 import os
+import multiprocessing
 
 
 def ml_lj(
@@ -37,6 +38,7 @@ def ml_lj(
     fine_tune=None,
     loss_fn="l2amp",
     save_logs=True,
+    resample=None,
 ):
     if not os.path.exists(dir):
         os.mkdir(dir)
@@ -92,12 +94,13 @@ def ml_lj(
         "early_stop": False,
     }
     calc.model.loader_params = {"batch_size": None, "shuffle": False, "num_workers": 0}
-    calc.model.lr = 1e-2
+    calc.model.lr = 1
     if loss_fn == "tanh":
         calc.model.criterion = TanhLoss
     elif loss_fn == "l2amp":
         calc.model.criterion = CustomLoss
-    calc.model.val_frac = 0.1
+    calc.model.val_frac = 0.2
+    calc.model.resample = resample
     calc.model.structure = [2, 2]
 
     # train the model
@@ -138,7 +141,7 @@ def multiple_samples(
     filename,
     dir,
     num_images,
-    num_samples,
+    sample_points,
     num_iters,
     temp,
     lj,
@@ -146,8 +149,8 @@ def multiple_samples(
     loss_fn,
     fine_tune=None,
     save_logs=True,
+    resample=None,
 ):
-    sample_points = random.sample(range(1, num_images), num_samples)
     data = [images[idx] for idx in range(num_images)]
     for idx in sample_points:
         sample_images[idx].set_calculator(EMT())
@@ -168,17 +171,25 @@ def multiple_samples(
             loss_fn=loss_fn,
             fine_tune=fine_tune,
             save_logs=save_logs,
+            resample=sample_points,
         )
 
 
 # define training images
 images0 = ase.io.read("../../datasets/COCu/COCu_pbc_300K.traj", ":")
-images_ML = ase.io.read(
-    "MD_results/COCu/pbc_300K/l2amp/paper/MLMD_COCu_pbc_300K_l2amp-2.traj", ":"
+images_ML_l2 = ase.io.read(
+        "MD_results/COCu/pbc_300K/l2amp/paper/MLMD_COCu_pbc_300K_l2amp-2.traj", ":"
 )
-images_LJ = ase.io.read(
+images_LJ_l2 = ase.io.read(
     "MD_results/COCu/pbc_300K/l2amp/paper/MLMD_COCu_pbc_300K_l2amp-LJ-2.traj", ":"
 )
+images_ML_tanh = ase.io.read(
+        "MD_results/COCu/pbc_300K/tanh/paper/MLMD_COCu_pbc_300K_tanh-1.traj", ":"
+)
+images_LJ_tanh = ase.io.read(
+    "MD_results/COCu/pbc_300K/tanh/paper/MLMD_COCu_pbc_300K_tanh-LJ-1.traj", ":"
+)
+
 GSF = {}
 GSF["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
 GSF["G2_rs_s"] = [0] * 4
@@ -187,34 +198,79 @@ GSF["G4_zetas"] = np.array([1.0])
 GSF["G4_gammas"] = np.array([1, -1])
 GSF["cutoff"] = 5.876798323827276
 
-samples = [5]
-for i in samples:
-    multiple_samples(
+num_images = 100
+num_samples = 10
+sample_points = random.sample(range(1, num_images), num_samples)
+jobs = []
+# p1 = multiprocessing.Process(target=multiple_samples, args=(
+        # images0,
+        # images_ML_l2,
+        # "MLMD_COCu_pbc_300K_l2amp",
+        # "MD_results/COCu/pbc_300K/l2amp/paper/",
+        # 100,
+        # sample_points,
+        # 2,
+        # 300,
+        # False,
+        # GSF,
+        # "l2amp",
+        # None,
+        # True,
+        # None
+    # ))
+# jobs.append(p1)
+# p1.start()
+# p2 = multiprocessing.Process(target=multiple_samples, args=(
+        # images0,
+        # images_LJ_l2,
+        # "MLMD_COCu_pbc_300K_l2amp",
+        # "MD_results/COCu/pbc_300K/l2amp/paper/",
+        # 100,
+        # sample_points,
+        # 2,
+        # 300,
+        # True,
+        # GSF,
+        # "l2amp",
+        # None,
+        # True,
+        # None
+    # ))
+# jobs.append(p2)
+# p2.start()
+p3 = multiprocessing.Process(target=multiple_samples, args=(
         images0,
-        images_ML,
-        filename="MLMD_COCu_pbc_300K_l2amp",
-        dir="MD_results/COCu/pbc_300K/l2amp/paper/",
-        num_images=100,
-        num_samples=i,
-        num_iters=2,
-        temp=300,
-        lj=False,
-        GSF=GSF,
-        loss_fn="l2amp",
-        save_logs=True,
-    )
-
-    multiple_samples(
+        images_ML_tanh,
+        "MLMD_COCu_pbc_300K_tanh2",
+        "MD_results/COCu/pbc_300K/tanh/paper/",
+        100,
+        sample_points,
+        2,
+        300,
+        False,
+        GSF,
+        "tanh",
+        None,
+        True,
+        None
+    ))
+jobs.append(p3)
+p3.start()
+p4 = multiprocessing.Process(target=multiple_samples, args=(
         images0,
-        images_ML,
-        filename="MLMD_COCu_pbc_300K_l2amp",
-        dir="MD_results/COCu/pbc_300K/l2amp/paper/",
-        num_images=100,
-        num_samples=i,
-        num_iters=2,
-        temp=300,
-        lj=True,
-        GSF=GSF,
-        loss_fn="l2amp",
-        save_logs=True,
-    )
+        images_LJ_tanh,
+        "MLMD_COCu_pbc_300K_tanh2",
+        "MD_results/COCu/pbc_300K/tanh/paper/",
+        100,
+        sample_points,
+        2,
+        300,
+        True,
+        GSF,
+        "tanh",
+        None,
+        True,
+        None
+    ))
+jobs.append(p4)
+p4.start()

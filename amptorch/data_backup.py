@@ -19,10 +19,8 @@ from .utils import (
     calculate_fingerprints_range,
     hash_images,
 )
-
 # import line_profiler
 # import atexit
-
 # profile = line_profiler.LineProfiler()
 # atexit.register(profile.print_stats)
 
@@ -67,15 +65,7 @@ class AtomsDataset(Dataset):
     """
 
     def __init__(
-        self,
-        images,
-        descriptor,
-        Gs,
-        forcetraining,
-        label,
-        cores,
-        lj_data=None,
-        store_primes=False,
+        self, images, descriptor, Gs, forcetraining, label, cores, lj_data=None, store_primes=False
     ):
         self.images = images
         self.descriptor = descriptor
@@ -105,9 +95,8 @@ class AtomsDataset(Dataset):
         G4_zetas = Gs["G4_zetas"]
         G4_gammas = Gs["G4_gammas"]
         cutoff = Gs["cutoff"]
-        make_amp_descriptors_simple_nn(
-            self.atom_images, Gs, self.elements, cores=cores, label=label
-        )
+        make_amp_descriptors_simple_nn(self.atom_images, Gs, self.elements,
+                cores=cores, label=label)
         G = make_symmetry_functions(elements=self.elements, type="G2", etas=G2_etas)
         G += make_symmetry_functions(
             elements=self.elements,
@@ -246,7 +235,7 @@ class AtomsDataset(Dataset):
                 fprime = self.sparse_fprimes[index]
             forces = self.forces_dataset[index]
         unique_atoms = self.elements
-        return [
+        return (
             fingerprint,
             energy,
             atom_count,
@@ -254,7 +243,7 @@ class AtomsDataset(Dataset):
             forces,
             unique_atoms,
             self.forcetraining,
-        ]
+        )
 
     def scalings(self):
         """Computes the scaling factors used in the training dataset to
@@ -302,7 +291,8 @@ class AtomsDataset(Dataset):
                 np.arange(dataset_size, dataset_size + resample)
             )
             split = int(val_frac * len(sample_idx))
-            train_idx = np.concatenate((train_idx, sample_idx[split:]))
+            train_idx = np.concatenate((train_idx,
+                    sample_idx[split:]))
             val_idx = np.concatenate((val_idx, sample_idx[:split]))
         train_sampler = SubsetRandomSampler(train_idx)
         val_sampler = SubsetRandomSampler(val_idx)
@@ -310,7 +300,6 @@ class AtomsDataset(Dataset):
         samplers = {"train": train_sampler, "val": val_sampler}
 
         return samplers
-
 
 # @profile
 def factorize_data(training_data):
@@ -345,28 +334,18 @@ def factorize_data(training_data):
     fingerprint_dataset = []
     energy_dataset = []
     num_of_atoms = []
-    if forcetraining:
-        total_entries = 0
-        previous_entries = 0
     for image in training_data:
         num_atom = float(len(image[0]))
         num_of_atoms.append(num_atom)
-        if forcetraining:
-            # track the number of entries in the fprimes matrix
-            image[3] = image[3].to_sparse() # presparify the fprimes
-            total_entries += len(image[3]._values())
-
     image_forces = None
     sparse_fprimes = None
     # Construct a sparse matrix with dimensions PQx3Q, if forcetraining is on.
     if forcetraining:
         image_forces = []
+        fprimes_inds = torch.LongTensor(2, 0)
+        fprimes_vals = torch.FloatTensor()
         dim1_start = 0
         dim2_start = 0
-        # pre-define matrices filled with zeros
-        fprimes_inds = torch.zeros((2, total_entries), dtype=torch.int64)
-        fprimes_vals = torch.zeros((total_entries))
-
     for idx, image in enumerate(training_data):
         image_fingerprint = image[0]
         fingerprint_dataset.append(image_fingerprint)
@@ -390,11 +369,9 @@ def factorize_data(training_data):
             )
             # build the matrix of values
             s_fprime_vals = fprime._values().type(torch.FloatTensor)
-            num_entries = len(s_fprime_vals)
-            # fill in the entries
-            fprimes_inds[:, previous_entries:previous_entries + num_entries] = s_fprime_inds
-            fprimes_vals[previous_entries:previous_entries + num_entries] = s_fprime_vals
-            previous_entries += num_entries
+            # concatenate them
+            fprimes_inds = torch.cat((fprimes_inds, s_fprime_inds), axis=1)
+            fprimes_vals = torch.cat((fprimes_vals, s_fprime_vals))
             dim1_start += dim1
             dim2_start += dim2
             image_forces.append((image[4]))
@@ -403,9 +380,8 @@ def factorize_data(training_data):
             fprimes_inds, fprimes_vals, torch.Size([dim1_start, dim2_start])
         )
         sparsity = 1 - (
-            len(sparse_fprimes._values())
-            / (sparse_fprimes.shape[0] * sparse_fprimes.shape[1])
-        )
+                len(sparse_fprimes._values())/(sparse_fprimes.shape[0]*sparse_fprimes.shape[1])
+                )
         image_forces = torch.cat(image_forces).float()
 
     return (
@@ -417,7 +393,7 @@ def factorize_data(training_data):
         image_forces,
     )
 
-
+# @profile
 def collate_amp(training_data):
     """
     Reshuffling scheme that reads in raw data and organizes it into element
@@ -470,7 +446,7 @@ class TestDataset(Dataset):
 
     """
 
-    def __init__(self, images, descriptor, Gs, fprange, label="example", cores=1):
+    def __init__(self, images, descriptor, Gs, fprange, label='example', cores=1):
         self.images = images
         if type(images) is not list:
             self.images = [images]
@@ -489,9 +465,8 @@ class TestDataset(Dataset):
         G4_zetas = Gs["G4_zetas"]
         G4_gammas = Gs["G4_gammas"]
         cutoff = Gs["cutoff"]
-        make_amp_descriptors_simple_nn(
-            self.atom_images, Gs, self.unique_atoms, cores=cores, label=label
-        )
+        make_amp_descriptors_simple_nn(self.atom_images, Gs, self.unique_atoms,
+                cores=cores, label=label)
         G = make_symmetry_functions(elements=self.unique_atoms, type="G2", etas=G2_etas)
         G += make_symmetry_functions(
             elements=self.unique_atoms,
@@ -554,7 +529,7 @@ class TestDataset(Dataset):
                 wrt_atom * 3 + coord,
             ] = image_prime
 
-        return [image_fingerprint, fingerprintprimes, num_atoms]
+        return (image_fingerprint, fingerprintprimes, num_atoms)
 
     def unique(self):
         elements = list(
@@ -573,19 +548,13 @@ class TestDataset(Dataset):
         """
         fingerprint_dataset = []
         num_of_atoms = []
-        total_entries = 0
-        previous_entries = 0
         for image in training_data:
-            image[1] = image[1].to_sparse() # presparify the fprimes
-            total_entries += len(image[1]._values())
             num_of_atoms.append(image[2])
         # Construct a sparse matrix with dimensions PQx3Q
+        fprimes_inds = torch.LongTensor(2, 0)
+        fprimes_vals = torch.FloatTensor()
         dim1_start = 0
         dim2_start = 0
-        # pre-define matrices filled with zeros
-        fprimes_inds = torch.zeros((2, total_entries), dtype=torch.int64)
-        fprimes_vals = torch.zeros((total_entries))
-
         for idx, image in enumerate(training_data):
             fprime = image[1]
             dim1 = fprime.shape[0]
@@ -595,13 +564,9 @@ class TestDataset(Dataset):
             s_fprime_inds = fprime._indices() + torch.LongTensor(
                 [[dim1_start], [dim2_start]]
             )
-            s_fprime_vals = fprime._values().type(torch.FloatTensor)
-            num_entries = len(s_fprime_vals)
-            # fill in the entries
-            fprimes_inds[:, previous_entries:previous_entries + num_entries] = s_fprime_inds
-            fprimes_vals[previous_entries:previous_entries + num_entries] = s_fprime_vals
-            previous_entries += num_entries
-
+            s_fprime_vals = fprime._values()
+            fprimes_inds = torch.cat((fprimes_inds, s_fprime_inds), axis=1)
+            fprimes_vals = torch.cat((fprimes_vals, s_fprime_vals))
             dim1_start += dim1
             dim2_start += dim2
             image_fingerprint = image[0]

@@ -10,4 +10,5 @@
 *.gif
 *.tar
 *.out
+*.pickle
 stored-primes/
