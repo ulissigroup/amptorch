@@ -13,12 +13,14 @@ from amptorch.core import AMPTorch
 from amptorch.gaussian import Gaussian, make_symmetry_functions
 from amptorch.lj_model import lj_optim
 from amptorch.utils import Logger
+from amptorch.analysis import parity_plot
 import ase.io
 from ase import units
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md import VelocityVerlet, Langevin
 from ase.calculators.emt import EMT
 from ase.visualize import view
+import multiprocessing
 
 
 def ml_lj(
@@ -32,6 +34,8 @@ def ml_lj(
     lj=False,
     fine_tune=None,
     loss_fn="l2amp",
+    save_logs=True,
+    resample=None,
 ):
     if not os.path.exists(dir):
         os.mkdir(dir)
@@ -73,17 +77,10 @@ def ml_lj(
             force_coefficient=0.3,
             lj_data=lj_data,
             label=filename,
-            save_logs=True,
+            save_logs=save_logs,
         )
     )
 
-    calc.model.lr = 1e-2
-    if loss_fn == "l2amp":
-        calc.model.criterion = CustomLoss
-    elif loss_fn == "tanh":
-        calc.model.criterion = TanhLoss
-    calc.model.val_frac = 0.2
-    calc.model.structure = [2, 2]
     calc.model.convergence = {
         "energy": 0.02,
         "force": 0.02,
@@ -91,9 +88,19 @@ def ml_lj(
         "early_stop": False,
     }
     calc.model.loader_params = {"batch_size": None, "shuffle": False, "num_workers": 0}
+    calc.model.lr = 1e-2
+    if loss_fn == "l2amp":
+        calc.model.criterion = CustomLoss
+    elif loss_fn == "tanh":
+        calc.model.criterion = TanhLoss
+    calc.model.val_frac = 0.2
+    calc.model.resample = resample
+    calc.model.structure = [2, 2]
 
     # train the model
     calc.train(overwrite=True)
+    parity_plot(calc, IMAGES, filename, data="forces")
+    parity_plot(calc, IMAGES, filename, data="energy")
     md_run(IMAGES, count, calc, filename, dir, temp, const_t)
 
 
@@ -129,21 +136,22 @@ def sampler(
     dir,
     num_images,
     num_samples,
-    i,
+    iteration,
     temp,
     lj,
     GSF,
     loss_fn,
     fine_tune=None,
+    save_logs=True,
 ):
-    sample_points = random.sample(range(1, num_images), num_samples)
     data = [images[idx] for idx in range(num_images)]
+    sample_points = random.sample(range(1, num_images), num_samples)
     for idx in sample_points:
         sample_images[idx].set_calculator(EMT())
         data.append(sample_images[idx])
-    name = filename + "_%s_iter_%s" % (num_samples, str(i + 1))
+    name = filename + "_%s_iter_%s" % (num_samples, str(iteration + 1))
     if lj:
-        name = filename + "_LJ_%s_iter_%s" % (num_samples, str(i + 1))
+        name = filename + "_LJ_%s_iter_%s" % (num_samples, str(iteration + 1))
     ml_lj(
         data,
         name,
@@ -155,82 +163,107 @@ def sampler(
         lj=lj,
         fine_tune=fine_tune,
         loss_fn=loss_fn,
+        save_logs=save_logs,
+        resample=sample_points,
     )
 
 
 def iterative_sampler(
-    images, sample_images, sample, filename, dir, iter, lj, temp, GSF, loss_fn
+    images,
+    sample_images,
+    num_images,
+    sample,
+    filename,
+    dir,
+    iter,
+    lj,
+    temp,
+    GSF,
+    loss_fn,
+    save_logs,
 ):
-    resample_images = sample_images
     for i in range(iter):
         sampler(
             images,
-            resample_images,
+            sample_images,
             filename,
             dir=dir,
-            num_images=100,
+            num_images=num_images,
             num_samples=sample,
-            i=i,
+            iteration=i,
             temp=temp,
             GSF=GSF,
             lj=lj,
             loss_fn=loss_fn,
+            fine_tune=None,
+            save_logs=save_logs,
         )
         if lj:
-            resample_images = ase.io.read(
+            sample_images = ase.io.read(
                 dir + filename + "_LJ_%s_iter_%s.traj" % (sample, str(i + 1)), ":"
             )
         else:
-            resample_images = ase.io.read(
+            sample_images = ase.io.read(
                 dir + filename + "_%s_iter_%s.traj" % (sample, str(i + 1)), ":"
             )
 
 
 # define training images
 images0 = ase.io.read("../../datasets/COCu/COCu_pbc_300K.traj", ":")
-images_LJ = ase.io.read(
-    "MD_results/COCu/pbc_300K/tanh/paper/MLMD_COCu_pbc_300K_logcosh_LJ_2.traj", ":"
+images_LJ_tanh = ase.io.read(
+    "MD_results/COCu/pbc_300K/tanh/paper/MLMD_COCu_pbc_300K_tanh-LJ-1.traj", ":"
 )
-images_ML = ase.io.read(
-    "MD_results/COCu/pbc_300K/tanh/paper/MLMD_COCu_pbc_300K_logcosh_2.traj", ":"
+images_ML_tanh = ase.io.read(
+    "MD_results/COCu/pbc_300K/tanh/paper/MLMD_COCu_pbc_300K_tanh-1.traj", ":"
 )
-images_LJ_l2amp = ase.io.read(
-    "MD_results/COCu/pbc_300K/l2amp/paper/MLMD_COCu_pbc_300K_l2amp_LJ_3.traj", ":"
+images_LJ_l2 = ase.io.read(
+    "MD_results/COCu/pbc_300K/l2amp/paper/MLMD_COCu_pbc_300K_l2amp-LJ-2.traj", ":"
 )
-images_ML_l2amp = ase.io.read(
-    "MD_results/COCu/pbc_300K/l2amp/paper/MLMD_COCu_pbc_300K_l2amp_3.traj", ":"
+images_ML_l2 = ase.io.read(
+    "MD_results/COCu/pbc_300K/l2amp/paper/MLMD_COCu_pbc_300K_l2amp-2.traj", ":"
 )
+
 Gs = {}
 Gs["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
 Gs["G2_rs_s"] = [0] * 4
 Gs["G4_etas"] = np.array([0.005])
 Gs["G4_zetas"] = np.array([1.0])
 Gs["G4_gammas"] = np.array([1.0, -1.0])
-Gs["cutoff"] = 6.5
+Gs["cutoff"] = 5.876798323827276
 
-if __name__ == "__main__":
-    iterative_sampler(
-        images0,
-        images_LJ,
-        sample=5,
-        filename="MLMD_COCu_pbc_300K_tanh_2_36",
-        dir="MD_results/COCu/pbc_300K/tanh/paper/",
-        iter=5,
-        temp=300,
-        GSF=Gs,
-        lj=True,
-        loss_fn="tanh",
-    )
+num_images = 100
+num_samples = 10
+jobs = []
+p1 = multiprocessing.Process(target=iterative_sampler, args=(
+    images0,
+    images_ML_tanh,
+    num_images,
+    num_samples,
+    "MLMD_COCu_pbc_300K_tanh",
+    "MD_results/COCu/pbc_300K/tanh/paper/",
+    5,
+    False,
+    300,
+    Gs,
+    "tanh",
+    True,
+))
+jobs.append(p1)
+p1.start()
 
-    iterative_sampler(
-        images0,
-        images_ML,
-        sample=5,
-        filename="MLMD_COCu_pbc_300K_tanh_2_36",
-        dir="MD_results/COCu/pbc_300K/tanh/paper/",
-        iter=5,
-        temp=300,
-        GSF=Gs,
-        lj=False,
-        loss_fn="tanh",
-    )
+p2 = multiprocessing.Process(target=iterative_sampler, args=(
+    images0,
+    images_LJ_tanh,
+    num_images,
+    num_samples,
+    "MLMD_COCu_pbc_300K_tanh",
+    "MD_results/COCu/pbc_300K/tanh/paper/",
+    5,
+    True,
+    300,
+    Gs,
+    "tanh",
+    True,
+))
+jobs.append(p2)
+p2.start()

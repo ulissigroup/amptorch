@@ -42,16 +42,14 @@ def retrieve_files(prefix, num_images):
 
 location = "MD_results/COCu/pbc_300K/l2amp/paper/"
 # location = "../../datasets/COCu/"
-destination = "MD_results/movies/COCu/pbc_300K/l2amp/"
+destination = "MD_results/movies/COCu/pbc_300K/l2amp/paper/"
 # files = retrieve_files("MLMD_COCu_pbc_300K_log", 3)
 
 files = [
-    "MLMD_COCu_pbc_300K_l2amp_8SF_1",
-    "MLMD_COCu_pbc_300K_l2amp_8SF_LJ_1",
-    "MLMD_COCu_pbc_300K_l2amp_8SF_5_resample_1",
-    "MLMD_COCu_pbc_300K_l2amp_8SF_5_resample_2",
-    "MLMD_COCu_pbc_300K_l2amp_8SF_LJ_5_resample_1",
-    "MLMD_COCu_pbc_300K_l2amp_8SF_LJ_5_resample_2",
+    # "MLMD_COCu_pbc_300K_l2amp_10_resample_1",
+    # "MLMD_COCu_pbc_300K_l2amp_10_resample_2",
+    # "MLMD_COCu_pbc_300K_l2amp_LJ_10_resample_1",
+    "MLMD_COCu_pbc_300K_l2amp_LJ_10_resample_2",
 ]
 
 for file in files:
