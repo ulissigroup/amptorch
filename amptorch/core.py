@@ -104,6 +104,7 @@ class AMPTorch:
         fine_tune=None,
         label="amptorch",
         save_logs=True,
+        store_primes=False,
     ):
         if not os.path.exists("results/logs/epochs"):
             os.makedirs("results/logs/epochs")
@@ -122,6 +123,7 @@ class AMPTorch:
         self.criterion = criterion
         self.optimizer = optimizer
         self.scheduler = scheduler
+        self.store_primes = store_primes
         self.lr = lr
         self.convergence = criteria
         self.lj_data = lj_data
@@ -140,6 +142,7 @@ class AMPTorch:
             forcetraining=self.forcetraining,
             lj_data=self.lj_data,
             label=label,
+            store_primes=store_primes
         )
         self.scalings = self.training_data.scalings()
         self.sd_scaling = self.scalings[0]

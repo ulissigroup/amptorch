@@ -57,6 +57,7 @@ def test_training():
             force_coefficient=0.3,
             label=label,
             save_logs=True,
+            #store_primes=True,
         )
     )
     calc.model.device = "cpu"
@@ -151,3 +152,4 @@ def test_training():
     # test plot creation
     parity_plot(calc, images, data="energy", label=label)
     parity_plot(calc, images, data="forces", label=label)
+test_training()

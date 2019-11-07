@@ -7,6 +7,7 @@ import sys
 import time
 import copy
 import os
+import h5py
 import numpy as np
 import torch
 from torch.utils.data import Dataset, SubsetRandomSampler
@@ -19,6 +20,10 @@ from .utils import (
     calculate_fingerprints_range,
     hash_images,
 )
+import line_profiler
+import atexit
+profile = line_profiler.LineProfiler()
+atexit.register(profile.print_stats)
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
@@ -113,6 +118,8 @@ class AtomsDataset(Dataset):
         self.fingerprint_dataset, self.energy_dataset, self.num_of_atoms, self.sparse_fprimes, self.forces_dataset, self.index_hashes = (
             self.preprocess_data()
         )
+        if self.store_primes:
+            self.hf = h5py.File('./stored-primes/fp_primes.h5', 'r')
 
     def __len__(self):
         return len(self.hashed_images)
@@ -124,6 +131,8 @@ class AtomsDataset(Dataset):
         num_of_atoms = np.array([])
         forces_dataset = []
         index_hashes = []
+        if self.store_primes:
+            hf = h5py.File('./stored-primes/fp_primes.h5', 'w')
         self.fp_length = self.fp_length()
         for index, hash_name in enumerate(self.hashed_images.keys()):
             index_hashes.append(hash_name)
@@ -196,16 +205,23 @@ class AtomsDataset(Dataset):
                         ] = image_prime
                     # store primes in a sparse matrix format
                     if self.store_primes:
-                        sp_matrix = sparse.coo_matrix(fingerprintprimes)
-                        sparse.save_npz(
-                            open("./stored-primes/" + hash_name, "wb"), sp_matrix
-                        )
+                        fingerprintprimes = fingerprintprimes.to_sparse()
+                        grp = hf.create_group(hash_name)
+                        grp.create_dataset('vals',
+                                          data=fingerprintprimes._values().type(torch.FloatTensor))
+                        grp.create_dataset('inds',
+                                          data=fingerprintprimes._indices().type(torch.LongTensor))
+                        grp.create_dataset('size',
+                                          data=fingerprintprimes.shape)
                     fprimes_dataset.append(fingerprintprimes)
                 forces_dataset.append(torch.from_numpy(image_forces))
 
             fingerprint_dataset.append(image_fingerprint)
             energy_dataset = np.append(energy_dataset, image_potential_energy)
             num_of_atoms = np.append(num_of_atoms, float(len(image_fingerprint)))
+
+        if self.store_primes:
+            hf.close()
 
         return (
             fingerprint_dataset,
@@ -216,6 +232,7 @@ class AtomsDataset(Dataset):
             index_hashes,
         )
 
+    @profile
     def __getitem__(self, index):
         fingerprint = self.fingerprint_dataset[index]
         energy = self.energy_dataset[index]
@@ -225,8 +242,13 @@ class AtomsDataset(Dataset):
         forces = None
         if self.forcetraining:
             if self.store_primes:
-                fprime = sparse.load_npz(open("./stored-primes/" + idx_hash, "rb"))
-                fprime = torch.tensor(fprime.toarray())
+                grp = self.hf.get(idx_hash)
+                fprime_vals = torch.FloatTensor(grp.get('vals'))
+                fprime_inds = torch.LongTensor(grp.get('inds'))
+                fprime_size = torch.LongTensor(grp.get('size'))
+                fprime = torch.sparse.FloatTensor(
+            fprime_inds, fprime_vals, torch.Size(fprime_size)
+        )
             else:
                 fprime = self.sparse_fprimes[index]
             forces = self.forces_dataset[index]
@@ -337,7 +359,8 @@ def factorize_data(training_data):
         num_of_atoms.append(num_atom)
         if forcetraining:
             # track the number of entries in the fprimes matrix
-            image[3] = image[3].to_sparse() # presparify the fprimes
+            if not image[3].is_sparse:
+                image[3] = image[3].to_sparse() # presparify the fprimes
             total_entries += len(image[3]._values())
 
     image_forces = None

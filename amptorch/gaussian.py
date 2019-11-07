@@ -58,7 +58,7 @@ class Gaussian(object):
 
     def __init__(self, cutoff=Cosine(6.5), Gs=None, dblabel=None,
                  elements=None, version=None, fortran=True,
-                 mode='atom-centered'):
+                 dbpath='./',mode='atom-centered'):
 
         # Check of the version of descriptor, particularly if restarting.
         compatibleversions = ['2015.12', ]
@@ -98,6 +98,7 @@ class Gaussian(object):
         p.elements = elements
 
         self.dblabel = dblabel
+        self.dbpath = dbpath
         self.fortran = fortran
         self.parent = None  # Can hold a reference to main Amp instance.
 
