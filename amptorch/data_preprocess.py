@@ -228,7 +228,7 @@ class AtomsDataset(Dataset):
             index_hashes,
         )
 
-    @profile
+    # @profile
     def __getitem__(self, index):
         fingerprint = self.fingerprint_dataset[index]
         energy = self.energy_dataset[index]
