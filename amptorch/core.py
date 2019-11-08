@@ -177,10 +177,13 @@ class AMPTorch:
                 % (dataset_size["train"], dataset_size["val"])
             )
 
-            if self.loader_params['batch_size'] is len(training_data):
-                loader_dict = {}
+            loader_dict = {}
+            if self.loader_params['batch_size'] == len(training_data):
                 for x in ['train', 'val']:
                     self.loader_params['batch_size'] = dataset_size[x]
+                    loader_dict[x] = self.loader_params
+            else:
+                for x in ['train', 'val']:
                     loader_dict[x] = self.loader_params
 
             self.atoms_dataloader = {
@@ -218,7 +221,7 @@ class AMPTorch:
         self.log("Optimizer Info:\n %s" % optimizer)
 
         if self.scheduler:
-            self.scheduler = self.scheduler(optimizer, step_size=7, gamma=0.1)
+            self.scheduler = self.scheduler(optimizer, 5)
         self.log("Scheduler Info: %s" % self.scheduler)
         self.log("Convergence criteria = {}".format(self.convergence))
         self.log("Model architecture: %s" % architecture)
