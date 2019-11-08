@@ -20,10 +20,6 @@ from .utils import (
     calculate_fingerprints_range,
     hash_images,
 )
-import line_profiler
-import atexit
-profile = line_profiler.LineProfiler()
-atexit.register(profile.print_stats)
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
