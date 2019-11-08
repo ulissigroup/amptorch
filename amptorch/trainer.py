@@ -118,7 +118,7 @@ class Trainer:
         since = time.time()
         print("Training Initiated!")
         self.epochs -= 1
-        early_stop = self.early_stop
+        early_stop = False
         epoch = 0
         convergence = False
         while not convergence:
@@ -127,8 +127,6 @@ class Trainer:
                 for phase in ["train", "val"]:
 
                     if phase == "train":
-                        if self.scheduler:
-                            self.scheduler.step()
                         self.model.train()
                     else:
                         self.model.eval()
@@ -215,15 +213,21 @@ class Trainer:
 
                         if phase == "train":
                             loss = self.optimizer.step(closure)
+                            if self.scheduler:
+                                self.scheduler.step()
                         now = time.asctime()
 
                     energy_mse /= self.dataset_size[phase]
                     energy_rmse = torch.sqrt(energy_mse)
+                    if torch.isnan(energy_rmse):
+                        early_stop = True
                     plot_energy_loss[phase].append(energy_rmse)
                     print("%s energy loss: %f" % (phase, energy_rmse))
                     if forcetraining:
                         force_mse /= self.dataset_size[phase]
                         force_rmse = torch.sqrt(force_mse)
+                        if torch.isnan(force_rmse):
+                            early_stop = True
                         plot_force_loss[phase].append(force_rmse)
                         print("%s force loss: %f" % (phase, force_rmse))
                         if phase == "train":
@@ -305,8 +309,6 @@ class Trainer:
             else:
                 phase = "train"
 
-                if self.scheduler:
-                    self.scheduler.step()
                 self.model.train()
 
                 energy_mse = 0.0
@@ -387,15 +389,21 @@ class Trainer:
                         force_mse += torch.tensor(force_loss.item())
 
                     loss = self.optimizer.step(closure)
+                    if self.scheduler:
+                        self.scheduler.step()
                     now = time.asctime()
 
                 energy_mse /= self.dataset_size
                 energy_rmse = torch.sqrt(energy_mse)
+                if torch.isnan(energy_rmse):
+                    early_stop = True
                 plot_energy_loss[phase].append(energy_rmse)
                 print("energy loss: %f" % energy_rmse)
                 if forcetraining:
                     force_mse /= self.dataset_size
                     force_rmse = torch.sqrt(force_mse)
+                    if torch.isnan(force_rmse):
+                        early_stop = True
                     plot_force_loss[phase].append(force_rmse)
                     print("force loss: %f\n" % force_rmse)
                     log_force_results(
