@@ -19,6 +19,7 @@ from ase.md import VelocityVerlet, Langevin
 from ase.calculators.emt import EMT
 from ase.visualize import view
 import os
+import multiprocessing
 
 
 def ml_lj(
@@ -55,7 +56,6 @@ def ml_lj(
         params_dict = {"C": [], "O": [], "Cu": []}
         lj_model = lj_optim(filename, IMAGES, p0, params_dict, cutoff)
         fitted_params = lj_model.fit()
-        # fitted_params = p0
         lj_energies, lj_forces, num_atoms = lj_model.lj_pred(
             IMAGES, fitted_params, params_dict
         )
@@ -89,13 +89,14 @@ def ml_lj(
     calc.model.convergence = {
         "energy": 0.02,
         "force": 0.02,
-        "epochs": 500,
-        "early_stop": False,
+        "epochs": 1000,
+        "early_stop": True,
     }
-    calc.model.loader_params = {"batch_size": None, "shuffle": False, "num_workers": 0}
-    calc.model.val_frac = 0.1
-    calc.model.structure = [2, 2]
-    # calc.model.optimizer = optim.Adam
+    calc.model.loader_params = {"batch_size": 20, "shuffle": False, "num_workers": 0}
+    calc.model.val_frac = 0.2
+    calc.model.structure = [30, 30]
+    calc.model.optimizer = optim.Adam
+    calc.model.scheduler = optim.lr_scheduler.CosineAnnealingLR
 
     # train the model
     calc.train(overwrite=True)
@@ -168,33 +169,38 @@ GSF = {}
 GSF["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
 GSF["G2_rs_s"] = [0] * 4
 GSF["G4_etas"] = [0.005]
-GSF["G4_zetas"] = [1.0]
+GSF["G4_zetas"] = [1.0, 4.0]
 GSF["G4_gammas"] = np.array([+1.0, -1.0])
 GSF["cutoff"] = 5.876798323827276
 
 # define training images
 images0 = ase.io.read("../../datasets/COCu/COCu_pbc_300K.traj", ":")
 
-multiple_runs(
+jobs = []
+p1 = multiprocessing.Process(target=multiple_runs, args=(
     images0,
-    filename="test",
-    dir="MD_results/",
-    num_images=100,
-    num_iters=1,
-    temp=300,
-    loss_fn="l2amp",
-    GSF=GSF,
-    save_logs=True,
-)
+    "MLMD_COCu_pbc_300K_l2amp_30x30_reg",
+    "MD_results/COCu/pbc_300K/l2amp/",
+    100,
+    2,
+    300,
+    "l2amp",
+    GSF,
+    True,
+))
+jobs.append(p1)
+p1.start()
 
-multiple_runs(
+p2 = multiprocessing.Process(target=multiple_runs, args=(
     images0,
-    filename="MLMD_COCu_pbc_300K_tanh",
-    dir="MD_results/COCu/pbc_300K/tanh/",
-    num_images=100,
-    num_iters=2,
-    temp=300,
-    loss_fn="tanh",
-    GSF=GSF,
-    save_logs=True,
-)
+    "MLMD_COCu_pbc_300K_tanh_30x30_reg",
+    "MD_results/COCu/pbc_300K/tanh/",
+    100,
+    2,
+    300,
+    "tanh",
+    GSF,
+    True,
+))
+jobs.append(p2)
+p2.start()
