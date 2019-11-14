@@ -1,23 +1,24 @@
 import ase
+import time
 import sys
 import torch
 from torch.nn import MSELoss
 from skorch import NeuralNetRegressor
 from skorch.dataset import CVSplit
 from skorch.callbacks import Checkpoint, EpochScoring
-import skorch.callbacks.base
 from amptorch.gaussian import Gaussian
 from amptorch.skorch.model_skorch import FullNN, CustomLoss
 from amptorch.skorch.skorch_data import AtomsDataset, factorize_data, collate_amp, TestDataset
 from amptorch.skorch import AMP
+from amptorch.lj_model import lj_optim
 from torch.utils.data import DataLoader
 from torch.nn import init
 from skorch.utils import to_numpy
 import numpy as np
-import pickle
 from sklearn.pipeline import Pipeline
-from ase import Atoms
+from ase import Atoms, units
 from ase.calculators.emt import EMT
+from ase.md import Langevin
 
 
 def target_extractor(y):
@@ -63,48 +64,63 @@ def forces_score(net, X, y):
     force_rmse = torch.sqrt(force_mse)
     return force_rmse
 
-distances = np.linspace(2, 5, 100)
-label = "example"
-images = []
-for l in distances:
-    image = Atoms(
-        "CuCO",
-        [
-            (-l * np.sin(0.65), l * np.cos(0.65), 0),
-            (0, 0, 0),
-            (l * np.sin(0.65), l * np.cos(0.65), 0),
-        ],
-    )
-    image.set_cell([10, 10, 10])
-    image.wrap(pbc=True)
-    image.set_calculator(EMT())
-    images.append(image)
-
 # define symmetry functions to be used
 Gs = {}
 Gs["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
 Gs["G2_rs_s"] = [0] * 4
 Gs["G4_etas"] = [0.005]
-Gs["G4_zetas"] = [1.0]
+Gs["G4_zetas"] = [1.0, 4.0]
 Gs["G4_gammas"] = [+1.0, -1]
-Gs["cutoff"] = 6.5
+Gs["cutoff"] = 6.0
 
+label = "example"
+images = ase.io.read("../../datasets/COCu/COCu_pbc_300K.traj", ":100")
+lj_data = None
+cutoff = Gs["cutoff"]
+eV_kcalmol = 0.043372093
+p0 = [
+    1.33905162,
+    0.12290683,
+    6.41914719,
+    0.64021468,
+    0.08010004,
+    8.26082762,
+    2.29284676,
+    0.29639983,
+    0.08071821,
+]
+params_dict = {"C": [], "O": [], "Cu": []}
+lj_model = lj_optim(label, images, p0, params_dict, cutoff)
+fitted_params = lj_model.fit()
+# fitted_params = p0
+lj_energies, lj_forces, num_atoms = lj_model.lj_pred(
+    images, fitted_params, params_dict
+)
+lj_data = [
+    lj_energies,
+    lj_forces,
+    num_atoms,
+    fitted_params,
+    params_dict,
+    lj_model,
+]
+ 
 forcetraining = True
 training_data = AtomsDataset(images, Gaussian, Gs, forcetraining=forcetraining,
-        label=label, cores=1, lj_data=None)
+        label=label, cores=1, lj_data=lj_data)
 scalings = training_data.scalings
 unique_atoms = training_data.elements
 fp_length = training_data.fp_length
 device = "cpu"
 
 net = NeuralNetRegressor(
-    module=FullNN(unique_atoms, [fp_length, 3, 10], device, forcetraining=forcetraining),
+    module=FullNN(unique_atoms, [fp_length, 30, 30], device, forcetraining=forcetraining),
     criterion=CustomLoss,
     criterion__force_coefficient=0.3,
-    optimizer=torch.optim.LBFGS,
+    optimizer=torch.optim.Adam,
     lr=1e-2,
     batch_size=400,
-    max_epochs=100,
+    max_epochs=1000,
     iterator_train__collate_fn=collate_amp,
     iterator_valid__collate_fn=collate_amp,
     device=device,
@@ -124,5 +140,16 @@ net = NeuralNetRegressor(
         ),
     ],
 )
-calc = AMP(training_data, net, 'test')
+calc = AMP(training_data, net, 'test2')
 calc.train(overwrite=True)
+
+traj = ase.io.Trajectory('test2.traj', "w")
+slab = images[0].copy()
+slab.set_calculator(calc)
+slab.get_forces()
+traj.write(slab)
+dyn = Langevin(slab, 1.0 * units.fs, 300 * units.kB, 0.002)
+time_start = time.time()
+for step in range(100):
+    dyn.run(20)
+    traj.write(slab)

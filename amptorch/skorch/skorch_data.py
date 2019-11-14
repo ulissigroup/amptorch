@@ -76,6 +76,7 @@ class AtomsDataset(Dataset):
         self.lj = False
         self.cores = cores
         if lj_data is not None:
+            self.lj_data = lj_data
             self.lj_energies = np.squeeze(lj_data[0])
             self.lj_forces = np.squeeze(lj_data[1])
             self.num_atoms = np.array(lj_data[2])
