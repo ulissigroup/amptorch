@@ -108,7 +108,7 @@ net = NeuralNetRegressor(
     iterator_train__collate_fn=collate_amp,
     iterator_valid__collate_fn=collate_amp,
     device=device,
-    train_split=CVSplit(0.1),
+    train_split=None,
     callbacks=[
         EpochScoring(
             forces_score,
