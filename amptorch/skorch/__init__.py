@@ -38,6 +38,7 @@ class AMP(Calculator):
         if not os.path.exists("results/trained_models"):
             os.makedirs("results/trained_models")
         self.model = model
+        self.testlabel = label
         self.label = "".join(["results/trained_models/", label, ".pt"])
         self.scalings = training_data.scalings
         self.target_sd = self.scalings[0]
@@ -70,7 +71,7 @@ class AMP(Calculator):
             descriptor=self.training_data.base_descriptor,
             Gs=self.Gs,
             fprange=self.fprange,
-            label=self.label,
+            label=self.testlabel,
             cores=self.cores,
         )
         unique_atoms = dataset.unique()
