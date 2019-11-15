@@ -12,19 +12,12 @@ import torch
 from torch.utils.data import Dataset, SubsetRandomSampler
 import scipy.sparse as sparse
 import ase
-from amp.utilities import assign_cores
 from .gaussian import make_symmetry_functions
 from .utils import (
     make_amp_descriptors_simple_nn,
     calculate_fingerprints_range,
     hash_images,
 )
-
-# import line_profiler
-# import atexit
-
-# profile = line_profiler.LineProfiler()
-# atexit.register(profile.print_stats)
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
@@ -120,8 +113,7 @@ class AtomsDataset(Dataset):
             g["Rs"] = G2_rs_s
         self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
         self.descriptor.calculate_fingerprints(
-            self.hashed_images, calculate_derivatives=forcetraining
-        )
+            self.hashed_images, calculate_derivatives=forcetraining)
         print("Fingerprints Calculated!")
         self.fprange = calculate_fingerprints_range(self.descriptor, self.hashed_images)
         # perform preprocessing

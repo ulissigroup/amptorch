@@ -3,23 +3,28 @@ import time
 from itertools import product
 import numpy as np
 from scipy.optimize import minimize
-from ase.neighborlist import NeighborList
-from .utils import Logger
+from ase.neighborlist import NeighborList, NewPrimitiveNeighborList
+from .gaussian import NeighborlistCalculator, Data
+from .utils import Logger, hash_images
 import matplotlib.pyplot as plt
 
-
 class lj_optim:
-    def __init__(self, filename, data, params, params_dict, cutoff, forcetraining=True):
+    def __init__(self, images, params, params_dict, cutoff, filename, fitforces=True):
         if not os.path.exists("results"):
             os.mkdir("results")
         if not os.path.exists("results/logs"):
             os.mkdir("results/logs")
         self.filename = filename
-        self.data = data
+        self.data = images
         self.p0 = params
         self.params_dict = params_dict
-        self.forcetraining = forcetraining
+        self.fitforces = fitforces
         self.cutoff = cutoff
+        self.hashed_images = hash_images(images)
+        self.hashed_keys = list(self.hashed_images.keys())
+        calc = NeighborlistCalculator(cutoff=cutoff)
+        self.neighborlist = Data(filename="amp-data-neighborlists", calculator=calc)
+        self.neighborlist.calculate_items(self.hashed_images)
 
     def fit(self, method="Nelder-Mead"):
         log = Logger("results/logs/" + self.filename + ".txt")
@@ -31,17 +36,13 @@ class lj_optim:
         )
         print("LJ optimization initiated...")
         s_time = time.time()
-        bounds = (
-            (0, None),
-            (None, None),
-            (None, None),
-            (0, None),
-            (None, None),
-            (None, None),
-            (0, None),
-            (None, None),
-            (None, None),
-        )
+        bounds = None
+        if method != "Nelder-Mead":
+            bounds = [
+                (0, None),
+                (None, None),
+                (None, None),
+            ] * len(self.params_dict.keys())
         lj_min = minimize(
             self.objective_fn,
             self.p0,
@@ -66,7 +67,7 @@ class lj_optim:
         predicted_energies = []
         predicted_forces = []
         num_atoms = []
-        for image in data:
+        for idx, image in enumerate(data):
             chemical_symbols = np.array(image.get_chemical_symbols())
             unique_symbols = np.unique(chemical_symbols)
             possible_pairs = product(unique_symbols, repeat=2)
@@ -86,9 +87,8 @@ class lj_optim:
             natoms = len(image)
             num_atoms.append(natoms)
 
-            self.n1 = NeighborList(
-                [self.cutoff / 2] * natoms, self_interaction=False)
-            self.n1.update(image)
+            image_hash = self.hashed_keys[idx]
+            image_neighbors = self.neighborlist[image_hash]
 
             positions = image.positions
             cell = image.cell
@@ -100,11 +100,10 @@ class lj_optim:
                 base_element = chemical_symbols[a1]
                 sig_1 = np.abs(params[a1][0])
                 eps_1 = params[a1][1]
-                neighbors, offsets = self.n1.get_neighbors(a1)
+                neighbors, offsets = image_neighbors[a1]
                 neighbor_elements = chemical_symbols[neighbors]
                 e0 = np.array(
-                    [e_offsets[base_element + elem]
-                        for elem in neighbor_elements]
+                    [e_offsets[base_element + elem] for elem in neighbor_elements]
                 )
                 cells = np.dot(offsets, cell)
                 d = positions[neighbors] + cells - positions[a1]
@@ -141,8 +140,8 @@ class lj_optim:
         MSE_forces = (1 / data_size) * (
             ((target_forces - predicted_forces) / np.sqrt(3 * num_atoms_f)) ** 2
         ).sum()
-        if self.forcetraining:
-            MSE = MSE_energy + 0.3 * MSE_forces
+        if self.fitforces:
+            MSE = MSE_energy + MSE_forces
         else:
             MSE = MSE_energy
         return MSE
@@ -162,7 +161,7 @@ class lj_optim:
     def params_to_dict(self, params, params_dict):
         idx = 0
         for keys in list(params_dict.keys()):
-            params_dict[keys] = params[idx: idx + 3]
+            params_dict[keys] = params[idx : idx + 3]
             idx += 3
         return params_dict
 
@@ -184,8 +183,7 @@ class lj_optim:
                 results["success"],
             )
         )
-        log("Fitted LJ parameters: %s \n" %
-            self.params_to_dict(results.x, params_dict))
+        log("Fitted LJ parameters: %s \n" % self.params_to_dict(results.x, params_dict))
         log("Optimization time: %s \n" % optim_time)
 
     def parity(self, predicted_energies, predicted_forces):
@@ -202,8 +200,7 @@ class lj_optim:
         force_min = min(target_forces)
         force_max = max(target_forces)
         ax.plot(target_energies, predicted_energies, "bo", markersize=3)
-        ax.plot([energy_min, energy_max], [
-                energy_min, energy_max], "r-", lw=0.5)
+        ax.plot([energy_min, energy_max], [energy_min, energy_max], "r-", lw=0.5)
         ax.set_xlabel("ab initio energy, eV")
         ax.set_ylabel("LJ energy, eV")
         ax.set_title("Energy")

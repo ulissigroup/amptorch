@@ -9,6 +9,7 @@ from ase.calculators.calculator import Parameters
 from copy import deepcopy
 from .utils import Logger
 
+
 class Gaussian(object):
     """Class that calculates Gaussian fingerprints (i.e., Behler-style).
 
@@ -56,26 +57,36 @@ class Gaussian(object):
         RuntimeError
     """
 
-    def __init__(self, cutoff=Cosine(6.5), Gs=None, dblabel=None,
-                 elements=None, version=None, fortran=True,
-                 mode='atom-centered'):
+    def __init__(
+        self,
+        cutoff=Cosine(6.5),
+        Gs=None,
+        dblabel=None,
+        elements=None,
+        version=None,
+        fortran=True,
+        mode="atom-centered",
+    ):
 
         # Check of the version of descriptor, particularly if restarting.
-        compatibleversions = ['2015.12', ]
+        compatibleversions = ["2015.12"]
         if (version is not None) and version not in compatibleversions:
-            raise RuntimeError('Error: Trying to use Gaussian fingerprints'
-                               ' version %s, but this module only supports'
-                               ' versions %s. You may need an older or '
-                               ' newer version of Amp.' %
-                               (version, compatibleversions))
+            raise RuntimeError(
+                "Error: Trying to use Gaussian fingerprints"
+                " version %s, but this module only supports"
+                " versions %s. You may need an older or "
+                " newer version of Amp." % (version, compatibleversions)
+            )
         else:
             version = compatibleversions[-1]
 
         # Check that the mode is atom-centered.
-        if mode != 'atom-centered':
-            raise RuntimeError('Gaussian scheme only works '
-                               'in atom-centered mode. %s '
-                               'specified.' % mode)
+        if mode != "atom-centered":
+            raise RuntimeError(
+                "Gaussian scheme only works "
+                "in atom-centered mode. %s "
+                "specified." % mode
+            )
 
         # If the cutoff is provided as a number, Cosine function will be used
         # by default.
@@ -90,8 +101,8 @@ class Gaussian(object):
         # to produce a compatible descriptor; that is, one that gives
         # an identical fingerprint when fed an ASE image.
         p = self.parameters = Parameters(
-            {'importname': '.descriptor.gaussian.Gaussian',
-             'mode': 'atom-centered'})
+            {"importname": ".descriptor.gaussian.Gaussian", "mode": "atom-centered"}
+        )
         p.version = version
         p.cutoff = cutoff.todict()
         p.Gs = Gs
@@ -107,8 +118,8 @@ class Gaussian(object):
         """
         return self.parameters.tostring()
 
-    def calculate_fingerprints(self, images, parallel=None, log=None,
-                               calculate_derivatives=False):
+    def calculate_fingerprints(
+        self, images, parallel=None, log=None, calculate_derivatives=False):
         """Calculates the fingerpints of the images, for the ones not already
         done.
 
@@ -127,40 +138,38 @@ class Gaussian(object):
         calculate_derivatives : bool
             Decides whether or not fingerprintprimes should also be calculated.
         """
-        if parallel is None:
-            parallel = {'cores': 1}
-
-        if (self.dblabel is None) and hasattr(self.parent, 'dblabel'):
+        if (self.dblabel is None) and hasattr(self.parent, "dblabel"):
             self.dblabel = self.parent.dblabel
-        self.dblabel = 'amp-data' if self.dblabel is None else self.dblabel
+        self.dblabel = "amp-data" if self.dblabel is None else self.dblabel
 
         p = self.parameters
 
         if p.elements is None:
-            p.elements = set([atom.symbol for atoms in images.values()
-                              for atom in atoms])
+            p.elements = set(
+                [atom.symbol for atoms in images.values() for atom in atoms]
+            )
         p.elements = sorted(p.elements)
 
-        if not hasattr(p.Gs, 'keys'):
+        if not hasattr(p.Gs, "keys"):
             p.Gs = {element: deepcopy(p.Gs) for element in p.elements}
-        # TODO ensure this is not needed later
-        # if not hasattr(self, 'neighborlist'):
-            # calc = NeighborlistCalculator(cutoff=p.cutoff['kwargs']['Rc'])
-            # self.neighborlist = \
-                # Data(filename='%s-neighborlists' % self.dblabel,
-                     # calculator=calc)
+        # TODO Ensure this is not needed
+        # if not hasattr(self, "neighborlist"):
+            # calc = NeighborlistCalculator(cutoff=p.cutoff["kwargs"]["Rc"])
+            # self.neighborlist = Data(
+                # filename="%s-neighborlists" % self.dblabel, calculator=calc
+            # )
         # self.neighborlist.calculate_items(images, parallel=parallel, log=log)
 
-        if not hasattr(self, 'fingerprints'):
-            self.fingerprints = Data(filename='%s-fingerprints'
-                                     % self.dblabel,
-                                     calculator=None)
+        if not hasattr(self, "fingerprints"):
+            self.fingerprints = Data(
+                filename="%s-fingerprints" % self.dblabel, calculator=None
+            )
         if calculate_derivatives:
-            if not hasattr(self, 'fingerprintprimes'):
-                self.fingerprintprimes = \
-                    Data(filename='%s-fingerprint-primes'
-                         % self.dblabel,
-                         calculator=None)
+            if not hasattr(self, "fingerprintprimes"):
+                self.fingerprintprimes = Data(
+                    filename="%s-fingerprint-primes" % self.dblabel, calculator=None
+                )
+
 
 # Neighborlist Calculator
 class NeighborlistCalculator:
@@ -174,10 +183,9 @@ class NeighborlistCalculator:
     cutoff : float
         Radius above which neighbor interactions are ignored.
     """
+
     def __init__(self, cutoff):
-        self.globals = Parameters({'cutoff': cutoff})
-        self.keyed = Parameters()
-        self.parallel_command = 'calculate_neighborlists'
+        self.globals = Parameters({"cutoff": cutoff})
 
     def calculate(self, image, key):
         """For integration with .utilities.Data
@@ -192,15 +200,14 @@ class NeighborlistCalculator:
         key : str
             key of the image after being hashed.
         """
-        from ase.neighborlist import NeighborList
+        from ase.neighborlist import NeighborList, NewPrimitiveNeighborList
 
         cutoff = self.globals.cutoff
-        n = NeighborList(cutoffs=[cutoff / 2.] * len(image),
-                         self_interaction=False,
-                         bothways=True,
-                         skin=0.)
+        n = NeighborList(cutoffs=[cutoff / 2.0] * len(image),
+                self_interaction=False, primitive=NewPrimitiveNeighborList)
         n.update(image)
         return [n.get_neighbors(index) for index in range(len(image))]
+
 
 class FileDatabase:
     """Using a database file, such as shelve or sqlitedict, that can handle
@@ -223,11 +230,11 @@ class FileDatabase:
     def __init__(self, filename):
         """Open the filename at specified location. flag is ignored; this
         format is always capable of both reading and writing."""
-        if not filename.endswith(os.extsep + 'ampdb'):
-            filename += os.extsep + 'ampdb'
+        if not filename.endswith(os.extsep + "ampdb"):
+            filename += os.extsep + "ampdb"
         self.path = filename
-        self.loosepath = os.path.join(self.path, 'loose')
-        self.tarpath = os.path.join(self.path, 'archive.tar.gz')
+        self.loosepath = os.path.join(self.path, "loose")
+        self.tarpath = os.path.join(self.path, "archive.tar.gz")
         if not os.path.exists(self.path):
             try:
                 os.mkdir(self.path)
@@ -277,12 +284,12 @@ class FileDatabase:
         self._memdict[key] = value
         path = os.path.join(self.loosepath, str(key))
         if os.path.exists(path):
-            with open(path, 'rb') as f:
+            with open(path, "rb") as f:
                 contents = self._repeat_read(f)
                 if pickle.dumps(contents) == pickle.dumps(value):
                     # Using pickle as a hash...
                     return  # Nothing to update.
-        with open(path, 'wb') as f:
+        with open(path, "wb") as f:
             pickle.dump(value, f, protocol=0)
 
     def _repeat_read(self, f, maxtries=5, sleep=0.2):
@@ -299,14 +306,14 @@ class FileDatabase:
                 tries += 1
             else:
                 return contents
-        raise IOError('Too many file read attempts.')
+        raise IOError("Too many file read attempts.")
 
     def __getitem__(self, key):
         if key in self._memdict:
             return self._memdict[key]
         keypath = os.path.join(self.loosepath, key)
         if os.path.exists(keypath):
-            with open(keypath, 'rb') as f:
+            with open(keypath, "rb") as f:
                 return self._repeat_read(f)
         elif os.path.exists(self.tarpath):
             with tarfile.open(self.tarpath) as tf:
@@ -326,25 +333,26 @@ class FileDatabase:
         exists, appends/modifies.
         """
         loosefiles = os.listdir(self.loosepath)
-        print('Contains %i loose entries.' % len(loosefiles))
+        print("Contains %i loose entries." % len(loosefiles))
         if len(loosefiles) == 0:
-            print(' -> No action taken.')
+            print(" -> No action taken.")
             return
         if os.path.exists(self.tarpath):
             with tarfile.open(self.tarpath) as tf:
-                names = [_ for _ in tf.getnames() if _ not in
-                         os.listdir(self.loosepath)]
+                names = [
+                    _ for _ in tf.getnames() if _ not in os.listdir(self.loosepath)
+                ]
                 for name in names:
                     tf.extract(member=name, path=self.loosepath)
         loosefiles = os.listdir(self.loosepath)
-        print('Compressing %i entries.' % len(loosefiles))
-        with tarfile.open(self.tarpath, 'w:gz') as tf:
+        print("Compressing %i entries." % len(loosefiles))
+        with tarfile.open(self.tarpath, "w:gz") as tf:
             for file in loosefiles:
-                tf.add(name=os.path.join(self.loosepath, file),
-                       arcname=file)
-        print('Cleaning up: removing %i files.' % len(loosefiles))
+                tf.add(name=os.path.join(self.loosepath, file), arcname=file)
+        print("Cleaning up: removing %i files." % len(loosefiles))
         for file in loosefiles:
             os.remove(os.path.join(self.loosepath, file))
+
 
 class Data:
     """Serves as a container (dictionary-like) for (key, value) pairs that
@@ -373,6 +381,18 @@ class Data:
         self.filename = filename
         self.d = None
 
+    def calculate_items(self, images):
+        d = self.db.open(self.filename, "r")
+        calcs_needed = list(set(images.keys()).difference(d.keys()))
+        d.close()
+        if len(calcs_needed) == 0:
+            return
+        d = self.db.open(self.filename, "c")
+        for key in calcs_needed:
+            d[key] = self.calc.calculate(images[key], key)
+        d.close()
+        self.d = None
+
     def __getitem__(self, key):
         self.open()
         return self.d[key]
@@ -384,7 +404,7 @@ class Data:
             self.d.close()
         self.d = None
 
-    def open(self, mode='r'):
+    def open(self, mode="r"):
         """Open the database connection with mode specified.
         """
         if self.d is None:
@@ -392,6 +412,7 @@ class Data:
 
     def __del__(self):
         self.close()
+
 
 def make_symmetry_functions(elements, type, etas, zetas=None, gammas=None):
     """Helper function to create Gaussian symmetry functions.
@@ -418,12 +439,14 @@ def make_symmetry_functions(elements, type, etas, zetas=None, gammas=None):
         A list, each item in the list contains a dictionary of fingerprint
         parameters.
     """
-    if type == 'G2':
-        G = [{'type': 'G2', 'element': element, 'eta': eta}
-             for eta in etas
-             for element in elements]
+    if type == "G2":
+        G = [
+            {"type": "G2", "element": element, "eta": eta}
+            for eta in etas
+            for element in elements
+        ]
         return G
-    elif type == 'G4':
+    elif type == "G4":
         G = []
         for eta in etas:
             for zeta in zetas:
@@ -431,13 +454,17 @@ def make_symmetry_functions(elements, type, etas, zetas=None, gammas=None):
                     for i1, el1 in enumerate(elements):
                         for el2 in elements[i1:]:
                             els = sorted([el1, el2])
-                            G.append({'type': 'G4',
-                                      'elements': els,
-                                      'eta': eta,
-                                      'gamma': gamma,
-                                      'zeta': zeta})
+                            G.append(
+                                {
+                                    "type": "G4",
+                                    "elements": els,
+                                    "eta": eta,
+                                    "gamma": gamma,
+                                    "zeta": zeta,
+                                }
+                            )
         return G
-    elif type == 'G5':
+    elif type == "G5":
         G = []
         for eta in etas:
             for zeta in zetas:
@@ -445,10 +472,14 @@ def make_symmetry_functions(elements, type, etas, zetas=None, gammas=None):
                     for i1, el1 in enumerate(elements):
                         for el2 in elements[i1:]:
                             els = sorted([el1, el2])
-                            G.append({'type': 'G5',
-                                      'elements': els,
-                                      'eta': eta,
-                                      'gamma': gamma,
-                                      'zeta': zeta})
+                            G.append(
+                                {
+                                    "type": "G5",
+                                    "elements": els,
+                                    "eta": eta,
+                                    "gamma": gamma,
+                                    "zeta": zeta,
+                                }
+                            )
         return G
-    raise NotImplementedError('Unknown type: {}.'.format(type))
+    raise NotImplementedError("Unknown type: {}.".format(type))

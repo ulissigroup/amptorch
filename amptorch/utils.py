@@ -10,7 +10,7 @@ from ase import io
 from ase.db import connect
 
 
-def hash_images(images, Gs, log=None, ordered=False):
+def hash_images(images, Gs=None, log=None, ordered=False):
     """ Converts input images -- which may be a list, a trajectory file, or
     a database -- into a dictionary indexed by their hashes.
 
@@ -222,7 +222,7 @@ def reorganize_simple_nn_fp(image, x_dict):
     return fp_l
 
 
-def get_hash(atoms, Gs):
+def get_hash(atoms, Gs=None):
     import hashlib
 
     """Creates a unique signature for a particular ASE atoms object.
@@ -237,7 +237,6 @@ def get_hash(atoms, Gs):
     -------
         Hash string key of 'atoms'.
     """
-    gs_values = list(Gs.values())
     string = str(atoms.pbc)
     try:
         flattened_cell = atoms.cell.array.flatten()
@@ -249,17 +248,19 @@ def get_hash(atoms, Gs):
         string += "%3d" % number
     for number in atoms.get_positions().flatten():
         string += "%.15f" % number
-    for number in gs_values[0]:
-        string += "%.15f" % number
-    for number in gs_values[1]:
-        string += "%.15f" % number
-    for number in gs_values[2]:
-        string += "%.15f" % number
-    for number in gs_values[3]:
-        string += "%.15f" % number
-    for number in gs_values[4]:
-        string += "%.15f" % number
-    string += "%.15f" % gs_values[5]
+    if Gs:
+        gs_values = list(Gs.values())
+        for number in gs_values[0]:
+            string += "%.15f" % number
+        for number in gs_values[1]:
+            string += "%.15f" % number
+        for number in gs_values[2]:
+            string += "%.15f" % number
+        for number in gs_values[3]:
+            string += "%.15f" % number
+        for number in gs_values[4]:
+            string += "%.15f" % number
+        string += "%.15f" % gs_values[5]
 
     md5 = hashlib.md5(string.encode("utf-8"))
     hash = md5.hexdigest()
