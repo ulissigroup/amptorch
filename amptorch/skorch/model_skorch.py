@@ -213,3 +213,44 @@ class CustomLoss(nn.Module):
         else:
             loss = 0.5 * energy_loss
         return loss
+
+class TanhLoss(nn.Module):
+    """Custom loss function to be optimized by the regression. Includes aotmic
+    energy and force contributions.
+
+    Eq. (26) in A. Khorshidi, A.A. Peterson /
+    Computer Physics Communications 207 (2016) 310-324"""
+
+    def __init__(self, force_coefficient=0):
+        super(TanhLoss, self).__init__()
+        self.alpha = force_coefficient
+
+    def forward(
+        self,
+        prediction,
+        target):
+
+        energy_pred = prediction[0]
+        energy_targets = target[0]
+        num_atoms = target[1]
+        MSE_loss = nn.MSELoss(reduction="sum")
+        energy_per_atom = torch.div(energy_pred, num_atoms)
+        targets_per_atom = torch.div(energy_targets, num_atoms)
+        energy_loss = MSE_loss(energy_per_atom, targets_per_atom)
+
+        if self.alpha > 0:
+            force_pred = prediction[1]
+            force_targets = target[-1]
+            num_atoms_force = torch.cat([idx.repeat(int(idx)) for idx in num_atoms])
+            num_atoms_force = torch.sqrt(
+                num_atoms_force.reshape(len(num_atoms_force), 1)
+            )
+            force_pred_per_atom = torch.div(force_pred, num_atoms_force)
+            force_targets_per_atom = torch.div(force_targets, num_atoms_force)
+            force_loss = (1 / 3) * torch.sum(
+                torch.tanh(torch.abs(force_pred_per_atom - force_targets_per_atom))
+            )
+            loss = energy_loss + self.alpha * force_loss
+        else:
+            loss = energy_loss
+        return loss

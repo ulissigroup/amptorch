@@ -19,7 +19,6 @@ from amptorch.utils import (
 from scipy import linalg, sparse
 from functools import lru_cache
 import ase
-from numba import jit
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
@@ -291,6 +290,11 @@ class AtomsDataset(Dataset):
         return samplers
 
 
+@lru_cache(maxsize=None)
+def make_sparse(primes):
+    primes = primes.to_sparse()
+    return primes
+
 def factorize_data(training_data):
     """
     Factorizes the dataset into separate lists.
@@ -331,7 +335,8 @@ def factorize_data(training_data):
         num_of_atoms.append(num_atom)
         if forcetraining:
             # track the number of entries in the fprimes matrix
-            image[3] = image[3].to_sparse()  # presparify the fprimes
+            # image[3] = image[3].to_sparse()  # presparify the fprimes
+            image[3] = make_sparse(image[3])
             total_entries += len(image[3]._values())
 
     image_forces = None
