@@ -17,6 +17,7 @@ Installation Instructions:
 - ```pip install git+https://github.com/mshuaibii/SIMPLE-NN.git```
 - ```pip install git+https://bitbucket.org/andrewpeterson/amp.git```
 - ```pip install .``` 
+
 For compatibility with skorch - modify the source code by deleting `wtih torch.no_grad()` in line 591 of `net.py`. Not doing so will not allow you to create validation splits.
 
 As AMPTorch is a work in progress, please feel free to report any issues/suggestions/feedback/questions and we'll try to address them or get back to you as soon as possible.
