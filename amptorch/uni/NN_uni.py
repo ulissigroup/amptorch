@@ -2,17 +2,15 @@
 Networks as understood from Behler and Parrinello's works. A model instance is
 constructed based off the unique number of atoms in the dataset."""
 
-import time
 import sys
-from collections import defaultdict, OrderedDict
-import numpy as np
+from collections import defaultdict
 import torch
 import torch.nn as nn
-from torch.nn import init
 from torch.nn import Tanh, Softplus, LeakyReLU
+from torch.nn import init
 from torch.nn.init import xavier_uniform_, kaiming_uniform_
 from torch.autograd import grad
-from amp.utilities import Logger
+from amptorch.utils import Logger
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
@@ -75,9 +73,7 @@ class MLP(nn.Module):
             Dense(self.n_neurons[i], self.n_neurons[i + 1], activation=activation)
             for i in range(n_layers - 1)
         ]
-        layers.append(
-            Dense(self.n_neurons[-2], self.n_neurons[-1], activation=None)
-        )
+        layers.append(Dense(self.n_neurons[-2], self.n_neurons[-1], activation=None))
         self.model_net = nn.Sequential(*layers)
 
     def forward(self, inputs):
@@ -86,7 +82,6 @@ class MLP(nn.Module):
         Arguments:
             inputs (torch.Tensor): NN inputs
         """
-
         return self.model_net(inputs)
 
 
@@ -95,6 +90,7 @@ class FullNN(nn.Module):
     structure
 
     """
+
     def __init__(
         self, unique_atoms, architecture, device, forcetraining, require_grd=True
     ):
@@ -103,7 +99,6 @@ class FullNN(nn.Module):
         self.unique_atoms = unique_atoms
         self.req_grad = require_grd
         self.forcetraining = forcetraining
-        self.architecture = architecture
 
         input_length = architecture[0]
         n_layers = architecture[1]
@@ -111,10 +106,10 @@ class FullNN(nn.Module):
         elementwise_models = nn.ModuleDict()
         for element in unique_atoms:
             elementwise_models[element] = MLP(
-                    n_input_nodes=input_length,
-                    n_layers=n_layers,
-                    n_hidden_size=n_hidden_size,
-                )
+                n_input_nodes=input_length,
+                n_layers=n_layers,
+                n_hidden_size=n_hidden_size,
+            )
         self.elementwise_models = elementwise_models
         self.activation_fn = elementwise_models[unique_atoms[0]].activation
 
@@ -168,7 +163,7 @@ class FullNN(nn.Module):
             """Reshapes the force tensor into a Qx3 matrix containing all the force
             predictions in the same order and shape as the target forces calculated
             from AMP."""
-        return [energy_pred, force_pred]
+        return energy_pred, force_pred
 
 
 class CustomLoss(nn.Module):
@@ -214,10 +209,7 @@ class CustomLoss(nn.Module):
 
 class TanhLoss(nn.Module):
     """Custom loss function to be optimized by the regression. Includes aotmic
-    energy and force contributions.
-
-    Eq. (26) in A. Khorshidi, A.A. Peterson /
-    Computer Physics Communications 207 (2016) 310-324"""
+    energy and force contributions."""
 
     def __init__(self, force_coefficient=0):
         super(TanhLoss, self).__init__()

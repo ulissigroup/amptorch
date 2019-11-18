@@ -4,25 +4,20 @@ Functions are included to factorize the data and organize it accordingly in
 'collate_amp' as needed to be fed into the PyTorch required DataLoader class"""
 
 import sys
-import copy
 import time
+import copy
 import os
 import numpy as np
 import torch
 from torch.utils.data import Dataset, SubsetRandomSampler
+import scipy.sparse as sparse
+import ase
 from amptorch.gaussian import make_symmetry_functions
 from amptorch.utils import (
     make_amp_descriptors_simple_nn,
     calculate_fingerprints_range,
     hash_images,
 )
-from scipy import linalg, sparse
-from functools import lru_cache
-import ase
-import line_profiler
-import atexit
-from joblib import Memory
-from functools import lru_cache
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
@@ -39,24 +34,31 @@ class AtomsDataset(Dataset):
         Training data to be utilized for the regression model.
 
     descriptor: object
-        Scheme to be utilized for computing fingerprints
+        Scheme to be utilized for computing fingerprints.
 
-    cores: int
-        Specify the number of cores to use for parallelization of fingerprint
-        calculations
+    Gs: object
+        Symmetry function parameters to be used for hashing and fingerprinting.
 
     forcetraining: float
         Flag to specify whether force training is to be performed - dataset
         will then compute the necessary information - fingerprint derivatives,
         etc.
 
-    envcommand: string
-        For parallel processing across nodes, a command can be supplied here to
-        load the appropriate environment before starting workers.
-        default: None
+    cores: int
+        Number of cores to parallelize symmetry function
+        computation/reorganization.
+
+    lj_data: list
+        Energies and forces to be subtracted off from targets, allowing the
+        model to learn the difference. default: None
+
+    store_primes: Boolean
+        True to save fingerprintprimes matrices for faster preprocessing.
+        Default: False
 
 
     """
+
     def __init__(
         self,
         images,
@@ -69,16 +71,13 @@ class AtomsDataset(Dataset):
         store_primes=False,
     ):
         self.images = images
-        self.base_descriptor = descriptor
         self.descriptor = descriptor
         self.Gs = Gs
         self.atom_images = self.images
         self.forcetraining = forcetraining
         self.store_primes = store_primes
         self.lj = False
-        self.cores = cores
         if lj_data is not None:
-            self.lj_data = lj_data
             self.lj_energies = np.squeeze(lj_data[0])
             self.lj_forces = np.squeeze(lj_data[1])
             self.num_atoms = np.array(lj_data[2])
@@ -110,15 +109,21 @@ class AtomsDataset(Dataset):
             zetas=G4_zetas,
             gammas=G4_gammas,
         )
+        for g in list(G):
+            g["Rs"] = G2_rs_s
         self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
         self.descriptor.calculate_fingerprints(
             self.hashed_images, calculate_derivatives=forcetraining
         )
         print("Fingerprints Calculated!")
         self.fprange = calculate_fingerprints_range(self.descriptor, self.hashed_images)
+        # perform preprocessing
         self.fingerprint_dataset, self.energy_dataset, self.num_of_atoms, self.sparse_fprimes, self.forces_dataset, self.index_hashes, self.scalings = (
             self.preprocess_data()
         )
+
+    def __len__(self):
+        return len(self.hashed_images)
 
     def preprocess_data(self):
         fingerprint_dataset = []
@@ -209,7 +214,6 @@ class AtomsDataset(Dataset):
             fingerprint_dataset.append(image_fingerprint)
             energy_dataset = np.append(energy_dataset, image_potential_energy)
             num_of_atoms = np.append(num_of_atoms, float(len(image_fingerprint)))
-
         energy_dataset = torch.FloatTensor(energy_dataset)
         scaling_mean = torch.mean(energy_dataset)
         scaling_sd = torch.std(energy_dataset, dim=0)
@@ -228,9 +232,6 @@ class AtomsDataset(Dataset):
             index_hashes,
             scalings,
         )
-
-    def __len__(self):
-        return len(self.hashed_images)
 
     def __getitem__(self, index):
         fingerprint = self.fingerprint_dataset[index]
@@ -268,10 +269,36 @@ class AtomsDataset(Dataset):
         """Computes the fingerprint length of the training images"""
         return len(list(self.fprange.values())[0])
 
-@lru_cache(maxsize=None)
+    def create_splits(self, training_data, val_frac, resample=None):
+        """Constructs a training and validation sampler to be utilized for
+        constructing training and validation sets."""
+        dataset_size = len(training_data)
+        if resample:
+            resample = len(resample)
+            dataset_size -= resample
+        indices = np.random.permutation(dataset_size)
+        split = int(val_frac * dataset_size)
+        train_idx, val_idx = indices[split:], indices[:split]
+        if resample:
+            sample_idx = np.random.permutation(
+                np.arange(dataset_size, dataset_size + resample)
+            )
+            split = int(val_frac * len(sample_idx))
+            train_idx = np.concatenate((train_idx, sample_idx[split:]))
+            val_idx = np.concatenate((val_idx, sample_idx[:split]))
+        train_sampler = SubsetRandomSampler(train_idx)
+        val_sampler = SubsetRandomSampler(val_idx)
+
+        samplers = {"train": train_sampler, "val": val_sampler}
+
+        return samplers
+
+
+# @lru_cache(maxsize=None)
 def make_sparse(primes):
     primes = primes.to_sparse()
     return primes
+
 
 def factorize_data(training_data):
     """
@@ -378,6 +405,7 @@ def factorize_data(training_data):
         image_forces,
     )
 
+
 def collate_amp(training_data):
     """
     Reshuffling scheme that reads in raw data and organizes it into element
@@ -414,6 +442,7 @@ def collate_amp(training_data):
         model_input_data[0].append(fp_primes)
         model_input_data[1].append(image_forces)
     return model_input_data
+
 
 class TestDataset(Dataset):
     """
@@ -540,7 +569,7 @@ class TestDataset(Dataset):
         total_entries = 0
         previous_entries = 0
         for image in training_data:
-            image[1] = image[1].to_sparse() # presparify the fprimes
+            image[1] = image[1].to_sparse()  # presparify the fprimes
             total_entries += len(image[1]._values())
             num_of_atoms.append(image[2])
         # Construct a sparse matrix with dimensions PQx3Q
@@ -562,8 +591,12 @@ class TestDataset(Dataset):
             s_fprime_vals = fprime._values().type(torch.FloatTensor)
             num_entries = len(s_fprime_vals)
             # fill in the entries
-            fprimes_inds[:, previous_entries:previous_entries + num_entries] = s_fprime_inds
-            fprimes_vals[previous_entries:previous_entries + num_entries] = s_fprime_vals
+            fprimes_inds[
+                :, previous_entries : previous_entries + num_entries
+            ] = s_fprime_inds
+            fprimes_vals[
+                previous_entries : previous_entries + num_entries
+            ] = s_fprime_vals
             previous_entries += num_entries
 
             dim1_start += dim1
@@ -591,7 +624,7 @@ class TestDataset(Dataset):
                 element_specific_fingerprints[element][0]
             )
         model_input_data.append(element_specific_fingerprints)
-        model_input_data.append(len(num_of_atoms))
+        model_input_data.append(num_of_atoms)
         model_input_data.append(sparse_fprimes)
 
         return model_input_data
