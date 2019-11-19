@@ -18,9 +18,10 @@ from amptorch.gaussian import Gaussian as DummyGaussian
 from amp.model import calculate_fingerprints_range
 from amptorch import core
 from amptorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
-from amptorch.NN_model import FullNN, Dense
+from amptorch.model import FullNN, Dense
 from amptorch import AMP
 from amptorch.core import AMPTorch
+from skorch.utils import to_tensor
 
 
 def test_calcs():
@@ -220,13 +221,9 @@ def test_calcs():
             init.constant_(layer.weight, 0.5)
             init.constant_(layer.bias, 0.5)
     for batch in dataloader:
-        input_data = [batch[0], len(batch[1]), batch[3]]
-        for element in elements:
-            input_data[0][element][0] = (
-                input_data[0][element][0].to(device).requires_grad_(True)
-            )
-        fp_primes = batch[4]
-        energy_pred, force_pred = model(input_data, fp_primes)
+        x = to_tensor(batch[0], device)
+        y = to_tensor(batch[1], device)
+        energy_pred, force_pred = model(x)
 
     for idx, i in enumerate(amp_energies):
         assert round(i, 4) == round(
