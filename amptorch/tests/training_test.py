@@ -8,7 +8,7 @@ from ase.calculators.emt import EMT
 import torch
 import torch.optim as optim
 import numpy as np
-from amptorch.NN_model import CustomLoss
+from amptorch.model import CustomLoss
 from amptorch import AMP
 from amptorch.core import AMPTorch
 from amptorch.analysis import parity_plot
