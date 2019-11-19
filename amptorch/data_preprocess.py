@@ -11,9 +11,10 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset, SubsetRandomSampler
 import scipy.sparse as sparse
+from collections import OrderedDict
 import ase
-from .gaussian import make_symmetry_functions
-from .utils import (
+from amptorch.gaussian import make_symmetry_functions
+from amptorch.utils import (
     make_amp_descriptors_simple_nn,
     calculate_fingerprints_range,
     hash_images,
@@ -71,11 +72,13 @@ class AtomsDataset(Dataset):
         store_primes=False,
     ):
         self.images = images
+        self.base_descriptor = descriptor
         self.descriptor = descriptor
         self.Gs = Gs
         self.atom_images = self.images
         self.forcetraining = forcetraining
         self.store_primes = store_primes
+        self.cores = cores
         self.lj = False
         if lj_data is not None:
             self.lj_energies = np.squeeze(lj_data[0])
@@ -113,11 +116,12 @@ class AtomsDataset(Dataset):
             g["Rs"] = G2_rs_s
         self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
         self.descriptor.calculate_fingerprints(
-            self.hashed_images, calculate_derivatives=forcetraining)
+            self.hashed_images, calculate_derivatives=forcetraining
+        )
         print("Fingerprints Calculated!")
         self.fprange = calculate_fingerprints_range(self.descriptor, self.hashed_images)
         # perform preprocessing
-        self.fingerprint_dataset, self.energy_dataset, self.num_of_atoms, self.sparse_fprimes, self.forces_dataset, self.index_hashes = (
+        self.fingerprint_dataset, self.energy_dataset, self.num_of_atoms, self.sparse_fprimes, self.forces_dataset, self.index_hashes, self.scalings = (
             self.preprocess_data()
         )
 
@@ -213,6 +217,14 @@ class AtomsDataset(Dataset):
             fingerprint_dataset.append(image_fingerprint)
             energy_dataset = np.append(energy_dataset, image_potential_energy)
             num_of_atoms = np.append(num_of_atoms, float(len(image_fingerprint)))
+        energy_dataset = torch.FloatTensor(energy_dataset)
+        scaling_mean = torch.mean(energy_dataset)
+        scaling_sd = torch.std(energy_dataset, dim=0)
+        energy_dataset = (energy_dataset - scaling_mean) / scaling_sd
+        if self.forcetraining:
+            for idx, force in enumerate(forces_dataset):
+                forces_dataset[idx] = force / scaling_sd
+        scalings = [scaling_sd, scaling_mean]
 
         return (
             fingerprint_dataset,
@@ -221,6 +233,7 @@ class AtomsDataset(Dataset):
             fprimes_dataset,
             forces_dataset,
             index_hashes,
+            scalings,
         )
 
     def __getitem__(self, index):
@@ -237,36 +250,7 @@ class AtomsDataset(Dataset):
             else:
                 fprime = self.sparse_fprimes[index]
             forces = self.forces_dataset[index]
-        unique_atoms = self.elements
-        return [
-            fingerprint,
-            energy,
-            atom_count,
-            fprime,
-            forces,
-            unique_atoms,
-            self.forcetraining,
-        ]
-
-    def scalings(self):
-        """Computes the scaling factors used in the training dataset to
-        standardize the target values. Computed scaling factors will be
-        required to scale test sets in the same manner."""
-        energy_dataset = []
-        for image in self.hashed_images.keys():
-            energy_dataset.append(
-                np.float(
-                    self.hashed_images[image].get_potential_energy(
-                        apply_constraint=False
-                    )
-                )
-            )
-        if self.lj:
-            energy_dataset -= self.lj_energies
-        energy_dataset = torch.tensor(energy_dataset)
-        scaling_mean = torch.mean(energy_dataset)
-        scaling_sd = torch.std(energy_dataset, dim=0)
-        return [scaling_sd, scaling_mean]
+        return [fingerprint, energy, fprime, forces, self.scalings]
 
     def unique(self):
         """Returns the unique elements contained in the training dataset"""
@@ -304,7 +288,12 @@ class AtomsDataset(Dataset):
         return samplers
 
 
-# @profile
+# @lru_cache(maxsize=None)
+def make_sparse(primes):
+    primes = primes.to_sparse()
+    return primes
+
+
 def factorize_data(training_data):
     """
     Factorizes the dataset into separate lists.
@@ -332,7 +321,10 @@ def factorize_data(training_data):
     dataset.
 
     """
-    forcetraining = training_data[0][-1]
+    forcetraining = False
+    if training_data[0][2] is not None:
+        forcetraining = True
+    scalings = training_data[0][-1]
     unique_atoms = []
     fingerprint_dataset = []
     energy_dataset = []
@@ -345,8 +337,8 @@ def factorize_data(training_data):
         num_of_atoms.append(num_atom)
         if forcetraining:
             # track the number of entries in the fprimes matrix
-            image[3] = image[3].to_sparse() # presparify the fprimes
-            total_entries += len(image[3]._values())
+            image[2] = make_sparse(image[2])
+            total_entries += len(image[2]._values())
 
     image_forces = None
     sparse_fprimes = None
@@ -366,11 +358,10 @@ def factorize_data(training_data):
             element = atom[0]
             if element not in unique_atoms:
                 unique_atoms.append(element)
-        unique_atoms = sorted(set(unique_atoms))
         image_potential_energy = image[1]
         energy_dataset.append(image_potential_energy)
         if forcetraining:
-            fprime = image[3]
+            fprime = image[2]
             # build the matrix of indices
             # the indices need to be offset by dim1 and dim2
             if not fprime.is_sparse:
@@ -384,22 +375,24 @@ def factorize_data(training_data):
             s_fprime_vals = fprime._values().type(torch.FloatTensor)
             num_entries = len(s_fprime_vals)
             # fill in the entries
-            fprimes_inds[:, previous_entries:previous_entries + num_entries] = s_fprime_inds
-            fprimes_vals[previous_entries:previous_entries + num_entries] = s_fprime_vals
+            fprimes_inds[
+                :, previous_entries : previous_entries + num_entries
+            ] = s_fprime_inds
+            fprimes_vals[
+                previous_entries : previous_entries + num_entries
+            ] = s_fprime_vals
             previous_entries += num_entries
             dim1_start += dim1
             dim2_start += dim2
-            image_forces.append((image[4]))
+            image_forces.append((image[3]))
     if forcetraining:
         sparse_fprimes = torch.sparse.FloatTensor(
             fprimes_inds, fprimes_vals, torch.Size([dim1_start, dim2_start])
         )
-        sparsity = 1 - (
-            len(sparse_fprimes._values())
-            / (sparse_fprimes.shape[0] * sparse_fprimes.shape[1])
-        )
         image_forces = torch.cat(image_forces).float()
 
+    unique_atoms = sorted(set(unique_atoms))
+    unique_atoms = OrderedDict.fromkeys(unique_atoms, 1)
     return (
         unique_atoms,
         fingerprint_dataset,
@@ -407,6 +400,7 @@ def factorize_data(training_data):
         num_of_atoms,
         sparse_fprimes,
         image_forces,
+        scalings,
     )
 
 
@@ -415,11 +409,21 @@ def collate_amp(training_data):
     Reshuffling scheme that reads in raw data and organizes it into element
     specific datasets to be fed into element specific neural networks.
     """
-    unique_atoms, fingerprint_dataset, energy_dataset, num_of_atoms, fp_primes, image_forces = factorize_data(
-        training_data
-    )
+    (
+        unique_atoms,
+        fingerprint_dataset,
+        energy_dataset,
+        num_of_atoms,
+        fp_primes,
+        image_forces,
+        scalings,
+    ) = factorize_data(training_data)
+    forcetraining = False
+    if image_forces is not None:
+        forcetraining = True
+    batch_size = len(energy_dataset)
     element_specific_fingerprints = {}
-    model_input_data = []
+    model_input_data = [[], []]
     for element in unique_atoms:
         element_specific_fingerprints[element] = [[], []]
     for fp_index, sample_fingerprints in enumerate(fingerprint_dataset):
@@ -434,12 +438,15 @@ def collate_amp(training_data):
         element_specific_fingerprints[element][0] = torch.stack(
             element_specific_fingerprints[element][0]
         )
-    model_input_data.append(element_specific_fingerprints)
-    model_input_data.append(torch.tensor(energy_dataset))
-    model_input_data.append(torch.FloatTensor(num_of_atoms))
-    model_input_data.append(unique_atoms)
-    model_input_data.append(fp_primes)
-    model_input_data.append(image_forces)
+    model_input_data[0].append(element_specific_fingerprints)
+    model_input_data[0].append(batch_size)
+    model_input_data[0].append(unique_atoms)
+    model_input_data[0].append(scalings)
+    model_input_data[1].append(torch.tensor(energy_dataset).reshape(-1, 1))
+    model_input_data[1].append(torch.FloatTensor(num_of_atoms).reshape(batch_size, 1))
+    if forcetraining:
+        model_input_data[0].append(fp_primes)
+        model_input_data[1].append(image_forces)
     return model_input_data
 
 
@@ -568,7 +575,7 @@ class TestDataset(Dataset):
         total_entries = 0
         previous_entries = 0
         for image in training_data:
-            image[1] = image[1].to_sparse() # presparify the fprimes
+            image[1] = image[1].to_sparse()  # presparify the fprimes
             total_entries += len(image[1]._values())
             num_of_atoms.append(image[2])
         # Construct a sparse matrix with dimensions PQx3Q
@@ -590,8 +597,12 @@ class TestDataset(Dataset):
             s_fprime_vals = fprime._values().type(torch.FloatTensor)
             num_entries = len(s_fprime_vals)
             # fill in the entries
-            fprimes_inds[:, previous_entries:previous_entries + num_entries] = s_fprime_inds
-            fprimes_vals[previous_entries:previous_entries + num_entries] = s_fprime_vals
+            fprimes_inds[
+                :, previous_entries : previous_entries + num_entries
+            ] = s_fprime_inds
+            fprimes_vals[
+                previous_entries : previous_entries + num_entries
+            ] = s_fprime_vals
             previous_entries += num_entries
 
             dim1_start += dim1
