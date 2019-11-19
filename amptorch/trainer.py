@@ -1,4 +1,4 @@
-from .utils import (
+from amptorch.utils import (
     Logger,
     make_energy_header,
     make_force_header,
@@ -17,6 +17,7 @@ import torch
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from skorch.utils import to_tensor
 
 """Trainer class used to train a specified model in accordance with the trainer
 arguments"""
@@ -137,64 +138,38 @@ class Trainer:
                         force_mse = 0.0
 
                     for data_sample in self.atoms_dataloader[phase]:
-                        unique_atoms = data_sample[3]
-                        input_data = [data_sample[0], len(data_sample[1]), unique_atoms]
-                        target = data_sample[1].requires_grad_(False)
-                        batch_size = len(target)
-                        target = target.reshape(batch_size, 1).to(self.device)
-                        scaled_target = (target - self.mean_scaling) / self.sd_scaling
-                        num_of_atoms = (
-                            data_sample[2].reshape(batch_size, 1).to(self.device)
-                        )
-                        for element in unique_atoms:
-                            input_data[0][element][0] = (
-                                input_data[0][element][0]
-                                .to(self.device)
-                                .requires_grad_(True)
-                            )
-                        scaled_target = scaled_target.to(self.device)
-                        fp_primes = data_sample[4]
-
-                        if forcetraining:
-                            fp_primes = fp_primes.to(self.device)
-                            image_forces = data_sample[5].to(self.device)
-                            scaled_forces = image_forces / self.sd_scaling
+                        x = to_tensor(data_sample[0], self.device)
+                        y = to_tensor(data_sample[1], self.device)
 
                         def closure():
                             self.optimizer.zero_grad()
                             if forcetraining:
-                                energy_pred, force_pred = self.model(
-                                    input_data, fp_primes
-                                )
-                                loss = self.criterion(
-                                    energy_pred,
-                                    scaled_target,
-                                    num_of_atoms,
-                                    force_pred,
-                                    scaled_forces,
-                                    self.model,
-                                )
-                            else:
-                                energy_pred, _ = self.model(input_data)
-                                loss = self.criterion(
-                                    energy_pred,
-                                    scaled_target,
-                                    num_of_atoms,
-                                    model=self.model,
-                                )
+                                pred = self.model(x)
+                                loss = self.criterion(pred, y)
                             loss.backward()
                             return loss
 
-                        energy_pred, force_pred = self.model(input_data, fp_primes)
+                        if phase == "train":
+                            loss = self.optimizer.step(closure)
+                            if self.scheduler:
+                                self.scheduler.step()
+                        now = time.asctime()
+
                         mse_loss = nn.MSELoss(reduction="sum")
+                        energy_target = y[0]
+                        num_of_atoms = y[1]
+                        force_target = y[2]
+                        energy_pred, force_pred = self.model(x)
                         raw_preds = (energy_pred * self.sd_scaling) + self.mean_scaling
+                        raw_targets = (energy_target * self.sd_scaling) + self.mean_scaling
                         raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
-                        target_per_atom = torch.div(target, num_of_atoms)
+                        target_per_atom = torch.div(raw_targets, num_of_atoms)
                         energy_loss = mse_loss(raw_preds_per_atom, target_per_atom)
                         energy_mse += torch.tensor(energy_loss.item())
 
                         if forcetraining:
                             force_pred = force_pred * self.sd_scaling
+                            force_target = force_target * self.sd_scaling
                             num_atoms_force = torch.cat(
                                 [idx.repeat(int(idx)) for idx in num_of_atoms]
                             )
@@ -203,19 +178,13 @@ class Trainer:
                             )
                             force_pred_per_atom = torch.div(force_pred, num_atoms_force)
                             force_targets_per_atom = torch.div(
-                                image_forces, num_atoms_force
+                                force_target, num_atoms_force
                             )
                             force_loss = mse_loss(
                                 force_pred_per_atom, force_targets_per_atom
                             )
                             force_loss /= 3
                             force_mse += torch.tensor(force_loss.item())
-
-                        if phase == "train":
-                            loss = self.optimizer.step(closure)
-                            if self.scheduler:
-                                self.scheduler.step()
-                        now = time.asctime()
 
                     energy_mse /= self.dataset_size[phase]
                     energy_rmse = torch.sqrt(energy_mse)
@@ -317,60 +286,37 @@ class Trainer:
                     force_mse = 0.0
 
                 for data_sample in self.atoms_dataloader:
-                    unique_atoms = data_sample[3]
-                    input_data = [data_sample[0], len(data_sample[1]), unique_atoms]
-                    target = data_sample[1].requires_grad_(False)
-                    batch_size = len(target)
-                    target = target.reshape(batch_size, 1).to(self.device)
-                    scaled_target = (target - self.mean_scaling) / self.sd_scaling
-                    num_of_atoms = data_sample[2].reshape(batch_size, 1).to(self.device)
-                    fp_primes = data_sample[4]
-
-                    if forcetraining:
-                        fp_primes = fp_primes.to(self.device)
-                        image_forces = data_sample[5].to(self.device)
-                        scaled_forces = image_forces / self.sd_scaling
-                    for element in unique_atoms:
-                        input_data[0][element][0] = (
-                            input_data[0][element][0]
-                            .to(self.device)
-                            .requires_grad_(True)
-                        )
-                    scaled_target = scaled_target.to(self.device)
+                    x = to_tensor(data_sample[0], self.device)
+                    y = to_tensor(data_sample[1], self.device)
 
                     def closure():
                         self.optimizer.zero_grad()
                         if forcetraining:
-                            energy_pred, force_pred = self.model(input_data, fp_primes)
-                            loss = self.criterion(
-                                energy_pred,
-                                scaled_target,
-                                num_of_atoms,
-                                force_pred,
-                                scaled_forces,
-                                self.model,
-                            )
-                        else:
-                            energy_pred, _ = self.model(input_data)
-                            loss = self.criterion(
-                                energy_pred,
-                                scaled_target,
-                                num_of_atoms,
-                                model=self.model,
-                            )
+                            pred = self.model(x)
+                            loss = self.criterion(pred, y)
                         loss.backward()
                         return loss
 
+                    loss = self.optimizer.step(closure)
+                    if self.scheduler:
+                        self.scheduler.step()
+                    now = time.asctime()
+
                     mse_loss = nn.MSELoss(reduction="sum")
-                    energy_pred, force_pred = self.model(input_data, fp_primes)
+                    energy_target = y[0]
+                    num_of_atoms = y[1]
+                    force_target = y[2]
+                    energy_pred, force_pred = self.model(x)
                     raw_preds = (energy_pred * self.sd_scaling) + self.mean_scaling
+                    raw_targets = (energy_target * self.sd_scaling) + self.mean_scaling
                     raw_preds_per_atom = torch.div(raw_preds, num_of_atoms)
-                    target_per_atom = torch.div(target, num_of_atoms)
+                    target_per_atom = torch.div(raw_targets, num_of_atoms)
                     energy_loss = mse_loss(raw_preds_per_atom, target_per_atom)
                     energy_mse += torch.tensor(energy_loss.item())
 
                     if forcetraining:
                         force_pred = force_pred * self.sd_scaling
+                        force_target = force_target * self.sd_scaling
                         num_atoms_force = torch.cat(
                             [idx.repeat(int(idx)) for idx in num_of_atoms]
                         )
@@ -379,7 +325,7 @@ class Trainer:
                         )
                         force_pred_per_atom = torch.div(force_pred, num_atoms_force)
                         force_targets_per_atom = torch.div(
-                            image_forces, num_atoms_force
+                            force_target, num_atoms_force
                         )
                         force_loss = mse_loss(
                             force_pred_per_atom, force_targets_per_atom
@@ -387,11 +333,6 @@ class Trainer:
                         # mean over image
                         force_loss /= 3
                         force_mse += torch.tensor(force_loss.item())
-
-                    loss = self.optimizer.step(closure)
-                    if self.scheduler:
-                        self.scheduler.step()
-                    now = time.asctime()
 
                 energy_mse /= self.dataset_size
                 energy_rmse = torch.sqrt(energy_mse)
@@ -484,5 +425,7 @@ class Trainer:
         plt.legend()
         plt.savefig("results/plots/training/" + self.label + ".pdf")
         self.model.load_state_dict(best_model_wts)
-        # print(force_pred)
-        return self.model
+        sigopt_value = best_train_force_loss
+        if validation:
+            sigopt_value = best_val_force_loss
+        return self.model, sigopt_value

@@ -5,16 +5,16 @@ import sys
 import numpy as np
 import os
 from torch.utils.data import DataLoader
-from .utils import Logger
-from amp.descriptor.gaussian import Gaussian
-from .data_preprocess import (
+from amptorch.utils import Logger
+from amptorch.gaussian import Gaussian
+from amptorch.data_preprocess import (
     AtomsDataset,
     TestDataset,
     factorize_data,
     collate_amp,
 )
-from .NN_model import FullNN, CustomLoss
-from .trainer import Trainer
+from amptorch.model import FullNN, CustomLoss
+from amptorch.trainer import Trainer
 from ase.calculators.calculator import Calculator, Parameters
 import torch
 
@@ -38,7 +38,7 @@ class AMP(Calculator):
 
     implemented_properties = ["energy", "forces"]
 
-    def __init__(self, model):
+    def __init__(self, model, training_data=None, label=None):
         Calculator.__init__(self)
 
         if not os.path.exists("results/trained_models"):
@@ -61,7 +61,7 @@ class AMP(Calculator):
             self.lj_model = self.model.lj_data[5]
 
     def train(self, overwrite=True):
-        self.trained_model = self.model.train()
+        self.trained_model, value = self.model.train()
         if os.path.exists(self.label):
             if overwrite is False:
                 print("Could not save! File already exists")
@@ -93,13 +93,10 @@ class AMP(Calculator):
         model.eval()
 
         for batch in dataloader:
-            input_data = [batch[0], len(batch[1]), unique_atoms]
+            inputs = [batch[0], len(batch[1]), unique_atoms, batch[2]]
             for element in unique_atoms:
-                input_data[0][element][0] = input_data[0][element][0].requires_grad_(
-                    True
-                )
-            fp_primes = batch[2]
-            energy, forces = model(input_data, fp_primes)
+                inputs[0][element][0] = inputs[0][element][0].requires_grad_(True)
+            energy, forces = model(inputs)
         energy = (energy * self.target_sd) + self.target_mean
         energy = np.concatenate(energy.detach().numpy())
         if properties == ['forces']:
