@@ -96,9 +96,9 @@ class FullNN(nn.Module):
     ):
         super(FullNN, self).__init__()
         self.device = device
-        self.unique_atoms = unique_atoms
         self.req_grad = require_grd
         self.forcetraining = forcetraining
+        self.architecture = architecture
 
         input_length = architecture[0]
         n_layers = architecture[1]
@@ -123,7 +123,7 @@ class FullNN(nn.Module):
 
         input_data = inputs[0]
         batch_size = inputs[1]
-        batch_elements = self.unique_atoms
+        batch_elements = inputs[2]
         if self.device == 'cpu':
             energy_pred = torch.zeros(batch_size, 1).to(self.device)
         else:
