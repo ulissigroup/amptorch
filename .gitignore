@@ -11,4 +11,5 @@
 *.tar
 *.out
 *.pickle
+*.png
 stored-primes/
