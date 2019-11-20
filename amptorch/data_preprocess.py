@@ -81,6 +81,7 @@ class AtomsDataset(Dataset):
         self.cores = cores
         self.lj = False
         if lj_data is not None:
+            self.lj_data = lj_data
             self.lj_energies = np.squeeze(lj_data[0])
             self.lj_forces = np.squeeze(lj_data[1])
             self.num_atoms = np.array(lj_data[2])
@@ -629,8 +630,10 @@ class TestDataset(Dataset):
             element_specific_fingerprints[element][0] = torch.stack(
                 element_specific_fingerprints[element][0]
             )
+        batch_size = len(num_of_atoms)
         model_input_data.append(element_specific_fingerprints)
-        model_input_data.append(num_of_atoms)
+        model_input_data.append(batch_size)
+        model_input_data.append(self.unique_atoms)
         model_input_data.append(sparse_fprimes)
 
         return model_input_data
