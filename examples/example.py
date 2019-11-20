@@ -2,12 +2,13 @@
 
 import sys
 from ase import Atoms
+import ase
 import torch
 import numpy as np
 import torch.nn as nn
 import torch.optim as optim
 from ase.calculators.emt import EMT
-from amptorch.NN_model import CustomLoss
+from amptorch.model import CustomLoss
 from amptorch import AMP
 from amptorch.core import AMPTorch
 from amptorch.analysis import parity_plot
@@ -33,6 +34,7 @@ for l in distances:
     image.set_calculator(EMT())
     images.append(image)
 
+# images = ase.io.read("../datasets/COCu/COCu_pbc_300K.traj", ":100")
 # define symmetry functions to be used
 Gs = {}
 Gs["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
@@ -62,9 +64,9 @@ calc.model.device = "cpu"
 calc.model.structure = [3, 10]
 calc.model.val_frac = 0
 calc.model.convergence = {
-    "energy": 0.02,
-    "force": 0.02,
-    "epochs": 5,
+    "energy": 0.005,
+    "force": 0.005,
+    "epochs": 100,
     "early_stop": False,
 }
 calc.model.loader_params = {
