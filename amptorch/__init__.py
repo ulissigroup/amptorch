@@ -92,8 +92,7 @@ class AMP(Calculator):
         model.load_state_dict(torch.load(self.label))
         model.eval()
 
-        for batch in dataloader:
-            inputs = [batch[0], len(batch[1]), unique_atoms, batch[2]]
+        for inputs in dataloader:
             for element in unique_atoms:
                 inputs[0][element][0] = inputs[0][element][0].requires_grad_(True)
             energy, forces = model(inputs)
