@@ -10,6 +10,7 @@ addons:
 install:
   - pip install python-coveralls
   - pip install coverage
+  - pip install skorch
   - pip install git+https://github.com/mshuaibii/SIMPLE-NN
   - pip install git+https://bitbucket.org/andrewpeterson/amp.git
   - pip install .
