@@ -7,8 +7,8 @@ import os
 from torch.utils.data import DataLoader
 from amptorch.utils import Logger
 from amptorch.gaussian import Gaussian
-from .skorch_data import AtomsDataset, factorize_data, collate_amp, TestDataset
-from .model_skorch import FullNN, CustomLoss
+from amptorch.data_preprocess import AtomsDataset, factorize_data, collate_amp, TestDataset
+from amptorch.model import FullNN, CustomLoss
 from ase.calculators.calculator import Calculator, Parameters
 import torch
 
@@ -84,12 +84,12 @@ class AMP(Calculator):
         model.load_state_dict(torch.load(self.label))
         model.eval()
 
-        for input_data in dataloader:
+        for inputs in dataloader:
             for element in unique_atoms:
-                input_data[0][element][0] = input_data[0][element][0].requires_grad_(
+                inputs[0][element][0] = inputs[0][element][0].requires_grad_(
                     True
                 )
-            energy, forces = model(input_data)
+            energy, forces = model(inputs)
         energy = (energy * self.target_sd) + self.target_mean
         energy = np.concatenate(energy.detach().numpy())
         forces = (forces * self.target_sd).detach().numpy()
