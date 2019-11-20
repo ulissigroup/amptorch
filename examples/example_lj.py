@@ -1,12 +1,13 @@
-"""An example of how to utilize the package to train on energies and forces"""
+"""An example of how to utilize the package to train on energies and forces
+using the physics coupled ML-LJ model"""
 
 from ase import Atoms
-import torch
+from ase.calculators.emt import EMT
 import numpy as np
+import torch
 import torch.nn as nn
 import torch.optim as optim
-from ase.calculators.emt import EMT
-from amptorch.NN_model import CustomLoss
+from amptorch.model import CustomLoss
 from amptorch import AMP
 from amptorch.core import AMPTorch
 from amptorch.analysis import parity_plot
@@ -53,9 +54,8 @@ p0 = [
     0.08071821,
 ]
 params_dict = {"C": [], "O": [], "Cu": []}
-lj_model = lj_optim(label, images, p0, params_dict, Gs["cutoff"])
-# fitted_params = lj_model.fit()
-fitted_params = p0
+lj_model = lj_optim(images, p0, params_dict, Gs["cutoff"], label)
+fitted_params = lj_model.fit()
 lj_energies, lj_forces, num_atoms = lj_model.lj_pred(images, fitted_params, params_dict)
 lj_data = [lj_energies, lj_forces, num_atoms, fitted_params, params_dict, lj_model]
 
