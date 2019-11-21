@@ -1,6 +1,5 @@
 """An example of how to utilize the package to train on energies and forces"""
 
-import sys
 from ase import Atoms
 import ase
 import torch
@@ -34,7 +33,6 @@ for l in distances:
     image.set_calculator(EMT())
     images.append(image)
 
-# images = ase.io.read("../datasets/COCu/COCu_pbc_300K.traj", ":100")
 # define symmetry functions to be used
 Gs = {}
 Gs["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
