@@ -1,8 +1,5 @@
-import ase
 import sys
 import torch
-import time
-from torch.nn import MSELoss
 from skorch import NeuralNetRegressor
 from skorch.dataset import CVSplit
 from skorch.callbacks import Checkpoint, EpochScoring
@@ -18,7 +15,6 @@ from torch.utils.data import DataLoader
 from torch.nn import init
 from skorch.utils import to_numpy
 import numpy as np
-from sklearn.pipeline import Pipeline
 from ase import Atoms
 from ase.calculators.emt import EMT
 from ase.io import read
@@ -28,7 +24,9 @@ class train_end_load_best_valid_loss(skorch.callbacks.base.Callback):
         net.load_params('valid_best_params.pt')
 
 LR_schedule = LRScheduler('CosineAnnealingLR', T_max=5)
+# saves best validation loss
 cp = Checkpoint(monitor='valid_loss_best', fn_prefix='valid_best_')
+# loads best validation loss at the end of training
 load_best_valid_loss = train_end_load_best_valid_loss()
 
 distances = np.linspace(2, 5, 100)
@@ -63,18 +61,19 @@ training_data = AtomsDataset(images, Gaussian, Gs, forcetraining=forcetraining,
 unique_atoms = training_data.elements
 fp_length = training_data.fp_length
 device = "cpu"
-# device = "cuda"
 
 net = NeuralNetRegressor(
     module=FullNN(unique_atoms, [fp_length, 3, 10], device, forcetraining=forcetraining),
     criterion=CustomLoss,
     criterion__force_coefficient=0.3,
     optimizer=torch.optim.LBFGS,
+    optimizer__line_search_fn="strong_wolfe",
     lr=1e-2,
     batch_size=100,
     max_epochs=10,
     iterator_train__collate_fn=collate_amp,
-    iterator_train__shuffle=True,
+    iterator_train__shuffle=False,
+    iterator_valid__collate_fn=collate_amp,
     device=device,
     train_split=0,
     callbacks=[
