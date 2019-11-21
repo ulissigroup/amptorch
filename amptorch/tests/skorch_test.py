@@ -97,6 +97,7 @@ def test_skorch():
         max_epochs=60,
         iterator_train__collate_fn=collate_amp,
         iterator_train__shuffle=False,
+        iterator_valid__collate_fn=collate_amp,
         device=device,
         train_split=0,
         callbacks=[
