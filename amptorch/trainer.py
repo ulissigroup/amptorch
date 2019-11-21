@@ -149,12 +149,6 @@ class Trainer:
                             loss.backward()
                             return loss
 
-                        if phase == "train":
-                            loss = self.optimizer.step(closure)
-                            if self.scheduler:
-                                self.scheduler.step()
-                        now = time.asctime()
-
                         mse_loss = nn.MSELoss(reduction="sum")
                         energy_target = y[0]
                         num_of_atoms = y[1]
@@ -185,6 +179,12 @@ class Trainer:
                             )
                             force_loss /= 3
                             force_mse += torch.tensor(force_loss.item())
+
+                        if phase == "train":
+                            loss = self.optimizer.step(closure)
+                            if self.scheduler:
+                                self.scheduler.step()
+                        now = time.asctime()
 
                     energy_mse /= self.dataset_size[phase]
                     energy_rmse = torch.sqrt(energy_mse)
@@ -297,11 +297,6 @@ class Trainer:
                         loss.backward()
                         return loss
 
-                    loss = self.optimizer.step(closure)
-                    if self.scheduler:
-                        self.scheduler.step()
-                    now = time.asctime()
-
                     mse_loss = nn.MSELoss(reduction="sum")
                     energy_target = y[0]
                     num_of_atoms = y[1]
@@ -333,6 +328,11 @@ class Trainer:
                         # mean over image
                         force_loss /= 3
                         force_mse += torch.tensor(force_loss.item())
+
+                    loss = self.optimizer.step(closure)
+                    if self.scheduler:
+                        self.scheduler.step()
+                    now = time.asctime()
 
                 energy_mse /= self.dataset_size
                 energy_rmse = torch.sqrt(energy_mse)
