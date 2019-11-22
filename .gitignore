@@ -12,4 +12,6 @@
 *.out
 *.pickle
 *.png
+*.json
+.ipynb_checkpoints
 stored-primes/
