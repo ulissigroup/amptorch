@@ -121,48 +121,49 @@ class FullNN(nn.Module):
         Q - Atoms in batch
         P - Length of fingerprint"""
 
-        input_data = inputs[0]
-        batch_size = inputs[1]
-        batch_elements = inputs[2]
-        if self.device == 'cpu':
-            energy_pred = torch.zeros(batch_size, 1).to(self.device)
-        else:
-            energy_pred = torch.cuda.FloatTensor(batch_size, 1)
-        force_pred = None
-        # Constructs an Nx1 empty tensor to store element energy contributions
-        if self.forcetraining:
-            fprimes = inputs[-1]
-            dE_dFP = torch.tensor([]).to(self.device)
-            idx = torch.tensor([]).to(self.device)
-        for index, element in enumerate(batch_elements):
-            model_inputs = input_data[element][0]
-            model_inputs.requires_grad = True
-            contribution_index = torch.tensor(input_data[element][1]).to(self.device)
-            atomwise_outputs = self.elementwise_models[element].forward(model_inputs)
-            energy_pred.index_add_(0, contribution_index, atomwise_outputs)
+        with torch.enable_grad():
+            input_data = inputs[0]
+            batch_size = inputs[1]
+            batch_elements = inputs[2]
+            if self.device == 'cpu':
+                energy_pred = torch.zeros(batch_size, 1).to(self.device)
+            else:
+                energy_pred = torch.cuda.FloatTensor(batch_size, 1)
+            force_pred = None
+            # Constructs an Nx1 empty tensor to store element energy contributions
             if self.forcetraining:
-                gradients = grad(
-                    energy_pred,
-                    model_inputs,
-                    grad_outputs=torch.ones_like(energy_pred),
-                    create_graph=True,
-                )[0]
-                dE_dFP = torch.cat((dE_dFP, gradients))
-                idx = torch.cat((idx, contribution_index.float()))
-        if self.forcetraining:
-            boolean = idx[:, None] == torch.unique(idx)
-            ordered_idx = torch.nonzero(boolean.t())[:, -1]
-            dE_dFP = torch.index_select(dE_dFP, 0, ordered_idx).reshape(1, -1)
-            """Constructs a 1xPQ tensor that contains the derivatives with respect to
-            each atom's fingerprint"""
-            force_pred = -1 * torch.sparse.mm(fprimes.t(), dE_dFP.t())
-            """Sparse multiplication requires the first matrix to be sparse
-            Multiplies a 3QxPQ tensor with a PQx1 tensor to return a 3Qx1 tensor
-            containing the x,y,z directional forces for each atom"""
-            force_pred = force_pred.reshape(-1, 3)
-            """Reshapes the force tensor into a Qx3 matrix containing all the force
-            predictions in the same order and shape as the target forces calculated
-            from AMP."""
+                fprimes = inputs[-1]
+                dE_dFP = torch.tensor([]).to(self.device)
+                idx = torch.tensor([]).to(self.device)
+            for index, element in enumerate(batch_elements):
+                model_inputs = input_data[element][0]
+                model_inputs.requires_grad = True
+                contribution_index = torch.tensor(input_data[element][1]).to(self.device)
+                atomwise_outputs = self.elementwise_models[element].forward(model_inputs)
+                energy_pred.index_add_(0, contribution_index, atomwise_outputs)
+                if self.forcetraining:
+                    gradients = grad(
+                        energy_pred,
+                        model_inputs,
+                        grad_outputs=torch.ones_like(energy_pred),
+                        create_graph=True,
+                    )[0]
+                    dE_dFP = torch.cat((dE_dFP, gradients))
+                    idx = torch.cat((idx, contribution_index.float()))
+            if self.forcetraining:
+                boolean = idx[:, None] == torch.unique(idx)
+                ordered_idx = torch.nonzero(boolean.t())[:, -1]
+                dE_dFP = torch.index_select(dE_dFP, 0, ordered_idx).reshape(1, -1)
+                """Constructs a 1xPQ tensor that contains the derivatives with respect to
+                each atom's fingerprint"""
+                force_pred = -1 * torch.sparse.mm(fprimes.t(), dE_dFP.t())
+                """Sparse multiplication requires the first matrix to be sparse
+                Multiplies a 3QxPQ tensor with a PQx1 tensor to return a 3Qx1 tensor
+                containing the x,y,z directional forces for each atom"""
+                force_pred = force_pred.reshape(-1, 3)
+                """Reshapes the force tensor into a Qx3 matrix containing all the force
+                predictions in the same order and shape as the target forces calculated
+                from AMP."""
         return energy_pred, force_pred
 
 
