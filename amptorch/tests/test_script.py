@@ -8,6 +8,7 @@ from simple_nn_fp_test import test_fp_match
 from lj_test import test_lj
 from training_test import test_training
 from skorch_test import test_skorch
+from val_test import test_skorch_val, test_val
 
 
 class TestMethods(unittest.TestCase):
@@ -25,11 +26,19 @@ class TestMethods(unittest.TestCase):
 
     def test_training(self):
         test_training()
-        print("Training test passed!")
+        print("Custom training test passed!")
 
     def test_skorch(self):
         test_skorch()
         print("Skorch training test passed!")
+
+    def test_skorch_val(self):
+        test_skorch_val()
+        print("Skorch validation test passed!")
+
+    def test_val(self):
+        test_val()
+        print("Custom training validation test passed!")
 
 
 if __name__ == "__main__":

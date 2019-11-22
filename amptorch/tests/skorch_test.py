@@ -39,7 +39,7 @@ def test_skorch():
     load_best_valid_loss = train_end_load_best_valid_loss()
 
     distances = np.linspace(2, 5, 100)
-    label = "example"
+    label = "skorch_example"
     images = []
     energies = []
     forces = []
