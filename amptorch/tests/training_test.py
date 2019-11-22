@@ -18,7 +18,7 @@ from amptorch.data_preprocess import TestDataset
 
 def test_training():
     distances = np.linspace(2, 5, 100)
-    label = "example"
+    label = "test_training"
     images = []
     energies = []
     forces = []
