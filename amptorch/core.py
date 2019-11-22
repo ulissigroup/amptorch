@@ -171,9 +171,6 @@ class AMPTorch:
         fp_length = training_data.fp_length
         dataset_size = len(training_data)
 
-        if self.loader_params['batch_size'] is None:
-            self.loader_params['batch_size'] = len(training_data)
-
         if self.val_frac != 0:
             if isinstance(self.val_frac, float):
                 samplers = training_data.create_splits(
@@ -189,10 +186,10 @@ class AMPTorch:
                 )
 
                 loader_dict = {}
-                if self.loader_params['batch_size'] == len(training_data):
+                if self.loader_params['batch_size'] is None:
                     for x in ['train', 'val']:
                         self.loader_params['batch_size'] = dataset_size[x]
-                        loader_dict[x] = self.loader_params
+                        loader_dict[x] = self.loader_params.copy()
                 else:
                     for x in ['train', 'val']:
                         loader_dict[x] = self.loader_params
@@ -212,6 +209,14 @@ class AMPTorch:
                 dataset_size = {
                         "train": len(training_data),
                         "val": len(self.val_data)}
+                loader_dict = {}
+                if self.loader_params['batch_size'] is None:
+                    for x in ['train', 'val']:
+                        self.loader_params['batch_size'] = dataset_size[x]
+                        loader_dict[x] = self.loader_params.copy()
+                else:
+                    for x in ['train', 'val']:
+                        loader_dict[x] = self.loader_params
                 self.log(
                     "Training Data = %d Validation Data = %d"
                     % (dataset_size["train"], dataset_size["val"]))
@@ -229,6 +234,8 @@ class AMPTorch:
             self.atoms_dataloader = DataLoader(
                 training_data, collate_fn=collate_amp, **self.loader_params
             )
+            if self.loader_params['batch_size'] is None:
+                self.loader_params['batch_size'] = len(training_data)
         self.log("Resampled Points = %s" % self.resample)
         architecture = copy.copy(self.structure)
         architecture.insert(0, fp_length)
