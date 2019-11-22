@@ -209,7 +209,7 @@ def test_calcs():
 
     device = "cpu"
     dataset = AtomsDataset(
-        images, descriptor=DummyGaussian, cores=1, label='test', Gs=Gs, forcetraining=True
+        images, descriptor=DummyGaussian, cores=1, label='consistency', Gs=Gs, forcetraining=True
     )
     fp_length = dataset.fp_length
     batch_size = len(dataset)
