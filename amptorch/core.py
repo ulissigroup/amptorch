@@ -141,16 +141,6 @@ class AMPTorch:
             lj_data=self.lj_data,
             label=label,
         )
-        if isinstance(val_frac, list):
-            self.val_data = AtomsDataset(
-                val_frac,
-                descriptor=self.descriptor,
-                Gs=Gs,
-                cores=cores,
-                forcetraining=self.forcetraining,
-                lj_data=self.lj_data,
-                label=label,
-        )
         self.scalings = self.training_data.scalings
         self.sd_scaling = self.scalings[0]
         self.mean_scaling = self.scalings[1]
@@ -171,66 +161,40 @@ class AMPTorch:
         fp_length = training_data.fp_length
         dataset_size = len(training_data)
 
-        if self.val_frac != 0:
-            if isinstance(self.val_frac, float):
-                samplers = training_data.create_splits(
-                    training_data, self.val_frac, resample=self.resample)
-                dataset_size = {
-                    "train": dataset_size - int(self.val_frac * dataset_size),
-                    "val": int(self.val_frac * dataset_size),
-                }
+        if isinstance(self.val_frac, float):
+            samplers = training_data.create_splits(
+                training_data, self.val_frac, resample=self.resample)
+            dataset_size = {
+                "train": dataset_size - int(self.val_frac * dataset_size),
+                "val": int(self.val_frac * dataset_size),
+            }
 
-                self.log(
-                    "Training Data = %d Validation Data = %d"
-                    % (dataset_size["train"], dataset_size["val"])
-                )
+            self.log(
+                "Training Data = %d Validation Data = %d"
+                % (dataset_size["train"], dataset_size["val"])
+            )
 
-                loader_dict = {}
-                if self.loader_params['batch_size'] is None:
-                    for x in ['train', 'val']:
-                        self.loader_params['batch_size'] = dataset_size[x]
-                        loader_dict[x] = self.loader_params.copy()
-                else:
-                    for x in ['train', 'val']:
-                        loader_dict[x] = self.loader_params
-                self.atoms_dataloader = {
-                    x: DataLoader(
-                        training_data,
-                        collate_fn=collate_amp,
-                        sampler=samplers[x],
-                        **loader_dict[x]
-                    )
-                    for x in ["train", "val"]
-                }
-            elif self.val_data:
-                loader_dict = {}
+            loader_dict = {}
+            if self.loader_params['batch_size'] is None:
                 for x in ['train', 'val']:
-                    loader_dict[x] = copy.copy(self.loader_params)
-                dataset_size = {
-                        "train": len(training_data),
-                        "val": len(self.val_data)}
-                loader_dict = {}
-                if self.loader_params['batch_size'] is None:
-                    for x in ['train', 'val']:
-                        self.loader_params['batch_size'] = dataset_size[x]
-                        loader_dict[x] = self.loader_params.copy()
-                else:
-                    for x in ['train', 'val']:
-                        loader_dict[x] = self.loader_params
-                self.log(
-                    "Training Data = %d Validation Data = %d"
-                    % (dataset_size["train"], dataset_size["val"]))
-                self.atoms_dataloader = {
-                        "train": DataLoader(
-                            training_data,
-                            collate_fn=collate_amp,
-                            **loader_dict["train"]),
-                        "val": DataLoader(
-                            self.val_data,
-                            collate_fn=collate_amp,
-                            **loader_dict["val"])}
+                    self.loader_params['batch_size'] = dataset_size[x]
+                    loader_dict[x] = self.loader_params.copy()
+            else:
+                for x in ['train', 'val']:
+                    loader_dict[x] = self.loader_params
+            self.atoms_dataloader = {
+                x: DataLoader(
+                    training_data,
+                    collate_fn=collate_amp,
+                    sampler=samplers[x],
+                    **loader_dict[x]
+                )
+                for x in ["train", "val"]
+            }
         else:
             self.log("Training Data = %d" % dataset_size)
+            if self.loader_params['batch_size'] is None:
+                self.loader_params['batch_size'] = dataset_size
             self.atoms_dataloader = DataLoader(
                 training_data, collate_fn=collate_amp, **self.loader_params
             )
