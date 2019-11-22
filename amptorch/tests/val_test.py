@@ -111,8 +111,8 @@ def test_skorch_val():
         (((calculated_energies - val_energies) / num_of_atoms) ** 2).sum()
         / len(val_images)
     )
-    assert round(energy_rmse, 6) == round(
-        last_energy_score, 6
+    assert round(energy_rmse, 5) == round(
+        last_energy_score, 5
     ), "Validation energy errors incorrect!"
     calculated_forces = np.concatenate(
         np.array([calc.get_forces(image) for image in val_images])
@@ -121,8 +121,8 @@ def test_skorch_val():
         (((calculated_forces - val_forces)) ** 2).sum()
         / (3 * num_of_atoms * len(val_images))
     )
-    assert round(force_rmse, 6) == round(
-        last_forces_score, 6
+    assert round(force_rmse, 5) == round(
+        last_forces_score, 5
     ), "Validation force errors incorrect!"
 
 def test_val():
@@ -216,8 +216,8 @@ def test_val():
         (((calculated_energies - val_energies) / num_of_atoms) ** 2).sum()
         / len(validation_images)
     )
-    assert round(energy_rmse, 5) == round(
-        reported_energy_loss, 5
+    assert round(energy_rmse, 4) == round(
+        reported_energy_loss, 4
     ), "Energy errors are incorrect!"
 
     calculated_forces = np.concatenate(
@@ -227,6 +227,6 @@ def test_val():
         (((calculated_forces - val_forces)) ** 2).sum()
         / (3 * num_of_atoms * len(validation_images))
     )
-    assert round(force_rmse, 5) == round(
-        reported_forces_loss, 5
+    assert round(force_rmse, 4) == round(
+        reported_forces_loss, 4
     ), "Force errors are incorrect!"
