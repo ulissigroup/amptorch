@@ -216,8 +216,8 @@ def test_val():
         (((calculated_energies - val_energies) / num_of_atoms) ** 2).sum()
         / len(validation_images)
     )
-    assert round(energy_rmse, 6) == round(
-        reported_energy_loss, 6
+    assert round(energy_rmse, 5) == round(
+        reported_energy_loss, 5
     ), "Energy errors are incorrect!"
 
     calculated_forces = np.concatenate(
@@ -227,6 +227,6 @@ def test_val():
         (((calculated_forces - val_forces)) ** 2).sum()
         / (3 * num_of_atoms * len(validation_images))
     )
-    assert round(force_rmse, 6) == round(
-        reported_forces_loss, 6
+    assert round(force_rmse, 5) == round(
+        reported_forces_loss, 5
     ), "Force errors are incorrect!"
