@@ -15,7 +15,11 @@ install:
   - pip install skorch
   - pip install git+https://github.com/mshuaibii/SIMPLE-NN
   - pip install git+https://bitbucket.org/andrewpeterson/amp.git
-  #- pip install .
+  - pip install spglib
+  - pip install torch
+  - pip install ase
+  - pip install scipy
+  - pip install .
 script:
   - coverage run ./amptorch/tests/test_script.py 
 after_success:
