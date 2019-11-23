@@ -133,3 +133,91 @@ def test_skorch():
     )
     assert force_rmse <= 0.005, "Force training convergence not met!"
     assert energy_rmse <= 0.005, "Energy training convergence not met!"
+
+def test_e_only_skorch():
+    LR_schedule = LRScheduler("CosineAnnealingLR", T_max=5)
+    cp = Checkpoint(monitor="valid_loss_best", fn_prefix="valid_best_")
+    load_best_valid_loss = train_end_load_best_valid_loss()
+
+    distances = np.linspace(2, 5, 100)
+    label = "skorch_example"
+    images = []
+    energies = []
+    forces = []
+    for l in distances:
+        image = Atoms(
+            "CuCO",
+            [
+                (-l * np.sin(0.65), l * np.cos(0.65), 0),
+                (0, 0, 0),
+                (l * np.sin(0.65), l * np.cos(0.65), 0),
+            ],
+        )
+        image.set_cell([10, 10, 10])
+        image.wrap(pbc=True)
+        image.set_calculator(EMT())
+        images.append(image)
+        energies.append(image.get_potential_energy())
+        forces.append(image.get_forces())
+
+    energies = np.array(energies)
+    forces = np.concatenate(np.array(forces))
+    Gs = {}
+    Gs["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=2)
+    Gs["G2_rs_s"] = [0] * 2
+    Gs["G4_etas"] = [0.005]
+    Gs["G4_zetas"] = [1.0]
+    Gs["G4_gammas"] = [+1.0, -1]
+    Gs["cutoff"] = 6.5
+
+    forcetraining = True
+    training_data = AtomsDataset(
+        images,
+        Gaussian,
+        Gs,
+        forcetraining=forcetraining,
+        label=label,
+        cores=1,
+        lj_data=None,
+    )
+    batch_size = len(training_data)
+    unique_atoms = training_data.elements
+    fp_length = training_data.fp_length
+    device = "cpu"
+
+    net = NeuralNetRegressor(
+        module=FullNN(
+            unique_atoms, [fp_length, 2, 2], device, forcetraining=forcetraining
+        ),
+        criterion=CustomLoss,
+        criterion__force_coefficient=0,
+        optimizer=torch.optim.LBFGS,
+        optimizer__line_search_fn="strong_wolfe",
+        lr=1e-2,
+        batch_size=batch_size,
+        max_epochs=20,
+        iterator_train__collate_fn=collate_amp,
+        iterator_train__shuffle=False,
+        iterator_valid__collate_fn=collate_amp,
+        device=device,
+        train_split=0,
+        callbacks=[
+            EpochScoring(
+                energy_score,
+                on_train=True,
+                use_caching=True,
+                target_extractor=target_extractor,
+            ),
+        ],
+    )
+    calc = AMP(training_data, net, "test")
+    calc.train(overwrite=True)
+    num_of_atoms = 3
+    calculated_energies = np.array(
+        [calc.get_potential_energy(image) for image in images]
+    )
+    energy_rmse = np.sqrt(
+        (((calculated_energies - energies) / num_of_atoms) ** 2).sum() / len(images)
+    )
+
+    assert energy_rmse <= 0.005, "Energy training convergence not met!"

@@ -151,3 +151,74 @@ def test_training():
     # test plot creation
     parity_plot(calc, images, data="energy", label=label)
     parity_plot(calc, images, data="forces", label=label)
+
+def test_e_only_training():
+    distances = np.linspace(2, 5, 100)
+    label = "test_training"
+    images = []
+    energies = []
+    forces = []
+    for l in distances:
+        image = Atoms(
+            "CuCO",
+            [
+                (-l * np.sin(0.65), l * np.cos(0.65), 0),
+                (0, 0, 0),
+                (l * np.sin(0.65), l * np.cos(0.65), 0),
+            ],
+        )
+        image.set_cell([10, 10, 10])
+        image.wrap(pbc=True)
+        image.set_calculator(EMT())
+        images.append(image)
+        energies.append(image.get_potential_energy())
+        forces.append(image.get_forces())
+
+    energies = np.array(energies)
+    forces = np.concatenate(np.array(forces))
+    Gs = {}
+    Gs["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=2)
+    Gs["G2_rs_s"] = [0] * 2
+    Gs["G4_etas"] = [0.005]
+    Gs["G4_zetas"] = [1.0]
+    Gs["G4_gammas"] = [+1.0, -1]
+    Gs["cutoff"] = 6.5
+
+    torch.set_num_threads(1)
+    calc = AMP(
+        model=AMPTorch(
+            images,
+            descriptor=Gaussian,
+            Gs=Gs,
+            force_coefficient=0,
+            label=label,
+            save_logs=True,
+        )
+    )
+    calc.model.device = "cpu"
+    calc.model.structure = [2, 2]
+    calc.model.val_frac = 0
+    calc.model.convergence = {
+        "energy": 0.005,
+        "force": 0.005,
+        "early_stop": False,
+        "epochs": 1e10,
+    }
+    calc.model.loader_params = {"batch_size": None, "shuffle": False, "num_workers": 0}
+    calc.model.criterion = CustomLoss
+    calc.model.optimizer = optim.LBFGS
+    calc.model.lr = 1e-2
+    calc.model.fine_tune = None
+
+    calc.train(overwrite=True)
+
+    num_of_atoms = 3
+    calculated_energies = np.array(
+        [calc.get_potential_energy(image) for image in images]
+    )
+    energy_rmse = np.sqrt(
+        (((calculated_energies - energies) / num_of_atoms) ** 2).sum() / len(images)
+    )
+    assert (
+        energy_rmse <= calc.model.convergence["energy"]
+    ), "Energy training convergence not met!"
