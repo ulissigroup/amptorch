@@ -143,16 +143,14 @@ class Trainer:
 
                         def closure():
                             self.optimizer.zero_grad()
-                            if forcetraining:
-                                pred = self.model(x)
-                                loss = self.criterion(pred, y)
+                            pred = self.model(x)
+                            loss = self.criterion(pred, y)
                             loss.backward()
                             return loss
 
                         mse_loss = nn.MSELoss(reduction="sum")
                         energy_target = y[0]
                         num_of_atoms = y[1]
-                        force_target = y[2]
                         energy_pred, force_pred = self.model(x)
                         raw_preds = (energy_pred * self.sd_scaling) + self.mean_scaling
                         raw_targets = (energy_target * self.sd_scaling) + self.mean_scaling
@@ -162,6 +160,7 @@ class Trainer:
                         energy_mse += torch.tensor(energy_loss.item())
 
                         if forcetraining:
+                            force_target = y[2]
                             force_pred = force_pred * self.sd_scaling
                             force_target = force_target * self.sd_scaling
                             num_atoms_force = torch.cat(
@@ -291,16 +290,14 @@ class Trainer:
 
                     def closure():
                         self.optimizer.zero_grad()
-                        if forcetraining:
-                            pred = self.model(x)
-                            loss = self.criterion(pred, y)
+                        pred = self.model(x)
+                        loss = self.criterion(pred, y)
                         loss.backward()
                         return loss
 
                     mse_loss = nn.MSELoss(reduction="sum")
                     energy_target = y[0]
                     num_of_atoms = y[1]
-                    force_target = y[2]
                     energy_pred, force_pred = self.model(x)
                     raw_preds = (energy_pred * self.sd_scaling) + self.mean_scaling
                     raw_targets = (energy_target * self.sd_scaling) + self.mean_scaling
@@ -310,6 +307,7 @@ class Trainer:
                     energy_mse += torch.tensor(energy_loss.item())
 
                     if forcetraining:
+                        force_target = y[2]
                         force_pred = force_pred * self.sd_scaling
                         force_target = force_target * self.sd_scaling
                         num_atoms_force = torch.cat(
