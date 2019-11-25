@@ -218,7 +218,7 @@ def test_energy_only_skorch_val():
     ), "Validation energy errors incorrect!"
 
 def test_val():
-    distances = np.linspace(2, 5, 100)
+    distances = np.linspace(2, 5, 10)
     label = "example"
     images = []
     energies = []
@@ -264,10 +264,10 @@ def test_val():
     calc.model.device = "cpu"
     calc.model.structure = [2, 2]
     calc.model.convergence = {
-        "energy": 0.1,
-        "force": 0.1,
+        "energy": 0.3,
+        "force": 0.3,
         "early_stop": False,
-        "epochs": 1e10,
+        "epochs": 20,
     }
     calc.model.loader_params = {"batch_size": None, "shuffle": False, "num_workers": 0}
     calc.model.criterion = CustomLoss
@@ -324,7 +324,7 @@ def test_val():
     ), "Force errors are incorrect!"
 
 def test_energy_only_val():
-    distances = np.linspace(2, 5, 100)
+    distances = np.linspace(2, 5, 10)
     label = "example"
     images = []
     energies = []
@@ -373,7 +373,7 @@ def test_energy_only_val():
         "energy": 0.1,
         "force": 0.1,
         "early_stop": False,
-        "epochs": 1e10,
+        "epochs": 20,
     }
     calc.model.loader_params = {"batch_size": None, "shuffle": False, "num_workers": 0}
     calc.model.criterion = CustomLoss
