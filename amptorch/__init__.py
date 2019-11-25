@@ -5,7 +5,7 @@ import sys
 import numpy as np
 import os
 from torch.utils.data import DataLoader
-from amptorch.utils import Logger
+from amptorch.utils import Logger, hash_images
 from amptorch.gaussian import Gaussian
 from amptorch.data_preprocess import (
     AtomsDataset,
@@ -102,8 +102,10 @@ class AMP(Calculator):
             forces = (forces * self.target_sd).detach().numpy()
 
         if self.lj:
-            lj_energy, lj_forces, _ = self.lj_model.lj_pred(
-                [atoms], self.fitted_params, self.params_dict
+            image_hash = hash_images([atoms])
+            self.lj_model.neighborlist.calculate_items(image_hash)
+            lj_energy, lj_forces, _ = self.lj_model.image_pred(
+                atoms, self.fitted_params, self.params_dict
             )
             lj_energy = np.squeeze(lj_energy)
             energy += lj_energy
