@@ -5,8 +5,9 @@ import numpy as np
 from scipy.optimize import minimize
 from ase.neighborlist import NeighborList, NewPrimitiveNeighborList
 from .gaussian import NeighborlistCalculator, Data
-from .utils import Logger, hash_images
+from .utils import Logger, hash_images, get_hash
 import matplotlib.pyplot as plt
+
 
 class lj_optim:
     def __init__(self, images, params, params_dict, cutoff, filename, fitforces=True):
@@ -38,11 +39,9 @@ class lj_optim:
         s_time = time.time()
         bounds = None
         if method != "Nelder-Mead":
-            bounds = [
-                (0, None),
-                (None, None),
-                (None, None),
-            ] * len(self.params_dict.keys())
+            bounds = [(0, None), (None, None), (None, None)] * len(
+                self.params_dict.keys()
+            )
         lj_min = minimize(
             self.objective_fn,
             self.p0,
@@ -62,67 +61,64 @@ class lj_optim:
             print("Optimizer did not terminate successfully.")
             return lj_min.x
 
+    def image_pred(self, image, p0, params_dict):
+        chemical_symbols = np.array(image.get_chemical_symbols())
+        unique_symbols = np.unique(chemical_symbols)
+        possible_pairs = product(unique_symbols, repeat=2)
+        possible_pairs = [list(elem) for elem in list(possible_pairs)]
+        e_offset = np.sum(
+            [params_dict[symbol][2] for symbol in image.get_chemical_symbols()]
+        )
+        params = []
+        for element in chemical_symbols:
+            sig = params_dict[element][0]
+            eps = params_dict[element][1]
+            params.append(np.array([[sig, eps]]))
+        params = np.vstack(np.array(params))
+
+        natoms = len(image)
+
+        image_hash = get_hash(image)
+        image_neighbors = self.neighborlist[image_hash]
+
+        positions = image.positions
+        cell = image.cell
+
+        energy = 0.0
+        forces = np.zeros((natoms, 3))
+
+        for a1 in range(natoms):
+            sig_1 = np.abs(params[a1][0])
+            eps_1 = params[a1][1]
+            neighbors, offsets = image_neighbors[a1]
+            cells = np.dot(offsets, cell)
+            d = positions[neighbors] + cells - positions[a1]
+            sig_n = np.abs(params[neighbors][:, 0])
+            eps_n = params[neighbors][:, 1]
+            sig = (sig_1 + sig_n) / 2
+            eps = np.sqrt(eps_1 * eps_n)
+            r2 = (d ** 2).sum(1)
+            c6 = (sig ** 2 / r2) ** 3
+            c6[r2 > self.cutoff ** 2] = 0.0
+            c12 = c6 ** 2
+            energy += (4 * eps * (c12 - c6)).sum()
+            f = (24 * eps * (2 * c12 - c6) / r2)[:, np.newaxis] * d
+            forces[a1] -= f.sum(axis=0)
+            for a2, f2 in zip(neighbors, f):
+                forces[a2] += f2
+        energy += e_offset
+        return energy, forces, natoms
+
     def lj_pred(self, data, p0, params_dict):
         params_dict = self.params_to_dict(p0, params_dict)
         predicted_energies = []
         predicted_forces = []
         num_atoms = []
-        for idx, image in enumerate(data):
-            chemical_symbols = np.array(image.get_chemical_symbols())
-            unique_symbols = np.unique(chemical_symbols)
-            possible_pairs = product(unique_symbols, repeat=2)
-            possible_pairs = [list(elem) for elem in list(possible_pairs)]
-            e_offsets = {}
-            for pair in possible_pairs:
-                joint_pair = pair[0] + pair[1]
-                e0 = 0.5 * (params_dict[pair[0]][2] + params_dict[pair[1]][2])
-                e_offsets[joint_pair] = e0
-            params = []
-            for element in chemical_symbols:
-                sig = params_dict[element][0]
-                eps = params_dict[element][1]
-                params.append(np.array([[sig, eps]]))
-            params = np.vstack(np.array(params))
-
-            natoms = len(image)
-            num_atoms.append(natoms)
-
-            image_hash = self.hashed_keys[idx]
-            image_neighbors = self.neighborlist[image_hash]
-
-            positions = image.positions
-            cell = image.cell
-
-            energy = 0.0
-            forces = np.zeros((natoms, 3))
-
-            for a1 in range(natoms):
-                base_element = chemical_symbols[a1]
-                sig_1 = np.abs(params[a1][0])
-                eps_1 = params[a1][1]
-                neighbors, offsets = image_neighbors[a1]
-                neighbor_elements = chemical_symbols[neighbors]
-                e0 = np.array(
-                    [e_offsets[base_element + elem] for elem in neighbor_elements]
-                )
-                cells = np.dot(offsets, cell)
-                d = positions[neighbors] + cells - positions[a1]
-
-                sig_n = np.abs(params[neighbors][:, 0])
-                eps_n = params[neighbors][:, 1]
-                sig = (sig_1 + sig_n) / 2
-                eps = np.sqrt(eps_1 * eps_n)
-                r2 = (d ** 2).sum(1)
-                c6 = (sig ** 2 / r2) ** 3
-                c6[r2 > self.cutoff ** 2] = 0.0
-                c12 = c6 ** 2
-                energy += (4 * eps * (c12 - c6)).sum() + e0.sum()
-                f = (24 * eps * (2 * c12 - c6) / r2)[:, np.newaxis] * d
-                forces[a1] -= f.sum(axis=0)
-                for a2, f2 in zip(neighbors, f):
-                    forces[a2] += f2
+        for image in data:
+            energy, forces, natoms = self.image_pred(image, p0, params_dict)
             predicted_energies.append(energy)
             predicted_forces.append(forces)
+            num_atoms.append(natoms)
         predicted_energies = np.concatenate(np.array(predicted_energies).reshape(1, -1))
         predicted_forces = np.concatenate(predicted_forces)
         return predicted_energies, predicted_forces, num_atoms
@@ -145,18 +141,6 @@ class lj_optim:
         else:
             MSE = MSE_energy
         return MSE
-
-    def lj_param_check(self):
-        unique = set()
-        for atoms in self.data:
-            symbols = atoms.symbols
-            unique = unique | set(symbols)
-        unique_elements = list(unique)
-        num_lj_params = 2 * len(unique_elements)
-        assert (
-            len(self.p0) == num_lj_params
-        ), "Number of initial conditions not equal to \
-        the number of required LJ parameters"
 
     def params_to_dict(self, params, params_dict):
         idx = 0
