@@ -14,7 +14,6 @@ from amptorch.data_preprocess import (
     collate_amp,
 )
 from amptorch.model import FullNN, CustomLoss
-from amptorch.trainer import Trainer
 from ase.calculators.calculator import Calculator, Parameters
 import torch
 

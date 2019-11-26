@@ -11,7 +11,7 @@ import torch
 from torch import optim
 from skorch import NeuralNetRegressor
 from skorch.callbacks import Checkpoint, EpochScoring
-from amptorch.skorch.utils import forces_score, target_extractor, energy_score
+from amptorch.skorch_model.utils import forces_score, target_extractor, energy_score
 
 
 def test_lj():
@@ -167,7 +167,7 @@ def test_ml_lj():
     ), "Force training convergence not met!"
 
 def test_skorch_lj():
-    from amptorch.skorch import AMP
+    from amptorch.skorch_model import AMP
 
     cp = Checkpoint(monitor="valid_loss_best", fn_prefix="valid_best_")
 
