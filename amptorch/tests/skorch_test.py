@@ -9,8 +9,8 @@ from skorch.callbacks import Checkpoint, EpochScoring
 from skorch.callbacks.lr_scheduler import LRScheduler
 import skorch.callbacks.base
 from amptorch.gaussian import Gaussian
-from amptorch.skorch import AMP
-from amptorch.skorch.utils import target_extractor, energy_score, forces_score
+from amptorch.skorch_model import AMP
+from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score
 from amptorch.model import FullNN, CustomLoss
 from amptorch.data_preprocess import (
     AtomsDataset,

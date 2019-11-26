@@ -6,8 +6,8 @@ from skorch.callbacks import Checkpoint, EpochScoring
 from amptorch.core import AMPTorch
 from amptorch import AMP
 from amptorch.gaussian import Gaussian
-from amptorch.skorch import AMP as AMP_skorch
-from amptorch.skorch.utils import target_extractor, energy_score, forces_score
+from amptorch.skorch_model import AMP as AMP_skorch
+from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score
 from amptorch.model import FullNN, CustomLoss
 from amptorch.data_preprocess import AtomsDataset, collate_amp
 import numpy as np
