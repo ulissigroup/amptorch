@@ -94,9 +94,9 @@ def test_skorch():
         optimizer__line_search_fn="strong_wolfe",
         lr=1e-2,
         batch_size=batch_size,
-        max_epochs=60,
+        max_epochs=100,
         iterator_train__collate_fn=collate_amp,
-        iterator_train__shuffle=False,
+        iterator_train__shuffle=True,
         iterator_valid__collate_fn=collate_amp,
         device=device,
         train_split=0,
@@ -129,10 +129,21 @@ def test_skorch():
         np.array([calc.get_forces(image) for image in images])
     )
     force_rmse = np.sqrt(
-        (((calculated_forces - forces)) ** 2).sum() / (3 * num_of_atoms * len(images))
+        (((calculated_forces - forces)) ** 2).sum() /
+        (3 * num_of_atoms * len(images))
     )
+
+    reported_energy_score = net.history[-1]["energy_score"]
+    reported_forces_score = net.history[-1]["forces_score"]
     assert force_rmse <= 0.005, "Force training convergence not met!"
     assert energy_rmse <= 0.005, "Energy training convergence not met!"
+    assert round(reported_energy_score, 4) == round(
+        energy_rmse, 4
+    ), "Shuffled reported energy scores incorrect!"
+    assert round(reported_forces_score, 4) == round(
+        force_rmse, 4
+    ), "Shuffled reported forces score incorrect!"
+
 
 def test_e_only_skorch():
     LR_schedule = LRScheduler("CosineAnnealingLR", T_max=5)
@@ -195,9 +206,9 @@ def test_e_only_skorch():
         optimizer__line_search_fn="strong_wolfe",
         lr=1e-2,
         batch_size=batch_size,
-        max_epochs=20,
+        max_epochs=100,
         iterator_train__collate_fn=collate_amp,
-        iterator_train__shuffle=False,
+        iterator_train__shuffle=True,
         iterator_valid__collate_fn=collate_amp,
         device=device,
         train_split=0,
@@ -207,7 +218,7 @@ def test_e_only_skorch():
                 on_train=True,
                 use_caching=True,
                 target_extractor=target_extractor,
-            ),
+            )
         ],
     )
     calc = AMP(training_data, net, "test")
@@ -220,4 +231,7 @@ def test_e_only_skorch():
         (((calculated_energies - energies) / num_of_atoms) ** 2).sum() / len(images)
     )
 
+    reported_energy_score = net.history[-1]['energy_score']
     assert energy_rmse <= 0.005, "Energy training convergence not met!"
+    assert round(energy_rmse, 4) == round(
+        reported_energy_score, 4), "Shuffled energy only energy score incorrect!"
