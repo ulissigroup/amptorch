@@ -6,6 +6,8 @@ from scipy.optimize import minimize
 from ase.neighborlist import NeighborList, NewPrimitiveNeighborList
 from .gaussian import NeighborlistCalculator, Data
 from .utils import Logger, hash_images, get_hash
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
