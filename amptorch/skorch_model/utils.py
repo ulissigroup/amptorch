@@ -16,13 +16,9 @@ def energy_score(net, X, y):
     energy_pred, _ = net.forward(X)
     device = energy_pred.device
     if not hasattr(X, 'scalings'):
-        indices = X.indices
         X = X.dataset
-        num_atoms = torch.FloatTensor(X.num_of_atoms[indices]).reshape(-1, 1).to(device)
-        energy_target = X.energy_dataset[indices].to(device).reshape(-1, 1)
-    else:
-        num_atoms = torch.FloatTensor(X.num_of_atoms).reshape(-1, 1).to(device)
-        energy_target = X.energy_dataset.to(device).reshape(-1, 1)
+    num_atoms = torch.FloatTensor(y[1].reshape(-1, 1)).to(device)
+    energy_target = torch.tensor(y[0]).to(device).reshape(-1, 1)
     sd_scaling = X.scalings[0]
     mean_scaling = X.scalings[1]
     dataset_size = len(energy_pred)
@@ -40,13 +36,9 @@ def forces_score(net, X, y):
     _, forces = net.forward(X)
     device = forces.device
     if not hasattr(X, 'scalings'):
-        indices = X.indices
         X = X.dataset
-        num_atoms = torch.FloatTensor(X.num_of_atoms[indices]).reshape(-1, 1).to(device)
-        force_target = torch.cat([X.forces_dataset[idx] for idx in indices]).float().to(device)
-    else:
-        num_atoms = torch.FloatTensor(X.num_of_atoms).reshape(-1, 1).to(device)
-        force_target = torch.cat(X.forces_dataset).float().to(device)
+    num_atoms = torch.FloatTensor(y[1]).reshape(-1, 1).to(device)
+    force_target = torch.tensor(y[2]).to(device)
     sd_scaling = X.scalings[0]
     force_pred = forces * sd_scaling
     device = force_pred.device
