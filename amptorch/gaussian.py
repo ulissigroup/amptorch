@@ -325,35 +325,6 @@ class FileDatabase:
         for key, value in newitems.items():
             self.__setitem__(key, value)
 
-    def archive(self):
-        """Cleans up to save disk space and reduce huge number of files.
-
-        That is, puts all files into an archive.  Compresses all files in
-        <path>/loose and places them in <path>/archive.tar.gz.  If archive
-        exists, appends/modifies.
-        """
-        loosefiles = os.listdir(self.loosepath)
-        print("Contains %i loose entries." % len(loosefiles))
-        if len(loosefiles) == 0:
-            print(" -> No action taken.")
-            return
-        if os.path.exists(self.tarpath):
-            with tarfile.open(self.tarpath) as tf:
-                names = [
-                    _ for _ in tf.getnames() if _ not in os.listdir(self.loosepath)
-                ]
-                for name in names:
-                    tf.extract(member=name, path=self.loosepath)
-        loosefiles = os.listdir(self.loosepath)
-        print("Compressing %i entries." % len(loosefiles))
-        with tarfile.open(self.tarpath, "w:gz") as tf:
-            for file in loosefiles:
-                tf.add(name=os.path.join(self.loosepath, file), arcname=file)
-        print("Cleaning up: removing %i files." % len(loosefiles))
-        for file in loosefiles:
-            os.remove(os.path.join(self.loosepath, file))
-
-
 class Data:
     """Serves as a container (dictionary-like) for (key, value) pairs that
     also serves to calculate them.
