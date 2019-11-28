@@ -71,7 +71,7 @@ def test_skorch_val():
         optimizer=torch.optim.LBFGS,
         optimizer__line_search_fn="strong_wolfe",
         lr=1e-2,
-        batch_size=batch_size,
+        batch_size=90,
         max_epochs=20,
         iterator_train__collate_fn=collate_amp,
         iterator_train__shuffle=True,

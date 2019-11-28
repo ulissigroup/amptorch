@@ -79,7 +79,6 @@ def test_skorch():
         cores=1,
         lj_data=None,
     )
-    batch_size = len(training_data)
     unique_atoms = training_data.elements
     fp_length = training_data.fp_length
     device = "cpu"
@@ -93,7 +92,7 @@ def test_skorch():
         optimizer=torch.optim.LBFGS,
         optimizer__line_search_fn="strong_wolfe",
         lr=1e-2,
-        batch_size=batch_size,
+        batch_size=100,
         max_epochs=100,
         iterator_train__collate_fn=collate_amp,
         iterator_train__shuffle=True,
@@ -144,12 +143,7 @@ def test_skorch():
         force_rmse, 4
     ), "Shuffled reported forces score incorrect!"
 
-
 def test_e_only_skorch():
-    LR_schedule = LRScheduler("CosineAnnealingLR", T_max=5)
-    cp = Checkpoint(monitor="valid_loss_best", fn_prefix="valid_best_")
-    load_best_valid_loss = train_end_load_best_valid_loss()
-
     distances = np.linspace(2, 5, 100)
     label = "skorch_example"
     images = []

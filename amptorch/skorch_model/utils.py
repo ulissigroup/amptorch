@@ -2,6 +2,7 @@ import sys
 from skorch.utils import to_numpy
 import torch
 from torch.nn import MSELoss
+import numpy as np
 
 
 def target_extractor(y):
@@ -11,14 +12,15 @@ def target_extractor(y):
         else (to_numpy(y[0]), to_numpy(y[1]), to_numpy(y[2]))
     )
 
+
 def energy_score(net, X, y):
     mse_loss = MSELoss(reduction="sum")
     energy_pred, _ = net.forward(X)
     device = energy_pred.device
-    if not hasattr(X, 'scalings'):
+    if not hasattr(X, "scalings"):
         X = X.dataset
-    num_atoms = torch.FloatTensor(y[1].reshape(-1, 1)).to(device)
-    energy_target = torch.tensor(y[0]).to(device).reshape(-1, 1)
+    num_atoms = torch.FloatTensor(np.concatenate(y[1::3])).reshape(-1, 1).to(device)
+    energy_target = torch.tensor(np.concatenate(y[0::3])).to(device).reshape(-1, 1)
     sd_scaling = X.scalings[0]
     mean_scaling = X.scalings[1]
     dataset_size = len(energy_pred)
@@ -31,14 +33,15 @@ def energy_score(net, X, y):
     energy_rmse = torch.sqrt(energy_loss)
     return energy_rmse
 
+
 def forces_score(net, X, y):
     mse_loss = MSELoss(reduction="sum")
     _, forces = net.forward(X)
     device = forces.device
-    if not hasattr(X, 'scalings'):
+    if not hasattr(X, "scalings"):
         X = X.dataset
-    num_atoms = torch.FloatTensor(y[1]).reshape(-1, 1).to(device)
-    force_target = torch.tensor(y[2]).to(device)
+    num_atoms = torch.FloatTensor(np.concatenate(y[1::3])).reshape(-1, 1).to(device)
+    force_target = torch.tensor(np.concatenate(y[2::3])).to(device)
     sd_scaling = X.scalings[0]
     force_pred = forces * sd_scaling
     device = force_pred.device
