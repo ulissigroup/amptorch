@@ -8,8 +8,8 @@ import skorch.callbacks.base
 from amptorch.gaussian import Gaussian
 from amptorch.model import FullNN, CustomLoss
 from amptorch.data_preprocess import AtomsDataset, factorize_data, collate_amp, TestDataset
-from amptorch.skorch import AMP
-from amptorch.skorch.utils import target_extractor, energy_score, forces_score
+from amptorch.skorch_model import AMP
+from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score
 from amptorch.analysis import parity_plot
 from torch.utils.data import DataLoader
 from torch.nn import init
@@ -70,7 +70,7 @@ net = NeuralNetRegressor(
     optimizer__line_search_fn="strong_wolfe",
     lr=1e-2,
     batch_size=100,
-    max_epochs=10,
+    max_epochs=50,
     iterator_train__collate_fn=collate_amp,
     iterator_train__shuffle=False,
     iterator_valid__collate_fn=collate_amp,
