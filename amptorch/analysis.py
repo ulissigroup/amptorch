@@ -1,6 +1,8 @@
 import copy
 import os
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 def parity_plot(calc, images, label, data="energy"):
