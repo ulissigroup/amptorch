@@ -8,7 +8,7 @@ from skorch.dataset import CVSplit
 from skorch.callbacks import Checkpoint, EpochScoring
 from skorch.callbacks.lr_scheduler import LRScheduler
 import skorch.callbacks.base
-from amptorch.gaussian import Gaussian
+from amptorch.gaussian import SNN_Gaussian
 from amptorch.skorch_model import AMP
 from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score
 from amptorch.model import FullNN, CustomLoss
@@ -34,10 +34,6 @@ class train_end_load_best_valid_loss(skorch.callbacks.base.Callback):
 
 
 def test_skorch():
-    LR_schedule = LRScheduler("CosineAnnealingLR", T_max=5)
-    cp = Checkpoint(monitor="valid_loss_best", fn_prefix="valid_best_")
-    load_best_valid_loss = train_end_load_best_valid_loss()
-
     distances = np.linspace(2, 5, 100)
     label = "skorch_example"
     images = []
@@ -72,7 +68,7 @@ def test_skorch():
     forcetraining = True
     training_data = AtomsDataset(
         images,
-        Gaussian,
+        SNN_Gaussian,
         Gs,
         forcetraining=forcetraining,
         label=label,
@@ -178,7 +174,7 @@ def test_e_only_skorch():
     forcetraining = True
     training_data = AtomsDataset(
         images,
-        Gaussian,
+        SNN_Gaussian,
         Gs,
         forcetraining=forcetraining,
         label=label,

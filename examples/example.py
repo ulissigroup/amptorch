@@ -11,7 +11,8 @@ from amptorch.model import CustomLoss
 from amptorch import AMP
 from amptorch.core import AMPTorch
 from amptorch.analysis import parity_plot
-from amptorch.gaussian import Gaussian
+from amptorch.gaussian import SNN_Gaussian # simple_nn derived fingerprints
+from amp.descriptor.gaussian import Gaussian # amp derived fingerprints
 from ase.visualize import view
 from ase.io import read
 
@@ -49,7 +50,7 @@ torch.set_num_threads(1)
 calc = AMP(
     model=AMPTorch(
         images,
-        descriptor=Gaussian,
+        descriptor=SNN_Gaussian,
         Gs=Gs,
         cores=1,
         force_coefficient=0.3,

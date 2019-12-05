@@ -10,7 +10,7 @@ from copy import deepcopy
 from .utils import Logger
 
 
-class Gaussian(object):
+class SNN_Gaussian(object):
     """Class that calculates Gaussian fingerprints (i.e., Behler-style).
 
     Parameters

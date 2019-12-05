@@ -19,6 +19,7 @@ from amptorch.utils import (
     calculate_fingerprints_range,
     hash_images,
 )
+from functools import lru_cache
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
@@ -102,9 +103,11 @@ class AtomsDataset(Dataset):
         G4_zetas = Gs["G4_zetas"]
         G4_gammas = Gs["G4_gammas"]
         cutoff = Gs["cutoff"]
-        make_amp_descriptors_simple_nn(
-            self.atom_images, Gs, self.elements, cores=cores, label=label
-        )
+        # create simple_nn fingerprints
+        if str(descriptor)[8:16] == 'amptorch':
+            make_amp_descriptors_simple_nn(
+                self.atom_images, Gs, self.elements, cores=cores, label=label
+            )
         G = make_symmetry_functions(elements=self.elements, type="G2", etas=G2_etas)
         G += make_symmetry_functions(
             elements=self.elements,
@@ -489,9 +492,10 @@ class TestDataset(Dataset):
         G4_zetas = Gs["G4_zetas"]
         G4_gammas = Gs["G4_gammas"]
         cutoff = Gs["cutoff"]
-        make_amp_descriptors_simple_nn(
-            self.atom_images, Gs, self.unique_atoms, cores=cores, label=label
-        )
+        if str(descriptor)[8:16] == 'amptorch':
+            make_amp_descriptors_simple_nn(
+                self.atom_images, Gs, self.unique_atoms, cores=cores, label=label
+            )
         G = make_symmetry_functions(elements=self.unique_atoms, type="G2", etas=G2_etas)
         G += make_symmetry_functions(
             elements=self.unique_atoms,

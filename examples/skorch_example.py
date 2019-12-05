@@ -5,7 +5,8 @@ from skorch.dataset import CVSplit
 from skorch.callbacks import Checkpoint, EpochScoring
 from skorch.callbacks.lr_scheduler import LRScheduler
 import skorch.callbacks.base
-from amptorch.gaussian import Gaussian
+from amp.descriptor.gaussian import Gaussian
+from amptorch.gaussian import SNN_Gaussian
 from amptorch.model import FullNN, CustomLoss
 from amptorch.data_preprocess import AtomsDataset, factorize_data, collate_amp, TestDataset
 from amptorch.skorch_model import AMP
