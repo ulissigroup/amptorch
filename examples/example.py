@@ -1,8 +1,8 @@
 """An example of how to utilize the package to train on energies and forces"""
 
 from ase import Atoms
-import ase
 import torch
+import ase
 import numpy as np
 import torch.nn as nn
 import torch.optim as optim
