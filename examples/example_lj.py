@@ -1,17 +1,17 @@
 """An example of how to utilize the package to train on energies and forces
 using the physics coupled ML-LJ model"""
 
-from ase import Atoms
-from ase.calculators.emt import EMT
-import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from ase import Atoms
+from ase.calculators.emt import EMT
+import numpy as np
 from amptorch.model import CustomLoss
 from amptorch import AMP
 from amptorch.core import AMPTorch
 from amptorch.analysis import parity_plot
-from amptorch.gaussian import Gaussian
+from amptorch.gaussian import SNN_Gaussian
 from amptorch.lj_model import lj_optim
 
 # define training images

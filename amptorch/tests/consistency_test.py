@@ -14,7 +14,7 @@ from amp import Amp
 from amp.descriptor.gaussian import Gaussian, make_symmetry_functions
 from amp.model.neuralnetwork import NeuralNetwork
 from amptorch.utils import hash_images
-from amptorch.gaussian import Gaussian as DummyGaussian
+from amptorch.gaussian import SNN_Gaussian
 from amp.model import calculate_fingerprints_range
 from amptorch import core
 from amptorch.data_preprocess import AtomsDataset, factorize_data, collate_amp
@@ -209,7 +209,7 @@ def test_calcs():
 
     device = "cpu"
     dataset = AtomsDataset(
-        images, descriptor=DummyGaussian, cores=1, label='consistency', Gs=Gs, forcetraining=True
+        images, descriptor=SNN_Gaussian, cores=1, label='consistency', Gs=Gs, forcetraining=True
     )
     fp_length = dataset.fp_length
     batch_size = len(dataset)

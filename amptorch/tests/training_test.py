@@ -12,7 +12,7 @@ from amptorch.model import CustomLoss
 from amptorch import AMP
 from amptorch.core import AMPTorch
 from amptorch.analysis import parity_plot
-from amptorch.gaussian import Gaussian
+from amptorch.gaussian import SNN_Gaussian
 from amptorch.data_preprocess import TestDataset
 
 
@@ -52,7 +52,7 @@ def test_training():
     calc = AMP(
         model=AMPTorch(
             images,
-            descriptor=Gaussian,
+            descriptor=SNN_Gaussian,
             Gs=Gs,
             force_coefficient=0.3,
             label=label,
@@ -188,7 +188,7 @@ def test_e_only_training():
     calc = AMP(
         model=AMPTorch(
             images,
-            descriptor=Gaussian,
+            descriptor=SNN_Gaussian,
             Gs=Gs,
             force_coefficient=0,
             label=label,

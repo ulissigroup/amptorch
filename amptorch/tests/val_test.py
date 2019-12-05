@@ -5,7 +5,7 @@ from skorch.dataset import CVSplit
 from skorch.callbacks import Checkpoint, EpochScoring
 from amptorch.core import AMPTorch
 from amptorch import AMP
-from amptorch.gaussian import Gaussian
+from amptorch.gaussian import SNN_Gaussian
 from amptorch.skorch_model import AMP as AMP_skorch
 from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score
 from amptorch.model import FullNN, CustomLoss
@@ -50,7 +50,7 @@ def test_skorch_val():
     forcetraining = True
     training_data = AtomsDataset(
         images,
-        Gaussian,
+        SNN_Gaussian,
         Gs,
         forcetraining=forcetraining,
         label=label,
@@ -160,7 +160,7 @@ def test_energy_only_skorch_val():
     forcetraining = True
     training_data = AtomsDataset(
         images,
-        Gaussian,
+        SNN_Gaussian,
         Gs,
         forcetraining=forcetraining,
         label=label,
@@ -253,7 +253,7 @@ def test_val():
     calc = AMP(
         model=AMPTorch(
             images,
-            descriptor=Gaussian,
+            descriptor=SNN_Gaussian,
             Gs=Gs,
             val_frac=0.2,
             force_coefficient=0.3,
@@ -359,7 +359,7 @@ def test_energy_only_val():
     calc = AMP(
         model=AMPTorch(
             images,
-            descriptor=Gaussian,
+            descriptor=SNN_Gaussian,
             Gs=Gs,
             val_frac=0.2,
             force_coefficient=0,
