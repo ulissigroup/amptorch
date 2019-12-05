@@ -6,7 +6,6 @@ import numpy as np
 import os
 from torch.utils.data import DataLoader
 from amptorch.utils import Logger, hash_images
-from amptorch.gaussian import Gaussian
 from amptorch.data_preprocess import AtomsDataset, factorize_data, collate_amp, TestDataset
 from amptorch.model import FullNN, CustomLoss
 from ase.calculators.calculator import Calculator, Parameters
