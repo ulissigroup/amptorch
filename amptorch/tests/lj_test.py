@@ -2,7 +2,7 @@ from ase import Atoms
 from ase.calculators.lj import LennardJones as LJ
 from ase.calculators.emt import EMT
 from amptorch.lj_model import lj_optim
-from amptorch.gaussian import Gaussian
+from amptorch.gaussian import SNN_Gaussian
 from amptorch.data_preprocess import AtomsDataset, collate_amp
 from amptorch.core import AMPTorch
 from amptorch.model import CustomLoss, FullNN
@@ -120,7 +120,7 @@ def test_ml_lj():
     calc = AMP(
         model=AMPTorch(
             images,
-            descriptor=Gaussian,
+            descriptor=SNN_Gaussian,
             Gs=Gs,
             cores=1,
             force_coefficient=0.3,
@@ -225,7 +225,7 @@ def test_skorch_lj():
     forcetraining = True
     training_data = AtomsDataset(
         images,
-        Gaussian,
+        SNN_Gaussian,
         Gs,
         forcetraining=forcetraining,
         label=label,
