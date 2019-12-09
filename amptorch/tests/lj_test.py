@@ -16,15 +16,18 @@ from amptorch.skorch_model.utils import forces_score, target_extractor, energy_s
 
 def test_lj():
     atoms = Atoms("CuCuCu", [(0, 0, 1), (0, 0, 1.5), (0, 0, 0.5)])
-    atoms.set_calculator(LJ())
+    parameters = {'epsilon': 1.0, 'sigma': 1.0, 'rc': 10}
+    atoms.set_calculator(LJ(**parameters))
     actual_energy = atoms.get_potential_energy()
     actual_forces = atoms.get_forces()
 
-    p0 = [1, 1, 0]
+    p0 = [1, 1]
     params_dict = {"Cu": []}
 
+    element_energies = {'Cu': 0}
+
     atoms = [atoms]
-    lj_model = lj_optim(atoms, p0, params_dict, 10, "test")
+    lj_model = lj_optim(atoms, p0, params_dict, 10, "test", element_energies)
     fitted_params = p0
     lj_energies, lj_forces, num_atoms = lj_model.lj_pred(
         atoms, fitted_params, params_dict
@@ -33,9 +36,9 @@ def test_lj():
     assert round(actual_energy, 1) == lj_energies[0], "LJ energies don't match!"
     assert actual_forces.all() == lj_forces.all(), "LJ forces don't match!"
 
-    p0 = [1, 1, 0]
+    p0 = [1, 1]
 
-    lj_model = lj_optim(atoms, p0, params_dict, 10, "test")
+    lj_model = lj_optim(atoms, p0, params_dict, 10, "test", element_energies)
     fitted_params = lj_model.fit()
     lj_energies, lj_forces, num_atoms = lj_model.lj_pred(
         atoms, fitted_params, params_dict
@@ -48,12 +51,14 @@ def test_lj():
 
 def test_ml_lj():
     from amptorch import AMP
+    import sys
 
     distances = np.linspace(2, 5, 10)
     label = "ml_lj"
     images = []
     energies = []
     forces = []
+    parameters = {'asap_cutoff': False}
     for l in distances:
         image = Atoms(
             "CuCO",
@@ -65,13 +70,18 @@ def test_ml_lj():
         )
         image.set_cell([10, 10, 10])
         image.wrap(pbc=True)
-        image.set_calculator(EMT())
+        image.set_calculator(EMT(**parameters))
         images.append(image)
         energies.append(image.get_potential_energy())
         forces.append(image.get_forces())
-
     energies = np.array(energies)
     forces = np.concatenate(np.array(forces))
+
+    element_energies = {}
+    for element in ["Cu", "C", "O"]:
+        atoms = Atoms(element, cell=[20, 20, 20])
+        atoms.set_calculator(EMT())
+        element_energies[element] = atoms.get_potential_energy()
 
     Gs = {}
     Gs["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
@@ -84,16 +94,15 @@ def test_ml_lj():
     p0 = [
         1.33905162,
         0.12290683,
-        6.41914719,
         0.64021468,
         0.08010004,
-        8.26082762,
         2.29284676,
         0.29639983,
-        0.08071821,
+        12
     ]
     params_dict = {"C": [], "O": [], "Cu": []}
-    lj_model = lj_optim(images, p0, params_dict, Gs["cutoff"], label)
+    lj_model = lj_optim(images, p0, params_dict, Gs["cutoff"], label,
+            element_energies)
     fitted_params = lj_model.fit()
     lj_energies, lj_forces, num_atoms = lj_model.lj_pred(
         images, fitted_params, params_dict
@@ -165,7 +174,7 @@ def test_ml_lj():
     assert (
         force_rmse <= calc.model.convergence["force"]
     ), "Force training convergence not met!"
-
+test_ml_lj()
 def test_skorch_lj():
     from amptorch.skorch_model import AMP
 
@@ -195,6 +204,12 @@ def test_skorch_lj():
     energies = np.array(energies)
     forces = np.concatenate(np.array(forces))
 
+    element_energies = {}
+    for element in ["Cu", "C", "O"]:
+        atoms = Atoms(element, cell=[20, 20, 20])
+        atoms.set_calculator(EMT())
+        element_energies[element] = atoms.get_potential_energy()
+
     Gs = {}
     Gs["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=2)
     Gs["G2_rs_s"] = [0] * 2
@@ -206,16 +221,14 @@ def test_skorch_lj():
     p0 = [
         1.33905162,
         0.12290683,
-        6.41914719,
         0.64021468,
         0.08010004,
-        8.26082762,
         2.29284676,
         0.29639983,
-        0.08071821,
     ]
     params_dict = {"C": [], "O": [], "Cu": []}
-    lj_model = lj_optim(images, p0, params_dict, Gs["cutoff"], label)
+    lj_model = lj_optim(images, p0, params_dict, Gs["cutoff"], label,
+            element_energies)
     fitted_params = lj_model.fit()
     lj_energies, lj_forces, num_atoms = lj_model.lj_pred(
         images, fitted_params, params_dict
