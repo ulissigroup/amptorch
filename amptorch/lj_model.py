@@ -1,18 +1,28 @@
+import sys
 import os
 import time
 from itertools import product
 import numpy as np
 from scipy.optimize import minimize
 from ase.neighborlist import NeighborList, NewPrimitiveNeighborList
-from .gaussian import NeighborlistCalculator, Data
-from .utils import Logger, hash_images, get_hash
+from amptorch.gaussian import NeighborlistCalculator, Data
+from amptorch.utils import Logger, hash_images, get_hash
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
 class lj_optim:
-    def __init__(self, images, params, params_dict, cutoff, filename, fitforces=True):
+    def __init__(
+        self,
+        images,
+        params,
+        params_dict,
+        cutoff,
+        filename,
+        element_energies,
+        fitforces=True,
+    ):
         if not os.path.exists("results"):
             os.mkdir("results")
         if not os.path.exists("results/logs"):
@@ -28,22 +38,25 @@ class lj_optim:
         calc = NeighborlistCalculator(cutoff=cutoff)
         self.neighborlist = Data(filename="amp-data-neighborlists", calculator=calc)
         self.neighborlist.calculate_items(self.hashed_images)
+        self.element_energies = element_energies
 
     def fit(self, method="Nelder-Mead"):
         log = Logger("results/logs/" + self.filename + ".txt")
         self.target_energies = np.array(
-            [(atoms.get_potential_energy()) for atoms in self.data]
+            [
+                (atoms.get_potential_energy(apply_constraint=False))
+                for atoms in self.data
+            ]
         ).reshape(1, -1)
         self.target_forces = np.concatenate(
-            [(atoms.get_forces()) for atoms in self.data]
+            [(atoms.get_forces(apply_constraint=False)) for atoms in self.data]
         )
         print("LJ optimization initiated...")
         s_time = time.time()
         bounds = None
-        if method != "Nelder-Mead":
-            bounds = [(0, None), (None, None), (None, None)] * len(
-                self.params_dict.keys()
-            )
+        bounded_methods = ["L-BFGS-B", "TNC", "SLSQP"]
+        if method in bounded_methods:
+            bounds = [(0, None), (0, None)] * len(self.params_dict.keys())
         lj_min = minimize(
             self.objective_fn,
             self.p0,
@@ -51,6 +64,7 @@ class lj_optim:
             tol=1e-2,
             method=method,
             bounds=bounds,
+            options={"disp": True},
         )
         optim_time = time.time() - s_time
         self.logresults(
@@ -65,11 +79,11 @@ class lj_optim:
 
     def image_pred(self, image, p0, params_dict):
         chemical_symbols = np.array(image.get_chemical_symbols())
-        unique_symbols = np.unique(chemical_symbols)
-        possible_pairs = product(unique_symbols, repeat=2)
-        possible_pairs = [list(elem) for elem in list(possible_pairs)]
         e_offset = np.sum(
-            [params_dict[symbol][2] for symbol in image.get_chemical_symbols()]
+            [
+                self.element_energies[symbol]
+                for symbol in chemical_symbols
+            ]
         )
         params = []
         for element in chemical_symbols:
@@ -147,8 +161,8 @@ class lj_optim:
     def params_to_dict(self, params, params_dict):
         idx = 0
         for keys in list(params_dict.keys()):
-            params_dict[keys] = params[idx : idx + 3]
-            idx += 3
+            params_dict[keys] = params[idx : idx + 2]
+            idx += 2
         return params_dict
 
     def logresults(self, log, data, cutoff, p0, params_dict, results, optim_time):
