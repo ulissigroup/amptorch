@@ -1,14 +1,11 @@
-import sys
 import os
 import time
 from itertools import product
 import numpy as np
 from scipy.optimize import minimize
 from ase.neighborlist import NeighborList, NewPrimitiveNeighborList
-from amptorch.gaussian import NeighborlistCalculator, Data
-from amptorch.utils import Logger, hash_images, get_hash
-import matplotlib
-matplotlib.use('Agg')
+from .gaussian import NeighborlistCalculator, Data
+from .utils import Logger, hash_images, get_hash
 import matplotlib.pyplot as plt
 
 
@@ -20,7 +17,6 @@ class lj_optim:
         params_dict,
         cutoff,
         filename,
-        element_energies,
         fitforces=True,
     ):
         if not os.path.exists("results"):
@@ -38,7 +34,6 @@ class lj_optim:
         calc = NeighborlistCalculator(cutoff=cutoff)
         self.neighborlist = Data(filename="amp-data-neighborlists", calculator=calc)
         self.neighborlist.calculate_items(self.hashed_images)
-        self.element_energies = element_energies
 
     def fit(self, method="Nelder-Mead"):
         log = Logger("results/logs/" + self.filename + ".txt")
@@ -61,7 +56,6 @@ class lj_optim:
             self.objective_fn,
             self.p0,
             args=(self.target_energies, self.target_forces),
-            tol=1e-2,
             method=method,
             bounds=bounds,
             options={"disp": True},
@@ -79,18 +73,21 @@ class lj_optim:
 
     def image_pred(self, image, p0, params_dict):
         chemical_symbols = np.array(image.get_chemical_symbols())
-        e_offset = np.sum(
-            [
-                self.element_energies[symbol]
-                for symbol in chemical_symbols
-            ]
-        )
         params = []
+        element_energies = {}
         for element in chemical_symbols:
             sig = params_dict[element][0]
             eps = params_dict[element][1]
+            element_energies[element] = params_dict[element][2]
             params.append(np.array([[sig, eps]]))
         params = np.vstack(np.array(params))
+        e_offset = np.sum(
+            [
+                element_energies[symbol]
+                for symbol in image.get_chemical_symbols()
+            ]
+        )
+        a = p0[-1]
 
         natoms = len(image)
 
@@ -113,12 +110,9 @@ class lj_optim:
             eps_n = params[neighbors][:, 1]
             sig = (sig_1 + sig_n) / 2
             eps = np.sqrt(eps_1 * eps_n)
-            r2 = (d ** 2).sum(1)
-            c6 = (sig ** 2 / r2) ** 3
-            c6[r2 > self.cutoff ** 2] = 0.0
-            c12 = c6 ** 2
-            energy += (4 * eps * (c12 - c6)).sum()
-            f = (24 * eps * (2 * c12 - c6) / r2)[:, np.newaxis] * d
+            r = ((d ** 2).sum(1))**0.5
+            energy += (eps * (6/(a-6))*np.exp(a*(1-(r/sig)))).sum()
+            f = (eps * (6/(a-6)) * (a/sig) * np.exp(a*(1-(r/sig))))[:, np.newaxis]*d
             forces[a1] -= f.sum(axis=0)
             for a2, f2 in zip(neighbors, f):
                 forces[a2] += f2
@@ -158,11 +152,23 @@ class lj_optim:
             MSE = MSE_energy
         return MSE
 
+    def lj_param_check(self):
+        unique = set()
+        for atoms in self.data:
+            symbols = atoms.symbols
+            unique = unique | set(symbols)
+        unique_elements = list(unique)
+        num_lj_params = 2 * len(unique_elements)
+        assert (
+            len(self.p0) == num_lj_params
+        ), "Number of initial conditions not equal to \
+        the number of required LJ parameters"
+
     def params_to_dict(self, params, params_dict):
         idx = 0
         for keys in list(params_dict.keys()):
-            params_dict[keys] = params[idx : idx + 2]
-            idx += 2
+            params_dict[keys] = params[idx : idx + 3]
+            idx += 3
         return params_dict
 
     def logresults(self, log, data, cutoff, p0, params_dict, results, optim_time):
