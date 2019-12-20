@@ -74,6 +74,7 @@ def test_skorch():
         label=label,
         cores=1,
         lj_data=None,
+        scaling='standardize',
     )
     unique_atoms = training_data.elements
     fp_length = training_data.fp_length
@@ -171,7 +172,7 @@ def test_e_only_skorch():
     Gs["G4_gammas"] = [+1.0, -1]
     Gs["cutoff"] = 6.5
 
-    forcetraining = True
+    forcetraining = False
     training_data = AtomsDataset(
         images,
         SNN_Gaussian,
@@ -180,6 +181,7 @@ def test_e_only_skorch():
         label=label,
         cores=1,
         lj_data=None,
+        scaling=None,
     )
     batch_size = len(training_data)
     unique_atoms = training_data.elements
