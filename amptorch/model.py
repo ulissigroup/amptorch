@@ -129,7 +129,7 @@ class FullNN(nn.Module):
                 energy_pred = torch.zeros(batch_size, 1).to(self.device)
             else:
                 energy_pred = torch.cuda.FloatTensor(batch_size, 1)
-            force_pred = None
+            force_pred = torch.tensor([])
             # Constructs an Nx1 empty tensor to store element energy contributions
             if self.forcetraining:
                 fprimes = inputs[-1]
@@ -193,6 +193,8 @@ class CustomLoss(nn.Module):
 
         if self.alpha > 0:
             force_pred = prediction[1]
+            if force_pred.nelement() == 0:
+                raise Exception('Force training disabled. Set force_coefficient to 0')
             force_targets = target[-1]
             num_atoms_force = torch.cat([idx.repeat(int(idx)) for idx in num_atoms])
             num_atoms_force = torch.sqrt(
@@ -228,6 +230,7 @@ class TanhLoss(nn.Module):
         energy_per_atom = torch.div(energy_pred, num_atoms)
         targets_per_atom = torch.div(energy_targets, num_atoms)
         energy_loss = MSE_loss(energy_per_atom, targets_per_atom)
+        # energy_loss = torch.sum(torch.tanh(torch.abs(energy_per_atom - targets_per_atom)))
 
         if self.alpha > 0:
             force_pred = prediction[1]
@@ -238,10 +241,10 @@ class TanhLoss(nn.Module):
             )
             force_pred_per_atom = torch.div(force_pred, num_atoms_force)
             force_targets_per_atom = torch.div(force_targets, num_atoms_force)
-            force_loss = (1 / 3) * torch.sum(
+            force_loss = (1 / 3) * self.alpha * torch.sum(
                 torch.tanh(torch.abs(force_pred_per_atom - force_targets_per_atom))
             )
-            loss = energy_loss + self.alpha * force_loss
+            loss = energy_loss + force_loss
         else:
             loss = energy_loss
         return loss
