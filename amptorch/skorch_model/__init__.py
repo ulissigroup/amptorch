@@ -6,7 +6,12 @@ import numpy as np
 import os
 from torch.utils.data import DataLoader
 from amptorch.utils import Logger, hash_images
-from amptorch.data_preprocess import AtomsDataset, factorize_data, collate_amp, TestDataset
+from amptorch.data_preprocess import (
+    AtomsDataset,
+    factorize_data,
+    collate_amp,
+    TestDataset,
+)
 from amptorch.model import FullNN, CustomLoss
 from ase.calculators.calculator import Calculator, Parameters
 import torch
@@ -39,9 +44,12 @@ class AMP(Calculator):
         self.model = model
         self.testlabel = label
         self.label = "".join(["results/trained_models/", label, ".pt"])
-        self.scalings = training_data.scalings
-        self.target_sd = self.scalings[0]
-        self.target_mean = self.scalings[1]
+        if training_data.scaling_scheme is not "log":
+            self.scalings = training_data.scalings
+            self.target_sd = self.scalings[0]
+            self.target_mean = self.scalings[1]
+        else:
+            self.scalings = "log"
         self.lj = training_data.lj
         self.Gs = training_data.Gs
         self.fprange = training_data.fprange
@@ -85,13 +93,21 @@ class AMP(Calculator):
 
         for inputs in dataloader:
             for element in unique_atoms:
-                inputs[0][element][0] = inputs[0][element][0].requires_grad_(
-                    True
-                )
+                inputs[0][element][0] = inputs[0][element][0].requires_grad_(True)
+            num_of_atoms = inputs[3]
             energy, forces = model(inputs)
-        energy = (energy * self.target_sd) + self.target_mean
-        energy = np.concatenate(energy.detach().numpy())
-        forces = (forces * self.target_sd).detach().numpy()
+        if self.scalings is not "log":
+            energy = (energy * self.target_sd) + self.target_mean
+            energy = np.concatenate(energy.detach().numpy())
+            forces = (forces * self.target_sd).detach().numpy()
+        else:
+            energy = torch.exp(energy) - 1
+            energy_atoms = torch.cat(
+                [val.repeat(num_of_atoms[idx]) for idx, val in enumerate(energy)]
+            ).reshape(-1, 1)
+            energy = np.concatenate(energy.detach().numpy())
+            forces = forces * (energy_atoms + 1)
+            forces = forces.detach().numpy()
 
         if self.lj:
             image_hash = hash_images([atoms])
