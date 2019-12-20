@@ -56,6 +56,7 @@ def test_skorch_val():
         label=label,
         cores=1,
         lj_data=None,
+        scaling='log',
     )
     batch_size = len(training_data)
     unique_atoms = training_data.elements
@@ -71,7 +72,7 @@ def test_skorch_val():
         optimizer=torch.optim.LBFGS,
         optimizer__line_search_fn="strong_wolfe",
         lr=1e-2,
-        batch_size=90,
+        batch_size=5,
         max_epochs=20,
         iterator_train__collate_fn=collate_amp,
         iterator_train__shuffle=True,
@@ -157,7 +158,7 @@ def test_energy_only_skorch_val():
     Gs["G4_gammas"] = [+1.0, -1]
     Gs["cutoff"] = 6.5
 
-    forcetraining = True
+    forcetraining = False
     training_data = AtomsDataset(
         images,
         SNN_Gaussian,
@@ -166,6 +167,7 @@ def test_energy_only_skorch_val():
         label=label,
         cores=1,
         lj_data=None,
+        scaling='minmax'
     )
     batch_size = len(training_data)
     unique_atoms = training_data.elements
@@ -181,13 +183,13 @@ def test_energy_only_skorch_val():
         optimizer=torch.optim.LBFGS,
         optimizer__line_search_fn="strong_wolfe",
         lr=1e-2,
-        batch_size=batch_size,
+        batch_size=5,
         max_epochs=20,
         iterator_train__collate_fn=collate_amp,
         iterator_train__shuffle=True,
         iterator_valid__collate_fn=collate_amp,
         device=device,
-        train_split=CVSplit(0.1, random_state=1),
+        train_split=CVSplit(cv=0.1, random_state=1),
         callbacks=[
             EpochScoring(
                 energy_score,
