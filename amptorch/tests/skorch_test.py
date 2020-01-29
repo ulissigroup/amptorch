@@ -96,7 +96,7 @@ def test_skorch():
         optimizer__line_search_fn="strong_wolfe",
         lr=1,
         batch_size=100,
-        max_epochs=100,
+        max_epochs=150,
         iterator_train__collate_fn=collate_amp,
         iterator_train__shuffle=True,
         iterator_valid__collate_fn=collate_amp,
@@ -174,7 +174,7 @@ def test_skorch():
     assert round(reported_median_forces_score, 4) == round(
             force_median_error, 4
             ), "Reported median forces score incorrect!"
-test_skorch()
+
 def test_e_only_skorch():
     distances = np.linspace(2, 5, 100)
     label = "skorch_example"
