@@ -7,6 +7,11 @@ from ase.neighborlist import NeighborList, NewPrimitiveNeighborList
 from .gaussian import NeighborlistCalculator, Data
 from .utils import Logger, hash_images, get_hash
 import matplotlib.pyplot as plt
+from functools import lru_cache
+import line_profiler
+import atexit
+profile = line_profiler.LineProfiler()
+atexit.register(profile.print_stats)
 
 
 class lj_optim:
@@ -51,14 +56,15 @@ class lj_optim:
         bounds = None
         bounded_methods = ["L-BFGS-B", "TNC", "SLSQP"]
         if method in bounded_methods:
-            bounds = [(0, None), (0, None)] * len(self.params_dict.keys())
+            bounds = [(0, None), (0, None), (0, None)] * len(self.params_dict.keys())
+            bounds.append((2, None))
         lj_min = minimize(
             self.objective_fn,
             self.p0,
             args=(self.target_energies, self.target_forces),
             method=method,
             bounds=bounds,
-            options={"disp": True},
+            options={"disp": True}
         )
         optim_time = time.time() - s_time
         self.logresults(
@@ -70,6 +76,10 @@ class lj_optim:
         else:
             print("Optimizer did not terminate successfully.")
             return lj_min.x
+
+    def get_neighbors(self, neighborlist, image_hash):
+        image_neighbors = neighborlist[image_hash]
+        return image_neighbors
 
     def image_pred(self, image, p0, params_dict):
         chemical_symbols = np.array(image.get_chemical_symbols())
@@ -92,7 +102,7 @@ class lj_optim:
         natoms = len(image)
 
         image_hash = get_hash(image)
-        image_neighbors = self.neighborlist[image_hash]
+        image_neighbors = self.get_neighbors(self.neighborlist, image_hash)
 
         positions = image.positions
         cell = image.cell
@@ -147,9 +157,9 @@ class lj_optim:
             ((target_forces - predicted_forces) / np.sqrt(3 * num_atoms_f)) ** 2
         ).sum()
         if self.fitforces:
-            MSE = MSE_energy + MSE_forces
+            MSE = MSE_forces
         else:
-            MSE = MSE_energy
+            MSE = MSE_energy + MSE_forces
         return MSE
 
     def lj_param_check(self):

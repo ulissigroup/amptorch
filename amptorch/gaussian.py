@@ -153,12 +153,12 @@ class SNN_Gaussian(object):
         if not hasattr(p.Gs, "keys"):
             p.Gs = {element: deepcopy(p.Gs) for element in p.elements}
         # TODO Ensure this is not needed
-        # if not hasattr(self, "neighborlist"):
-            # calc = NeighborlistCalculator(cutoff=p.cutoff["kwargs"]["Rc"])
-            # self.neighborlist = Data(
-                # filename="%s-neighborlists" % self.dblabel, calculator=calc
-            # )
-        # self.neighborlist.calculate_items(images, parallel=parallel, log=log)
+        if not hasattr(self, "neighborlist"):
+            calc = NeighborlistCalculator(cutoff=p.cutoff["kwargs"]["Rc"])
+            self.neighborlist = Data(
+                filename="%s-neighborlists" % self.dblabel, calculator=calc
+            )
+        self.neighborlist.calculate_items(images)
 
         if not hasattr(self, "fingerprints"):
             self.fingerprints = Data(
