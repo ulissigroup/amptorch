@@ -10,7 +10,13 @@ from skorch.callbacks.lr_scheduler import LRScheduler
 import skorch.callbacks.base
 from amptorch.gaussian import SNN_Gaussian
 from amptorch.skorch_model import AMP
-from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score
+from amptorch.skorch_model.utils import (
+    target_extractor,
+    energy_score,
+    forces_score,
+    forces_mad,
+    energy_mad,
+)
 from amptorch.model import FullNN, CustomLoss
 from amptorch.data_preprocess import (
     AtomsDataset,
@@ -74,7 +80,7 @@ def test_skorch():
         label=label,
         cores=1,
         lj_data=None,
-        scaling='standardize',
+        scaling="standardize",
     )
     unique_atoms = training_data.elements
     fp_length = training_data.fp_length
@@ -88,7 +94,7 @@ def test_skorch():
         criterion__force_coefficient=0.3,
         optimizer=torch.optim.LBFGS,
         optimizer__line_search_fn="strong_wolfe",
-        lr=1e-2,
+        lr=1,
         batch_size=100,
         max_epochs=100,
         iterator_train__collate_fn=collate_amp,
@@ -109,6 +115,18 @@ def test_skorch():
                 use_caching=True,
                 target_extractor=target_extractor,
             ),
+            EpochScoring(
+                forces_mad,
+                on_train=True,
+                use_caching=True,
+                target_extractor=target_extractor,
+            ),
+            EpochScoring(
+                energy_mad,
+                on_train=True,
+                use_caching=True,
+                target_extractor=target_extractor,
+            ),
         ],
     )
     calc = AMP(training_data, net, "test")
@@ -120,17 +138,28 @@ def test_skorch():
     energy_rmse = np.sqrt(
         (((calculated_energies - energies) / num_of_atoms) ** 2).sum() / len(images)
     )
+    energy_median_error = np.median(np.abs(calculated_energies - energies) /
+            num_of_atoms)
 
     calculated_forces = np.concatenate(
         np.array([calc.get_forces(image) for image in images])
     )
     force_rmse = np.sqrt(
-        (((calculated_forces - forces)) ** 2).sum() /
-        (3 * num_of_atoms * len(images))
+        (((calculated_forces - forces)) ** 2).sum() / (3 * num_of_atoms * len(images))
     )
+    l1_force = np.sum(np.abs(calculated_forces - forces) / num_of_atoms, 1)
+    idx = 0
+    force_loss_image = np.zeros((len(calculated_energies), 1))
+    for i in range(len(calculated_energies)):
+        force_loss_image[i] = np.sum(l1_force[idx: idx + 3])
+        idx += 3
+    force_loss_image /= 3
+    force_median_error = np.median(force_loss_image)
 
     reported_energy_score = net.history[-1]["energy_score"]
+    reported_median_energy_score = net.history[-1]["energy_mad"]
     reported_forces_score = net.history[-1]["forces_score"]
+    reported_median_forces_score = net.history[-1]["forces_mad"]
     assert force_rmse <= 0.005, "Force training convergence not met!"
     assert energy_rmse <= 0.005, "Energy training convergence not met!"
     assert round(reported_energy_score, 4) == round(
@@ -139,7 +168,13 @@ def test_skorch():
     assert round(reported_forces_score, 4) == round(
         force_rmse, 4
     ), "Shuffled reported forces score incorrect!"
-
+    assert round(reported_median_energy_score, 4) == round(
+            energy_median_error, 4
+            ), "Reported median energy score incorrect!"
+    assert round(reported_median_forces_score, 4) == round(
+            force_median_error, 4
+            ), "Reported median forces score incorrect!"
+test_skorch()
 def test_e_only_skorch():
     distances = np.linspace(2, 5, 100)
     label = "skorch_example"
@@ -223,7 +258,8 @@ def test_e_only_skorch():
         (((calculated_energies - energies) / num_of_atoms) ** 2).sum() / len(images)
     )
 
-    reported_energy_score = net.history[-1]['energy_score']
+    reported_energy_score = net.history[-1]["energy_score"]
     assert energy_rmse <= 0.005, "Energy training convergence not met!"
     assert round(energy_rmse, 4) == round(
-        reported_energy_score, 4), "Shuffled energy only energy score incorrect!"
+        reported_energy_score, 4
+    ), "Shuffled energy only energy score incorrect!"
