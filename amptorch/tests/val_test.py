@@ -23,7 +23,7 @@ def test_skorch_val():
     forces = []
     for l in distances:
         image = Atoms(
-            "CuCO",
+            "CuCCu",
             [
                 (-l * np.sin(0.65), l * np.cos(0.65), 0),
                 (0, 0, 0),
@@ -72,7 +72,7 @@ def test_skorch_val():
         optimizer=torch.optim.LBFGS,
         optimizer__line_search_fn="strong_wolfe",
         lr=1e-2,
-        batch_size=5,
+        batch_size=10,
         max_epochs=20,
         iterator_train__collate_fn=collate_amp,
         iterator_train__shuffle=True,
