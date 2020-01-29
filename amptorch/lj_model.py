@@ -8,10 +8,6 @@ from .gaussian import NeighborlistCalculator, Data
 from .utils import Logger, hash_images, get_hash
 import matplotlib.pyplot as plt
 from functools import lru_cache
-import line_profiler
-import atexit
-profile = line_profiler.LineProfiler()
-atexit.register(profile.print_stats)
 
 
 class lj_optim:
