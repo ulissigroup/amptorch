@@ -181,17 +181,17 @@ def reorganize_simple_nn_derivative(image, dx_dict):
             for sf in arr_t:
                 for j, dir_arr in enumerate(sf):
                     for k, derivative in enumerate(dir_arr):
-                        if (true_i, element, j, syms[j], k) not in d:
-                            d[(true_i, element, j, syms[j], k)] = []
-                        d[(true_i, element, j, syms[j], k)].append(derivative)
-    zero_keys = []
-    for key, derivatives in d.items():
-        zero_check = [a == 0 for a in derivatives]
-        if zero_check == [True] * len(derivatives):
-            zero_keys.append(key)
-    for key in zero_keys:
-        del d[key]
-    d = OrderedDict(d)
+                        if (j, syms[j], true_i, element, k) not in d:
+                            d[(j, syms[j], true_i, element, k)] = []
+                        d[(j, syms[j], true_i, element, k)].append(derivative)
+    # zero_keys = []
+    # for key, derivatives in d.items():
+        # zero_check = [a == 0 for a in derivatives]
+        # if zero_check == [True] * len(derivatives):
+            # zero_keys.append(key)
+    # for key in zero_keys:
+        # del d[key]
+    # d = OrderedDict(d)
     return d
 
 
@@ -419,7 +419,7 @@ def make_simple_nn_fps(traj, Gs, label, clean_up_directory=True, elements="all")
             "num_parallel_calls": 5,
             "atomic_weights": {"type": None, "params": {}},
             "weight_modifier": {"type": None, "params": {}},
-            "scale_type": "minmax",
+            "scale_type": 'minmax',
             "scale_scale": 1.0,
             "scale_rho": None,
         }
