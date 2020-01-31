@@ -1,21 +1,29 @@
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import seaborn as sns
 import ase
 from ase import units
 from ase.md import Langevin
 import copy
 from ase.calculators.emt import EMT
 from ase.md.nvtberendsen import NVTBerendsen
+from ase.md.verlet import VelocityVerlet
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 
-
-def md_run(calc, starting_image, temp, count, label):
+def md_run(calc, starting_image, temp, dt, count, label, ensemble="NVE", printenergy=False):
+    """dt (fs)"""
     slab = starting_image.copy()
     slab.set_calculator(calc)
     slab.get_forces()
     MaxwellBoltzmannDistribution(slab, temp * units.kB)
-    dyn = NVTBerendsen(slab, 0.5 * units.fs, 300, taut=100 * units.fs)
+    if ensemble == "NVE":
+        dyn = VelocityVerlet(slab, dt * units.fs)
+    elif ensemble == "nvtberendsen":
+        dyn = NVTBerendsen(slab, dt * units.fs, temp, taut=300 * units.fs)
+    elif ensemble == "langevin":
+        dyn = Langevin(slab, dt * units.fs, temp * units.kB, 0.002)
     traj = ase.io.Trajectory(label + ".traj", "w", slab)
     dyn.attach(traj.write, interval=1)
 
@@ -27,8 +35,10 @@ def md_run(calc, starting_image, temp, count, label):
             "Energy per atom: Epot = %.3feV Ekin = %.3feV (T=%3.0fK) "
             "Etot = %.3feV" % (epot, ekin, ekin / (1.5 * units.kB), epot + ekin)
         )
-    dyn.attach(printenergy, interval=10)
-    dyn.run(count)
+
+    if printenergy:
+        dyn.attach(printenergy, interval=10)
+    dyn.run(count - 1)
 
 def calculate_energies(emt_images, ml_images):
     energies_emt = [image.get_potential_energy() for image in emt_images]
@@ -87,6 +97,7 @@ def time_plots(target, preds, sampled_points, label, property="energy", filename
     plt.legend(fontsize=25)
     plt.xticks(fontsize=20)
     plt.yticks(fontsize=20)
+    plt.show()
 
 
 def kde_plots(emt, forces, labels, filename=None):
