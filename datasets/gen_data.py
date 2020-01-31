@@ -19,12 +19,11 @@ from amp.descriptor.gaussian import Gaussian
 from amp.model.neuralnetwork import NeuralNetwork
 
 
-def generate_data(count, filename, temp, hook, cons_t=False):
+def generate_data(count, filename, temp, hook, dt, ensemble="NVE"):
     """Generates test or training data with a simple MD simulation."""
-    traj = ase.io.Trajectory(filename, "w")
     slab = fcc100("Cu", size=(3, 3, 3))
     ads = molecule("CO")
-    add_adsorbate(slab, ads, 5, offset=(1, 1))
+    add_adsorbate(slab, ads, 4, offset=(1, 1))
     cons = FixAtoms(
         indices=[atom.index for atom in slab if (atom.tag == 2 or atom.tag == 3)]
     )
@@ -33,21 +32,31 @@ def generate_data(count, filename, temp, hook, cons_t=False):
         slab.set_constraint([cons, cons2])
     else:
         slab.set_constraint(cons)
-    slab.center(vacuum=13., axis=2)
+    slab.center(vacuum=13.0, axis=2)
     slab.set_pbc(True)
-    slab.wrap(pbc=[True]*3)
+    slab.wrap(pbc=[True] * 3)
     slab.set_calculator(EMT())
     slab.get_forces()
-    dyn = QuasiNewton(slab)
-    dyn.run(fmax=0.05)
-    traj.write(slab)
-    if cons_t is True:
-        dyn = Langevin(slab, 1.0 * units.fs, temp * units.kB, 0.002)
-    else:
-        dyn = VelocityVerlet(slab, dt=1.0 * units.fs)
-    for step in range(count):
-        dyn.run(20)
-        traj.write(slab)
+    MaxwellBoltzmannDistribution(slab, temp * units.kB)
+    if ensemble == "NVE":
+        dyn = VelocityVerlet(slab, dt=dt * units.fs)
+    elif ensemble == "nvtberendsen":
+        dyn = nvtberendsen.NVTBerendsen(slab, dt * units.fs, temp, taut=300 * units.fs)
+    elif ensemble == "langevin":
+        dyn = Langevin(slab, dt * units.fs, temp * units.kB, 0.002)
+    traj = ase.io.Trajectory(filename, "w", slab)
+    dyn.attach(traj.write, interval=1)
+
+    def printenergy(a=slab):
+        epot = a.get_potential_energy()
+        ekin = a.get_kinetic_energy()
+        print(
+            "Energy per atom: Epot = %.3feV Ekin = %.3feV (T=%3.0fK) "
+            "Etot = %.3feV" % (epot, ekin, ekin / (1.5 * units.kB), epot + ekin)
+        )
+
+    dyn.attach(printenergy, interval=10)
+    dyn.run(count - 1)
 
 
-generate_data(500, "COCu/COCu_pbc_300K_new.traj", temp=300.0, hook=False, cons_t=True)
+generate_data(2000, "COCu_lang_1fs_300K.traj", temp=300.0, hook=False, dt=1, ensemble="langevin")
