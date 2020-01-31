@@ -1,9 +1,10 @@
 from ase.visualize import view
 from amptorch.lj_model import lj_optim
+from amptorch.lj_new import lj_optim as lj_optim2
 from amptorch.gaussian import Gaussian
 from amptorch.core import AMPTorch
 from amptorch import AMP
-from amptorch.NN_model import CustomLoss
+from amptorch.model import CustomLoss
 from ase.md import VelocityVerlet, Langevin
 from ase.optimize import QuasiNewton
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
@@ -56,17 +57,28 @@ def train(train_images, test_images, lj=False):
     lj_test = None
     if lj:
         label = "bond_mllj.pt"
-        p0 = [1.38147567, -0.3407247, -2.15276909, 0, 0 ,0]
+        # p0 = [2.29284676, 0.29639983, 0.08071821, 1.33905162, 0.12290683, 6.41914719]
+        p0 = [2.29284676, 0.29639983, 1.33905162, 0.12290683]
         params_dict = {"Cu": [], "C": []}
+        element_energies = {}
+        for element in ["C", "Cu"]:
+            atoms = Atoms(element, cell=[20, 20, 20])
+            atoms.set_calculator(EMT())
+            element_energies[element] = atoms.get_potential_energy()
         cutoff = 10
-        lj_model = lj_optim(train_images, p0, params_dict, cutoff, 'test')
+        # lj_model = lj_optim(train_images, p0, params_dict, cutoff, "test")
+        lj_model = lj_optim2(
+            train_images, p0, params_dict, cutoff, "test", element_energies
+        )
         fitted_params = lj_model.fit()
         lj_energies, lj_forces, num_atoms = lj_model.lj_pred(
             train_images, fitted_params, params_dict
         )
-        lj_model = lj_optim(test_images, p0, params_dict, cutoff, 'test')
-        lj_test, _, _ = lj_model.lj_pred(test_images, fitted_params,
-                params_dict)
+        # lj_model = lj_optim(test_images, p0, params_dict, cutoff, "test")
+        lj_model = lj_optim2(
+            test_images, p0, params_dict, cutoff, "test", element_energies
+        )
+        lj_test, _, _ = lj_model.lj_pred(test_images, fitted_params, params_dict)
         lj_data = [
             lj_energies,
             lj_forces,
@@ -90,9 +102,15 @@ def train(train_images, test_images, lj=False):
         )
     )
     calc.model.lr = 1e-3
-    calc.model.convergence = {"energy": 0.001, "force": 0.001, "epochs": 100,
-            "early_stop": True}
+    calc.model.convergence = {
+        "energy": 0.001,
+        "force": 0.001,
+        "epochs": 100,
+        "early_stop": True,
+    }
+    calc.model.loader_params = {"shuffle": True, "batch_size": None}
     calc.model.structure = [5, 5]
+    calc.model.val_frac = 0
     calc.train(overwrite=True)
     energy_pred = [calc.get_potential_energy(image) for image in test_images]
     return energy_pred, lj_test
@@ -138,16 +156,17 @@ def plot(name, ml_energy=None, mllj_energy=None, lj_energies=None):
     ax1.set_ylim(bottom=0)
     ax1.tick_params(axis="both", labelsize=28)
     # ax2.tick_params(axis='both', labelsize=28)
-    # plt.legend(fontsize=18)
-    ax1.annotate("actual", (4, 0), color="k", fontsize=30)
+    plt.legend(fontsize=18)
+    # ax1.annotate("actual", (4, 0), color="k", fontsize=30)
     # ax1.annotate('Boltz. dist.', (1.9, 2), color='r', fontsize=30)
-    ax1.annotate("train data", (2, -4.7), color="r", fontsize=20)
+    # ax1.annotate("train data", (2, -4.7), color="r", fontsize=20)
     # if lj_energy is not None:
-        # ax1.annotate("ML-LJ", (4, -1.2), color="g", fontsize=30)
-        # ax1.annotate("ML", (4, -2.9), color="m", fontsize=30)
+    # ax1.annotate("ML-LJ", (4, -1.2), color="g", fontsize=30)
+    # ax1.annotate("ML", (4, -2.9), color="m", fontsize=30)
     # elif ml_energy is not None:
-        # ax1.annotate("ML", (4, -2.9), color="m", fontsize=30)
+    # ax1.annotate("ML", (4, -2.9), color="m", fontsize=30)
     plt.savefig(name, dpi=300)
     plt.show()
+
 
 plot("test.png", ml_energy, mllj_energy, lj_energies)

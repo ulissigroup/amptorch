@@ -1,4 +1,8 @@
+#python
+__pycache__/
 *.pyc
+
+#output files
 *.ampdb
 *.db
 *.traj
@@ -13,5 +17,13 @@
 *.pickle
 *.png
 *.json
+
+amp_benchmark/
+amptorch/sigopt/
+amptorch/bench/*
+datasets/*
+md_work/*
+
 .ipynb_checkpoints
+*/checkpoints/*
 stored-primes/
