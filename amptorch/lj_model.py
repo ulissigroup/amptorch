@@ -18,7 +18,7 @@ class lj_optim:
         params_dict,
         cutoff,
         filename,
-        fitforces=True,
+        forcesonly=True,
     ):
         if not os.path.exists("results"):
             os.mkdir("results")
@@ -28,7 +28,7 @@ class lj_optim:
         self.data = images
         self.p0 = params
         self.params_dict = params_dict
-        self.fitforces = fitforces
+        self.forcesonly = forcesonly
         self.cutoff = cutoff
         self.hashed_images = hash_images(images)
         self.hashed_keys = list(self.hashed_images.keys())
@@ -118,7 +118,7 @@ class lj_optim:
             eps = np.sqrt(eps_1 * eps_n)
             r = ((d ** 2).sum(1))**0.5
             energy += (eps * (6/(a-6))*np.exp(a*(1-(r/sig)))).sum()
-            f = (eps * (6/(a-6)) * (a/sig) * np.exp(a*(1-(r/sig))))[:, np.newaxis]*d
+            f = (eps * (1/r) * (6/(a-6)) * (a/sig) * np.exp(a*(1-(r/sig))))[:, np.newaxis]*d
             forces[a1] -= f.sum(axis=0)
             for a2, f2 in zip(neighbors, f):
                 forces[a2] += f2
@@ -152,7 +152,7 @@ class lj_optim:
         MSE_forces = (1 / data_size) * (
             ((target_forces - predicted_forces) / np.sqrt(3 * num_atoms_f)) ** 2
         ).sum()
-        if self.fitforces:
+        if self.forcesonly:
             MSE = MSE_forces
         else:
             MSE = MSE_energy + MSE_forces
