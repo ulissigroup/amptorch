@@ -15,7 +15,7 @@ from amptorch.gaussian import SNN_Gaussian
 from amptorch.lj_model import lj_optim
 
 # define training images
-distances = np.linspace(2, 5, 100)
+distances = np.linspace(2, 5, 10)
 label = "example"
 images = []
 for l in distances:
@@ -68,7 +68,7 @@ torch.set_num_threads(1)
 calc = AMP(
     model=AMPTorch(
         images,
-        descriptor=Gaussian,
+        descriptor=SNN_Gaussian,
         Gs=Gs,
         cores=1,
         force_coefficient=0.3,
