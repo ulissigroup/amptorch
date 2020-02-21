@@ -11,5 +11,5 @@ setup(
     author_email="mshuaibi@andrew.cmu.edu",
     url="https://github.com/ulissigroup/amptorch",
     packages=find_packages(),
-    install_requires=["spglib", "torch", "ase", "scipy"],
+    install_requires=["spglib", "torch", "ase", "scipy", "skorch"],
 )
