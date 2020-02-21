@@ -56,7 +56,7 @@ def test_skorch_val():
         label=label,
         cores=1,
         lj_data=None,
-        scaling='log',
+        scaling='minmax',
     )
     batch_size = len(training_data)
     unique_atoms = training_data.elements
