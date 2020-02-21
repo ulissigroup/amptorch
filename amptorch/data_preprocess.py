@@ -264,13 +264,6 @@ class AtomsDataset(Dataset):
             scalings = [scaling_sd, scaling_mean]
         elif self.scaling_scheme is None:
             scalings = [1, 0]
-        elif self.scaling_scheme == "log":
-            log_energy_dataset = torch.log1p(energy_dataset)
-            if self.forcetraining:
-                for idx, force in enumerate(forces_dataset):
-                    forces_dataset[idx] = force / (1 + energy_dataset[idx])
-            energy_dataset = log_energy_dataset
-            scalings = [1, 0]
 
         return (
             fingerprint_dataset,
