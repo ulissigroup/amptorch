@@ -24,17 +24,17 @@ The simplest way to install Amptorch is with pip; you can follow the instruction
 For more customized installations, for example if you want to be able to easily play with the code of Amptorch without reinstalling, you can do the following:
 
 - Install and make sure you can import (into python3) the following dependencies (names for pip installations are in square brackets):
-        - ase [ase]
-        - amp [amp-atomistics]
-        - scipy [scipy]
-        - torch [torch]
-        - skorch [skorch]
-        - spglib [spglib]
+ - ase [ase]
+ - amp [amp-atomistics]
+ - scipy [scipy]
+ - torch [torch]
+ - skorch [skorch]
+ - spglib [spglib]
 
 - Clone the repository and modify your environment such that python knows it exists. E.g., the second line might be included in your .bashrc file or in a custom load function.
 
-        - ```git clone https://github.com/ulissigroup/amptorch.git```
-        - ```export PYTHONPATH=/path/to/amptorch/:$PYTHONPATH```
+ - ```git clone https://github.com/ulissigroup/amptorch.git```
+ - ```export PYTHONPATH=/path/to/amptorch/:$PYTHONPATH```
 
 ### Suggestions and further information
 
