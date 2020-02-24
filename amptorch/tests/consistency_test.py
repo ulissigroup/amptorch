@@ -25,7 +25,7 @@ from amptorch.data_preprocess import (
     collate_amp,
     TestDataset,
 )
-from amptorch.model import FullNN, Dense, CustomLoss
+from amptorch.model import FullNN, CustomLoss, MLP
 from amptorch.skorch_model import AMP
 from amptorch.core import AMPTorch
 from amp.utilities import hash_images as amp_hash
@@ -182,29 +182,30 @@ def test_calcs():
         torch_O_weights_1
     )
     model.state_dict()["elementwise_models.O.model_net.0.bias"].copy_(torch_O_bias_1)
-    model.state_dict()["elementwise_models.O.model_net.1.weight"].copy_(
+    model.state_dict()["elementwise_models.O.model_net.2.weight"].copy_(
         torch_O_weights_2
     )
-    model.state_dict()["elementwise_models.O.model_net.1.bias"].copy_(torch_O_bias_2)
+    model.state_dict()["elementwise_models.O.model_net.2.bias"].copy_(torch_O_bias_2)
     model.state_dict()["elementwise_models.Pd.model_net.0.weight"].copy_(
         torch_Pd_weights_1
     )
     model.state_dict()["elementwise_models.Pd.model_net.0.bias"].copy_(torch_Pd_bias_1)
-    model.state_dict()["elementwise_models.Pd.model_net.1.weight"].copy_(
+    model.state_dict()["elementwise_models.Pd.model_net.2.weight"].copy_(
         torch_Pd_weights_2
     )
-    model.state_dict()["elementwise_models.Pd.model_net.1.bias"].copy_(torch_Pd_bias_2)
+    model.state_dict()["elementwise_models.Pd.model_net.2.bias"].copy_(torch_Pd_bias_2)
     model.state_dict()["elementwise_models.Cu.model_net.0.weight"].copy_(
         torch_Cu_weights_1
     )
     model.state_dict()["elementwise_models.Cu.model_net.0.bias"].copy_(torch_Cu_bias_1)
-    model.state_dict()["elementwise_models.Cu.model_net.1.weight"].copy_(
+    model.state_dict()["elementwise_models.Cu.model_net.2.weight"].copy_(
         torch_Cu_weights_2
     )
-    model.state_dict()["elementwise_models.Cu.model_net.1.bias"].copy_(torch_Cu_bias_2)
+    model.state_dict()["elementwise_models.Cu.model_net.2.bias"].copy_(torch_Cu_bias_2)
+    import torch.nn as nn
     for name, layer in model.named_modules():
-        if isinstance(layer, Dense):
-            layer.activation = Tanh
+        if isinstance(layer, MLP):
+            layer.model_net = nn.Sequential(layer.model_net, Tanh())
 
     for batch in dataloader:
         x = to_tensor(batch[0], device)
