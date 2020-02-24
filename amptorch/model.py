@@ -15,35 +15,6 @@ from amptorch.utils import Logger
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
 
-class Dense(nn.Linear):
-    """Constructs and applies a dense layer with an activation function (when
-    available) y=activation(Ax+b)
-
-    Arguments:
-        input_size (int): number of input features
-        output_size (int): number of output features
-        bias (bool): True to include bias at each neuron. False otherwise
-        (Default: True)
-        activation (callable): activation function to be utilized
-        (Default:None)
-    """
-
-    def __init__(self, input_size, output_size, bias=True, activation=None):
-        self.activation = activation
-        super(Dense, self).__init__(input_size, output_size, bias)
-
-    def reset_parameters(self):
-        """Weight initialization scheme"""
-        init.constant_(self.bias, 0)
-        kaiming_uniform_(self.weight, nonlinearity="tanh")
-
-    def forward(self, inputs):
-        neuron_output = super(Dense, self).forward(inputs)
-        if self.activation:
-            neuron_output = self.activation()(neuron_output)
-        return neuron_output
-
-
 class MLP(nn.Module):
     """Constructs a fully connected neural network model to be utilized for
     each element type'''
@@ -58,22 +29,22 @@ class MLP(nn.Module):
 
     def __init__(
         self,
-        n_input_nodes=20,
+        n_input_nodes,
+        n_layers,
+        n_hidden_size,
+        activation,
         n_output_nodes=1,
-        n_layers=2,
-        n_hidden_size=2,
-        activation=Tanh,
     ):
         super(MLP, self).__init__()
         if isinstance(n_hidden_size, int):
-            n_hidden_size = [n_hidden_size] * (n_layers - 1)
+            n_hidden_size = [n_hidden_size] * (n_layers)
         self.n_neurons = [n_input_nodes] + n_hidden_size + [n_output_nodes]
         self.activation = activation
-        layers = [
-            Dense(self.n_neurons[i], self.n_neurons[i + 1], activation=activation)
-            for i in range(n_layers - 1)
-        ]
-        layers.append(Dense(self.n_neurons[-2], self.n_neurons[-1], activation=None))
+        layers = []
+        for _ in range(n_layers - 1):
+            layers.append(nn.Linear(self.n_neurons[_], self.n_neurons[_ + 1]))
+            layers.append(activation())
+        layers.append(nn.Linear(self.n_neurons[-2], self.n_neurons[-1]))
         self.model_net = nn.Sequential(*layers)
 
     def forward(self, inputs):
@@ -92,26 +63,27 @@ class FullNN(nn.Module):
     """
 
     def __init__(
-        self, unique_atoms, architecture, device, forcetraining, require_grd=True
+        self, unique_atoms, architecture, device, forcetraining,
+        activation=Tanh, require_grd=True
     ):
         super(FullNN, self).__init__()
         self.device = device
         self.req_grad = require_grd
         self.forcetraining = forcetraining
         self.architecture = architecture
+        self.activation_fn = activation
 
         input_length = architecture[0]
         n_layers = architecture[1]
         n_hidden_size = architecture[2]
-        elementwise_models = nn.ModuleDict()
+        self.elementwise_models = nn.ModuleDict()
         for element in unique_atoms:
-            elementwise_models[element] = MLP(
+            self.elementwise_models[element] = MLP(
                 n_input_nodes=input_length,
                 n_layers=n_layers,
                 n_hidden_size=n_hidden_size,
+                activation=activation,
             )
-        self.elementwise_models = elementwise_models
-        self.activation_fn = elementwise_models[unique_atoms[0]].activation
 
     def forward(self, inputs):
         """Forward pass through the model - predicting energy and forces
