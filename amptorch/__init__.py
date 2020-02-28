@@ -43,7 +43,7 @@ class AMP(Calculator):
             os.mkdir("results/trained_models")
         self.save_logs = model.save_logs
         label = model.label
-        self.log = Logger("results/logs/"+label+".txt")
+        self.log = Logger("results/logs/" + label + ".txt")
         self.log("Filename: %s" % label)
         self.model = model
         self.label = "".join(["results/trained_models/", label, ".pt"])
@@ -52,6 +52,7 @@ class AMP(Calculator):
         self.target_mean = self.model.scalings[1]
         self.lj = self.model.training_data.lj
         self.Gs = self.model.training_data.Gs
+        self.training_elements = self.model.training_data.elements
         self.log("Symmetry function parameters: %s" % self.Gs)
         if self.lj:
             self.fitted_params = self.model.lj_data[3]
@@ -71,22 +72,25 @@ class AMP(Calculator):
     def calculate(self, atoms, properties, system_changes):
         Calculator.calculate(self, atoms, properties, system_changes)
         dataset = TestDataset(
-            images=atoms, descriptor=self.model.descriptor, Gs=self.Gs,
-            fprange=self.fp_scaling, label=self.model.label)
+            images=atoms,
+            unique_atoms=self.training_elements,
+            descriptor=self.model.descriptor,
+            Gs=self.Gs,
+            fprange=self.fp_scaling,
+            label=self.model.label,
+        )
         fp_length = dataset.fp_length()
-        unique_atoms = dataset.unique()
         architecture = copy.copy(self.model.structure)
         architecture.insert(0, fp_length)
+        unique_atoms = dataset.unique()
         batch_size = len(dataset)
         dataloader = DataLoader(
             dataset, batch_size, collate_fn=dataset.collate_test, shuffle=False
         )
-        if properties == ['energy']:
-            model = FullNN(unique_atoms, architecture, "cpu",
-                    forcetraining=False)
-        elif properties == ['forces']:
-            model = FullNN(unique_atoms, architecture, "cpu",
-                    forcetraining=True)
+        if properties == ["energy"]:
+            model = FullNN(self.training_elements, architecture, "cpu", forcetraining=False)
+        elif properties == ["forces"]:
+            model = FullNN(self.training_elements, architecture, "cpu", forcetraining=True)
         model.load_state_dict(torch.load(self.label))
         model.eval()
 
@@ -96,7 +100,7 @@ class AMP(Calculator):
             energy, forces = model(inputs)
         energy = (energy * self.target_sd) + self.target_mean
         energy = np.concatenate(energy.detach().numpy())
-        if properties == ['forces']:
+        if properties == ["forces"]:
             forces = (forces * self.target_sd).detach().numpy()
 
         if self.lj:
@@ -107,7 +111,7 @@ class AMP(Calculator):
             )
             lj_energy = np.squeeze(lj_energy)
             energy += lj_energy
-            if properties == ['forces']:
+            if properties == ["forces"]:
                 forces += lj_forces
 
         self.results["energy"] = float(energy)
