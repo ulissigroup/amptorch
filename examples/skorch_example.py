@@ -57,7 +57,7 @@ Gs["G4_gammas"] = [+1.0, -1]
 Gs["cutoff"] = 6.5
 
 forcetraining = True
-training_data = AtomsDataset(images, Gaussian, Gs, forcetraining=forcetraining,
+training_data = AtomsDataset(images, SNN_Gaussian, Gs, forcetraining=forcetraining,
         label=label, cores=1, lj_data=None, scaling='minmax')
 unique_atoms = training_data.elements
 fp_length = training_data.fp_length
