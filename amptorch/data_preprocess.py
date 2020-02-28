@@ -18,8 +18,10 @@ from amptorch.utils import (
     make_amp_descriptors_simple_nn,
     calculate_fingerprints_range,
     hash_images,
+    get_hash
 )
 from amp.utilities import hash_images as amp_hash
+from amp.utilities import get_hash as get_amp_hash
 from functools import lru_cache
 
 __author__ = "Muhammed Shuaibi"
@@ -98,7 +100,6 @@ class AtomsDataset(Dataset):
             if extension != (".traj" or ".db"):
                 self.atom_images = ase.io.read(images, ":")
         self.elements = self.unique()
-        self.hashed_images = amp_hash(self.atom_images)
         print("Calculating fingerprints...")
         G2_etas = Gs["G2_etas"]
         G2_rs_s = Gs["G2_rs_s"]
@@ -112,6 +113,10 @@ class AtomsDataset(Dataset):
             make_amp_descriptors_simple_nn(
                 self.atom_images, Gs, self.elements, cores=cores, label=label
             )
+            self.isamp_hash = False
+        else:
+            self.hashed_images = amp_hash(self.atom_images)
+            self.isamp_hash = True
         G = make_symmetry_functions(elements=self.elements, type="G2", etas=G2_etas)
         G += make_symmetry_functions(
             elements=self.elements,
@@ -134,9 +139,10 @@ class AtomsDataset(Dataset):
         )
 
     def __len__(self):
-        return len(self.hashed_images)
+        return len(self.atom_images)
 
     def preprocess_data(self):
+        #TODO cleanup/optimize
         fingerprint_dataset = []
         fprimes_dataset = []
         energy_dataset = np.array([])
@@ -146,7 +152,11 @@ class AtomsDataset(Dataset):
         self.fp_length = self.fp_length()
         rearange_forces = {}
         n = 0
-        for index, hash_name in enumerate(self.hashed_images.keys()):
+        for index, atoms_object in enumerate(self.atom_images):
+            if self.isamp_hash:
+                hash_name = get_amp_hash(atoms_object)
+            else:
+                hash_name = get_hash(atoms_object, self.Gs)
             index_hashes.append(hash_name)
             image_fingerprint = self.descriptor.fingerprints[hash_name]
             fprange = self.fprange
@@ -176,9 +186,7 @@ class AtomsDataset(Dataset):
                 )
                 # subtract off lj force contribution
                 if self.lj:
-                    idx_start = self.num_atoms[:index].sum()
-                    idx_end = idx_start + self.num_atoms[index]
-                    lj_forces = self.lj_forces[idx_start:idx_end]
+                    lj_forces = np.array(self.lj_forces[index])
                     image_forces -= lj_forces
 
                 if self.store_primes and os.path.isfile("./stored-primes/" + hash_name):
@@ -469,9 +477,6 @@ def collate_amp(training_data):
         scalings,
         rearange,
     ) = factorize_data(training_data)
-    forcetraining = False
-    if image_forces.nelement() != 0:
-        forcetraining = True
     batch_size = len(energy_dataset)
     element_specific_fingerprints = {}
     model_input_data = [[], []]
@@ -519,7 +524,7 @@ class TestDataset(Dataset):
 
     """
 
-    def __init__(self, images, descriptor, Gs, fprange, label="example", cores=1):
+    def __init__(self, images, unique_atoms, descriptor, Gs, fprange, label="example", cores=1):
         self.images = images
         if type(images) is not list:
             self.images = [images]
@@ -530,7 +535,7 @@ class TestDataset(Dataset):
             if extension != (".traj" or ".db"):
                 self.atom_images = ase.io.read(images, ":")
         self.fprange = fprange
-        self.unique_atoms = self.unique()
+        self.training_unique_atoms = unique_atoms
         self.hashed_images = amp_hash(self.atom_images)
         G2_etas = Gs["G2_etas"]
         G2_rs_s = Gs["G2_rs_s"]
@@ -541,22 +546,23 @@ class TestDataset(Dataset):
         if str(descriptor)[8:16] == "amptorch":
             self.hashed_images = hash_images(self.atom_images, Gs)
             make_amp_descriptors_simple_nn(
-                self.atom_images, Gs, self.unique_atoms, cores=cores, label=label
+                self.atom_images, Gs, self.training_unique_atoms, cores=cores, label=label
             )
-        G = make_symmetry_functions(elements=self.unique_atoms, type="G2", etas=G2_etas)
+        G = make_symmetry_functions(elements=self.training_unique_atoms, type="G2", etas=G2_etas)
         G += make_symmetry_functions(
-            elements=self.unique_atoms,
+            elements=self.training_unique_atoms,
             type="G4",
             etas=G4_etas,
             zetas=G4_zetas,
             gammas=G4_gammas,
         )
         for g in G:
-            g["Rs"] = 0.0
+            g["Rs"] = G2_rs_s
         self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
         self.descriptor.calculate_fingerprints(
             self.hashed_images, calculate_derivatives=True
         )
+        self.unique_atoms = self.unique()
 
     def __len__(self):
         return len(self.hashed_images)
@@ -628,9 +634,6 @@ class TestDataset(Dataset):
         )
         _, idx = np.unique(elements, return_index=True)
         elements = list(elements[np.sort(idx)])
-        # elements = list(
-        # sorted(set([atom.symbol for atoms in self.atom_images for atom in atoms]))
-        # )
         return elements
 
     def fp_length(self):

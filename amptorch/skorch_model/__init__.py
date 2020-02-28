@@ -5,7 +5,7 @@ import copy
 import numpy as np
 import time
 from torch.utils.data import DataLoader
-from amptorch.utils import Logger, hash_images
+from amptorch.utils import Logger, hash_images, get_hash
 from amptorch.skorch_model.utils import (
     make_force_header,
     make_energy_header,
@@ -123,6 +123,7 @@ class AMP(Calculator):
         Calculator.calculate(self, atoms, properties, system_changes)
         dataset = TestDataset(
             images=atoms,
+            unique_atoms=self.training_data.elements,
             descriptor=self.training_data.base_descriptor,
             Gs=self.Gs,
             fprange=self.fprange,
@@ -130,12 +131,11 @@ class AMP(Calculator):
             cores=self.cores,
         )
         unique_atoms = dataset.unique()
-        architecture = copy.copy(self.model.module.architecture)
         batch_size = len(dataset)
         dataloader = DataLoader(
             dataset, batch_size, collate_fn=dataset.collate_test, shuffle=False
         )
-        model = FullNN(unique_atoms, architecture, "cpu", forcetraining=True)
+        model = self.model.module
         model.load_state_dict(torch.load(self.label))
         model.eval()
 
@@ -147,8 +147,8 @@ class AMP(Calculator):
         energy = np.concatenate(energy.detach().numpy())
         forces = (forces * self.target_slope).detach().numpy()
 
+        image_hash = hash_images([atoms])
         if self.lj:
-            image_hash = hash_images([atoms])
             self.lj_model.neighborlist.calculate_items(image_hash)
             lj_energy, lj_forces, _ = self.lj_model.image_pred(
                 atoms, self.fitted_params, self.params_dict
