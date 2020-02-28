@@ -92,6 +92,7 @@ def test_training():
     dataset = TestDataset(
         images,
         descriptor=calc.model.descriptor,
+        unique_atoms=calc.model.training_data.elements,
         Gs=calc.model.training_data.Gs,
         fprange=calc.model.training_data.fprange,
     )
