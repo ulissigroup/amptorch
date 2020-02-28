@@ -135,14 +135,16 @@ class lj_optim:
             predicted_energies.append(energy)
             predicted_forces.append(forces)
             num_atoms.append(natoms)
-        predicted_energies = np.concatenate(np.array(predicted_energies).reshape(1, -1))
-        predicted_forces = np.concatenate(predicted_forces)
+        # predicted_energies = np.concatenate(np.array(predicted_energies).reshape(1, -1))
+        # predicted_forces = np.concatenate(predicted_forces)
         return predicted_energies, predicted_forces, num_atoms
 
     def objective_fn(self, params, target_energies, target_forces):
         predicted_energies, predicted_forces, num_atoms = self.lj_pred(
             self.data, params, self.params_dict
         )
+        predicted_energies = np.array(predicted_energies).reshape(1, -1)
+        predicted_forces = np.concatenate(predicted_forces)
         data_size = target_energies.shape[1]
         num_atoms_f = np.array([[i] * i for i in num_atoms]).reshape(-1, 1)
         num_atoms = np.array(num_atoms)
@@ -196,6 +198,7 @@ class lj_optim:
             )
         )
         log("Fitted LJ parameters: %s \n" % self.params_to_dict(results.x, params_dict))
+        log("a: {}".format(results.x[-1]))
         log("Optimization time: %s \n" % optim_time)
 
     def parity(self, predicted_energies, predicted_forces):
