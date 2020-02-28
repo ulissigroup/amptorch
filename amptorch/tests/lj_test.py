@@ -78,7 +78,7 @@ def test_ml_lj():
         ), "LJ energies calculated by \
         lj_model are inconsistent with predicted lj_pred!"
         assert (
-            model_lj_forces.all() == true_lj_forces.all()
+            model_lj_forces[0].all() == true_lj_forces.all()
         ), "LJ forces calculated by \
         lj_model are inconsistent with lj_pred!"
     lj_model.parity(predicted_energies=lj_energies, predicted_forces=lj_forces)
@@ -262,3 +262,4 @@ def test_skorch_lj():
     assert round(force_rmse, 4) == round(
         last_forces_score, 4
     ), "Force errors incorrect!"
+
