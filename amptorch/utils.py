@@ -8,6 +8,11 @@ import shutil
 import numpy as np
 from ase import io
 from ase.db import connect
+from simple_nn.features.symmetry_function import Symmetry_function
+import line_profiler
+import atexit
+profile = line_profiler.LineProfiler()
+atexit.register(profile.print_stats)
 
 
 def hash_images(images, Gs=None, log=None, ordered=False):
@@ -45,8 +50,6 @@ def hash_images(images, Gs=None, log=None, ordered=False):
         dict_images.metadata["duplicates"] = {}
         dup = dict_images.metadata["duplicates"]
         if ordered is True:
-            from collections import OrderedDict
-
             dict_images = OrderedDict()
         for image in images:
             hash = get_hash(image, Gs)
@@ -340,7 +343,6 @@ class DummySimple_nn(object):
         }
         self.logfile = open(dir+"/simple_nn_log", "w")
 
-
 def make_simple_nn_fps(traj, Gs, label, clean_up_directory=True, elements="all"):
     """
     generates descriptors using simple_nn. The files are stored in the
@@ -365,8 +367,6 @@ def make_simple_nn_fps(traj, Gs, label, clean_up_directory=True, elements="all")
     traj = factorize_data(traj, G)
     calculated = False
     if len(traj) > 0:
-        from simple_nn.features.symmetry_function import Symmetry_function
-
         # order descriptors for simple_nn
         cutoff = G["cutoff"]
         G["G2_etas"] = [a / cutoff**2 for a in G["G2_etas"]]
@@ -441,7 +441,6 @@ def make_simple_nn_fps(traj, Gs, label, clean_up_directory=True, elements="all")
                 os.remove(fp_dir+"/"+file)
         calculated = True
     return traj, calculated
-
 
 def make_amp_descriptors_simple_nn(traj, Gs, elements, cores, label):
     """
