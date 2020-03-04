@@ -9,11 +9,6 @@ import numpy as np
 from ase import io
 from ase.db import connect
 from simple_nn.features.symmetry_function import Symmetry_function
-import line_profiler
-import atexit
-profile = line_profiler.LineProfiler()
-atexit.register(profile.print_stats)
-
 
 def hash_images(images, Gs=None, log=None, ordered=False):
     """ Converts input images -- which may be a list, a trajectory file, or
