@@ -1,3 +1,4 @@
+import sys
 import os
 import time
 from itertools import product
@@ -11,15 +12,7 @@ from functools import lru_cache
 
 
 class lj_optim:
-    def __init__(
-        self,
-        images,
-        params,
-        params_dict,
-        cutoff,
-        filename,
-        forcesonly=True,
-    ):
+    def __init__(self, images, params, params_dict, cutoff, filename, forcesonly=True):
         if not os.path.exists("results"):
             os.mkdir("results")
         if not os.path.exists("results/logs"):
@@ -60,7 +53,7 @@ class lj_optim:
             args=(self.target_energies, self.target_forces),
             method=method,
             bounds=bounds,
-            options={"disp": True}
+            options={"disp": True},
         )
         optim_time = time.time() - s_time
         self.logresults(
@@ -81,12 +74,11 @@ class lj_optim:
         chemical_symbols = np.array(image.get_chemical_symbols())
         params = []
         for element in chemical_symbols:
-            sig = params_dict[element][0]
-            eps = params_dict[element][1]
-            params.append(np.array([[sig, eps]]))
+            De = params_dict[element][0]
+            ae = params_dict[element][1]
+            re = params_dict[element][2]
+            params.append(np.array([[De, ae, re]]))
         params = np.vstack(np.array(params))
-        a = p0[-1]
-
         natoms = len(image)
 
         image_hash = get_hash(image)
@@ -99,18 +91,23 @@ class lj_optim:
         forces = np.zeros((natoms, 3))
 
         for a1 in range(natoms):
-            sig_1 = np.abs(params[a1][0])
-            eps_1 = params[a1][1]
+            re_1 = params[a1][0]
+            De_1 = np.abs(params[a1][1])
+            ae_1 = params[a1][2]
             neighbors, offsets = image_neighbors[a1]
             cells = np.dot(offsets, cell)
             d = positions[neighbors] + cells - positions[a1]
-            sig_n = np.abs(params[neighbors][:, 0])
-            eps_n = params[neighbors][:, 1]
-            sig = (sig_1 + sig_n) / 2
-            eps = np.sqrt(eps_1 * eps_n)
-            r = ((d ** 2).sum(1))**0.5
-            energy += (eps * (6/(a-6))*np.exp(a*(1-(r/sig)))).sum()
-            f = (eps * (1/r) * (6/(a-6)) * (a/sig) * np.exp(a*(1-(r/sig))))[:, np.newaxis]*d
+            De_n = np.abs(params[neighbors][:, 0])
+            ae_n = params[neighbors][:, 1]
+            re_n = params[neighbors][:, 2]
+            re = (re_1 + re_n) / 2
+            De = np.sqrt(De_1 * De_n)
+            ae = np.sqrt(ae_1 * ae_n)
+            r = np.sqrt((d ** 2).sum(1))
+            m = De * (1-np.exp(-ae*(r-re)))**2
+            m[r > self.cutoff] = 0.0
+            energy += m.sum()
+            f = (-(2/r)*De*(1-np.exp(-ae*(r-re)))*(ae*np.exp(-ae*(r-re))))[:, np.newaxis]*d
             forces[a1] -= f.sum(axis=0)
             for a2, f2 in zip(neighbors, f):
                 forces[a2] += f2
@@ -134,7 +131,7 @@ class lj_optim:
         predicted_energies, predicted_forces, num_atoms = self.lj_pred(
             self.data, params, self.params_dict
         )
-        predicted_energies = np.array(predicted_energies).reshape(1, -1)
+        predicted_energies = np.concatenate(np.array(predicted_energies).reshape(1, -1))
         predicted_forces = np.concatenate(predicted_forces)
         data_size = target_energies.shape[1]
         num_atoms_f = np.array([[i] * i for i in num_atoms]).reshape(-1, 1)
@@ -166,8 +163,8 @@ class lj_optim:
     def params_to_dict(self, params, params_dict):
         idx = 0
         for keys in list(params_dict.keys()):
-            params_dict[keys] = params[idx : idx + 2]
-            idx += 2
+            params_dict[keys] = params[idx : idx + 3]
+            idx += 3
         return params_dict
 
     def logresults(self, log, data, cutoff, p0, params_dict, results, optim_time):
@@ -189,7 +186,6 @@ class lj_optim:
             )
         )
         log("Fitted LJ parameters: %s \n" % self.params_to_dict(results.x, params_dict))
-        log("a: {}".format(results.x[-1]))
         log("Optimization time: %s \n" % optim_time)
 
     def parity(self, predicted_energies, predicted_forces):

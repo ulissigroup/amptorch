@@ -131,6 +131,10 @@ class AMPTorch:
         self.forcetraining = False
         if force_coefficient > 0:
             self.forcetraining = True
+        if self.lj_data:
+            self.scaling = "rel"
+        else:
+            self.scaling = None
 
         self.training_data = AtomsDataset(
             self.filename,
@@ -140,6 +144,7 @@ class AMPTorch:
             forcetraining=self.forcetraining,
             lj_data=self.lj_data,
             label=label,
+            scaling=self.scaling,
         )
         self.scalings = self.training_data.scalings
         self.sd_scaling = self.scalings[0]

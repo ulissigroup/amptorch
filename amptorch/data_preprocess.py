@@ -74,7 +74,7 @@ class AtomsDataset(Dataset):
         cores,
         lj_data=None,
         store_primes=False,
-        scaling="minmax",
+        scaling=None,
     ):
         self.images = images
         self.base_descriptor = descriptor
@@ -177,9 +177,9 @@ class AtomsDataset(Dataset):
                 apply_constraint=False
             )
             # subtract off lj contribution
-            if self.lj:
-                lj_energy = self.lj_energies[index]
-                image_potential_energy -= lj_energy
+            # if self.lj:
+                # lj_energy = self.lj_energies[index]
+                # image_potential_energy -= lj_energy
             if self.forcetraining:
                 image_forces = self.hashed_images[hash_name].get_forces(
                     apply_constraint=False
@@ -251,27 +251,19 @@ class AtomsDataset(Dataset):
             fingerprint_dataset.append(image_fingerprint)
             energy_dataset = np.append(energy_dataset, image_potential_energy)
             num_of_atoms = np.append(num_of_atoms, float(len(image_fingerprint)))
-        energy_dataset = torch.FloatTensor(energy_dataset)
-        if self.scaling_scheme == "minmax":
-            scaling_min = torch.min(energy_dataset)
-            scaling_max = torch.max(energy_dataset)
-            scaling_slope = (scaling_max - scaling_min) / 2
-            scaling_intercept = (scaling_max + scaling_min) / 2
-            energy_dataset = (energy_dataset - scaling_intercept) / (scaling_slope)
-            if self.forcetraining:
-                for idx, force in enumerate(forces_dataset):
-                    forces_dataset[idx] = force / scaling_slope
-            scalings = [scaling_slope, scaling_intercept]
-        elif self.scaling_scheme == "standardize":
-            scaling_mean = torch.mean(energy_dataset)
-            scaling_sd = torch.std(energy_dataset, dim=0)
-            energy_dataset = (energy_dataset - scaling_mean) / scaling_sd
-            if self.forcetraining:
-                for idx, force in enumerate(forces_dataset):
-                    forces_dataset[idx] = force / scaling_sd
-            scalings = [scaling_sd, scaling_mean]
+        if self.lj:
+            target_ref = energy_dataset[0]
+            lj_ref = self.lj_energies[0]
+            relative_targets = energy_dataset - target_ref
+            relative_lj = self.lj_energies - lj_ref
+            energy_dataset = torch.FloatTensor(relative_targets - relative_lj)
+        else:
+            energy_dataset = torch.FloatTensor(energy_dataset)
+
+        if self.scaling_scheme is "rel":
+            scalings = [target_ref, lj_ref]
         elif self.scaling_scheme is None:
-            scalings = [1, 0]
+            scalings = [0, 0]
 
         return (
             fingerprint_dataset,
@@ -545,31 +537,33 @@ class TestDataset(Dataset):
         cutoff = Gs["cutoff"]
         if str(descriptor)[8:16] == "amptorch":
             self.hashed_images = hash_images(self.atom_images, Gs)
-            make_amp_descriptors_simple_nn(
-                self.atom_images, Gs, self.training_unique_atoms, cores=cores, label=label
+            self.fps, self.fp_primes = make_amp_descriptors_simple_nn(
+                self.atom_images, Gs, self.training_unique_atoms, cores=cores,
+                label=label, save=False
             )
-        G = make_symmetry_functions(elements=self.training_unique_atoms, type="G2", etas=G2_etas)
-        G += make_symmetry_functions(
-            elements=self.training_unique_atoms,
-            type="G4",
-            etas=G4_etas,
-            zetas=G4_zetas,
-            gammas=G4_gammas,
-        )
-        for g in G:
-            g["Rs"] = G2_rs_s
-        self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
-        self.descriptor.calculate_fingerprints(
-            self.hashed_images, calculate_derivatives=True
-        )
+        # G = make_symmetry_functions(elements=self.training_unique_atoms, type="G2", etas=G2_etas)
+        # G += make_symmetry_functions(
+            # elements=self.training_unique_atoms,
+            # type="G4",
+            # etas=G4_etas,
+            # zetas=G4_zetas,
+            # gammas=G4_gammas,
+        # )
+        # for g in G:
+            # g["Rs"] = G2_rs_s
+        # self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
+        # self.descriptor.calculate_fingerprints(
+            # self.hashed_images, calculate_derivatives=True
+        # )
         self.unique_atoms = self.unique()
 
     def __len__(self):
         return len(self.hashed_images)
 
     def __getitem__(self, index):
-        hash_name = list(self.hashed_images.keys())[index]
-        image_fingerprint = self.descriptor.fingerprints[hash_name]
+        # hash_name = list(self.hashed_images.keys())[index]
+        # image_fingerprint = self.descriptor.fingerprints[hash_name]
+        image_fingerprint = self.fps
         fprange = self.fprange
         atom_order = []
         # fingerprint scaling to a range of [-1,1].
@@ -584,7 +578,8 @@ class TestDataset(Dataset):
                     )
             image_fingerprint[i] = (atom, _afp)
             atom_order.append(atom)
-        image_primes = self.descriptor.fingerprintprimes[hash_name]
+        image_primes = self.fp_primes
+        # image_primes = self.descriptor.fingerprintprimes[hash_name]
         # fingerprint derivative scaling to a range of [0,1].
         _image_primes = copy.copy(image_primes)
         for _, key in enumerate(list(image_primes.keys())):

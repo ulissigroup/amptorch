@@ -3,6 +3,7 @@ import copy
 import time
 import os
 import pickle
+from pickle import load
 from collections import defaultdict, OrderedDict
 import shutil
 import numpy as np
@@ -281,7 +282,7 @@ def factorize_data(traj, Gs):
     return new_traj
 
 
-def convert_simple_nn_fps(traj, Gs, cores, label, delete_old=True):
+def convert_simple_nn_fps(traj, Gs, cores, label, save, delete_old=True):
     from multiprocessing import Pool
 
     # make the directories
@@ -302,25 +303,29 @@ def convert_simple_nn_fps(traj, Gs, cores, label, delete_old=True):
             p.map(reorganize, l_trajs)
     else:
         image = (0, traj[0], Gs, label, fp_dir)
-        reorganize(image)
+        fps, fp_primes = reorganize(image, save=save)
     if delete_old:
         os.rmdir("./data"+label)
+    if save:
+        return None, None
+    else:
+        return fps, fp_primes
 
 
-def reorganize(inp, delete_old=True):
+def reorganize(inp, delete_old=True, save=True):
     i, image, Gs, label, fp_dir = inp
     pic = pickle.load(open(fp_dir+"/data{}.pickle".format(i + 1), "rb"))
     im_hash = get_hash(image, Gs)
     x_list = reorganize_simple_nn_fp(image, pic["x"])
-    pickle.dump(x_list, open("./amp-data-fingerprints.ampdb/loose/" + im_hash, "wb"))
-    del x_list  # free up memory just in case
     x_der_dict = reorganize_simple_nn_derivative(image, pic["dx"])
-    pickle.dump(
-        x_der_dict, open("./amp-data-fingerprint-primes.ampdb/loose/" + im_hash, "wb")
-    )
-    del x_der_dict  # free up memory just in case
+    if save:
+        pickle.dump(x_list, open("./amp-data-fingerprints.ampdb/loose/" + im_hash, "wb"))
+        pickle.dump(
+            x_der_dict, open("./amp-data-fingerprint-primes.ampdb/loose/" + im_hash, "wb")
+        )
     if delete_old:  # in case disk space is an issue
         os.remove(fp_dir+"/data{}.pickle".format(i + 1))
+    return x_list, x_der_dict
 
 
 class DummySimple_nn(object):
@@ -437,16 +442,29 @@ def make_simple_nn_fps(traj, Gs, label, clean_up_directory=True, elements="all")
         calculated = True
     return traj, calculated
 
-def make_amp_descriptors_simple_nn(traj, Gs, elements, cores, label):
+def stored_fps(traj, Gs):
+    image_hash = get_hash(traj[0], Gs)
+    with open("amp-data-fingerprints.ampdb/loose/"+image_hash, "rb") as f:
+        fps = load(f)
+    with open("amp-data-fingerprint-primes.ampdb/loose/"+image_hash, "rb") as f:
+        fp_primes = load(f)
+    return fps, fp_primes
+
+def make_amp_descriptors_simple_nn(atoms, Gs, elements, cores, label, save=True):
     """
     uses simple_nn to make descriptors in the amp format.
     Only creates the same symmetry functions for each element
     for now.
     """
-    traj, calculated = make_simple_nn_fps(traj, Gs, elements=elements,
+    traj, calculated = make_simple_nn_fps(atoms, Gs, elements=elements,
             label=label, clean_up_directory=True)
     if calculated:
-        convert_simple_nn_fps(traj, Gs, cores, label, delete_old=True)
+        fps, fp_primes = convert_simple_nn_fps(traj, Gs, cores, label, save, delete_old=True)
+        return fps, fp_primes
+    if save is False and calculated is False:
+        fps, fp_primes = stored_fps(atoms, Gs)
+        return fps, fp_primes
+    else: return None, None
 
 
 class Logger:
