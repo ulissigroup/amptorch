@@ -152,7 +152,6 @@ def test_training():
     # test plot creation
     parity_plot(calc, images, data="energy", label=label)
     parity_plot(calc, images, data="forces", label=label)
-
 def test_e_only_training():
     distances = np.linspace(2, 5, 100)
     label = "test_training"
