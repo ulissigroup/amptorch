@@ -53,8 +53,8 @@ class AMP(Calculator):
         self.testlabel = label
         self.label = "".join(["results/trained_models/", label, ".pt"])
         self.scalings = training_data.scalings
-        self.target_slope = self.scalings[0]
-        self.target_intercept = self.scalings[1]
+        self.target_ref = self.scalings[0]
+        self.lj_ref = self.scalings[1]
         self.lj = training_data.lj
         self.Gs = training_data.Gs
         self.fprange = training_data.fprange
@@ -143,9 +143,9 @@ class AMP(Calculator):
             for element in unique_atoms:
                 inputs[0][element][0] = inputs[0][element][0].requires_grad_(True)
             energy, forces = model(inputs)
-        energy = (energy * self.target_slope) + self.target_intercept
+        energy = energy + self.target_ref
         energy = np.concatenate(energy.detach().numpy())
-        forces = (forces * self.target_slope).detach().numpy()
+        forces = forces.detach().numpy()
 
         image_hash = hash_images([atoms])
         if self.lj:
@@ -154,7 +154,7 @@ class AMP(Calculator):
                 atoms, self.fitted_params, self.params_dict
             )
             lj_energy = np.squeeze(lj_energy)
-            energy += lj_energy
+            energy += lj_energy - self.lj_ref
             forces += lj_forces
 
         self.results["energy"] = float(energy)

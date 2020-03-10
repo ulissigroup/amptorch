@@ -26,14 +26,14 @@ class TestMethods(unittest.TestCase):
         print("Fingerprint test passed!")
 
     def test_lj(self):
-        test_ml_lj()
+        # test_ml_lj()
         test_skorch_lj()
         print("LJ tests passed!")
 
-    def test_training(self):
-        test_training()
-        test_e_only_training()
-        print("Custom training tests passed!")
+    # def test_training(self):
+        # test_training()
+        # test_e_only_training()
+        # print("Custom training tests passed!")
 
     def test_skorch(self):
         test_skorch()
@@ -45,10 +45,10 @@ class TestMethods(unittest.TestCase):
         test_energy_only_skorch_val()
         print("Skorch validation tests passed!")
 
-    def test_val(self):
-        test_val()
-        test_energy_only_val()
-        print("Custom training validation tests passed!")
+    # def test_val(self):
+        # test_val()
+        # test_energy_only_val()
+        # print("Custom training validation tests passed!")
 
 
 if __name__ == "__main__":

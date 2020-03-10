@@ -80,7 +80,7 @@ def test_skorch():
         label=label,
         cores=1,
         lj_data=None,
-        scaling="standardize",
+        scaling=None,
     )
     unique_atoms = training_data.elements
     fp_length = training_data.fp_length
@@ -115,18 +115,18 @@ def test_skorch():
                 use_caching=True,
                 target_extractor=target_extractor,
             ),
-            EpochScoring(
-                forces_mad,
-                on_train=True,
-                use_caching=True,
-                target_extractor=target_extractor,
-            ),
-            EpochScoring(
-                energy_mad,
-                on_train=True,
-                use_caching=True,
-                target_extractor=target_extractor,
-            ),
+            # EpochScoring(
+                # forces_mad,
+                # on_train=True,
+                # use_caching=True,
+                # target_extractor=target_extractor,
+            # ),
+            # EpochScoring(
+                # energy_mad,
+                # on_train=True,
+                # use_caching=True,
+                # target_extractor=target_extractor,
+            # ),
         ],
     )
     calc = AMP(training_data, net, "test")
@@ -157,9 +157,9 @@ def test_skorch():
     force_median_error = np.median(force_loss_image)
 
     reported_energy_score = net.history[-1]["energy_score"]
-    reported_median_energy_score = net.history[-1]["energy_mad"]
+    # reported_median_energy_score = net.history[-1]["energy_mad"]
     reported_forces_score = net.history[-1]["forces_score"]
-    reported_median_forces_score = net.history[-1]["forces_mad"]
+    # reported_median_forces_score = net.history[-1]["forces_mad"]
     assert force_rmse <= 0.005, "Force training convergence not met!"
     assert energy_rmse <= 0.005, "Energy training convergence not met!"
     assert round(reported_energy_score, 4) == round(
@@ -168,12 +168,12 @@ def test_skorch():
     assert round(reported_forces_score, 4) == round(
         force_rmse, 4
     ), "Shuffled reported forces score incorrect!"
-    assert round(reported_median_energy_score, 4) == round(
-            energy_median_error, 4
-            ), "Reported median energy score incorrect!"
-    assert round(reported_median_forces_score, 4) == round(
-            force_median_error, 4
-            ), "Reported median forces score incorrect!"
+    # assert round(reported_median_energy_score, 4) == round(
+            # energy_median_error, 4
+            # ), "Reported median energy score incorrect!"
+    # assert round(reported_median_forces_score, 4) == round(
+            # force_median_error, 4
+            # ), "Reported median forces score incorrect!"
 
 def test_e_only_skorch():
     distances = np.linspace(2, 5, 100)
