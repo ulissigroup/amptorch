@@ -8,6 +8,7 @@ from simple_nn_fp_test import test_fp_match
 from lj_test import test_ml_lj, test_skorch_lj
 from training_test import test_training, test_e_only_training
 from skorch_test import test_skorch, test_e_only_skorch
+from fps_from_memory_test import test_fps_memory
 from val_test import (
     test_skorch_val,
     test_val,
@@ -39,6 +40,10 @@ class TestMethods(unittest.TestCase):
         test_skorch()
         test_e_only_skorch()
         print("Skorch training tests passed!")
+
+    def test_load_fps_from_memory(self):
+        test_fps_memory()
+        print("Loading fps from memory passed!")
 
     def test_skorch_val(self):
         test_skorch_val()
