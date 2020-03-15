@@ -45,8 +45,7 @@ class lj_optim:
         bounds = None
         bounded_methods = ["L-BFGS-B", "TNC", "SLSQP"]
         if method in bounded_methods:
-            bounds = [(0, None), (0, None), (0, None)] * len(self.params_dict.keys())
-            bounds.append((2, None))
+            bounds = [(1, 5), (1e-5, 10), (1, 10)] * len(self.params_dict.keys())
         lj_min = minimize(
             self.objective_fn,
             self.p0,
@@ -74,10 +73,10 @@ class lj_optim:
         chemical_symbols = np.array(image.get_chemical_symbols())
         params = []
         for element in chemical_symbols:
-            De = params_dict[element][0]
-            ae = params_dict[element][1]
-            re = params_dict[element][2]
-            params.append(np.array([[De, ae, re]]))
+            re = params_dict[element][0]
+            D = params_dict[element][1]
+            sig = params_dict[element][2]
+            params.append(np.array([[re, D, sig]]))
         params = np.vstack(np.array(params))
         natoms = len(image)
 
@@ -92,22 +91,34 @@ class lj_optim:
 
         for a1 in range(natoms):
             re_1 = params[a1][0]
-            De_1 = np.abs(params[a1][1])
-            ae_1 = params[a1][2]
+            D_1 = np.abs(params[a1][1])
+            sig_1 = params[a1][2]
             neighbors, offsets = image_neighbors[a1]
             cells = np.dot(offsets, cell)
             d = positions[neighbors] + cells - positions[a1]
-            De_n = np.abs(params[neighbors][:, 0])
-            ae_n = params[neighbors][:, 1]
-            re_n = params[neighbors][:, 2]
-            re = (re_1 + re_n) / 2
-            De = np.sqrt(De_1 * De_n)
-            ae = np.sqrt(ae_1 * ae_n)
+            re_n = params[neighbors][:, 0]
+            D_n = params[neighbors][:, 1]
+            sig_n = params[neighbors][:, 2]
+            D = (2 * D_1 * D_n) / (D_1 + D_n)
+            sig = (sig_1 * sig_n) * (sig_1 + sig_n) / (sig_1 ** 2 + sig_n ** 2)
+            re = (re_1 * re_n) * (re_1 + re_n) / (re_1 ** 2 + re_n ** 2)
             r = np.sqrt((d ** 2).sum(1))
-            m = De * (1-np.exp(-ae*(r-re)))**2
-            m[r > self.cutoff] = 0.0
-            energy += m.sum()
-            f = (-(2/r)*De*(1-np.exp(-ae*(r-re)))*(ae*np.exp(-ae*(r-re))))[:, np.newaxis]*d
+            r_star = r / sig
+            re_star = re / sig
+            C = np.log(2) / (re_star - 1)
+            atom_energy = D * (
+                np.exp(-2 * C * (r_star - re_star))
+                - 2 * np.exp(-C * (r_star - re_star))
+            )
+            atom_energy[r > self.cutoff] = 0.0
+            energy += atom_energy.sum()
+            f = (
+                (2 * D * C / sig)
+                * (1 / r)
+                * (
+                    np.exp(-2 * C * (r_star - re_star))
+                    - np.exp(-C * (r_star - re_star))
+                    ))[:, np.newaxis] * d
             forces[a1] -= f.sum(axis=0)
             for a2, f2 in zip(neighbors, f):
                 forces[a2] += f2
