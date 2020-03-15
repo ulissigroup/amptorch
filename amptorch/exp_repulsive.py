@@ -52,8 +52,8 @@ class lj_optim:
         bounds = None
         bounded_methods = ["L-BFGS-B", "TNC", "SLSQP"]
         if method in bounded_methods:
-            bounds = [(0, None), (0, None), (0, None)] * len(self.params_dict.keys())
-            bounds.append((2, None))
+            bounds = [(1, 5), (1e-5, 10)] * len(self.params_dict.keys())
+            bounds.append((5, 15))
         lj_min = minimize(
             self.objective_fn,
             self.p0,
@@ -110,7 +110,7 @@ class lj_optim:
             eps = np.sqrt(eps_1 * eps_n)
             r = ((d ** 2).sum(1))**0.5
             energy += (eps * (6/(a-6))*np.exp(a*(1-(r/sig)))).sum()
-            f = (eps * (1/r) * (6/(a-6)) * (a/sig) * np.exp(a*(1-(r/sig))))[:, np.newaxis]*d
+            f = (eps * (1/r) * (6/(a-6)) * (-a/sig) * np.exp(a*(1-(r/sig))))[:, np.newaxis]*d
             forces[a1] -= f.sum(axis=0)
             for a2, f2 in zip(neighbors, f):
                 forces[a2] += f2
