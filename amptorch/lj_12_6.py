@@ -44,8 +44,7 @@ class lj_optim:
         bounds = None
         bounded_methods = ["L-BFGS-B", "TNC", "SLSQP"]
         if method in bounded_methods:
-            bounds = [(0, None), (0, None), (0, None)] * len(self.params_dict.keys())
-            bounds.append((2, None))
+            bounds = [(1, 5), (1e-5, 10)] * len(self.params_dict.keys())
         lj_min = minimize(
             self.objective_fn,
             self.p0,
