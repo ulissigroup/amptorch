@@ -1,0 +1,68 @@
+Filename: test_LJ
+Dataset size: 200
+Target scaling: [8.841315589518457, -527.7487172369373]
+Symmetry function parameters:
+     G2_etas: [0.05       0.09653489 0.18637969 0.35984284 0.69474775 1.3413479
+ 2.58973734 5.        ]
+     G2_rs_s: [0, 0, 0, 0, 0, 0, 0, 0]
+     G4_etas: [0.005, 0.01]
+     G4_zetas: [1.0, 4.0, 6.0]
+     G4_gammas: [1.0, -1]
+     cutoff: 5.876798323827276
+Device: cpu
+Model: FullNN(
+  (elementwise_models): ModuleDict(
+    (Cu): MLP(
+      (model_net): Sequential(
+        (0): Linear(in_features=96, out_features=30, bias=True)
+        (1): Tanh()
+        (2): Linear(in_features=30, out_features=30, bias=True)
+        (3): Tanh()
+        (4): Linear(in_features=30, out_features=30, bias=True)
+        (5): Tanh()
+        (6): Linear(in_features=30, out_features=1, bias=True)
+      )
+    )
+    (O): MLP(
+      (model_net): Sequential(
+        (0): Linear(in_features=96, out_features=30, bias=True)
+        (1): Tanh()
+        (2): Linear(in_features=30, out_features=30, bias=True)
+        (3): Tanh()
+        (4): Linear(in_features=30, out_features=30, bias=True)
+        (5): Tanh()
+        (6): Linear(in_features=30, out_features=1, bias=True)
+      )
+    )
+    (C): MLP(
+      (model_net): Sequential(
+        (0): Linear(in_features=96, out_features=30, bias=True)
+        (1): Tanh()
+        (2): Linear(in_features=30, out_features=30, bias=True)
+        (3): Tanh()
+        (4): Linear(in_features=30, out_features=30, bias=True)
+        (5): Tanh()
+        (6): Linear(in_features=30, out_features=1, bias=True)
+      )
+    )
+  )
+)
+Architecture:
+   Input Layer - 96
+   # of Hidden Layers - 3
+   Nodes/Layer - 30
+Loss Function: <class 'amptorch.model.CustomLoss'>
+Force coefficient: 0.04
+Optimizer: <class 'torch.optim.lbfgs.LBFGS'>
+Learning Rate: 0.1
+Batch Size: 200
+Epochs: 300
+Shuffle: False
+Train Split (k-fold if int, fraction if float): 5
+
+Training initiated...
+Epoch   EnergyRMSE    ForceRMSE    TrainLoss    ValidLoss     Dur
+===== ============ ============ ============ ============ =======
+    1       0.0616       0.6015     100.4704       0.3654 25.8288
+...Training Complete!
+
