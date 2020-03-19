@@ -12,7 +12,7 @@ from functools import lru_cache
 
 
 class lj_optim:
-    def __init__(self, images, params, params_dict, cutoff, filename, forcesonly=True):
+    def __init__(self, images, params, params_dict, cutoff, filename, combo='mean'):
         if not os.path.exists("results"):
             os.mkdir("results")
         if not os.path.exists("results/logs"):
@@ -21,49 +21,15 @@ class lj_optim:
         self.data = images
         self.p0 = params
         self.params_dict = params_dict
-        self.forcesonly = forcesonly
+        self.combo = combo
         self.cutoff = cutoff
         self.hashed_images = hash_images(images)
         self.hashed_keys = list(self.hashed_images.keys())
         calc = NeighborlistCalculator(cutoff=cutoff)
         self.neighborlist = Data(filename="amp-data-neighborlists", calculator=calc)
         self.neighborlist.calculate_items(self.hashed_images)
-
-    def fit(self, method="Nelder-Mead"):
-        log = Logger("results/logs/" + self.filename + ".txt")
-        self.target_energies = np.array(
-            [
-                (atoms.get_potential_energy(apply_constraint=False))
-                for atoms in self.data
-            ]
-        ).reshape(1, -1)
-        self.target_forces = np.concatenate(
-            [(atoms.get_forces(apply_constraint=False)) for atoms in self.data]
-        )
-        print("LJ optimization initiated...")
-        s_time = time.time()
-        bounds = None
-        bounded_methods = ["L-BFGS-B", "TNC", "SLSQP"]
-        if method in bounded_methods:
-            bounds = [(1, 5), (1e-5, 10), (1, 10)] * len(self.params_dict.keys())
-        lj_min = minimize(
-            self.objective_fn,
-            self.p0,
-            args=(self.target_energies, self.target_forces),
-            method=method,
-            bounds=bounds,
-            options={"disp": True},
-        )
-        optim_time = time.time() - s_time
-        self.logresults(
-            log, self.data, self.cutoff, self.p0, self.params_dict, lj_min, optim_time
-        )
-        if lj_min.success is True:
-            print("Optimizer terminated successfully.")
-            return lj_min.x
-        else:
-            print("Optimizer did not terminate successfully.")
-            return lj_min.x
+        log = Logger("results/logs/{}.txt".format(filename))
+        self.logresults(log, self.p0, self.params_dict)
 
     def get_neighbors(self, neighborlist, image_hash):
         image_neighbors = neighborlist[image_hash]
@@ -99,9 +65,14 @@ class lj_optim:
             re_n = params[neighbors][:, 0]
             D_n = params[neighbors][:, 1]
             sig_n = params[neighbors][:, 2]
-            D = (2 * D_1 * D_n) / (D_1 + D_n)
-            sig = (sig_1 * sig_n) * (sig_1 + sig_n) / (sig_1 ** 2 + sig_n ** 2)
-            re = (re_1 * re_n) * (re_1 + re_n) / (re_1 ** 2 + re_n ** 2)
+            if self.combo == 'mean':
+                D = np.sqrt(D_1*D_n)
+                sig = (sig_1 + sig_n) / 2
+                re = (re_1 + re_n) / 2
+            elif self.combo == 'yang':
+                D = (2 * D_1 * D_n) / (D_1 + D_n)
+                sig = (sig_1 * sig_n) * (sig_1 + sig_n) / (sig_1 ** 2 + sig_n ** 2)
+                re = (re_1 * re_n) * (re_1 + re_n) / (re_1 ** 2 + re_n ** 2)
             r = np.sqrt((d ** 2).sum(1))
             r_star = r / sig
             re_star = re / sig
@@ -110,7 +81,6 @@ class lj_optim:
                 np.exp(-2 * C * (r_star - re_star))
                 - 2 * np.exp(-C * (r_star - re_star))
             )
-            atom_energy[r > self.cutoff] = 0.0
             energy += atom_energy.sum()
             f = (
                 (2 * D * C / sig)
@@ -134,30 +104,7 @@ class lj_optim:
             predicted_energies.append(energy)
             predicted_forces.append(forces)
             num_atoms.append(natoms)
-        # predicted_energies = np.concatenate(np.array(predicted_energies).reshape(1, -1))
-        # predicted_forces = np.concatenate(predicted_forces)
         return predicted_energies, predicted_forces, num_atoms
-
-    def objective_fn(self, params, target_energies, target_forces):
-        predicted_energies, predicted_forces, num_atoms = self.lj_pred(
-            self.data, params, self.params_dict
-        )
-        predicted_energies = np.concatenate(np.array(predicted_energies).reshape(1, -1))
-        predicted_forces = np.concatenate(predicted_forces)
-        data_size = target_energies.shape[1]
-        num_atoms_f = np.array([[i] * i for i in num_atoms]).reshape(-1, 1)
-        num_atoms = np.array(num_atoms)
-        MSE_energy = (1 / data_size) * (
-            ((target_energies - predicted_energies) / num_atoms) ** 2
-        ).sum()
-        MSE_forces = (1 / data_size) * (
-            ((target_forces - predicted_forces) / np.sqrt(3 * num_atoms_f)) ** 2
-        ).sum()
-        if self.forcesonly:
-            MSE = MSE_forces
-        else:
-            MSE = MSE_energy + MSE_forces
-        return MSE
 
     def lj_param_check(self):
         unique = set()
@@ -178,26 +125,14 @@ class lj_optim:
             idx += 3
         return params_dict
 
-    def logresults(self, log, data, cutoff, p0, params_dict, results, optim_time):
+    def logresults(self, log, p0, params_dict):
         log("%s" % time.asctime())
         log("-" * 50)
-        log("LJ-Parameter Optimization")
         log(
-            "inital LJ parameter guess [sig, eps]: %s"
+            "Model parameters [re, D, sig]: %s"
             % self.params_to_dict(p0, params_dict)
         )
-        log(
-            "Optimizer results: \n fun: %s \n message: %s \n nfev: %s \n nit: %s \n success: %s"
-            % (
-                results["fun"],
-                results["message"],
-                results["nfev"],
-                results["nit"],
-                results["success"],
-            )
-        )
-        log("Fitted LJ parameters: %s \n" % self.params_to_dict(results.x, params_dict))
-        log("Optimization time: %s \n" % optim_time)
+        log("Combination rule: {}\n".format(self.combo))
 
     def parity(self, predicted_energies, predicted_forces):
         fig = plt.figure(figsize=(7.0, 7.0))
