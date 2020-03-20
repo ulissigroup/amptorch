@@ -222,3 +222,5 @@ def test_e_only_training():
     assert (
         energy_rmse <= calc.model.convergence["energy"]
     ), "Energy training convergence not met!"
+test_training()
+test_e_only_training()
