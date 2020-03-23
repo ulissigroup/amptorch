@@ -2,7 +2,10 @@ from ase import Atoms, Atom, units
 from ase.build import molecule
 from ase.visualize import view
 import ase.io
+#ASE-EMT Calculator
 from ase.calculators.emt import EMT
+#ASE-VASP Calculator
+from ase.calculators.vasp import Vasp
 
 from ase.build import fcc100, add_adsorbate
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
@@ -13,7 +16,7 @@ import numpy as np
 
 
 class MDsimulate:
-    def __init__(self, ensemble, dt, temp, initial_geometry=None):
+    def __init__(self, ensemble, dt, temp, count, initial_geometry=None):
         """
         Parameters
         ----------
@@ -25,6 +28,7 @@ class MDsimulate:
         self.ensemble = ensemble
         self.dt = dt
         self.temp = temp * units.kB
+        self.count = count
         self.starting_geometry = initial_geometry
         if initial_geometry is None:
             self.starting_geometry = self.construct_initial_geometry()
@@ -33,7 +37,7 @@ class MDsimulate:
         """Generates initial geometry of system"""
         slab = fcc100("Cu", size=(3, 3, 3))
         ads = molecule("CO")
-        add_adsorbate(slab, ads, 4, offset=(1, 1))
+        add_adsorbate(slab, ads, 2.5, offset=(1, 1))
         cons = FixAtoms(
             indices=[atom.index for atom in slab if (atom.tag == 2 or atom.tag == 3)]
         )
@@ -43,7 +47,7 @@ class MDsimulate:
         slab.wrap(pbc=[True] * 3)
         return slab
 
-    def run_md(self, calc, count, filename):
+    def run(self, calc, filename):
         slab = self.starting_geometry.copy()
         slab.set_calculator(calc)
         np.random.seed(1)
@@ -68,17 +72,17 @@ class MDsimulate:
 
         if printenergy:
             dyn.attach(printenergy, interval=10)
-        dyn.run(count - 1)
+        dyn.run(self.count)
 
     def get_trajectory(self, filename, start_count, end_count, interval):
         trajectory = ase.io.read(filename+".traj", "{}:{}:{}".format(start_count, end_count, interval))
         return trajectory
 
-def main():
+def main(calculator='EMT'):
     # Define system to simulate
     slab = fcc100("Cu", size=(3, 3, 3))
     ads = molecule("CO")
-    add_adsorbate(slab, ads, 4, offset=(1, 1))
+    add_adsorbate(slab, ads, 2.5, offset=(1, 1))
     cons = FixAtoms(
         indices=[atom.index for atom in slab if (atom.tag == 2 or atom.tag == 3)]
     )
@@ -87,14 +91,32 @@ def main():
     slab.set_pbc(True)
     slab.wrap(pbc=[True] * 3)
 
-    # Define calculator to use
-    #TODO Define VASP calculator
-    calc = EMT()
+    #Choose calculator
+    if calculator == 'EMT':
+        #EMT calculator (default)
+        calc = EMT()
+    elif calculator == 'VASP':
+        #VASP calculator
+        calc = Vasp(prec='Normal',
+            algo='Normal',
+            xc='PBE',
+            gga='RP',
+            encut=400,
+            lreal=False,
+            ediff=1e-4,
+            ispin=1,
+            NELM=100,
+            lwave=False,
+            lcharg=False,
+            nsw=0,
+            kpoints=(4,4,1))
+    else:
+        print('Only EMT or VASP calculators allowed.')
 
     # Define MD settings and run MD
     md_runner = MDsimulate(ensemble="nvtberendsen", dt=1, temp=300,
-            initial_geometry=slab)
-    md_runner.run_md(calc=calc, count=100, filename="COCu_EMT_100fs")
+            count=10000, initial_geometry=slab)
+    md_runner.run(calc=calc, filename="COCu_DFT_10ps")
 
 if __name__ == "__main__":
-    main()
+    main(calculator='VASP')
