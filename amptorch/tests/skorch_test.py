@@ -79,8 +79,7 @@ def test_skorch():
         forcetraining=forcetraining,
         label=label,
         cores=1,
-        lj_data=None,
-        scaling=None,
+        delta_data=None,
     )
     unique_atoms = training_data.elements
     fp_length = training_data.fp_length
@@ -192,8 +191,7 @@ def test_e_only_skorch():
         forcetraining=forcetraining,
         label=label,
         cores=1,
-        lj_data=None,
-        scaling=None,
+        delta_data=None,
     )
     batch_size = len(training_data)
     unique_atoms = training_data.elements
