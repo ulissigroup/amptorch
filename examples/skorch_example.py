@@ -48,6 +48,7 @@ for l in distances:
     images.append(image)
 
 # define symmetry functions to be used
+images = read("./train.traj", ":")
 Gs = {}
 Gs["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
 Gs["G2_rs_s"] = [0] * 4
@@ -58,7 +59,7 @@ Gs["cutoff"] = 6.5
 
 forcetraining = True
 training_data = AtomsDataset(images, SNN_Gaussian, Gs, forcetraining=forcetraining,
-        label=label, cores=1, lj_data=None, scaling='minmax')
+        label=label, cores=1, delta_data=None)
 unique_atoms = training_data.elements
 fp_length = training_data.fp_length
 device = "cpu"
@@ -69,8 +70,8 @@ net = NeuralNetRegressor(
     criterion__force_coefficient=0.3,
     optimizer=torch.optim.LBFGS,
     optimizer__line_search_fn="strong_wolfe",
-    lr=1e-2,
-    batch_size=100,
+    lr=1e-1,
+    batch_size=len(images),
     max_epochs=50,
     iterator_train__collate_fn=collate_amp,
     iterator_train__shuffle=False,
