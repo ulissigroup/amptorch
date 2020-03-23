@@ -1,25 +1,25 @@
 import os
 import numpy as np
-from amptorch.data_preprocess import AtomsDataset, collate_amp
-from amptorch.model import FullNN, CustomLoss
-import ase
-from ase.calculators.calculator import Calculator, Parameters
-from ase.md.nvtberendsen import NVTBerendsen
-import torch
-from torch.nn import init
-import multiprocessing
 import random
-from amptorch.utils import make_amp_descriptors_simple_nn
+
+import torch
+
+import ase
+from ase.calculators.calculator import Calculator
 from ase.calculators.emt import EMT
-from amptorch.lj_model import lj_optim
+
 import skorch
 from skorch import NeuralNetRegressor
 from skorch.dataset import CVSplit
 from skorch.callbacks import Checkpoint, EpochScoring
-from skorch.callbacks.lr_scheduler import LRScheduler
+
 from amptorch.gaussian import SNN_Gaussian
 from amptorch.skorch_model import AMP
 from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score
+from amptorch.data_preprocess import AtomsDataset, collate_amp
+from amptorch.model import FullNN, CustomLoss
+from amptorch.morse import morse_potential
+from md_work.onlinemd.md_utils import MDsimulate
 
 
 __author__ = "Muhammed Shuaibi"
@@ -42,183 +42,185 @@ class AtomisticActiveLearning(Calculator):
 
     implemented_properties = ["energy", "forces"]
 
-    def __init__(self, parent_dataset, parent_calc, n_ensembles):
+    def __init__(self, parent_calc, images, filename, file_dir, Gs, morse):
         Calculator.__init__(self)
 
-        self.n_ensembles = n_ensembles
         self.parent_calc = parent_calc
-        self.ensemble_sets, self.parent_dataset = self.bootstrap_ensemble(
-            parent_dataset, n_ensembles=n_ensembles
-        )
-        self.trained_calcs = self.construct_calc(train(self.ensemble_sets))
-        self.uncertain_tol = 0.001
+        self.images = images
+        self.filename = filename
+        self.file_dir = file_dir
+        self.Gs = Gs
+        self.morse = morse
+        self.ml_calc = None
 
-    def bootstrap_ensemble(
-        self, parent_dataset, resampled_set=None, new_data=None, n_ensembles=1
-    ):
-        if len(parent_dataset) == 1:
-            return [parent_dataset] * n_ensembles
-        ensemble_sets = []
-        if new_data is not None and resampled_set is not None:
-            n_ensembles = len(resampled_set)
-            parent_dataset.append(new_data)
-            for i in range(n_ensembles):
-                resampled_set[i].append(random.sample(parent_dataset, 1)[0])
-                for k in range(0, len(resampled_set[i]) - 1):
-                    if random.random() < 1 / len(resampled_set[i]):
-                        resampled_set[i][k] = new_data
-                ensemble_sets.append(resampled_set[i])
-        else:
-            for i in range(n_ensembles):
-                ensemble_sets.append(
-                    random.choices(parent_dataset, k=len(parent_dataset))
-                )
-        return ensemble_sets, parent_dataset
+    def train_calc(self, images):
+        os.makedirs("./results/checkpoints", exist_ok=True)
+        os.makedirs(self.file_dir, exist_ok=True)
 
-    def construct_calc(self, calc_parameters):
-        calcs = []
-        for _ in range(len(calc_parameters)):
-            calc = AMP(
-                calc_parameters[_][0], calc_parameters[_][1], calc_parameters[_][2]
+        filename = self.filename
+
+        class train_end_load_best_valid_loss(skorch.callbacks.base.Callback):
+            def on_train_end(self, net, X, y):
+                net.load_params("./results/checkpoints/{}_params.pt".format(filename))
+
+        cutoff = Gs["cutoff"]
+        morse_data = None
+        if self.morse:
+            params = {
+                "C": {"re": 0.972, "D": 6.379, "sig": 0.477},
+                "O": {"re": 1.09, "D": 8.575, "sig": 0.603},
+                "Cu": {"re": 2.168, "D": 3.8386, "sig": 1.696},
+            }
+            morse_model = morse_potential(
+                images, params, cutoff, filename, combo="mean"
             )
-            calcs.append(calc)
-        return calcs
+            morse_energies, morse_forces, num_atoms = morse_model.morse_pred(
+                images, params
+            )
+            morse_data = [morse_energies, morse_forces, num_atoms, params, morse_model]
 
-    def calculate_stats(self, energies, forces):
-        energy_mean = np.mean(energies)
-        energy_var = np.var(energies)
-        forces_mean = np.mean(forces, axis=0)
-        return energy_mean, forces_mean, energy_var
+        forcetraining = True
+        training_data = AtomsDataset(
+            images,
+            SNN_Gaussian,
+            Gs,
+            forcetraining=forcetraining,
+            label=filename,
+            cores=10,
+            delta_data=morse_data,
+        )
+        unique_atoms = training_data.elements
+        fp_length = training_data.fp_length
+        device = "cpu"
+
+        cp = Checkpoint(
+            monitor="forces_score_best",
+            fn_prefix="./results/checkpoints/{}_".format(filename),
+        )
+        load_best_valid_loss = train_end_load_best_valid_loss()
+        torch.set_num_threads(1)
+
+        net = NeuralNetRegressor(
+            module=FullNN(
+                unique_atoms, [fp_length, 3, 20], device, forcetraining=forcetraining
+            ),
+            criterion=CustomLoss,
+            criterion__force_coefficient=0.04,
+            optimizer=torch.optim.LBFGS,
+            optimizer__line_search_fn="strong_wolfe",
+            lr=1e-1,
+            batch_size=len(training_data),
+            max_epochs=300,
+            iterator_train__collate_fn=collate_amp,
+            iterator_train__shuffle=False,
+            iterator_valid__collate_fn=collate_amp,
+            iterator_valid__shuffle=False,
+            device=device,
+            train_split=CVSplit(cv=5, random_state=1),
+            callbacks=[
+                EpochScoring(
+                    forces_score,
+                    on_train=False,
+                    use_caching=True,
+                    target_extractor=target_extractor,
+                ),
+                EpochScoring(
+                    energy_score,
+                    on_train=False,
+                    use_caching=True,
+                    target_extractor=target_extractor,
+                ),
+                cp,
+                load_best_valid_loss,
+            ],
+        )
+
+        calc = AMP(training_data, net, label=filename)
+        calc.train(overwrite=True)
+
+        return calc
+
+    def al_random(self, images, sample_candidates, samples_to_retrain):
+        random.seed(3)
+        sample_points = random.sample(
+            range(1, len(sample_candidates)), samples_to_retrain
+        )
+        for idx in sample_points:
+            sample_candidates[idx].set_calculator(self.parent_calc)
+            images.append(sample_candidates[idx])
+        return images
+
+    def active_learner(self, generating_function, iterations, samples_to_retrain):
+        """
+        Active learning method that selects data points from a pool of data
+        generated by a specified generating function. Currently a random sample
+        is used but other, more sophisticated techniques will be implemented.
+        Termination is currently achieved based off a fixed number of
+        iterations, support for more specific performance metrics will be
+        introduced in the near future.
+
+        Parameters
+        ----------
+        generating_function: Object. A user specified function that the active
+        learning framework seeks to improve with a surrogate ML model (i.e. MD,
+        NEB, relaxations) with limited data. The function must contain two
+        specific methods to be used in this framework:
+
+            (1) def run(calc, filename): A run method that runs the defined
+            function and writes the corresponding Atoms object to filename.
+
+            (2) def get_trajectory(filename, start_count, end_count, interval):
+                A get_trajectory method that reads the previously written Atoms
+                objects with indexing capabilities defined by start_count,
+                end_count, and interval. i.e. ase.io.read(filename,
+                "{}:{}:{}".format(start_count, end_count, interval))
+
+        iterations: integer. Number of iterations the active learning framework
+        is to perform.
+
+        samples_to_retrain. integer. Number of samples to query each iteration
+        of the active learning loop."""
+
+        sample_candidates = None
+        terminate = False
+        iteration = 0
+
+        while not terminate:
+            if iteration > 0:
+                # active learning random scheme
+                self.images = self.al_random(
+                    self.images, sample_candidates, samples_to_retrain
+                )
+            name = self.filename + "_iter_{}".format(iteration)
+            # train ml calculator
+            print(len(self.images))
+            ml_calc = self.train_calc(images=self.images)
+
+            # run generating function using trained ml calculator
+            fn_label = self.file_dir + name
+            generating_function.run(calc=ml_calc, filename=fn_label)
+            # collect resulting trajectory files
+            sample_candidates = generating_function.get_trajectory(
+                filename=fn_label, start_count=0, end_count=-1, interval=1
+            )
+            iteration += 1
+            # criteria to stop active learning, currently implemented
+            # number of iterations
+            if iteration > iterations:
+                terminate = True
+        self.ml_calc = ml_calc
 
     def calculate(self, atoms, properties, system_changes):
         Calculator.calculate(self, atoms, properties, system_changes)
 
-        energies = []
-        forces = []
+        energy_pred = self.ml_calc.get_potential_energy(atoms)
+        force_pred = self.ml_calc.get_forces(atoms)
 
-        make_amp_descriptors_simple_nn([atoms], Gs, elements, cores=10, label="test")
-        for calc in self.trained_calcs:
-            energies.append(calc.get_potential_energy(atoms))
-            forces.append(calc.get_forces(atoms))
-        energies = np.array(energies)
-        forces = np.array(forces)
-        energy_pred, force_pred, uncertainty = self.calculate_stats(energies, forces)
-
-        if uncertainty >= self.uncertain_tol:
-            new_data = atoms.copy()
-            new_data.set_calculator(self.parent_calc)
-            self.results["energy"] = new_data.get_potential_energy(
-                apply_constraint=False
-            )
-            self.results["forces"] = new_data.get_forces(apply_constraint=False)
-            self.ensemble_sets, self.parent_dataset = self.bootstrap_ensemble(
-                self.parent_dataset, self.ensemble_sets, new_data=new_data
-            )
-            self.trained_calcs = self.construct_calc(train(self.ensemble_sets))
-        else:
-            self.results["energy"] = float(energy_pred)
-            self.results["forces"] = force_pred
-
-
-def train(ensemble_sets):
-    pool = multiprocessing.Pool(len(ensemble_sets))
-
-    input_data = []
-    for _ in range(len(ensemble_sets)):
-        inputs = [ensemble_sets[_], "test" + str(_), "./", Gs, True, True, None]
-        input_data.append(inputs)
-    results = pool.map(train_calc, input_data)
-    return results
-
-
-def train_calc(inputs):
-    images, filename, file_dir, Gs, lj, forcesonly, scaling = inputs
-    class train_end_load_best_valid_loss(skorch.callbacks.base.Callback):
-            def on_train_end(self, net, X, y):
-                net.load_params("./results/checkpoints/{}_params.pt".format(filename))
-    cp = Checkpoint(
-            monitor="forces_score_best",
-            fn_prefix="./results/checkpoints/{}_".format(filename),
-        )
-
-    if not os.path.exists(file_dir):
-        os.makedirs(file_dir, exist_ok=True)
-
-    forcetraining = True
-    training_data = AtomsDataset(
-        images,
-        SNN_Gaussian,
-        Gs,
-        forcetraining=forcetraining,
-        label=filename,
-        cores=1,
-        lj_data=None,
-        scaling=scaling,
-    )
-    unique_atoms = training_data.elements
-    fp_length = training_data.fp_length
-    device = "cpu"
-
-    torch.set_num_threads(1)
-
-    net = NeuralNetRegressor(
-        module=FullNN(
-            unique_atoms, [fp_length, 3, 20], device, forcetraining=forcetraining
-        ),
-        criterion=CustomLoss,
-        criterion__force_coefficient=0.04,
-        optimizer=torch.optim.LBFGS,
-        lr=1e-1,
-        batch_size=len(training_data),
-        max_epochs=200,
-        iterator_train__collate_fn=collate_amp,
-        iterator_train__shuffle=False,
-        iterator_valid__collate_fn=collate_amp,
-        iterator_valid__shuffle=False,
-        device=device,
-        train_split=CVSplit(cv=5, random_state=1),
-        callbacks=[
-            EpochScoring(
-                forces_score,
-                on_train=False,
-                use_caching=True,
-                target_extractor=target_extractor,
-            ),
-            EpochScoring(
-                energy_score,
-                on_train=False,
-                use_caching=True,
-                target_extractor=target_extractor,
-            ),
-        ],
-    )
-    calc = AMP(training_data, net, label=filename)
-    calc.train()
-    return [training_data, net, filename]
-
-
-def md_run(
-    parent_dataset,
-    dft_calculator,
-    starting_image,
-    temp,
-    dt,
-    count,
-    label,
-    ensemble="NVE",
-):
-    slab = starting_image.copy()
-    slab.set_calculator(AMPOnlineCalc(parent_dataset, dft_calculator, 3))
-    MaxwellBoltzmannDistribution(slab, temp * units.kB)
-    if ensemble == "nvtberendsen":
-        dyn = NVTBerendsen(slab, dt * ase.units.fs, temp, taut=300 * ase.units.fs)
-    traj = ase.io.Trajectory(label + ".traj", "w", slab)
-    dyn.attach(traj.write, interval=1)
-    dyn.run(count - 1)
+        self.results["energy"] = energy_pred
+        self.results["forces"] = force_pred
 
 
 if __name__ == "__main__":
-    multiprocessing.set_start_method("spawn")
     Gs = {}
     Gs["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
     Gs["G2_rs_s"] = [0] * 4
@@ -226,10 +228,25 @@ if __name__ == "__main__":
     Gs["G4_zetas"] = [1.0, 4.0]
     Gs["G4_gammas"] = [+1.0, -1]
     Gs["cutoff"] = 5.876798323827276  # EMT asap_cutoff: False
-    images = ase.io.read("../../datasets/COCu_ber_100ps_300K.traj", ":100")
-    elements = np.array([atom.symbol for atoms in images for atom in atoms])
-    _, idx = np.unique(elements, return_index=True)
-    elements = list(elements[np.sort(idx)])
-    make_amp_descriptors_simple_nn(images, Gs, elements, cores=10, label="test")
 
-    md_run(images, EMT(), images[0], 300, 1, 2000, "test", "nvtberendsen")
+    images = ase.io.read("../../datasets/COCu_ber_50ps_300K.traj", ":2000:10")
+    al_calc = AtomisticActiveLearning(
+        parent_calc=EMT(),
+        images=images,
+        filename="morse_test",
+        file_dir="./morse/",
+        Gs=Gs,
+        morse=True,
+    )
+
+    al_calc.active_learner(
+        generating_function=MDsimulate(
+            ensemble="nvtberendsen",
+            dt=1,
+            temp=300,
+            count=5000,
+            initial_geometry=images[0].copy(),
+        ),
+        iterations=3,
+        samples_to_retrain=100,
+    )
