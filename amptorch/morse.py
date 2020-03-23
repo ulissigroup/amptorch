@@ -11,16 +11,15 @@ import matplotlib.pyplot as plt
 from functools import lru_cache
 
 
-class lj_optim:
-    def __init__(self, images, params, params_dict, cutoff, filename, combo='mean'):
+class morse_potential:
+    def __init__(self, images, params, cutoff, filename, combo='mean'):
         if not os.path.exists("results"):
             os.mkdir("results")
         if not os.path.exists("results/logs"):
             os.mkdir("results/logs")
         self.filename = filename
         self.data = images
-        self.p0 = params
-        self.params_dict = params_dict
+        self.params = params
         self.combo = combo
         self.cutoff = cutoff
         self.hashed_images = hash_images(images)
@@ -29,19 +28,19 @@ class lj_optim:
         self.neighborlist = Data(filename="amp-data-neighborlists", calculator=calc)
         self.neighborlist.calculate_items(self.hashed_images)
         log = Logger("results/logs/{}.txt".format(filename))
-        self.logresults(log, self.p0, self.params_dict)
+        self.logresults(log, self.params)
 
     def get_neighbors(self, neighborlist, image_hash):
         image_neighbors = neighborlist[image_hash]
         return image_neighbors
 
-    def image_pred(self, image, p0, params_dict):
+    def image_pred(self, image, params_dict):
         chemical_symbols = np.array(image.get_chemical_symbols())
         params = []
         for element in chemical_symbols:
-            re = params_dict[element][0]
-            D = params_dict[element][1]
-            sig = params_dict[element][2]
+            re = params_dict[element]["re"]
+            D = params_dict[element]["D"]
+            sig = params_dict[element]["sig"]
             params.append(np.array([[re, D, sig]]))
         params = np.vstack(np.array(params))
         natoms = len(image)
@@ -94,43 +93,23 @@ class lj_optim:
                 forces[a2] += f2
         return energy, forces, natoms
 
-    def lj_pred(self, data, p0, params_dict):
-        params_dict = self.params_to_dict(p0, params_dict)
+    def morse_pred(self, data, params):
         predicted_energies = []
         predicted_forces = []
         num_atoms = []
         for image in data:
-            energy, forces, natoms = self.image_pred(image, p0, params_dict)
+            energy, forces, natoms = self.image_pred(image, params)
             predicted_energies.append(energy)
             predicted_forces.append(forces)
             num_atoms.append(natoms)
         return predicted_energies, predicted_forces, num_atoms
 
-    def lj_param_check(self):
-        unique = set()
-        for atoms in self.data:
-            symbols = atoms.symbols
-            unique = unique | set(symbols)
-        unique_elements = list(unique)
-        num_lj_params = 2 * len(unique_elements)
-        assert (
-            len(self.p0) == num_lj_params
-        ), "Number of initial conditions not equal to \
-        the number of required LJ parameters"
-
-    def params_to_dict(self, params, params_dict):
-        idx = 0
-        for keys in list(params_dict.keys()):
-            params_dict[keys] = params[idx : idx + 3]
-            idx += 3
-        return params_dict
-
-    def logresults(self, log, p0, params_dict):
+    def logresults(self, log, params):
         log("%s" % time.asctime())
         log("-" * 50)
         log(
-            "Model parameters [re, D, sig]: %s"
-            % self.params_to_dict(p0, params_dict)
+            "Model parameters: %s"
+            % (params)
         )
         log("Combination rule: {}\n".format(self.combo))
 
@@ -150,13 +129,13 @@ class lj_optim:
         ax.plot(target_energies, predicted_energies, "bo", markersize=3)
         ax.plot([energy_min, energy_max], [energy_min, energy_max], "r-", lw=0.5)
         ax.set_xlabel("ab initio energy, eV")
-        ax.set_ylabel("LJ energy, eV")
+        ax.set_ylabel("Morse energy, eV")
         ax.set_title("Energy")
-        fig.savefig("results/lj_parity_e.pdf")
+        fig.savefig("results/morse_parity_e.pdf")
         ax2.plot(target_forces, predicted_forces, "bo", markersize=3)
         ax2.plot([force_min, force_max], [force_min, force_max], "r-", lw=0.5)
         ax2.set_xlabel("ab initio force, eV/A")
-        ax2.set_ylabel("LJ force, eV/A")
+        ax2.set_ylabel("Morse force, eV/A")
         ax2.set_title("Force")
-        fig2.savefig("results/lj_parity_f.pdf")
+        fig2.savefig("results/morse_parity_f.pdf")
         plt.show()
