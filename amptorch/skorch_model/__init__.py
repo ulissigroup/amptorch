@@ -54,21 +54,20 @@ class AMP(Calculator):
         self.label = "".join(["results/trained_models/", label, ".pt"])
         self.scalings = training_data.scalings
         self.target_ref = self.scalings[0]
-        self.lj_ref = self.scalings[1]
-        self.lj = training_data.lj
+        self.delta_ref = self.scalings[1]
+        self.delta = training_data.delta
         self.Gs = training_data.Gs
         self.fprange = training_data.fprange
         self.descriptor = training_data.base_descriptor
         self.cores = training_data.cores
         self.training_data = training_data
-        if self.lj:
-            self.fitted_params = self.training_data.lj_data[3]
-            self.params_dict = self.training_data.lj_data[4]
-            self.lj_model = self.training_data.lj_data[5]
+        if self.delta:
+            self.params = self.training_data.delta_data[3]
+            self.delta_model = self.training_data.delta_data[4]
 
         # TODO make utility logging function
         self.log = Logger("results/logs/{}.txt".format(label))
-        if not self.lj:
+        if not self.delta:
             self.log(time.asctime())
             self.log("-" * 50)
         self.log("Filename: {}".format(label))
@@ -148,14 +147,14 @@ class AMP(Calculator):
         forces = forces.detach().numpy()
 
         image_hash = hash_images([atoms])
-        if self.lj:
-            self.lj_model.neighborlist.calculate_items(image_hash)
-            lj_energy, lj_forces, _ = self.lj_model.image_pred(
-                atoms, self.fitted_params, self.params_dict
+        if self.delta:
+            self.delta_model.neighborlist.calculate_items(image_hash)
+            delta_energy, delta_forces, _ = self.delta_model.image_pred(
+                atoms, self.params
             )
-            lj_energy = np.squeeze(lj_energy)
-            energy += lj_energy - self.lj_ref
-            forces += lj_forces
+            delta_energy = np.squeeze(delta_energy)
+            energy += delta_energy - self.delta_ref
+            forces += delta_forces
 
         self.results["energy"] = float(energy)
         self.results["forces"] = forces
