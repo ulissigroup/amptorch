@@ -7,7 +7,7 @@ from skorch.callbacks.lr_scheduler import LRScheduler
 import skorch.callbacks.base
 from amp.descriptor.gaussian import Gaussian
 from amptorch.gaussian import SNN_Gaussian
-from amptorch.model import FullNN, CustomLoss
+from amptorch.model import FullNN, CustomMSELoss
 from amptorch.data_preprocess import AtomsDataset, factorize_data, collate_amp, TestDataset
 from amptorch.skorch_model import AMP
 from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score
@@ -48,7 +48,7 @@ for l in distances:
     images.append(image)
 
 # define symmetry functions to be used
-images = read("./train.traj", ":")
+
 Gs = {}
 Gs["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
 Gs["G2_rs_s"] = [0] * 4
