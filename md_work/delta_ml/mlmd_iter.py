@@ -9,7 +9,7 @@ from skorch.callbacks import Checkpoint, EpochScoring
 from skorch.callbacks.lr_scheduler import LRScheduler
 from amptorch.gaussian import SNN_Gaussian
 from amp.descriptor.gaussian import Gaussian
-from amptorch.model import FullNN, CustomLoss, MAELoss
+from amptorch.model import FullNN, CustomMSELoss, MAELoss
 from amptorch.utils import Logger
 from amptorch.data_preprocess import (
     AtomsDataset,
@@ -146,7 +146,7 @@ def mlmd_run(
             unique_atoms, [fp_length, 3, 5], device,
             forcetraining=forcetraining
         ),
-        criterion=CustomLoss,
+        criterion=CustomMSELoss,
         criterion__force_coefficient=0.04,
         optimizer=torch.optim.LBFGS,
         optimizer__line_search_fn="strong_wolfe",

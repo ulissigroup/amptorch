@@ -8,7 +8,7 @@ from skorch.dataset import CVSplit
 from skorch.callbacks import Checkpoint, EpochScoring
 from skorch.callbacks.lr_scheduler import LRScheduler
 from amptorch.gaussian import SNN_Gaussian
-from amptorch.model import FullNN, CustomLoss
+from amptorch.model import FullNN, CustomMSELoss
 from amptorch.data_preprocess import AtomsDataset, collate_amp
 from md_work.md_utils import md_run
 from amptorch.skorch_model import AMP
@@ -108,7 +108,7 @@ def trainer(images, filename, file_dir, Gs, morse, save_plots):
         module=FullNN(
             unique_atoms, [fp_length, 3, 20], device, forcetraining=forcetraining
         ),
-        criterion=CustomLoss,
+        criterion=CustomMSELoss,
         criterion__force_coefficient=0.04,
         optimizer=torch.optim.LBFGS,
         optimizer__line_search_fn="strong_wolfe",
@@ -228,7 +228,7 @@ def main(calculator):
 
     num_samples_to_retrain = 100
 
-    basename = "COCu_morse_test"
+    basename = "COCu_morse_test_fix"
     iterative_sampler(
         images=training_data,
         utility_function=md_runner,
