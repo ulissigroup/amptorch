@@ -7,7 +7,7 @@ import torch.optim as optim
 from ase import Atoms
 from ase.calculators.emt import EMT
 import numpy as np
-from amptorch.model import CustomLoss
+from amptorch.model import CustomMSELoss
 from amptorch import AMP
 from amptorch.core import AMPTorch
 from amptorch.analysis import parity_plot
@@ -88,7 +88,7 @@ calc.model.convergence = {
     "early_stop": False,
 }
 calc.model.loader_params = {"batch_size": None, "shuffle": False, "num_workers": 0}
-calc.model.criterion = CustomLoss
+calc.model.criterion = CustomMSELoss
 calc.model.optimizer = optim.LBFGS
 calc.model.lr = 1e-2
 calc.model.fine_tune = None
