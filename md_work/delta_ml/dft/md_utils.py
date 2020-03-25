@@ -27,7 +27,7 @@ class MDsimulate:
         """
         self.ensemble = ensemble
         self.dt = dt
-        self.temp = temp * units.kB
+        self.temp = temp
         self.count = count
         self.starting_geometry = initial_geometry
         if initial_geometry is None:
