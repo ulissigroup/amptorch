@@ -19,7 +19,7 @@ from amptorch.skorch_model.utils import target_extractor, energy_score, forces_s
 from amptorch.data_preprocess import AtomsDataset, collate_amp
 from amptorch.model import FullNN, CustomMSELoss
 from amptorch.morse import morse_potential
-from amptorch.onlinemd.gen_md import MDsimulate
+from amptorch.active_learning.gen_md import MDsimulate
 
 
 __author__ = "Muhammed Shuaibi"
