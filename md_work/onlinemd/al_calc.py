@@ -17,7 +17,7 @@ from amptorch.gaussian import SNN_Gaussian
 from amptorch.skorch_model import AMP
 from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score
 from amptorch.data_preprocess import AtomsDataset, collate_amp
-from amptorch.model import FullNN, CustomLoss
+from amptorch.model import FullNN, CustomMSELoss
 from amptorch.morse import morse_potential
 from md_work.onlinemd.md_utils import MDsimulate
 
@@ -27,33 +27,50 @@ __email__ = "mshuaibi@andrew.cmu.edu"
 
 
 class AtomisticActiveLearning(Calculator):
-    """Atomistics ASE calculator
-   Parameters
-   ----------
-    model : object
-        Class representing the regression model. Input arguments include training
-        images, descriptor type, and force_coefficient. Model structure and training schemes can be
-        modified directly within the class.
+    """Active Learning ASE calculator
 
-    label : str
-        Location to save the trained model.
+    Parameters
+    ----------
+     parent_calc : object
+         ASE parent calculator to be called for active learning queries.
 
-    """
+     images: list
+         Starting set of training images available.
+
+     filename : str
+         Label to save model and generated trajectories.
+
+     file_dir: str
+         Directory to store results.
+     """
 
     implemented_properties = ["energy", "forces"]
 
-    def __init__(self, parent_calc, images, filename, file_dir, Gs, morse):
+    def __init__(self, parent_calc, images, filename, file_dir):
         Calculator.__init__(self)
 
         self.parent_calc = parent_calc
         self.images = images
         self.filename = filename
         self.file_dir = file_dir
-        self.Gs = Gs
-        self.morse = morse
         self.ml_calc = None
 
-    def train_calc(self, images):
+    def train_calc(
+        self,
+        images,
+        Gs,
+        forcetraining,
+        cores,
+        criterion,
+        num_layers,
+        num_nodes,
+        force_coefficient,
+        learning_rate,
+        epochs,
+        train_split,
+        morse,
+        morse_params,
+    ):
         os.makedirs("./results/checkpoints", exist_ok=True)
         os.makedirs(self.file_dir, exist_ok=True)
 
@@ -65,12 +82,8 @@ class AtomisticActiveLearning(Calculator):
 
         cutoff = Gs["cutoff"]
         morse_data = None
-        if self.morse:
-            params = {
-                "C": {"re": 0.972, "D": 6.379, "sig": 0.477},
-                "O": {"re": 1.09, "D": 8.575, "sig": 0.603},
-                "Cu": {"re": 2.168, "D": 3.8386, "sig": 1.696},
-            }
+        if morse:
+            params = morse_params
             morse_model = morse_potential(
                 images, params, cutoff, filename, combo="mean"
             )
@@ -79,14 +92,14 @@ class AtomisticActiveLearning(Calculator):
             )
             morse_data = [morse_energies, morse_forces, num_atoms, params, morse_model]
 
-        forcetraining = True
+        forcetraining = forcetraining
         training_data = AtomsDataset(
             images,
             SNN_Gaussian,
             Gs,
             forcetraining=forcetraining,
             label=filename,
-            cores=10,
+            cores=cores,
             delta_data=morse_data,
         )
         unique_atoms = training_data.elements
@@ -102,21 +115,24 @@ class AtomisticActiveLearning(Calculator):
 
         net = NeuralNetRegressor(
             module=FullNN(
-                unique_atoms, [fp_length, 3, 20], device, forcetraining=forcetraining
+                unique_atoms,
+                [fp_length, num_layers, num_nodes],
+                device,
+                forcetraining=forcetraining,
             ),
-            criterion=CustomLoss,
-            criterion__force_coefficient=0.04,
+            criterion=criterion,
+            criterion__force_coefficient=force_coefficient,
             optimizer=torch.optim.LBFGS,
             optimizer__line_search_fn="strong_wolfe",
-            lr=1e-1,
+            lr=learning_rate,
             batch_size=len(training_data),
-            max_epochs=300,
+            max_epochs=epochs,
             iterator_train__collate_fn=collate_amp,
             iterator_train__shuffle=False,
             iterator_valid__collate_fn=collate_amp,
             iterator_valid__shuffle=False,
             device=device,
-            train_split=CVSplit(cv=5, random_state=1),
+            train_split=CVSplit(cv=train_split, random_state=1),
             callbacks=[
                 EpochScoring(
                     forces_score,
@@ -141,6 +157,20 @@ class AtomisticActiveLearning(Calculator):
         return calc
 
     def al_random(self, images, sample_candidates, samples_to_retrain):
+        """
+        Randomly selects data points from a list of potential candidates to
+        query and add to the existing training set.
+
+        Paramaters
+        ----------
+        images: List. Current training images.
+
+        sample_candidates: List. Potential candidates for query as collected
+        from the generating function.
+
+        samples_to_retrain: Integer. Number of samples to be randomly selected
+        for query and added to the training set.
+        """
         random.seed(3)
         sample_points = random.sample(
             range(1, len(sample_candidates)), samples_to_retrain
@@ -150,7 +180,24 @@ class AtomisticActiveLearning(Calculator):
             images.append(sample_candidates[idx])
         return images
 
-    def active_learner(self, generating_function, iterations, samples_to_retrain):
+    def active_learner(
+        self,
+        generating_function,
+        iterations,
+        samples_to_retrain,
+        Gs,
+        forcetraining=True,
+        cores=10,
+        criterion=CustomMSELoss,
+        num_layers=3,
+        num_nodes=20,
+        force_coefficient=0.04,
+        learning_rate=1e-1,
+        epochs=300,
+        train_split=5,
+        morse=None,
+        morse_params=None,
+    ):
         """
         Active learning method that selects data points from a pool of data
         generated by a specified generating function. Currently a random sample
@@ -193,8 +240,21 @@ class AtomisticActiveLearning(Calculator):
                 )
             name = self.filename + "_iter_{}".format(iteration)
             # train ml calculator
-            print(len(self.images))
-            ml_calc = self.train_calc(images=self.images)
+            ml_calc = self.train_calc(
+                images=self.images,
+                Gs=Gs,
+                forcetraining=forcetraining,
+                cores=cores,
+                criterion=criterion,
+                num_layers=num_layers,
+                num_nodes=num_nodes,
+                force_coefficient=force_coefficient,
+                learning_rate=learning_rate,
+                epochs=epochs,
+                train_split=train_split,
+                morse=morse,
+                morse_params=morse_params,
+            )
 
             # run generating function using trained ml calculator
             fn_label = self.file_dir + name
@@ -211,6 +271,9 @@ class AtomisticActiveLearning(Calculator):
         self.ml_calc = ml_calc
 
     def calculate(self, atoms, properties, system_changes):
+        """
+        ASE required calculate method to compute specified properties.
+        """
         Calculator.calculate(self, atoms, properties, system_changes)
 
         energy_pred = self.ml_calc.get_potential_energy(atoms)
@@ -229,14 +292,16 @@ if __name__ == "__main__":
     Gs["G4_gammas"] = [+1.0, -1]
     Gs["cutoff"] = 5.876798323827276  # EMT asap_cutoff: False
 
+    morse_params = {
+        "C": {"re": 0.972, "D": 6.379, "sig": 0.477},
+        "O": {"re": 1.09, "D": 8.575, "sig": 0.603},
+        "Cu": {"re": 2.168, "D": 3.8386, "sig": 1.696},
+    }
+
     images = ase.io.read("../../datasets/COCu_ber_50ps_300K.traj", ":2000:10")
+
     al_calc = AtomisticActiveLearning(
-        parent_calc=EMT(),
-        images=images,
-        filename="morse_test",
-        file_dir="./morse/",
-        Gs=Gs,
-        morse=True,
+        parent_calc=EMT(), images=images, filename="m", file_dir="./morse/"
     )
 
     al_calc.active_learner(
@@ -249,4 +314,7 @@ if __name__ == "__main__":
         ),
         iterations=3,
         samples_to_retrain=100,
+        Gs=Gs,
+        morse=True,
+        morse_params=morse_params,
     )
