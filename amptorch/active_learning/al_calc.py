@@ -367,4 +367,4 @@ if __name__ == "__main__":
         force_coefficient=0.04,
         learning_rate=1e-1,
         epochs=300,
-        train_split=5,
+        train_split=5,)
