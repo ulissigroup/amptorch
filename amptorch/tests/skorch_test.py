@@ -115,18 +115,6 @@ def test_skorch():
                 use_caching=True,
                 target_extractor=target_extractor,
             ),
-            EpochScoring(
-                forces_mad,
-                on_train=True,
-                use_caching=True,
-                target_extractor=target_extractor,
-            ),
-            EpochScoring(
-                energy_mad,
-                on_train=True,
-                use_caching=True,
-                target_extractor=target_extractor,
-            ),
         ],
     )
     calc = AMP(training_data, net, "test")
@@ -138,8 +126,6 @@ def test_skorch():
     energy_rmse = np.sqrt(
         (((calculated_energies - energies) / num_of_atoms) ** 2).sum() / len(images)
     )
-    energy_median_error = np.median(np.abs(calculated_energies - energies) /
-            num_of_atoms)
 
     calculated_forces = np.concatenate(
         np.array([calc.get_forces(image) for image in images])
@@ -154,12 +140,9 @@ def test_skorch():
         force_loss_image[i] = np.sum(l1_force[idx: idx + 3])
         idx += 3
     force_loss_image /= 3
-    force_median_error = np.median(force_loss_image)
 
     reported_energy_score = net.history[-1]["energy_score"]
-    reported_median_energy_score = net.history[-1]["energy_mad"]
     reported_forces_score = net.history[-1]["forces_score"]
-    reported_median_forces_score = net.history[-1]["forces_mad"]
     assert force_rmse <= 0.005, "Force training convergence not met!"
     assert energy_rmse <= 0.005, "Energy training convergence not met!"
     assert round(reported_energy_score, 4) == round(
@@ -168,12 +151,6 @@ def test_skorch():
     assert round(reported_forces_score, 4) == round(
         force_rmse, 4
     ), "Shuffled reported forces score incorrect!"
-    assert round(reported_median_energy_score, 4) == round(
-            energy_median_error, 4
-            ), "Reported median energy score incorrect!"
-    assert round(reported_median_forces_score, 4) == round(
-            force_median_error, 4
-            ), "Reported median forces score incorrect!"
 
 def test_e_only_skorch():
     distances = np.linspace(2, 5, 100)
