@@ -66,7 +66,7 @@ device = "cpu"
 
 net = NeuralNetRegressor(
     module=FullNN(unique_atoms, [fp_length, 3, 10], device, forcetraining=forcetraining),
-    criterion=CustomLoss,
+    criterion=CustomMSELoss,
     criterion__force_coefficient=0.3,
     optimizer=torch.optim.LBFGS,
     optimizer__line_search_fn="strong_wolfe",
