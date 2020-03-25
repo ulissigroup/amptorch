@@ -1,7 +1,7 @@
 import os
 import numpy as np
 from amptorch.data_preprocess import AtomsDataset, collate_amp
-from amptorch.model import FullNN, CustomLoss
+from amptorch.model import FullNN, CustomMSELoss
 import ase
 from ase.calculators.calculator import Calculator, Parameters
 from ase.md.nvtberendsen import NVTBerendsen
@@ -165,7 +165,7 @@ def train_calc(inputs):
         module=FullNN(
             unique_atoms, [fp_length, 3, 20], device, forcetraining=forcetraining
         ),
-        criterion=CustomLoss,
+        criterion=CustomMSELoss,
         criterion__force_coefficient=0.04,
         optimizer=torch.optim.LBFGS,
         lr=1e-1,
