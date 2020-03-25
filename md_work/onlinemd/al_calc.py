@@ -71,6 +71,7 @@ class AtomisticActiveLearning(Calculator):
         morse,
         morse_params,
     ):
+
         os.makedirs("./results/checkpoints", exist_ok=True)
         os.makedirs(self.file_dir, exist_ok=True)
 
@@ -78,7 +79,8 @@ class AtomisticActiveLearning(Calculator):
 
         class train_end_load_best_valid_loss(skorch.callbacks.base.Callback):
             def on_train_end(self, net, X, y):
-                net.load_params("./results/checkpoints/{}_params.pt".format(filename))
+                net.load_params(
+                    "./results/checkpoints/{}_params.pt".format(filename))
 
         cutoff = Gs["cutoff"]
         morse_data = None
@@ -90,7 +92,8 @@ class AtomisticActiveLearning(Calculator):
             morse_energies, morse_forces, num_atoms = morse_model.morse_pred(
                 images, params
             )
-            morse_data = [morse_energies, morse_forces, num_atoms, params, morse_model]
+            morse_data = [morse_energies, morse_forces,
+                num_atoms, params, morse_model]
 
         forcetraining = forcetraining
         training_data = AtomsDataset(
@@ -208,10 +211,11 @@ class AtomisticActiveLearning(Calculator):
 
         Parameters
         ----------
-        generating_function: Object. A user specified function that the active
-        learning framework seeks to improve with a surrogate ML model (i.e. MD,
-        NEB, relaxations) with limited data. The function must contain two
-        specific methods to be used in this framework:
+        generating_function: Object.
+            A user specified function that the active
+            learning framework seeks to improve with a surrogate ML model (i.e. MD,
+            NEB, relaxations) with limited data. The function must contain two
+            specific methods to be used in this framework:
 
             (1) def run(calc, filename): A run method that runs the defined
             function and writes the corresponding Atoms object to filename.
@@ -222,11 +226,42 @@ class AtomisticActiveLearning(Calculator):
                 end_count, and interval. i.e. ase.io.read(filename,
                 "{}:{}:{}".format(start_count, end_count, interval))
 
-        iterations: integer. Number of iterations the active learning framework
-        is to perform.
-
-        samples_to_retrain. integer. Number of samples to query each iteration
-        of the active learning loop."""
+        iterations: integer.
+            Number of iterations the active learning framework
+            is to perform.
+        samples_to_retrain. integer.
+            Number of samples to query each iteration
+            of the active learning loop.
+        Gs: dictionary.
+            Dictionary of symmetry functions to be used for
+            fingerprinting.
+        morse: boolean
+            Delta-ML model with morse potential to be used.
+        morse_params: dictionary
+            If morse True, define morse potential parameters for all elements in
+            system.
+        forcetraining: boolean
+            Use forces in training scheme alongside energies.
+        force_coefficient: float
+            Define the force coefficient to be utilized in the loss function. A
+            coefficient > 0 indicates force training is turned on.
+        cores: int
+            Number of cores to parallelize across for fingerprint computation
+        criterion: object
+            Specify the loss function to be optimized.
+            default: CustomMSELoss
+        num_layers: int
+            Number of layers in each atomic neural network.
+        num_nodes: int
+            Number of nodes in each layer in each atomic neural network.
+        learning_rater: float
+            Define the model learning rate.
+        epochs: int
+            Number of training epochs to use.
+        train_split: float or int
+            Training split to be used for validation. If float, corresponding
+            proportion of training set will be used. If int, k-fold cross
+            validation will be used."""
 
         sample_candidates = None
         terminate = False
@@ -284,6 +319,7 @@ class AtomisticActiveLearning(Calculator):
 
 
 if __name__ == "__main__":
+    # Define symmetry functions
     Gs = {}
     Gs["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
     Gs["G2_rs_s"] = [0] * 4
@@ -292,24 +328,30 @@ if __name__ == "__main__":
     Gs["G4_gammas"] = [+1.0, -1]
     Gs["cutoff"] = 5.876798323827276  # EMT asap_cutoff: False
 
+    # Define morse parameters if Delta-ML model, o/w morse = False
+    morse = True
     morse_params = {
         "C": {"re": 0.972, "D": 6.379, "sig": 0.477},
         "O": {"re": 1.09, "D": 8.575, "sig": 0.603},
         "Cu": {"re": 2.168, "D": 3.8386, "sig": 1.696},
     }
 
-    images = ase.io.read("../../datasets/COCu_ber_50ps_300K.traj", ":2000:10")
+    # Define initial set of images, can be as few as 1. If 1, make sure to
+    # change train_split to 0.
+    images = ase.io.read("../../datasets/COCu_ber_50ps_300K.traj", ":100")
 
+    # Define AL calculator
     al_calc = AtomisticActiveLearning(
-        parent_calc=EMT(), images=images, filename="m", file_dir="./morse/"
+        parent_calc=EMT(), images=images, filename="morse_f100", file_dir="./morse/"
     )
 
+    # Define AL generating function and training scheme.
     al_calc.active_learner(
         generating_function=MDsimulate(
             ensemble="nvtberendsen",
             dt=1,
             temp=300,
-            count=5000,
+            count=2000,
             initial_geometry=images[0].copy(),
         ),
         iterations=3,
@@ -317,4 +359,12 @@ if __name__ == "__main__":
         Gs=Gs,
         morse=True,
         morse_params=morse_params,
-    )
+        forcetraining=True,
+        cores=10,
+        criterion=CustomMSELoss,
+        num_layers=3,
+        num_nodes=20,
+        force_coefficient=0.04,
+        learning_rate=1e-1,
+        epochs=300,
+        train_split=5,
