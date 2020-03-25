@@ -17,7 +17,7 @@ from amptorch.skorch_model.utils import (
     forces_mad,
     energy_mad,
 )
-from amptorch.model import FullNN, CustomLoss
+from amptorch.model import FullNN, CustomMSELoss
 from amptorch.data_preprocess import (
     AtomsDataset,
     factorize_data,
@@ -89,7 +89,7 @@ def test_skorch():
         module=FullNN(
             unique_atoms, [fp_length, 2, 2], device, forcetraining=forcetraining
         ),
-        criterion=CustomLoss,
+        criterion=CustomMSELoss,
         criterion__force_coefficient=0.3,
         optimizer=torch.optim.LBFGS,
         optimizer__line_search_fn="strong_wolfe",
@@ -202,7 +202,7 @@ def test_e_only_skorch():
         module=FullNN(
             unique_atoms, [fp_length, 2, 2], device, forcetraining=forcetraining
         ),
-        criterion=CustomLoss,
+        criterion=CustomMSELoss,
         criterion__force_coefficient=0,
         optimizer=torch.optim.LBFGS,
         optimizer__line_search_fn="strong_wolfe",
