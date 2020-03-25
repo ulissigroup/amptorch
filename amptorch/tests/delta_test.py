@@ -5,7 +5,7 @@ from ase.calculators.emt import EMT
 from amptorch.gaussian import SNN_Gaussian
 from amptorch.data_preprocess import AtomsDataset, collate_amp
 from amptorch.core import AMPTorch
-from amptorch.model import CustomLoss, FullNN
+from amptorch.model import CustomMSELoss, FullNN
 from amptorch.exp_repulsive import lj_optim
 from amptorch.morse import morse_potential
 import numpy as np
@@ -83,7 +83,7 @@ def test_skorch_delta():
         module=FullNN(
             unique_atoms, [fp_length, 2, 2], device, forcetraining=forcetraining
         ),
-        criterion=CustomLoss,
+        criterion=CustomMSELoss,
         criterion__force_coefficient=0.3,
         optimizer=torch.optim.LBFGS,
         optimizer__line_search_fn="strong_wolfe",
