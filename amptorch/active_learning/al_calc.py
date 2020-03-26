@@ -79,8 +79,7 @@ class AtomisticActiveLearning(Calculator):
 
         class train_end_load_best_valid_loss(skorch.callbacks.base.Callback):
             def on_train_end(self, net, X, y):
-                net.load_params(
-                    "./results/checkpoints/{}_params.pt".format(filename))
+                net.load_params("./results/checkpoints/{}_params.pt".format(filename))
 
         cutoff = Gs["cutoff"]
         morse_data = None
@@ -92,8 +91,7 @@ class AtomisticActiveLearning(Calculator):
             morse_energies, morse_forces, num_atoms = morse_model.morse_pred(
                 images, params
             )
-            morse_data = [morse_energies, morse_forces,
-                num_atoms, params, morse_model]
+            morse_data = [morse_energies, morse_forces, num_atoms, params, morse_model]
 
         forcetraining = forcetraining
         training_data = AtomsDataset(
@@ -109,12 +107,52 @@ class AtomisticActiveLearning(Calculator):
         fp_length = training_data.fp_length
         device = "cpu"
 
-        cp = Checkpoint(
-            monitor="forces_score_best",
-            fn_prefix="./results/checkpoints/{}_".format(filename),
-        )
         load_best_valid_loss = train_end_load_best_valid_loss()
         torch.set_num_threads(1)
+
+        if train_split == 0:
+            train_split = 0
+            on_train = True
+        else:
+            train_split = CVSplit(cv=train_split, random_state=1)
+            on_train = False
+
+        force_coefficient = 0
+        if forcetraining:
+            force_coefficient = force_coefficient
+            callbacks = [
+                EpochScoring(
+                    forces_score,
+                    on_train=on_train,
+                    use_caching=True,
+                    target_extractor=target_extractor,
+                ),
+                EpochScoring(
+                    energy_score,
+                    on_train=on_train,
+                    use_caching=True,
+                    target_extractor=target_extractor,
+                ),
+                Checkpoint(
+                    monitor="forces_score_best",
+                    fn_prefix="./results/checkpoints/{}_".format(filename),
+                ),
+                load_best_valid_loss,
+            ]
+        else:
+            callbacks = [
+                EpochScoring(
+                    energy_score,
+                    on_train=on_train,
+                    use_caching=True,
+                    target_extractor=target_extractor,
+                ),
+                Checkpoint(
+                    monitor="energy_score_best",
+                    fn_prefix="./results/checkpoints/{}_".format(filename),
+                ),
+                load_best_valid_loss,
+            ]
 
         net = NeuralNetRegressor(
             module=FullNN(
@@ -135,23 +173,8 @@ class AtomisticActiveLearning(Calculator):
             iterator_valid__collate_fn=collate_amp,
             iterator_valid__shuffle=False,
             device=device,
-            train_split=CVSplit(cv=train_split, random_state=1),
-            callbacks=[
-                EpochScoring(
-                    forces_score,
-                    on_train=False,
-                    use_caching=True,
-                    target_extractor=target_extractor,
-                ),
-                EpochScoring(
-                    energy_score,
-                    on_train=False,
-                    use_caching=True,
-                    target_extractor=target_extractor,
-                ),
-                cp,
-                load_best_valid_loss,
-            ],
+            train_split=train_split,
+            callbacks=callbacks,
         )
 
         calc = AMP(training_data, net, label=filename)
@@ -342,7 +365,7 @@ if __name__ == "__main__":
 
     # Define AL calculator
     al_calc = AtomisticActiveLearning(
-        parent_calc=EMT(), images=images, filename="morse_f100", file_dir="./morse/"
+        parent_calc=EMT(), images=images, filename="test", file_dir="./morse/"
     )
 
     # Define AL generating function and training scheme.
@@ -351,11 +374,11 @@ if __name__ == "__main__":
             ensemble="nvtberendsen",
             dt=1,
             temp=300,
-            count=2000,
+            count=20,
             initial_geometry=images[0].copy(),
         ),
         iterations=3,
-        samples_to_retrain=100,
+        samples_to_retrain=1,
         Gs=Gs,
         morse=True,
         morse_params=morse_params,
@@ -366,5 +389,6 @@ if __name__ == "__main__":
         num_nodes=20,
         force_coefficient=0.04,
         learning_rate=1e-1,
-        epochs=300,
-        train_split=5,)
+        epochs=1,
+        train_split=5,
+    )
