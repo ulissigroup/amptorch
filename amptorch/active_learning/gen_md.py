@@ -56,11 +56,16 @@ class MDsimulate:
             dyn = Langevin(slab, self.dt * units.fs, self.temp * units.kB, 0.002)
         traj = ase.io.Trajectory(filename + ".traj", "w", slab)
         dyn.attach(traj.write, interval=1)
+        try:
+            fixed_atoms = len(slab.constraints[0].get_indices())
+        except:
+            fixed_atoms = 0
+            pass
 
         def printenergy(a=slab):
             """Function to print( the potential, kinetic, and total energy)"""
             epot = a.get_potential_energy() / len(a)
-            ekin = a.get_kinetic_energy() / len(a)
+            ekin = a.get_kinetic_energy() / len(a-fixed_atoms)
             print(
                 "Energy per atom: Epot = %.3feV Ekin = %.3feV (T=%3.0fK) "
                 "Etot = %.3feV" % (epot, ekin, ekin / (1.5 * units.kB), epot + ekin)
