@@ -135,6 +135,7 @@ class AMP(Calculator):
             dataset, batch_size, collate_fn=dataset.collate_test, shuffle=False
         )
         model = self.model.module
+        model.forcetraining = True
         model.load_state_dict(torch.load(self.label))
         model.eval()
 
