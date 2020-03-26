@@ -51,7 +51,9 @@ class MDsimulate:
         if self.ensemble == "NVE":
             dyn = VelocityVerlet(slab, self.dt * units.fs)
         elif self.ensemble == "nvtberendsen":
-            dyn = nvtberendsen.NVTBerendsen(slab, self.dt * units.fs, self.temp, taut=300 * units.fs)
+            dyn = nvtberendsen.NVTBerendsen(
+                slab, self.dt * units.fs, self.temp, taut=300 * units.fs
+            )
         elif self.ensemble == "langevin":
             dyn = Langevin(slab, self.dt * units.fs, self.temp * units.kB, 0.002)
         traj = ase.io.Trajectory(filename + ".traj", "w", slab)
@@ -65,7 +67,7 @@ class MDsimulate:
         def printenergy(a=slab):
             """Function to print( the potential, kinetic, and total energy)"""
             epot = a.get_potential_energy() / len(a)
-            ekin = a.get_kinetic_energy() / len(a-fixed_atoms)
+            ekin = a.get_kinetic_energy() / (len(a) - fixed_atoms)
             print(
                 "Energy per atom: Epot = %.3feV Ekin = %.3feV (T=%3.0fK) "
                 "Etot = %.3feV" % (epot, ekin, ekin / (1.5 * units.kB), epot + ekin)
@@ -76,5 +78,7 @@ class MDsimulate:
         dyn.run(self.count)
 
     def get_trajectory(self, filename, start_count, end_count, interval):
-        trajectory = ase.io.read(filename+".traj", "{}:{}:{}".format(start_count, end_count, interval))
+        trajectory = ase.io.read(
+            filename + ".traj", "{}:{}:{}".format(start_count, end_count, interval)
+        )
         return trajectory
