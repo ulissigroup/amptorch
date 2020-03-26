@@ -16,10 +16,9 @@ Installation Instructions:
 
 The simplest way to install Amptorch is with pip; you can follow the instructions below to use this method. The SIMPLE-NN line is an optional dependency; note that this will also result in a tensorflow installation.
 
-- ```git clone https://github.com/ulissigroup/amptorch.git```
+- ```pip install git+https://github.com/ulissigroup/amptorch.git```
 - ```pip install git+https://github.com/mshuaibii/SIMPLE-NN.git```
 - ```pip install amp-atomistics```
-- ```pip install .``` 
 
 For more customized installations, for example if you want to be able to easily play with the code of Amptorch without reinstalling, you can do the following:
 
