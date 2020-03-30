@@ -205,8 +205,6 @@ class AtomisticActiveLearning(Calculator):
                 sp(atoms=sample, energy=sample_energy, forces=sample_forces)
             )
             images.append(sample)
-        for i in images:
-            print(i.get_calculator())
         return images
 
     def active_learner(
