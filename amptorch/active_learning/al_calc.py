@@ -1,12 +1,10 @@
 import os
-import numpy as np
 import random
 
 import torch
 
-import ase
 from ase.calculators.calculator import Calculator
-from ase.calculators.emt import EMT
+from ase.calculators.singlepoint import SinglePointCalculator as sp
 
 import skorch
 from skorch import NeuralNetRegressor
@@ -19,7 +17,6 @@ from amptorch.skorch_model.utils import target_extractor, energy_score, forces_s
 from amptorch.data_preprocess import AtomsDataset, collate_amp
 from amptorch.model import FullNN, CustomMSELoss
 from amptorch.morse import morse_potential
-from amptorch.active_learning.gen_md import MDsimulate
 
 
 __author__ = "Muhammed Shuaibi"
@@ -71,7 +68,6 @@ class AtomisticActiveLearning(Calculator):
         morse,
         morse_params,
     ):
-
         os.makedirs("./results/checkpoints", exist_ok=True)
         os.makedirs(self.file_dir, exist_ok=True)
 
@@ -111,13 +107,11 @@ class AtomisticActiveLearning(Calculator):
         torch.set_num_threads(1)
 
         if train_split == 0:
-            train_split = 0
             on_train = True
         else:
             train_split = CVSplit(cv=train_split, random_state=1)
             on_train = False
 
-        force_coefficient = 0
         if forcetraining:
             force_coefficient = force_coefficient
             callbacks = [
@@ -140,6 +134,7 @@ class AtomisticActiveLearning(Calculator):
                 load_best_valid_loss,
             ]
         else:
+            force_coefficient = 0
             callbacks = [
                 EpochScoring(
                     energy_score,
@@ -202,8 +197,16 @@ class AtomisticActiveLearning(Calculator):
             range(1, len(sample_candidates)), samples_to_retrain
         )
         for idx in sample_points:
-            sample_candidates[idx].set_calculator(self.parent_calc)
-            images.append(sample_candidates[idx])
+            sample = sample_candidates[idx].copy()
+            sample.set_calculator(self.parent_calc)
+            sample_energy = sample.get_potential_energy(apply_constraint=False)
+            sample_forces = sample.get_forces(apply_constraint=False)
+            sample.set_calculator(
+                sp(atoms=sample, energy=sample_energy, forces=sample_forces)
+            )
+            images.append(sample)
+        for i in images:
+            print(i.get_calculator())
         return images
 
     def active_learner(
@@ -339,56 +342,3 @@ class AtomisticActiveLearning(Calculator):
 
         self.results["energy"] = energy_pred
         self.results["forces"] = force_pred
-
-
-if __name__ == "__main__":
-    # Define symmetry functions
-    Gs = {}
-    Gs["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
-    Gs["G2_rs_s"] = [0] * 4
-    Gs["G4_etas"] = [0.005]
-    Gs["G4_zetas"] = [1.0, 4.0]
-    Gs["G4_gammas"] = [+1.0, -1]
-    Gs["cutoff"] = 5.876798323827276  # EMT asap_cutoff: False
-
-    # Define morse parameters if Delta-ML model, o/w morse = False
-    morse = True
-    morse_params = {
-        "C": {"re": 0.972, "D": 6.379, "sig": 0.477},
-        "O": {"re": 1.09, "D": 8.575, "sig": 0.603},
-        "Cu": {"re": 2.168, "D": 3.8386, "sig": 1.696},
-    }
-
-    # Define initial set of images, can be as few as 1. If 1, make sure to
-    # change train_split to 0.
-    images = ase.io.read("../../datasets/COCu_ber_50ps_300K.traj", ":100")
-
-    # Define AL calculator
-    al_calc = AtomisticActiveLearning(
-        parent_calc=EMT(), images=images, filename="test", file_dir="./morse/"
-    )
-
-    # Define AL generating function and training scheme.
-    al_calc.active_learner(
-        generating_function=MDsimulate(
-            ensemble="nvtberendsen",
-            dt=1,
-            temp=300,
-            count=20,
-            initial_geometry=images[0].copy(),
-        ),
-        iterations=3,
-        samples_to_retrain=1,
-        Gs=Gs,
-        morse=True,
-        morse_params=morse_params,
-        forcetraining=True,
-        cores=10,
-        criterion=CustomMSELoss,
-        num_layers=3,
-        num_nodes=20,
-        force_coefficient=0.04,
-        learning_rate=1e-1,
-        epochs=1,
-        train_split=5,
-    )

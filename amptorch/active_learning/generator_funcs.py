@@ -1,12 +1,8 @@
-from ase import Atoms, Atom, units
-from ase.build import molecule
-from ase.visualize import view
 import ase.io
 
-from ase.build import fcc100, add_adsorbate
+from ase import units
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md import VelocityVerlet, Langevin, nvtberendsen
-from ase.constraints import FixAtoms
 
 import numpy as np
 
@@ -25,23 +21,10 @@ class MDsimulate:
         self.dt = dt
         self.temp = temp
         self.count = count
-        self.starting_geometry = initial_geometry
         if initial_geometry is None:
-            self.starting_geometry = self.construct_initial_geometry()
-
-    def construct_initial_geometry(self):
-        """Generates initial geometry of system"""
-        slab = fcc100("Cu", size=(3, 3, 3))
-        ads = molecule("CO")
-        add_adsorbate(slab, ads, 2.5, offset=(1, 1))
-        cons = FixAtoms(
-            indices=[atom.index for atom in slab if (atom.tag == 2 or atom.tag == 3)]
-        )
-        slab.set_constraint(cons)
-        slab.center(vacuum=13.0, axis=2)
-        slab.set_pbc(True)
-        slab.wrap(pbc=[True] * 3)
-        return slab
+            raise Exception('Initial structure not provided!')
+        else:
+            self.starting_geometry = initial_geometry
 
     def run(self, calc, filename):
         slab = self.starting_geometry.copy()
@@ -76,6 +59,27 @@ class MDsimulate:
         if printenergy:
             dyn.attach(printenergy, interval=10)
         dyn.run(self.count)
+
+    def get_trajectory(self, filename, start_count, end_count, interval):
+        trajectory = ase.io.read(
+            filename + ".traj", "{}:{}:{}".format(start_count, end_count, interval)
+        )
+        return trajectory
+
+class Relaxation:
+    def __init__(self, initial_geometry, optimizer, fmax=0.05, steps=None):
+        self.initial_geometry = initial_geometry
+        self.optimizer = optimizer
+        self.fmax = fmax
+        self.steps = steps
+
+    def run(self, calc, filename):
+        structure = self.initial_geometry.copy()
+        structure.set_calculator(calc)
+        dyn = self.optimizer(
+            structure, trajectory="{}.traj".format(filename)
+        )
+        dyn.run(fmax=self.fmax, steps=self.steps)
 
     def get_trajectory(self, filename, start_count, end_count, interval):
         trajectory = ase.io.read(
