@@ -322,7 +322,6 @@ def make_sparse(primes):
     primes = primes.to_sparse()
     return primes
 
-
 def factorize_data(training_data):
     """
     Factorizes the dataset into separate lists.
@@ -441,7 +440,6 @@ def factorize_data(training_data):
         rearange_set,
     )
 
-
 def collate_amp(training_data):
     """
     Reshuffling scheme that reads in raw data and organizes it into element
@@ -535,20 +533,6 @@ class TestDataset(Dataset):
                 label=label,
                 save=False,
             )
-        # G = make_symmetry_functions(elements=self.training_unique_atoms, type="G2", etas=G2_etas)
-        # G += make_symmetry_functions(
-        # elements=self.training_unique_atoms,
-        # type="G4",
-        # etas=G4_etas,
-        # zetas=G4_zetas,
-        # gammas=G4_gammas,
-        # )
-        # for g in G:
-        # g["Rs"] = G2_rs_s
-        # self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
-        # self.descriptor.calculate_fingerprints(
-        # self.hashed_images, calculate_derivatives=True
-        # )
         self.unique_atoms = self.unique()
 
     def __len__(self):
