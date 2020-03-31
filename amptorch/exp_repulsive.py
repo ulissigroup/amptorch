@@ -52,8 +52,8 @@ class lj_optim:
         bounds = None
         bounded_methods = ["L-BFGS-B", "TNC", "SLSQP"]
         if method in bounded_methods:
-            bounds = [(0, None), (0, None), (0, None)] * len(self.params_dict.keys())
-            bounds.append((2, None))
+            bounds = [(1, 5), (1e-5, 10)] * len(self.params_dict.keys())
+            bounds.append((5, 15))
         lj_min = minimize(
             self.objective_fn,
             self.p0,
@@ -80,19 +80,11 @@ class lj_optim:
     def image_pred(self, image, p0, params_dict):
         chemical_symbols = np.array(image.get_chemical_symbols())
         params = []
-        element_energies = {}
         for element in chemical_symbols:
             sig = params_dict[element][0]
             eps = params_dict[element][1]
-            element_energies[element] = params_dict[element][2]
             params.append(np.array([[sig, eps]]))
         params = np.vstack(np.array(params))
-        e_offset = np.sum(
-            [
-                element_energies[symbol]
-                for symbol in image.get_chemical_symbols()
-            ]
-        )
         a = p0[-1]
 
         natoms = len(image)
@@ -122,7 +114,6 @@ class lj_optim:
             forces[a1] -= f.sum(axis=0)
             for a2, f2 in zip(neighbors, f):
                 forces[a2] += f2
-        energy += e_offset
         return energy, forces, natoms
 
     def lj_pred(self, data, p0, params_dict):
@@ -175,8 +166,8 @@ class lj_optim:
     def params_to_dict(self, params, params_dict):
         idx = 0
         for keys in list(params_dict.keys()):
-            params_dict[keys] = params[idx : idx + 3]
-            idx += 3
+            params_dict[keys] = params[idx : idx + 2]
+            idx += 2
         return params_dict
 
     def logresults(self, log, data, cutoff, p0, params_dict, results, optim_time):

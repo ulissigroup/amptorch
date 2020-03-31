@@ -12,7 +12,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from amp.descriptor.gaussian import Gaussian
 from amptorch.utils import Logger
-from .model import FullNN, CustomLoss
+from .model import FullNN, CustomMSELoss
 from .data_preprocess import AtomsDataset, collate_amp
 from .trainer import Trainer
 
@@ -55,7 +55,7 @@ class AMPTorch:
         default: 0
     criterion: object
         Specify the loss function to be optimized.
-        default: CustomLoss
+        default: CustomMSELoss
     optimizer: object
         Define the training optimizer to be utilized for the regression.
         default: optim.LBFGS
@@ -92,7 +92,7 @@ class AMPTorch:
         Gs=None,
         cores=1,
         force_coefficient=0,
-        criterion=CustomLoss,
+        criterion=CustomMSELoss,
         optimizer=optim.LBFGS,
         loader_params={"batch_size": None, "shuffle": False, "num_workers": 0},
         resample=None,
@@ -131,6 +131,10 @@ class AMPTorch:
         self.forcetraining = False
         if force_coefficient > 0:
             self.forcetraining = True
+        if self.lj_data:
+            self.scaling = "rel"
+        else:
+            self.scaling = None
 
         self.training_data = AtomsDataset(
             self.filename,
@@ -140,6 +144,7 @@ class AMPTorch:
             forcetraining=self.forcetraining,
             lj_data=self.lj_data,
             label=label,
+            scaling=self.scaling,
         )
         self.scalings = self.training_data.scalings
         self.sd_scaling = self.scalings[0]

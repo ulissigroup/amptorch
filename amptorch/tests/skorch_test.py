@@ -17,7 +17,7 @@ from amptorch.skorch_model.utils import (
     forces_mad,
     energy_mad,
 )
-from amptorch.model import FullNN, CustomLoss
+from amptorch.model import FullNN, CustomMSELoss
 from amptorch.data_preprocess import (
     AtomsDataset,
     factorize_data,
@@ -79,8 +79,7 @@ def test_skorch():
         forcetraining=forcetraining,
         label=label,
         cores=1,
-        lj_data=None,
-        scaling="standardize",
+        delta_data=None,
     )
     unique_atoms = training_data.elements
     fp_length = training_data.fp_length
@@ -90,7 +89,7 @@ def test_skorch():
         module=FullNN(
             unique_atoms, [fp_length, 2, 2], device, forcetraining=forcetraining
         ),
-        criterion=CustomLoss,
+        criterion=CustomMSELoss,
         criterion__force_coefficient=0.3,
         optimizer=torch.optim.LBFGS,
         optimizer__line_search_fn="strong_wolfe",
@@ -102,6 +101,7 @@ def test_skorch():
         iterator_valid__collate_fn=collate_amp,
         device=device,
         train_split=0,
+        verbose=0,
         callbacks=[
             EpochScoring(
                 forces_score,
@@ -192,8 +192,7 @@ def test_e_only_skorch():
         forcetraining=forcetraining,
         label=label,
         cores=1,
-        lj_data=None,
-        scaling=None,
+        delta_data=None,
     )
     batch_size = len(training_data)
     unique_atoms = training_data.elements
@@ -204,7 +203,7 @@ def test_e_only_skorch():
         module=FullNN(
             unique_atoms, [fp_length, 2, 2], device, forcetraining=forcetraining
         ),
-        criterion=CustomLoss,
+        criterion=CustomMSELoss,
         criterion__force_coefficient=0,
         optimizer=torch.optim.LBFGS,
         optimizer__line_search_fn="strong_wolfe",
@@ -216,6 +215,7 @@ def test_e_only_skorch():
         iterator_valid__collate_fn=collate_amp,
         device=device,
         train_split=0,
+        verbose=0,
         callbacks=[
             EpochScoring(
                 energy_score,

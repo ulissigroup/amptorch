@@ -12,7 +12,7 @@ from amptorch.data_preprocess import (
     factorize_data,
     collate_amp,
 )
-from amptorch.model import FullNN, CustomLoss
+from amptorch.model import FullNN, CustomMSELoss
 from ase.calculators.calculator import Calculator, Parameters
 import torch
 

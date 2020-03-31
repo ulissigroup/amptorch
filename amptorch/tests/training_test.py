@@ -8,7 +8,7 @@ from ase.calculators.emt import EMT
 import torch
 import torch.optim as optim
 import numpy as np
-from amptorch.model import CustomLoss
+from amptorch.model import CustomMSELoss
 from amptorch import AMP
 from amptorch.core import AMPTorch
 from amptorch.analysis import parity_plot
@@ -69,7 +69,7 @@ def test_training():
         "epochs": 1e10,
     }
     calc.model.loader_params = {"batch_size": None, "shuffle": False, "num_workers": 0}
-    calc.model.criterion = CustomLoss
+    calc.model.criterion = CustomMSELoss
     calc.model.optimizer = optim.LBFGS
     calc.model.lr = 1e-2
     calc.model.fine_tune = None
@@ -152,7 +152,6 @@ def test_training():
     # test plot creation
     parity_plot(calc, images, data="energy", label=label)
     parity_plot(calc, images, data="forces", label=label)
-
 def test_e_only_training():
     distances = np.linspace(2, 5, 100)
     label = "test_training"
@@ -206,7 +205,7 @@ def test_e_only_training():
         "epochs": 1e10,
     }
     calc.model.loader_params = {"batch_size": None, "shuffle": False, "num_workers": 0}
-    calc.model.criterion = CustomLoss
+    calc.model.criterion = CustomMSELoss
     calc.model.optimizer = optim.LBFGS
     calc.model.lr = 1e-2
     calc.model.fine_tune = None

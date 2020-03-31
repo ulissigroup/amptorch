@@ -19,7 +19,7 @@ from amptorch.data_preprocess import (
     collate_amp,
     TestDataset,
 )
-from amptorch.model import FullNN, CustomLoss
+from amptorch.model import FullNN, CustomMSELoss
 from ase.calculators.calculator import Calculator, Parameters
 import torch
 
@@ -53,22 +53,21 @@ class AMP(Calculator):
         self.testlabel = label
         self.label = "".join(["results/trained_models/", label, ".pt"])
         self.scalings = training_data.scalings
-        self.target_slope = self.scalings[0]
-        self.target_intercept = self.scalings[1]
-        self.lj = training_data.lj
+        self.target_ref = self.scalings[0]
+        self.delta_ref = self.scalings[1]
+        self.delta = training_data.delta
         self.Gs = training_data.Gs
         self.fprange = training_data.fprange
         self.descriptor = training_data.base_descriptor
         self.cores = training_data.cores
         self.training_data = training_data
-        if self.lj:
-            self.fitted_params = self.training_data.lj_data[3]
-            self.params_dict = self.training_data.lj_data[4]
-            self.lj_model = self.training_data.lj_data[5]
+        if self.delta:
+            self.params = self.training_data.delta_data[3]
+            self.delta_model = self.training_data.delta_data[4]
 
         # TODO make utility logging function
         self.log = Logger("results/logs/{}.txt".format(label))
-        if not self.lj:
+        if not self.delta:
             self.log(time.asctime())
             self.log("-" * 50)
         self.log("Filename: {}".format(label))
@@ -109,6 +108,8 @@ class AMP(Calculator):
             )
 
     def train(self, overwrite=True):
+        # TODO Store training settings (scalings, etc.) alongside model
+        # parameters. Necessary for more efficient loading.
         self.model.fit(self.training_data, None)
         log_results(self.model, self.log)
         if os.path.exists(self.label):
@@ -118,6 +119,19 @@ class AMP(Calculator):
                 self.model.save_params(f_params=self.label)
         else:
             self.model.save_params(f_params=self.label)
+
+    def load(self, filename):
+        '''
+        Loads calculator with previously trained model.
+        ------------------
+
+        filename: str.
+            Path to trained model'''
+        self.model.initialize()
+        try:
+            self.model.load_params(f_params=filename)
+        except:
+            raise Exception('Trying to load a model with a different architecture than that defined')
 
     def calculate(self, atoms, properties, system_changes):
         Calculator.calculate(self, atoms, properties, system_changes)
@@ -136,6 +150,7 @@ class AMP(Calculator):
             dataset, batch_size, collate_fn=dataset.collate_test, shuffle=False
         )
         model = self.model.module
+        model.forcetraining = True
         model.load_state_dict(torch.load(self.label))
         model.eval()
 
@@ -143,19 +158,19 @@ class AMP(Calculator):
             for element in unique_atoms:
                 inputs[0][element][0] = inputs[0][element][0].requires_grad_(True)
             energy, forces = model(inputs)
-        energy = (energy * self.target_slope) + self.target_intercept
+        energy = energy + self.target_ref
         energy = np.concatenate(energy.detach().numpy())
-        forces = (forces * self.target_slope).detach().numpy()
+        forces = forces.detach().numpy()
 
         image_hash = hash_images([atoms])
-        if self.lj:
-            self.lj_model.neighborlist.calculate_items(image_hash)
-            lj_energy, lj_forces, _ = self.lj_model.image_pred(
-                atoms, self.fitted_params, self.params_dict
+        if self.delta:
+            self.delta_model.neighborlist.calculate_items(image_hash)
+            delta_energy, delta_forces, _ = self.delta_model.image_pred(
+                atoms, self.params
             )
-            lj_energy = np.squeeze(lj_energy)
-            energy += lj_energy
-            forces += lj_forces
+            delta_energy = np.squeeze(delta_energy)
+            energy += delta_energy - self.delta_ref
+            forces += delta_forces
 
         self.results["energy"] = float(energy)
         self.results["forces"] = forces
