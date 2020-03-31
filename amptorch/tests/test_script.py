@@ -9,6 +9,7 @@ from delta_test import test_skorch_delta
 from training_test import test_training, test_e_only_training
 from skorch_test import test_skorch, test_e_only_skorch
 from fps_from_memory_test import test_fps_memory
+from load_test import test_load
 from val_test import (
     test_skorch_val,
     test_val,
@@ -38,6 +39,10 @@ class TestMethods(unittest.TestCase):
     def test_load_fps_from_memory(self):
         test_fps_memory()
         print("Loading fps from memory passed!")
+
+    def test_model_load(self):
+        test_load()
+        print("Loading trained model test passed!")
 
     def test_skorch_val(self):
         test_skorch_val()
