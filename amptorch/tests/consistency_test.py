@@ -25,7 +25,7 @@ from amptorch.data_preprocess import (
     collate_amp,
     TestDataset,
 )
-from amptorch.model import FullNN, CustomLoss, MLP
+from amptorch.model import FullNN, CustomMSELoss, MLP
 from amptorch.skorch_model import AMP
 from amptorch.core import AMPTorch
 from amp.utilities import hash_images as amp_hash

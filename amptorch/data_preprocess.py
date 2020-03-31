@@ -18,7 +18,7 @@ from amptorch.utils import (
     make_amp_descriptors_simple_nn,
     calculate_fingerprints_range,
     hash_images,
-    get_hash
+    get_hash,
 )
 from amp.utilities import hash_images as amp_hash
 from amp.utilities import get_hash as get_amp_hash
@@ -53,7 +53,7 @@ class AtomsDataset(Dataset):
         Number of cores to parallelize symmetry function
         computation/reorganization.
 
-    lj_data: list
+    delta_data: list
         Energies and forces to be subtracted off from targets, allowing the
         model to learn the difference. default: None
 
@@ -72,9 +72,8 @@ class AtomsDataset(Dataset):
         forcetraining,
         label,
         cores,
-        lj_data=None,
+        delta_data=None,
         store_primes=False,
-        scaling="minmax",
     ):
         self.images = images
         self.base_descriptor = descriptor
@@ -84,14 +83,13 @@ class AtomsDataset(Dataset):
         self.forcetraining = forcetraining
         self.store_primes = store_primes
         self.cores = cores
-        self.scaling_scheme = scaling
-        self.lj = False
-        if lj_data is not None:
-            self.lj_data = lj_data
-            self.lj_energies = np.squeeze(lj_data[0])
-            self.lj_forces = np.squeeze(lj_data[1])
-            self.num_atoms = np.array(lj_data[2])
-            self.lj = True
+        self.delta = False
+        if delta_data is not None:
+            self.delta_data = delta_data
+            self.delta_energies = np.array(delta_data[0])
+            self.delta_forces = np.squeeze(delta_data[1])
+            self.num_atoms = np.array(delta_data[2])
+            self.delta = True
         if self.store_primes:
             if not os.path.isdir("./stored-primes/"):
                 os.mkdir("stored-primes")
@@ -100,6 +98,7 @@ class AtomsDataset(Dataset):
             if extension != (".traj" or ".db"):
                 self.atom_images = ase.io.read(images, ":")
         self.elements = self.unique()
+        #TODO Print log - control verbose
         print("Calculating fingerprints...")
         G2_etas = Gs["G2_etas"]
         G2_rs_s = Gs["G2_rs_s"]
@@ -142,7 +141,7 @@ class AtomsDataset(Dataset):
         return len(self.atom_images)
 
     def preprocess_data(self):
-        #TODO cleanup/optimize
+        # TODO cleanup/optimize
         fingerprint_dataset = []
         fprimes_dataset = []
         energy_dataset = np.array([])
@@ -176,18 +175,14 @@ class AtomsDataset(Dataset):
             image_potential_energy = self.hashed_images[hash_name].get_potential_energy(
                 apply_constraint=False
             )
-            # subtract off lj contribution
-            if self.lj:
-                lj_energy = self.lj_energies[index]
-                image_potential_energy -= lj_energy
             if self.forcetraining:
                 image_forces = self.hashed_images[hash_name].get_forces(
                     apply_constraint=False
                 )
-                # subtract off lj force contribution
-                if self.lj:
-                    lj_forces = np.array(self.lj_forces[index])
-                    image_forces -= lj_forces
+                # subtract off delta force contributions
+                if self.delta:
+                    delta_forces = np.array(self.delta_forces[index])
+                    image_forces -= delta_forces
 
                 if self.store_primes and os.path.isfile("./stored-primes/" + hash_name):
                     pass
@@ -211,16 +206,11 @@ class AtomsDataset(Dataset):
                     _image_primes = copy.copy(image_primes)
                     for _, key in enumerate(list(image_primes.keys())):
                         base_atom = key[3]
-                        fprange_atom = fprange[base_atom]
-                        fprime = image_primes[key]
-                        for i in range(len(fprime)):
-                            if (fprange_atom[i][1] - fprange_atom[i][0]) > (
-                                10.0 ** (-8.0)
-                            ):
-                                fprime[i] = 2.0 * (
-                                    fprime[i]
-                                    / (fprange_atom[i][1] - fprange_atom[i][0])
-                                )
+                        fprange_atom = np.array(fprange[base_atom])
+                        fprange_dif = fprange_atom[:, 1] - fprange_atom[:, 0]
+                        fprange_dif[fprange_dif < 10.0 ** (-8.0)] = 2
+                        fprime = np.array(image_primes[key])
+                        fprime = 2*fprime/fprange_dif
                         _image_primes[key] = fprime
 
                     image_prime_values = list(_image_primes.values())
@@ -251,27 +241,16 @@ class AtomsDataset(Dataset):
             fingerprint_dataset.append(image_fingerprint)
             energy_dataset = np.append(energy_dataset, image_potential_energy)
             num_of_atoms = np.append(num_of_atoms, float(len(image_fingerprint)))
-        energy_dataset = torch.FloatTensor(energy_dataset)
-        if self.scaling_scheme == "minmax":
-            scaling_min = torch.min(energy_dataset)
-            scaling_max = torch.max(energy_dataset)
-            scaling_slope = (scaling_max - scaling_min) / 2
-            scaling_intercept = (scaling_max + scaling_min) / 2
-            energy_dataset = (energy_dataset - scaling_intercept) / (scaling_slope)
-            if self.forcetraining:
-                for idx, force in enumerate(forces_dataset):
-                    forces_dataset[idx] = force / scaling_slope
-            scalings = [scaling_slope, scaling_intercept]
-        elif self.scaling_scheme == "standardize":
-            scaling_mean = torch.mean(energy_dataset)
-            scaling_sd = torch.std(energy_dataset, dim=0)
-            energy_dataset = (energy_dataset - scaling_mean) / scaling_sd
-            if self.forcetraining:
-                for idx, force in enumerate(forces_dataset):
-                    forces_dataset[idx] = force / scaling_sd
-            scalings = [scaling_sd, scaling_mean]
-        elif self.scaling_scheme is None:
-            scalings = [1, 0]
+        if self.delta:
+            target_ref = energy_dataset[0]
+            delta_ref = self.delta_energies[0]
+            relative_targets = energy_dataset - target_ref
+            relative_delta = self.delta_energies - delta_ref
+            energy_dataset = torch.FloatTensor(relative_targets - relative_delta)
+            scalings = [target_ref, delta_ref]
+        else:
+            energy_dataset = torch.FloatTensor(energy_dataset)
+            scalings = [0, 0]
 
         return (
             fingerprint_dataset,
@@ -343,7 +322,6 @@ def make_sparse(primes):
     primes = primes.to_sparse()
     return primes
 
-
 def factorize_data(training_data):
     """
     Factorizes the dataset into separate lists.
@@ -414,8 +392,9 @@ def factorize_data(training_data):
         image_potential_energy = image[1]
         energy_dataset.append(image_potential_energy)
         if forcetraining:
-            rearange_set[atom_shift: atom_shift + len(image_fingerprint)] = \
-                        image[-1] + atom_shift
+            rearange_set[atom_shift : atom_shift + len(image_fingerprint)] = (
+                image[-1] + atom_shift
+            )
             atom_shift += len(image_fingerprint)
             fprime = image[2]
             # build the matrix of indices
@@ -460,7 +439,6 @@ def factorize_data(training_data):
         scalings,
         rearange_set,
     )
-
 
 def collate_amp(training_data):
     """
@@ -524,7 +502,9 @@ class TestDataset(Dataset):
 
     """
 
-    def __init__(self, images, unique_atoms, descriptor, Gs, fprange, label="example", cores=1):
+    def __init__(
+        self, images, unique_atoms, descriptor, Gs, fprange, label="example", cores=1
+    ):
         self.images = images
         if type(images) is not list:
             self.images = [images]
@@ -545,31 +525,23 @@ class TestDataset(Dataset):
         cutoff = Gs["cutoff"]
         if str(descriptor)[8:16] == "amptorch":
             self.hashed_images = hash_images(self.atom_images, Gs)
-            make_amp_descriptors_simple_nn(
-                self.atom_images, Gs, self.training_unique_atoms, cores=cores, label=label
+            self.fps, self.fp_primes = make_amp_descriptors_simple_nn(
+                self.atom_images,
+                Gs,
+                self.training_unique_atoms,
+                cores=cores,
+                label=label,
+                save=False,
             )
-        G = make_symmetry_functions(elements=self.training_unique_atoms, type="G2", etas=G2_etas)
-        G += make_symmetry_functions(
-            elements=self.training_unique_atoms,
-            type="G4",
-            etas=G4_etas,
-            zetas=G4_zetas,
-            gammas=G4_gammas,
-        )
-        for g in G:
-            g["Rs"] = G2_rs_s
-        self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
-        self.descriptor.calculate_fingerprints(
-            self.hashed_images, calculate_derivatives=True
-        )
         self.unique_atoms = self.unique()
 
     def __len__(self):
         return len(self.hashed_images)
 
     def __getitem__(self, index):
-        hash_name = list(self.hashed_images.keys())[index]
-        image_fingerprint = self.descriptor.fingerprints[hash_name]
+        # hash_name = list(self.hashed_images.keys())[index]
+        # image_fingerprint = self.descriptor.fingerprints[hash_name]
+        image_fingerprint = self.fps
         fprange = self.fprange
         atom_order = []
         # fingerprint scaling to a range of [-1,1].
@@ -584,7 +556,8 @@ class TestDataset(Dataset):
                     )
             image_fingerprint[i] = (atom, _afp)
             atom_order.append(atom)
-        image_primes = self.descriptor.fingerprintprimes[hash_name]
+        image_primes = self.fp_primes
+        # image_primes = self.descriptor.fingerprintprimes[hash_name]
         # fingerprint derivative scaling to a range of [0,1].
         _image_primes = copy.copy(image_primes)
         for _, key in enumerate(list(image_primes.keys())):
