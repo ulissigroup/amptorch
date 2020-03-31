@@ -8,7 +8,7 @@ from amptorch import AMP
 from amptorch.gaussian import SNN_Gaussian
 from amptorch.skorch_model import AMP as AMP_skorch
 from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score
-from amptorch.model import FullNN, CustomLoss
+from amptorch.model import FullNN, CustomMSELoss
 from amptorch.data_preprocess import AtomsDataset, collate_amp
 import numpy as np
 from ase import Atoms
@@ -55,8 +55,7 @@ def test_skorch_val():
         forcetraining=forcetraining,
         label=label,
         cores=1,
-        lj_data=None,
-        scaling='minmax',
+        delta_data=None,
     )
     batch_size = len(training_data)
     unique_atoms = training_data.elements
@@ -67,7 +66,7 @@ def test_skorch_val():
         module=FullNN(
             unique_atoms, [fp_length, 2, 2], device, forcetraining=forcetraining
         ),
-        criterion=CustomLoss,
+        criterion=CustomMSELoss,
         criterion__force_coefficient=0.3,
         optimizer=torch.optim.LBFGS,
         optimizer__line_search_fn="strong_wolfe",
@@ -79,6 +78,7 @@ def test_skorch_val():
         iterator_valid__collate_fn=collate_amp,
         device=device,
         train_split=CVSplit(0.1, random_state=1),
+        verbose=0,
         callbacks=[
             EpochScoring(
                 forces_score,
@@ -166,8 +166,7 @@ def test_energy_only_skorch_val():
         forcetraining=forcetraining,
         label=label,
         cores=1,
-        lj_data=None,
-        scaling='minmax'
+        delta_data=None,
     )
     batch_size = len(training_data)
     unique_atoms = training_data.elements
@@ -178,7 +177,7 @@ def test_energy_only_skorch_val():
         module=FullNN(
             unique_atoms, [fp_length, 2, 2], device, forcetraining=forcetraining
         ),
-        criterion=CustomLoss,
+        criterion=CustomMSELoss,
         criterion__force_coefficient=0,
         optimizer=torch.optim.LBFGS,
         optimizer__line_search_fn="strong_wolfe",
@@ -190,6 +189,7 @@ def test_energy_only_skorch_val():
         iterator_valid__collate_fn=collate_amp,
         device=device,
         train_split=CVSplit(cv=0.1, random_state=1),
+        verbose=0,
         callbacks=[
             EpochScoring(
                 energy_score,
@@ -272,7 +272,7 @@ def test_val():
         "epochs": 20,
     }
     calc.model.loader_params = {"batch_size": None, "shuffle": False, "num_workers": 0}
-    calc.model.criterion = CustomLoss
+    calc.model.criterion = CustomMSELoss
     calc.model.optimizer = optim.LBFGS
     calc.model.lr = 1e-2
     calc.model.fine_tune = None
@@ -378,7 +378,7 @@ def test_energy_only_val():
         "epochs": 20,
     }
     calc.model.loader_params = {"batch_size": None, "shuffle": False, "num_workers": 0}
-    calc.model.criterion = CustomLoss
+    calc.model.criterion = CustomMSELoss
     calc.model.optimizer = optim.LBFGS
     calc.model.lr = 1e-2
     calc.model.fine_tune = None

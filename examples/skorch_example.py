@@ -7,7 +7,7 @@ from skorch.callbacks.lr_scheduler import LRScheduler
 import skorch.callbacks.base
 from amp.descriptor.gaussian import Gaussian
 from amptorch.gaussian import SNN_Gaussian
-from amptorch.model import FullNN, CustomLoss
+from amptorch.model import FullNN, CustomMSELoss
 from amptorch.data_preprocess import AtomsDataset, factorize_data, collate_amp, TestDataset
 from amptorch.skorch_model import AMP
 from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score
@@ -48,6 +48,7 @@ for l in distances:
     images.append(image)
 
 # define symmetry functions to be used
+
 Gs = {}
 Gs["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
 Gs["G2_rs_s"] = [0] * 4
@@ -58,19 +59,19 @@ Gs["cutoff"] = 6.5
 
 forcetraining = True
 training_data = AtomsDataset(images, SNN_Gaussian, Gs, forcetraining=forcetraining,
-        label=label, cores=1, lj_data=None, scaling='minmax')
+        label=label, cores=1, delta_data=None)
 unique_atoms = training_data.elements
 fp_length = training_data.fp_length
 device = "cpu"
 
 net = NeuralNetRegressor(
     module=FullNN(unique_atoms, [fp_length, 3, 10], device, forcetraining=forcetraining),
-    criterion=CustomLoss,
+    criterion=CustomMSELoss,
     criterion__force_coefficient=0.3,
     optimizer=torch.optim.LBFGS,
     optimizer__line_search_fn="strong_wolfe",
-    lr=1e-2,
-    batch_size=100,
+    lr=1e-1,
+    batch_size=len(images),
     max_epochs=50,
     iterator_train__collate_fn=collate_amp,
     iterator_train__shuffle=False,

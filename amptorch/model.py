@@ -140,7 +140,7 @@ class FullNN(nn.Module):
                 from AMP."""
         return energy_pred, force_pred
 
-class CustomLoss(nn.Module):
+class CustomMSELoss(nn.Module):
     """Custom loss function to be optimized by the regression. Includes aotmic
     energy and force contributions.
 
@@ -148,7 +148,7 @@ class CustomLoss(nn.Module):
     Computer Physics Communications 207 (2016) 310-324"""
 
     def __init__(self, force_coefficient=0):
-        super(CustomLoss, self).__init__()
+        super(CustomMSELoss, self).__init__()
         self.alpha = force_coefficient
 
     def forward(
