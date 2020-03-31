@@ -95,6 +95,7 @@ def test_skorch_delta():
         iterator_valid__collate_fn=collate_amp,
         device=device,
         train_split=0,
+        verbose=0,
         callbacks=[
             EpochScoring(
                 forces_score,

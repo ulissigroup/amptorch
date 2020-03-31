@@ -108,6 +108,8 @@ class AMP(Calculator):
             )
 
     def train(self, overwrite=True):
+        # TODO Store training settings (scalings, etc.) alongside model
+        # parameters. Necessary for more efficient loading.
         self.model.fit(self.training_data, None)
         log_results(self.model, self.log)
         if os.path.exists(self.label):
@@ -117,6 +119,19 @@ class AMP(Calculator):
                 self.model.save_params(f_params=self.label)
         else:
             self.model.save_params(f_params=self.label)
+
+    def load(self, filename):
+        '''
+        Loads calculator with previously trained model.
+        ------------------
+
+        filename: str.
+            Path to trained model'''
+        self.model.initialize()
+        try:
+            self.model.load_params(f_params=filename)
+        except:
+            raise Exception('Trying to load a model with a different architecture than that defined')
 
     def calculate(self, atoms, properties, system_changes):
         Calculator.calculate(self, atoms, properties, system_changes)
