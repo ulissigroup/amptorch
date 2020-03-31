@@ -205,16 +205,11 @@ class AtomsDataset(Dataset):
                     _image_primes = copy.copy(image_primes)
                     for _, key in enumerate(list(image_primes.keys())):
                         base_atom = key[3]
-                        fprange_atom = fprange[base_atom]
-                        fprime = image_primes[key]
-                        for i in range(len(fprime)):
-                            if (fprange_atom[i][1] - fprange_atom[i][0]) > (
-                                10.0 ** (-8.0)
-                            ):
-                                fprime[i] = 2.0 * (
-                                    fprime[i]
-                                    / (fprange_atom[i][1] - fprange_atom[i][0])
-                                )
+                        fprange_atom = np.array(fprange[base_atom])
+                        fprange_dif = fprange_atom[:, 1] - fprange_atom[:, 0]
+                        fprange_dif[fprange_dif < 10.0 ** (-8.0)] = 2
+                        fprime = np.array(image_primes[key])
+                        fprime = 2*fprime/fprange_dif
                         _image_primes[key] = fprime
 
                     image_prime_values = list(_image_primes.values())
