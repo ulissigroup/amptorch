@@ -98,6 +98,7 @@ class AtomsDataset(Dataset):
             if extension != (".traj" or ".db"):
                 self.atom_images = ase.io.read(images, ":")
         self.elements = self.unique()
+        #TODO Print log - control verbose
         print("Calculating fingerprints...")
         G2_etas = Gs["G2_etas"]
         G2_rs_s = Gs["G2_rs_s"]
