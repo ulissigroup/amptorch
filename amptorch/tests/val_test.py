@@ -78,6 +78,7 @@ def test_skorch_val():
         iterator_valid__collate_fn=collate_amp,
         device=device,
         train_split=CVSplit(0.1, random_state=1),
+        verbose=0,
         callbacks=[
             EpochScoring(
                 forces_score,
@@ -188,6 +189,7 @@ def test_energy_only_skorch_val():
         iterator_valid__collate_fn=collate_amp,
         device=device,
         train_split=CVSplit(cv=0.1, random_state=1),
+        verbose=0,
         callbacks=[
             EpochScoring(
                 energy_score,
