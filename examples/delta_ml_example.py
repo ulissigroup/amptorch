@@ -15,7 +15,7 @@ from amptorch.data_preprocess import (
 )
 from amptorch.skorch_model import AMP
 from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score
-from amptorch.morse import morse_potential
+from amptorch.delta_models.morse import morse_potential
 
 import torch
 from torch.nn import init
