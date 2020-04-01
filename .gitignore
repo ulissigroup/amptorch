@@ -22,7 +22,8 @@ amp_benchmark/
 amptorch/sigopt/
 amptorch/bench/*
 datasets/*
+md_work/*
 
 .ipynb_checkpoints
 */checkpoints/*
-stored-primes/
+*/stored-primes/
