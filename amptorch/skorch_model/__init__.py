@@ -53,8 +53,8 @@ class AMP(Calculator):
         self.testlabel = label
         self.label = "".join(["results/trained_models/", label, ".pt"])
         self.scalings = training_data.scalings
-        self.target_ref = self.scalings[0]
-        self.delta_ref = self.scalings[1]
+        self.target_ref_per_atom = self.scalings[0]
+        self.delta_ref_per_atom = self.scalings[1]
         self.delta = training_data.delta
         self.Gs = training_data.Gs
         self.fprange = training_data.fprange
@@ -158,9 +158,9 @@ class AMP(Calculator):
             for element in unique_atoms:
                 inputs[0][element][0] = inputs[0][element][0].requires_grad_(True)
             energy, forces = model(inputs)
-        energy = energy + self.target_ref
         energy = np.concatenate(energy.detach().numpy())
         forces = forces.detach().numpy()
+        num_atoms = forces.shape[0]
 
         image_hash = hash_images([atoms])
         if self.delta:
@@ -169,7 +169,7 @@ class AMP(Calculator):
                 atoms, self.params
             )
             delta_energy = np.squeeze(delta_energy)
-            energy += delta_energy - self.delta_ref
+            energy += delta_energy + num_atoms*(self.target_ref_per_atom - self.delta_ref_per_atom)
             forces += delta_forces
 
         self.results["energy"] = float(energy)
