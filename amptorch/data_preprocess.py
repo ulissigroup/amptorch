@@ -158,12 +158,14 @@ class AtomsDataset(Dataset):
                 hash_name = get_hash(atoms_object, self.Gs)
             index_hashes.append(hash_name)
             image_fingerprint = self.descriptor.fingerprints[hash_name]
+            n_atoms = float(len(image_fingerprint))
+            num_of_atoms = np.append(num_of_atoms, n_atoms)
             fprange = self.fprange
             atom_order = []
             # fingerprint scaling to [-1,1]
             for i, (atom, afp) in enumerate(image_fingerprint):
                 _afp = copy.copy(afp)
-                fprange_atom = fprange[atom]
+                fprange_atom = np.array(fprange[atom])
                 for _ in range(np.shape(_afp)[0]):
                     if (fprange_atom[_][1] - fprange_atom[_][0]) > (10.0 ** (-8.0)):
                         _afp[_] = -1 + 2.0 * (
@@ -172,16 +174,19 @@ class AtomsDataset(Dataset):
                         )
                 image_fingerprint[i] = (atom, _afp)
                 atom_order.append(atom)
+            fingerprint_dataset.append(image_fingerprint)
             image_potential_energy = self.hashed_images[hash_name].get_potential_energy(
                 apply_constraint=False
-            )
+            )/n_atoms
+            energy_dataset = np.append(energy_dataset,
+                    image_potential_energy)
             if self.forcetraining:
                 image_forces = self.hashed_images[hash_name].get_forces(
                     apply_constraint=False
-                )
+                )/n_atoms
                 # subtract off delta force contributions
                 if self.delta:
-                    delta_forces = np.array(self.delta_forces[index])
+                    delta_forces = np.array(self.delta_forces[index])/n_atoms
                     image_forces -= delta_forces
 
                 if self.store_primes and os.path.isfile("./stored-primes/" + hash_name):
@@ -202,7 +207,8 @@ class AtomsDataset(Dataset):
                                 break
                     rearange_forces[index] = t.astype(int)
                     image_primes = self.descriptor.fingerprintprimes[hash_name]
-                    # fingerprint derivative scaling to [0,1]
+                    # scaling of fingerprint derivatives to be consistent with
+                    # fingerprint scaling.
                     _image_primes = copy.copy(image_primes)
                     for _, key in enumerate(list(image_primes.keys())):
                         base_atom = key[3]
@@ -237,17 +243,14 @@ class AtomsDataset(Dataset):
                         )
                     fprimes_dataset.append(fingerprintprimes)
                 forces_dataset.append(torch.from_numpy(image_forces))
-
-            fingerprint_dataset.append(image_fingerprint)
-            energy_dataset = np.append(energy_dataset, image_potential_energy)
-            num_of_atoms = np.append(num_of_atoms, float(len(image_fingerprint)))
         if self.delta:
-            target_ref = energy_dataset[0]
-            delta_ref = self.delta_energies[0]
-            relative_targets = energy_dataset - target_ref
-            relative_delta = self.delta_energies - delta_ref
+            self.delta_energies /= num_of_atoms
+            target_ref_per_atom = energy_dataset[0]
+            delta_ref_per_atom = self.delta_energies[0]
+            relative_targets = energy_dataset - target_ref_per_atom
+            relative_delta = self.delta_energies - delta_ref_per_atom
             energy_dataset = torch.FloatTensor(relative_targets - relative_delta)
-            scalings = [target_ref, delta_ref]
+            scalings = [target_ref_per_atom, delta_ref_per_atom]
         else:
             energy_dataset = torch.FloatTensor(energy_dataset)
             scalings = [0, 0]
