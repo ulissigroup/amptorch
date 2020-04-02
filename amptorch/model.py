@@ -124,20 +124,21 @@ class FullNN(nn.Module):
                     dE_dFP = torch.cat((dE_dFP, gradients))
                     idx = torch.cat((idx, contribution_index.float()))
             if self.forcetraining:
+                """Constructs a 1xPQ tensor that contains the derivatives with respect to
+                each atom's fingerprint"""
                 boolean = idx[:, None] == torch.unique(idx)
                 ordered_idx = torch.nonzero(boolean.t())[:, -1]
                 dE_dFP = torch.index_select(dE_dFP, 0, ordered_idx)
                 dE_dFP = torch.index_select(dE_dFP, 0, rearange).reshape(1, -1)
-                """Constructs a 1xPQ tensor that contains the derivatives with respect to
-                each atom's fingerprint"""
-                force_pred = -1 * torch.sparse.mm(fprimes.t(), dE_dFP.t())
-                """Sparse multiplication requires the first matrix to be sparse
+                """Sparse multiplication requires the first matrix to be
+                sparse.
                 Multiplies a 3QxPQ tensor with a PQx1 tensor to return a 3Qx1 tensor
                 containing the x,y,z directional forces for each atom"""
-                force_pred = force_pred.reshape(-1, 3)
+                force_pred = -1 * torch.sparse.mm(fprimes.t(), dE_dFP.t())
                 """Reshapes the force tensor into a Qx3 matrix containing all the force
                 predictions in the same order and shape as the target forces calculated
                 from AMP."""
+                force_pred = force_pred.reshape(-1, 3)
         return energy_pred, force_pred
 
 class CustomMSELoss(nn.Module):
@@ -157,24 +158,23 @@ class CustomMSELoss(nn.Module):
         target):
 
         energy_pred = prediction[0]
-        energy_targets = target[0]
+        energy_targets_per_atom = target[0]
         num_atoms = target[1]
         MSE_loss = nn.MSELoss(reduction="sum")
-        energy_per_atom = torch.div(energy_pred, num_atoms)
-        targets_per_atom = torch.div(energy_targets, num_atoms)
-        energy_loss = MSE_loss(energy_per_atom, targets_per_atom)
+        energy_pred_per_atom = torch.div(energy_pred, num_atoms)
+        energy_loss = MSE_loss(energy_pred_per_atom, energy_targets_per_atom)
 
         if self.alpha > 0:
             force_pred = prediction[1]
             if force_pred.nelement() == 0:
                 raise Exception('Force training disabled. Set force_coefficient to 0')
-            force_targets = target[-1]
-            num_atoms_force = torch.cat([idx.repeat(int(idx)) for idx in num_atoms])
-            num_atoms_force = torch.sqrt(
-                num_atoms_force.reshape(len(num_atoms_force), 1)
+            force_targets_per_atom = target[-1]
+            num_atoms_extended = torch.cat([idx.repeat(int(idx)) for idx in num_atoms])
+            num_atoms_extended = torch.sqrt(
+                num_atoms_extended.reshape(-1, 1)
             )
-            force_pred_per_atom = torch.div(force_pred, num_atoms_force)
-            force_targets_per_atom = torch.div(force_targets, num_atoms_force)
+            force_pred_per_atom = torch.div(force_pred, num_atoms_extended)
+            force_targets_per_atom = force_targets_per_atom*num_atoms_extended
             force_loss = (self.alpha / 3) * MSE_loss(
                 force_pred_per_atom, force_targets_per_atom
             )
