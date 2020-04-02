@@ -18,7 +18,6 @@ from amp.model.neuralnetwork import NeuralNetwork
 from amptorch.utils import hash_images
 from amptorch.gaussian import SNN_Gaussian
 from amp.model import calculate_fingerprints_range
-from amptorch import core
 from amptorch.data_preprocess import (
     AtomsDataset,
     factorize_data,
@@ -27,7 +26,6 @@ from amptorch.data_preprocess import (
 )
 from amptorch.model import FullNN, CustomMSELoss, MLP
 from amptorch.skorch_model import AMP
-from amptorch.core import AMPTorch
 from amp.utilities import hash_images as amp_hash
 from skorch.utils import to_tensor
 

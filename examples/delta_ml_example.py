@@ -16,6 +16,7 @@ from amptorch.data_preprocess import (
 from amptorch.skorch_model import AMP
 from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score
 from amptorch.delta_models.morse import morse_potential
+from amptorch.analysis import parity_plot
 
 import torch
 from torch.nn import init
@@ -37,7 +38,7 @@ cp = Checkpoint(monitor="valid_loss_best", fn_prefix="valid_best_")
 load_best_valid_loss = train_end_load_best_valid_loss()
 
 distances = np.linspace(2, 5, 10)
-label = "example"
+label = "delta_ml_example"
 images = []
 for l in distances:
     image = Atoms(
@@ -117,5 +118,7 @@ net = NeuralNetRegressor(
         ),
     ],
 )
-calc = AMP(training_data, net, "test")
+calc = AMP(training_data, net, label)
 calc.train(overwrite=True)
+parity_plot(calc, images, data="energy", label=label)
+parity_plot(calc, images, data="forces", label=label)
