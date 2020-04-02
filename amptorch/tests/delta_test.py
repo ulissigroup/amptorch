@@ -4,7 +4,6 @@ from ase.calculators.lj import LennardJones as LJ
 from ase.calculators.emt import EMT
 from amptorch.gaussian import SNN_Gaussian
 from amptorch.data_preprocess import AtomsDataset, collate_amp
-from amptorch.core import AMPTorch
 from amptorch.model import CustomMSELoss, FullNN
 from amptorch.delta_models.morse import morse_potential
 import numpy as np
