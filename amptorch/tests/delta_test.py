@@ -41,6 +41,14 @@ def test_skorch_delta():
         energies.append(image.get_potential_energy())
         forces.append(image.get_forces())
 
+    image = Atoms("CuC", [(-1, 1, 0), (1, 1, 0)])
+    image.set_cell([10, 10, 10])
+    image.wrap(pbc=True)
+    image.set_calculator(EMT())
+    images.append(image)
+    energies.append(image.get_potential_energy())
+    forces.append(image.get_forces())
+
     energies = np.array(energies)
     forces = np.concatenate(np.array(forces))
 

@@ -14,8 +14,6 @@ from amptorch.skorch_model.utils import (
     target_extractor,
     energy_score,
     forces_score,
-    forces_mad,
-    energy_mad,
 )
 from amptorch.model import FullNN, CustomMSELoss
 from amptorch.data_preprocess import (
