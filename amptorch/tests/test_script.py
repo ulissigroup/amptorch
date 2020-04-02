@@ -6,15 +6,12 @@ import unittest
 from consistency_test import test_calcs
 from simple_nn_fp_test import test_fp_match
 from delta_test import test_skorch_delta
-from training_test import test_training, test_e_only_training
 from skorch_test import test_skorch, test_e_only_skorch
 from fps_from_memory_test import test_fps_memory
 from load_test import test_load
 from val_test import (
     test_skorch_val,
-    test_val,
     test_energy_only_skorch_val,
-    test_energy_only_val,
 )
 
 
