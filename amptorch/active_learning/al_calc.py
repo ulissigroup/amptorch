@@ -1,5 +1,6 @@
 import os
 import random
+import numpy as np
 
 import torch
 
@@ -50,6 +51,7 @@ class AtomisticActiveLearning(Calculator):
         self.images = images
         self.filename = filename
         self.file_dir = file_dir
+        self.dft_calls = 0
         self.ml_calc = None
 
     def train_calc(
@@ -196,6 +198,7 @@ class AtomisticActiveLearning(Calculator):
         sample_points = random.sample(
             range(1, len(sample_candidates)), samples_to_retrain
         )
+        self.dft_calls += len(sample_points)
         for idx in sample_points:
             sample = sample_candidates[idx].copy()
             sample.set_calculator(self.parent_calc)
@@ -210,7 +213,7 @@ class AtomisticActiveLearning(Calculator):
     def active_learner(
         self,
         generating_function,
-        iterations,
+        al_convergence,
         samples_to_retrain,
         Gs,
         forcetraining=True,
@@ -250,9 +253,16 @@ class AtomisticActiveLearning(Calculator):
                 end_count, and interval. i.e. ase.io.read(filename,
                 "{}:{}:{}".format(start_count, end_count, interval))
 
-        iterations: integer.
-            Number of iterations the active learning framework
-            is to perform.
+        al_convergence: Dict.
+            Dictionary of stopping criteria parameters. Currently only # of
+            iterations and spot verification is used:
+
+                Iterations: {"method": "iter", "num_iterations": int}
+                    Where "num_iteratiosn" is the number of iterations the AL
+                    framework is run before termination.
+                Spot: {"method": "spot", "num2verify": int }
+                    Where "num2verify" is the number of points necessary to be randomly sampled
+                    and verified with DFT before convergence.
         samples_to_retrain. integer.
             Number of samples to query each iteration
             of the active learning loop.
@@ -299,7 +309,7 @@ class AtomisticActiveLearning(Calculator):
                 )
             name = self.filename + "_iter_{}".format(iteration)
             # train ml calculator
-            ml_calc = self.train_calc(
+            self.ml_calc = self.train_calc(
                 images=self.images,
                 Gs=Gs,
                 forcetraining=forcetraining,
@@ -317,17 +327,73 @@ class AtomisticActiveLearning(Calculator):
 
             # run generating function using trained ml calculator
             fn_label = self.file_dir + name
-            generating_function.run(calc=ml_calc, filename=fn_label)
+            generating_function.run(calc=self.ml_calc, filename=fn_label)
             # collect resulting trajectory files
             sample_candidates = generating_function.get_trajectory(
                 filename=fn_label, start_count=0, end_count=-1, interval=1
             )
             iteration += 1
-            # criteria to stop active learning, currently implemented
-            # number of iterations
-            if iteration > iterations:
+            # criteria to stop active learning
+            #TODO Find a better way to structure this.
+            method = al_convergence["method"]
+            if method == 'iter':
+                 kwargs = {"current_i": iteration, "total_i":
+                         al_convergence["num_iterations"]}
+            elif method == 'spot':
+                kwargs = {"images": sample_candidates, "num2verify":
+                        al_convergence["num2verify"]}
+
+            terminate = self.termination_criteria(method=method, **kwargs)
+        print('Totale # of parent calculator calls: {}'.format(self.dft_calls))
+
+    def termination_criteria(self, method='iter', **kwargs):
+        """Criteria for AL termination
+
+       Parameters
+       ----------
+
+       method: str
+            Method for termination of active learning loop.
+
+            'iter': Terminates after specified number of iterations.
+
+                    args: (current iteration, # of iterations)
+
+            'spot': Terminates after specified number of DFT verifications
+                    are consistent with ML predictions.
+
+                    args: (images, # of spot checks)
+        """
+        terminate = False
+
+        if method == "iter":
+            current_i = kwargs["current_i"]
+            total_i = kwargs["total_i"]
+            if current_i > total_i:
                 terminate = True
-        self.ml_calc = ml_calc
+
+        if method == "spot":
+            images = kwargs["images"]
+            num2verify = kwargs["num2verify"]
+            points2verify = random.sample(range(len(images)), num2verify)
+            for idx in points2verify:
+                sample = images[idx].copy()
+                sample.set_calculator(self.parent_calc)
+                sample_energy = sample.get_potential_energy(apply_constraint=False)
+                sample_forces = sample.get_forces(apply_constraint=False)
+                ml_energy = self.ml_calc.get_potential_energy(sample)
+                ml_forces = self.ml_calc.get_forces(sample)
+
+                energy_consistency = np.abs(sample_energy - ml_energy) <= 0.1
+                force_consistency = (np.abs(sample_forces - ml_forces) <=
+                        0.1).all()
+                consistent = energy_consistency and force_consistency
+                if consistent:
+                    terminate = True
+                    break
+
+                #TODO possibly use these calculations and add them to model as well
+        return terminate
 
     def calculate(self, atoms, properties, system_changes):
         """
