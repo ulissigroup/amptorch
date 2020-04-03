@@ -87,7 +87,7 @@ class AtomsDataset(Dataset):
         if delta_data is not None:
             self.delta_data = delta_data
             self.delta_energies = np.array(delta_data[0])
-            self.delta_forces = np.squeeze(delta_data[1])
+            self.delta_forces = delta_data[1]
             self.num_atoms = np.array(delta_data[2])
             self.delta = True
         if self.store_primes:
@@ -186,9 +186,8 @@ class AtomsDataset(Dataset):
                 )/n_atoms
                 # subtract off delta force contributions
                 if self.delta:
-                    delta_forces = np.array(self.delta_forces[index])/n_atoms
+                    delta_forces = self.delta_forces[index]/n_atoms
                     image_forces -= delta_forces
-
                 if self.store_primes and os.path.isfile("./stored-primes/" + hash_name):
                     pass
                 else:
