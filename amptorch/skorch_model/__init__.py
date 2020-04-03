@@ -131,7 +131,7 @@ class AMP(Calculator):
         try:
             self.model.load_params(f_params=filename)
         except:
-            raise Exception('Trying to load a model with a different architecture than that defined')
+            raise Exception('File not found or trying to load a model with a different architecture than that defined')
 
     def calculate(self, atoms, properties, system_changes):
         Calculator.calculate(self, atoms, properties, system_changes)
