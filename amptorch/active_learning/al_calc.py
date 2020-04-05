@@ -60,6 +60,8 @@ class AtomisticActiveLearning(Calculator):
         Gs,
         forcetraining,
         cores,
+        optimizer,
+        batch_size,
         criterion,
         num_layers,
         num_nodes,
@@ -67,6 +69,7 @@ class AtomisticActiveLearning(Calculator):
         learning_rate,
         epochs,
         train_split,
+        shuffle,
         morse,
         morse_params,
     ):
@@ -160,13 +163,12 @@ class AtomisticActiveLearning(Calculator):
             ),
             criterion=criterion,
             criterion__force_coefficient=force_coefficient,
-            optimizer=torch.optim.LBFGS,
-            optimizer__line_search_fn="strong_wolfe",
+            optimizer=optimizer,
             lr=learning_rate,
-            batch_size=len(training_data),
+            batch_size=batch_size,
             max_epochs=epochs,
             iterator_train__collate_fn=collate_amp,
-            iterator_train__shuffle=False,
+            iterator_train__shuffle=shuffle,
             iterator_valid__collate_fn=collate_amp,
             iterator_valid__shuffle=False,
             device=device,
@@ -218,6 +220,8 @@ class AtomisticActiveLearning(Calculator):
         Gs,
         forcetraining=True,
         cores=10,
+        optimizer=torch.optim.LBFGS,
+        batch_size=100000,
         criterion=CustomMSELoss,
         num_layers=3,
         num_nodes=20,
@@ -225,6 +229,7 @@ class AtomisticActiveLearning(Calculator):
         learning_rate=1e-1,
         epochs=300,
         train_split=5,
+        shuffle=False,
         morse=None,
         morse_params=None,
     ):
@@ -302,11 +307,15 @@ class AtomisticActiveLearning(Calculator):
         iteration = 0
 
         while not terminate:
+            #TODO train_split check for initial starting images
+            if iteration == 0:
+                test_split = 0
             if iteration > 0:
                 # active learning random scheme
                 self.images = self.al_random(
                     self.images, sample_candidates, samples_to_retrain
                 )
+                test_split = train_split
             name = self.filename + "_iter_{}".format(iteration)
             # train ml calculator
             self.ml_calc = self.train_calc(
@@ -314,13 +323,16 @@ class AtomisticActiveLearning(Calculator):
                 Gs=Gs,
                 forcetraining=forcetraining,
                 cores=cores,
+                optimizer=optimizer,
+                batch_size=batch_size,
                 criterion=criterion,
                 num_layers=num_layers,
                 num_nodes=num_nodes,
                 force_coefficient=force_coefficient,
                 learning_rate=learning_rate,
                 epochs=epochs,
-                train_split=train_split,
+                train_split=test_split,
+                shuffle=shuffle,
                 morse=morse,
                 morse_params=morse_params,
             )
