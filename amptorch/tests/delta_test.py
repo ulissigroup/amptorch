@@ -7,7 +7,7 @@ from amptorch.data_preprocess import AtomsDataset, collate_amp
 from amptorch.core import AMPTorch
 from amptorch.model import CustomMSELoss, FullNN
 from amptorch.exp_repulsive import lj_optim
-from amptorch.morse import morse_potential
+from amptorch.delta_models.morse import morse_potential
 import numpy as np
 import torch
 from torch import optim

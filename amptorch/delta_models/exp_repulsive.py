@@ -4,14 +4,22 @@ from itertools import product
 import numpy as np
 from scipy.optimize import minimize
 from ase.neighborlist import NeighborList, NewPrimitiveNeighborList
-from .gaussian import NeighborlistCalculator, Data
-from .utils import Logger, hash_images, get_hash
+from amptorch.gaussian import NeighborlistCalculator, Data
+from amptorch.utils import Logger, hash_images, get_hash
 import matplotlib.pyplot as plt
 from functools import lru_cache
 
 
 class lj_optim:
-    def __init__(self, images, params, params_dict, cutoff, filename, forcesonly=True):
+    def __init__(
+        self,
+        images,
+        params,
+        params_dict,
+        cutoff,
+        filename,
+        forcesonly=True,
+    ):
         if not os.path.exists("results"):
             os.mkdir("results")
         if not os.path.exists("results/logs"):
@@ -28,42 +36,6 @@ class lj_optim:
         self.neighborlist = Data(filename="amp-data-neighborlists", calculator=calc)
         self.neighborlist.calculate_items(self.hashed_images)
 
-    def fit(self, method="Nelder-Mead"):
-        log = Logger("results/logs/" + self.filename + ".txt")
-        self.target_energies = np.array(
-            [
-                (atoms.get_potential_energy(apply_constraint=False))
-                for atoms in self.data
-            ]
-        ).reshape(1, -1)
-        self.target_forces = np.concatenate(
-            [(atoms.get_forces(apply_constraint=False)) for atoms in self.data]
-        )
-        print("LJ optimization initiated...")
-        s_time = time.time()
-        bounds = None
-        bounded_methods = ["L-BFGS-B", "TNC", "SLSQP"]
-        if method in bounded_methods:
-            bounds = [(1, 5), (1e-5, 10)] * len(self.params_dict.keys())
-        lj_min = minimize(
-            self.objective_fn,
-            self.p0,
-            args=(self.target_energies, self.target_forces),
-            method=method,
-            bounds=bounds,
-            options={"disp": True},
-        )
-        optim_time = time.time() - s_time
-        self.logresults(
-            log, self.data, self.cutoff, self.p0, self.params_dict, lj_min, optim_time
-        )
-        if lj_min.success is True:
-            print("Optimizer terminated successfully.")
-            return lj_min.x
-        else:
-            print("Optimizer did not terminate successfully.")
-            return lj_min.x
-
     def get_neighbors(self, neighborlist, image_hash):
         image_neighbors = neighborlist[image_hash]
         return image_neighbors
@@ -76,6 +48,7 @@ class lj_optim:
             eps = params_dict[element][1]
             params.append(np.array([[sig, eps]]))
         params = np.vstack(np.array(params))
+        a = p0[-1]
 
         natoms = len(image)
 
@@ -98,12 +71,9 @@ class lj_optim:
             eps_n = params[neighbors][:, 1]
             sig = (sig_1 + sig_n) / 2
             eps = np.sqrt(eps_1 * eps_n)
-            r2 = (d ** 2).sum(1)
-            c6 = (sig ** 2 / r2) ** 3
-            c6[r2 > self.cutoff ** 2] = 0.0
-            c12 = c6 ** 2
-            energy += (4 * eps * (c12 - c6)).sum()
-            f = (24 * eps * (2 * c12 - c6) / r2)[:, np.newaxis] * d
+            r = ((d ** 2).sum(1))**0.5
+            energy += (eps * (6/(a-6))*np.exp(a*(1-(r/sig)))).sum()
+            f = (eps * (1/r) * (6/(a-6)) * (a/sig) * np.exp(a*(1-(r/sig))))[:, np.newaxis]*d
             forces[a1] -= f.sum(axis=0)
             for a2, f2 in zip(neighbors, f):
                 forces[a2] += f2
@@ -127,7 +97,7 @@ class lj_optim:
         predicted_energies, predicted_forces, num_atoms = self.lj_pred(
             self.data, params, self.params_dict
         )
-        predicted_energies = np.concatenate(np.array(predicted_energies).reshape(1, -1))
+        predicted_energies = np.array(predicted_energies).reshape(1, -1)
         predicted_forces = np.concatenate(predicted_forces)
         data_size = target_energies.shape[1]
         num_atoms_f = np.array([[i] * i for i in num_atoms]).reshape(-1, 1)
@@ -182,6 +152,7 @@ class lj_optim:
             )
         )
         log("Fitted LJ parameters: %s \n" % self.params_to_dict(results.x, params_dict))
+        log("a: {}".format(results.x[-1]))
         log("Optimization time: %s \n" % optim_time)
 
     def parity(self, predicted_energies, predicted_forces):

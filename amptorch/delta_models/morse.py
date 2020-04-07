@@ -5,8 +5,8 @@ from itertools import product
 import numpy as np
 from scipy.optimize import minimize
 from ase.neighborlist import NeighborList, NewPrimitiveNeighborList
-from .gaussian import NeighborlistCalculator, Data
-from .utils import Logger, hash_images, get_hash
+from amptorch.gaussian import NeighborlistCalculator, Data
+from amptorch.utils import Logger, hash_images, get_hash
 import matplotlib.pyplot as plt
 from functools import lru_cache
 
