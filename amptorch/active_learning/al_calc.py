@@ -17,7 +17,7 @@ from amptorch.skorch_model import AMP
 from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score
 from amptorch.data_preprocess import AtomsDataset, collate_amp
 from amptorch.model import FullNN, CustomMSELoss
-from amptorch.morse import morse_potential
+from amptorch.delta_models.morse import morse_potential
 
 
 __author__ = "Muhammed Shuaibi"
@@ -360,10 +360,8 @@ class AtomisticActiveLearning(Calculator):
 
     def termination_criteria(self, method='iter', **kwargs):
         """Criteria for AL termination
-
        Parameters
        ----------
-
        method: str
             Method for termination of active learning loop.
 
