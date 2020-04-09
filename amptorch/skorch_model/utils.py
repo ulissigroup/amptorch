@@ -1,4 +1,5 @@
 import sys
+import skorch
 from skorch.utils import to_numpy
 import torch
 from torch.nn import MSELoss, L1Loss
@@ -11,7 +12,6 @@ def target_extractor(y):
         if len(y) == 2
         else (to_numpy(y[0]), to_numpy(y[1]), to_numpy(y[2]))
     )
-
 
 def energy_score(net, X, y):
     mse_loss = MSELoss(reduction="sum")
@@ -48,6 +48,13 @@ def forces_score(net, X, y):
     force_mse /= 3 * dataset_size
     force_rmse = torch.sqrt(force_mse)
     return force_rmse
+
+class train_end_load_best_loss(skorch.callbacks.base.Callback):
+    def __init__(self, filename):
+        self.filename = filename
+
+    def on_train_end(self, net, X, y):
+        net.load_params("./results/checkpoints/{}_params.pt".format(self.filename))
 
 def make_force_header(log):
     header = "%5s %12s %12s %12s %7s"
@@ -117,3 +124,5 @@ def log_results(model, log):
             ]:
                 log("%5i %12.4f %12.4f %7.4f" % (epoch, ermse, tloss, dur))
     log("...Training Complete!\n")
+
+
