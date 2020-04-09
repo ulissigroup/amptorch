@@ -32,11 +32,6 @@ from ase.calculators.emt import EMT
 from ase.io import read
 
 
-class train_end_load_best_valid_loss(skorch.callbacks.base.Callback):
-    def on_train_end(self, net, X, y):
-        net.load_params("valid_best_params.pt")
-
-
 def test_skorch():
     distances = np.linspace(2, 5, 100)
     label = "skorch_example"

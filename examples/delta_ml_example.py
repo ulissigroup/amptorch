@@ -14,7 +14,7 @@ from amptorch.data_preprocess import (
     collate_amp,
 )
 from amptorch.skorch_model import AMP
-from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score
+from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score, train_end_load_best_loss
 from amptorch.delta_models.morse import morse_potential
 
 import torch
@@ -25,19 +25,15 @@ from ase.calculators.emt import EMT
 from ase.io import read
 
 
-class train_end_load_best_valid_loss(skorch.callbacks.base.Callback):
-    def on_train_end(self, net, X, y):
-        net.load_params("valid_best_params.pt")
-
+label = "example"
 
 LR_schedule = LRScheduler("CosineAnnealingLR", T_max=5)
 # saves best validation loss
 cp = Checkpoint(monitor="valid_loss_best", fn_prefix="valid_best_")
 # loads best validation loss at the end of training
-load_best_valid_loss = train_end_load_best_valid_loss()
+load_best_valid_loss = train_end_load_best_loss(label)
 
 distances = np.linspace(2, 5, 10)
-label = "example"
 images = []
 for l in distances:
     image = Atoms(
