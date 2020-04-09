@@ -1,7 +1,8 @@
 import sys
 import os
 import numpy as np
-import multiprocessing
+import torch.multiprocessing as mp
+from torch.multiprocessing import Pool
 import random
 
 import torch
@@ -24,7 +25,7 @@ from skorch.callbacks.lr_scheduler import LRScheduler
 
 from amptorch.gaussian import SNN_Gaussian
 from amptorch.skorch_model import AMP
-from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score
+from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score, train_end_load_best_loss
 from amptorch.delta_models.morse import morse_potential
 from amptorch.utils import make_amp_descriptors_simple_nn
 from amptorch.data_preprocess import AtomsDataset, collate_amp
@@ -34,7 +35,6 @@ from amptorch.active_learning.generator_funcs import MDsimulate, Relaxation
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
-
 
 class AMPOnlineCalc(Calculator):
     """Atomistics Machine-Learning Potential (AMP) ASE calculator
@@ -52,21 +52,42 @@ class AMPOnlineCalc(Calculator):
 
     implemented_properties = ["energy", "forces"]
 
-    def __init__(self, parent_dataset, parent_calc, n_ensembles):
+    def __init__(self,
+            parent_dataset,
+            parent_calc,
+            n_ensembles,
+            training_params):
         Calculator.__init__(self)
 
         self.n_ensembles = n_ensembles
         self.parent_calc = parent_calc
+        self.training_params = training_params
+        self.elements, self.Gs = self.fingerprint_args(parent_dataset)
+        self.make_fps(parent_dataset)
         self.ensemble_sets, self.parent_dataset = self.bootstrap_ensemble(
-            parent_dataset, n_ensembles=n_ensembles
-        )
-        self.trained_calcs = self.construct_calc(train(self.ensemble_sets))
-        self.uncertain_tol = 0.001
-        self.dft_calls = 0
+                parent_dataset, n_ensembles=n_ensembles
+                )
+        self.trained_calcs = self.construct_calc(self.parallel_trainer())
+        self.uncertain_tol = training_params["uncertain_tol"]
+        self.parent_calls = 0
+
+    def fingerprint_args(self, images):
+        elements = np.array([atom.symbol for atoms in images for atom in atoms])
+        _, idx = np.unique(elements, return_index=True)
+        elements = list(elements[np.sort(idx)])
+        Gs = self.training_params["Gs"]
+        return elements, Gs
+
+    def make_fps(self, atoms):
+        try:
+            len(atoms)
+        except:
+            atoms = [atoms]
+            pass
+        make_amp_descriptors_simple_nn(atoms, self.Gs, self.elements, cores=1, label="oal")
 
     def bootstrap_ensemble(
-        self, parent_dataset, resampled_set=None, new_data=None, n_ensembles=1
-    ):
+            self, parent_dataset, resampled_set=None, new_data=None, n_ensembles=1):
         if len(parent_dataset) == 1 and new_data is None :
             return [parent_dataset.copy()] * n_ensembles, parent_dataset
         ensemble_sets = []
@@ -82,18 +103,9 @@ class AMPOnlineCalc(Calculator):
         else:
             for i in range(n_ensembles):
                 ensemble_sets.append(
-                    random.choices(parent_dataset, k=len(parent_dataset))
-                )
+                        random.choices(parent_dataset, k=len(parent_dataset))
+                        )
         return ensemble_sets, parent_dataset
-
-    def construct_calc(self, calc_parameters):
-        calcs = []
-        for _ in range(len(calc_parameters)):
-            calc = AMP(
-                calc_parameters[_][0], calc_parameters[_][1], calc_parameters[_][2]
-            )
-            calcs.append(calc)
-        return calcs
 
     def calculate_stats(self, energies, forces):
         energy_mean = np.mean(energies)
@@ -102,13 +114,35 @@ class AMPOnlineCalc(Calculator):
         forces_var = np.var(forces, axis=0)
         return energy_mean, forces_mean, energy_var
 
+    def parallel_trainer(self):
+        n_cores = len(self.ensemble_sets)
+        pool = Pool(n_cores)
+
+        input_data = []
+        for _ in range(len(self.ensemble_sets)):
+            parallel_params = self.training_params.copy()
+            parallel_params["filename"] += str(_)
+            inputs = [self.ensemble_sets[_], parallel_params]
+            input_data.append(inputs)
+        results = pool.map(train_calc, input_data)
+        return results
+
+    def construct_calc(self, calc_parameters):
+        calcs = []
+        for _ in  range(len(calc_parameters)):
+            calc = AMP(
+                calc_parameters[_][0], calc_parameters[_][1], calc_parameters[_][2]
+            )
+            calcs.append(calc)
+        return calcs
+
     def calculate(self, atoms, properties, system_changes):
         Calculator.calculate(self, atoms, properties, system_changes)
 
         energies = []
         forces = []
 
-        make_amp_descriptors_simple_nn([atoms], Gs, elements, cores=10, label="test")
+        self.make_fps(atoms)
         for calc in self.trained_calcs:
             energies.append(calc.get_potential_energy(atoms))
             forces.append(calc.get_forces(atoms))
@@ -116,111 +150,151 @@ class AMPOnlineCalc(Calculator):
         forces = np.array(forces)
         energy_pred, force_pred, uncertainty = self.calculate_stats(energies, forces)
 
-        # if uncertainty == self.uncertain_tol:
-        if uncertainty >= 0.001:
+        if uncertainty >= self.uncertain_tol:
             new_data = atoms.copy()
             new_data.set_calculator(self.parent_calc)
 
-            sample_energy = new_data.get_potential_energy(apply_constraint=False)
-            sample_forces = new_data.get_forces(apply_constraint=False)
-            new_data.set_calculator(sp(atoms=new_data, energy=sample_energy,
-                forces=sample_forces))
+            energy_pred = new_data.get_potential_energy(apply_constraint=False)
+            force_pred = new_data.get_forces(apply_constraint=False)
+            new_data.set_calculator(sp(atoms=new_data, energy=energy_pred,
+                forces=force_pred))
 
             self.ensemble_sets, self.parent_dataset = self.bootstrap_ensemble(
-                self.parent_dataset, self.ensemble_sets, new_data=new_data
-            )
+                    self.parent_dataset, self.ensemble_sets, new_data=new_data
+                    )
 
-            self.trained_calcs = self.construct_calc(train(self.ensemble_sets))
-            self.dft_calls += 1
+            self.trained_calcs = self.construct_calc(self.parallel_trainer())
+            self.parent_calls += 1
 
-            self.results["energy"] = sample_energy
-            self.results["forces"] = sample_forces
+        self.results["energy"] = energy_pred
+        self.results["forces"] = force_pred
 
-        else:
-            self.results["energy"] = energy_pred
-            self.results["forces"] = force_pred
-            print('step')
-
-
-def train(ensemble_sets):
-    pool = multiprocessing.Pool(len(ensemble_sets))
-
-    input_data = []
-    for _ in range(len(ensemble_sets)):
-        inputs = [ensemble_sets[_], "test" + str(_), "./", Gs, True, True, None]
-        input_data.append(inputs)
-    results = pool.map(train_calc, input_data)
-    return results
-
-
+#TODO: construct core trainer
 def train_calc(inputs):
-    images, filename, file_dir, Gs, delta, forcesonly, scaling = inputs
-    class train_end_load_best_valid_loss(skorch.callbacks.base.Callback):
-            def on_train_end(self, net, X, y):
-                net.load_params("./results/checkpoints/{}_params.pt".format(filename))
-    cp = Checkpoint(
-            monitor="forces_score_best",
-            fn_prefix="./results/checkpoints/{}_".format(filename),
-        )
+    images, training_params = inputs
 
-    if not os.path.exists(file_dir):
-        os.makedirs(file_dir, exist_ok=True)
+    Gs = training_params["Gs"]
+    morse = training_params["morse"]
+    morse_params = training_params["morse_params"]
+    forcetraining = training_params["forcetraining"]
+    cores = training_params["cores"]
+    optimizer = training_params["optimizer"]
+    batch_size = training_params["batch_size"]
+    criterion = training_params["criterion"]
+    num_layers = training_params["num_layers"]
+    num_nodes = training_params["num_nodes"]
+    force_coefficient = training_params["force_coefficient"]
+    learning_rate = training_params["learning_rate"]
+    epochs = training_params["epochs"]
+    train_split = training_params["test_split"]
+    shuffle = training_params["shuffle"]
+    filename = training_params["filename"]
 
-    forcetraining = True
+    os.makedirs("./results/checkpoints", exist_ok=True)
+
+    cutoff = Gs["cutoff"]
+    morse_data = None
+    if morse:
+        params = morse_params
+        morse_model = morse_potential(
+                images, params, cutoff, filename, combo="mean"
+                )
+        morse_energies, morse_forces, num_atoms = morse_model.morse_pred(
+                images, params
+                )
+        morse_data = [morse_energies, morse_forces, num_atoms, params, morse_model]
+
+    forcetraining = forcetraining
     training_data = AtomsDataset(
-        images,
-        SNN_Gaussian,
-        Gs,
-        forcetraining=forcetraining,
-        label=filename,
-        cores=1,
-        delta_data=None,
-    )
+            images,
+            SNN_Gaussian,
+            Gs,
+            forcetraining=forcetraining,
+            label=filename,
+            cores=cores,
+            delta_data=morse_data,
+            )
     unique_atoms = training_data.elements
     fp_length = training_data.fp_length
     device = "cpu"
 
+    load_best_valid_loss = train_end_load_best_loss(filename)
     torch.set_num_threads(1)
 
+    if train_split == 0 or len(images)*train_split < 1:
+        on_train = True
+    else:
+        train_split = CVSplit(cv=train_split, random_state=1)
+        on_train = False
+
+    if forcetraining:
+        force_coefficient = force_coefficient
+        callbacks = [
+                EpochScoring(
+                    forces_score,
+                    on_train=on_train,
+                    use_caching=True,
+                    target_extractor=target_extractor,
+                    ),
+                EpochScoring(
+                    energy_score,
+                    on_train=on_train,
+                    use_caching=True,
+                    target_extractor=target_extractor,
+                    ),
+                Checkpoint(
+                    monitor="forces_score_best",
+                    fn_prefix="./results/checkpoints/{}_".format(filename),
+                    ),
+                load_best_valid_loss,
+                ]
+    else:
+        force_coefficient = 0
+        callbacks = [
+                EpochScoring(
+                    energy_score,
+                    on_train=on_train,
+                    use_caching=True,
+                    target_extractor=target_extractor,
+                    ),
+                Checkpoint(
+                    monitor="energy_score_best",
+                    fn_prefix="./results/checkpoints/{}_".format(filename),
+                    ),
+                load_best_valid_loss,
+                ]
+
     net = NeuralNetRegressor(
-        module=FullNN(
-            unique_atoms, [fp_length, 3, 20], device, forcetraining=forcetraining
-        ),
-        criterion=CustomMSELoss,
-        criterion__force_coefficient=0.04,
-        optimizer=torch.optim.LBFGS,
-        lr=1e-1,
-        batch_size=len(training_data),
-        max_epochs=100,
-        iterator_train__collate_fn=collate_amp,
-        iterator_train__shuffle=False,
-        iterator_valid__collate_fn=collate_amp,
-        iterator_valid__shuffle=False,
-        device=device,
-        verbose=0,
-        # train_split=CVSplit(cv=5, random_state=1),
-        train_split=0,
-        callbacks=[
-            EpochScoring(
-                forces_score,
-                on_train=True,
-                use_caching=True,
-                target_extractor=target_extractor,
-            ),
-            EpochScoring(
-                energy_score,
-                on_train=True,
-                use_caching=True,
-                target_extractor=target_extractor,
-            ),
-        ],
-    )
+            module=FullNN(
+                unique_atoms,
+                [fp_length, num_layers, num_nodes],
+                device,
+                forcetraining=forcetraining,
+                ),
+            criterion=criterion,
+            criterion__force_coefficient=force_coefficient,
+            optimizer=optimizer,
+            lr=learning_rate,
+            batch_size=batch_size,
+            max_epochs=epochs,
+            iterator_train__collate_fn=collate_amp,
+            iterator_train__shuffle=shuffle,
+            iterator_valid__collate_fn=collate_amp,
+            iterator_valid__shuffle=False,
+            device=device,
+            train_split=train_split,
+            callbacks=callbacks,
+            )
+
+
     calc = AMP(training_data, net, label=filename)
-    calc.train()
+    calc.train(overwrite=True)
+
     return [training_data, net, filename]
 
+
 if __name__ == "__main__":
-    multiprocessing.set_start_method("spawn")
+    mp.set_start_method("spawn")
 
     Gs = {}
     Gs["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
@@ -242,13 +316,31 @@ if __name__ == "__main__":
     slab.set_calculator(EMT())
 
     images = [slab]
+    morse_params = {
+        "C": {"re": 0.972, "D": 6.379, "sig": 0.477},
+        "Cu": {"re": 2.168, "D": 3.8386, "sig": 1.696},
+    }
 
-    elements = np.array([atom.symbol for atoms in images for atom in atoms])
-    _, idx = np.unique(elements, return_index=True)
-    elements = list(elements[np.sort(idx)])
-    make_amp_descriptors_simple_nn(images, Gs, elements, cores=10, label="test")
+    training_params = {
+        "uncertain_tol": 0.001,
+        "Gs": Gs,
+        "morse": True,
+        "morse_params": morse_params,
+        "forcetraining": True,
+        "cores": 10,
+        "optimizer": torch.optim.LBFGS,
+        "batch_size": 1000,
+        "criterion": CustomMSELoss,
+        "num_layers": 3,
+        "num_nodes": 20,
+        "force_coefficient": 0.04,
+        "learning_rate": 1e-1,
+        "epochs": 20,
+        "test_split": 0,
+        "shuffle": False,
+        "filename": "oal_test",
+    }
 
     structure_optim = Relaxation(slab, BFGS, fmax=0.05, steps=None)
-    online_calc = AMPOnlineCalc(images, EMT(), 3)
+    online_calc = AMPOnlineCalc(images, EMT(), 3, training_params)
     structure_optim.run(online_calc, filename='relax_oal')
-    print(online_calc.dft_calls)
