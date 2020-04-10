@@ -57,12 +57,14 @@ class AMPOnlineCalc(Calculator):
             parent_dataset,
             parent_calc,
             n_ensembles,
+            n_cores,
             training_params):
         Calculator.__init__(self)
 
         self.n_ensembles = n_ensembles
         self.parent_calc = parent_calc
         self.training_params = training_params
+        self.n_cores = n_cores
         self.elements, self.Gs = self.fingerprint_args(parent_dataset)
         self.make_fps(parent_dataset)
         self.ensemble_sets, self.parent_dataset = self.bootstrap_ensemble(
@@ -116,8 +118,9 @@ class AMPOnlineCalc(Calculator):
         return energy_median, forces_median, max_forces_var
 
     def parallel_trainer(self):
-        n_cores = len(self.ensemble_sets)
-        pool = Pool(n_cores)
+        if self.n_cores == 'max':
+            self.n_cores = len(self.ensemble_sets)
+        pool = Pool(self.n_cores)
 
         input_data = []
         for _ in range(len(self.ensemble_sets)):
