@@ -65,7 +65,8 @@ if __name__ == "__main__":
     }
 
     structure_optim = Relaxation(slab, BFGS, fmax=0.05, steps=None)
-    online_calc = AMPOnlineCalc(images, EMT(), 10, training_params)
+    online_calc = AMPOnlineCalc(parent_dataset=images, parent_calc=EMT(),
+            n_ensembles=3, n_cores='max', training_params=training_params)
     structure_optim.run(online_calc, filename='relax_oal')
 
     # Calculate true relaxation
