@@ -1,4 +1,5 @@
 import sys
+import copy
 import os
 import numpy as np
 import torch.multiprocessing as mp
@@ -86,17 +87,17 @@ class AMPOnlineCalc(Calculator):
             pass
         make_amp_descriptors_simple_nn(atoms, self.Gs, self.elements, cores=1, label="oal")
 
-    def bootstrap_ensemble(
-            self, parent_dataset, resampled_set=None, new_data=None, n_ensembles=1):
+    def bootstrap_ensemble(self, parent_dataset, resampled_set=None, new_data=None, n_ensembles=1):
         if len(parent_dataset) == 1 and new_data is None :
-            return [parent_dataset.copy()] * n_ensembles, parent_dataset
+            ensemble_sets = [parent_dataset.copy() for i in range(n_ensembles)]
+            return ensemble_sets, parent_dataset
         ensemble_sets = []
         if new_data is not None and resampled_set is not None:
             n_ensembles = len(resampled_set)
             parent_dataset.append(new_data)
             for i in range(n_ensembles):
                 resampled_set[i].append(random.sample(parent_dataset, 1)[0])
-                for k in range(0, len(resampled_set[i]) - 1):
+                for k in range(len(resampled_set[i])):
                     if random.random() < 1 / len(resampled_set[i]):
                         resampled_set[i][k] = new_data
                 ensemble_sets.append(resampled_set[i])
@@ -108,11 +109,11 @@ class AMPOnlineCalc(Calculator):
         return ensemble_sets, parent_dataset
 
     def calculate_stats(self, energies, forces):
-        energy_mean = np.mean(energies)
+        energy_median = np.median(energies)
         energy_var = np.var(energies)
-        forces_mean = np.mean(forces, axis=0)
-        forces_var = np.var(forces, axis=0)
-        return energy_mean, forces_mean, energy_var
+        forces_median = np.median(forces, axis=0)
+        max_forces_var = np.max(np.var(forces, axis=0))
+        return energy_median, forces_median, max_forces_var
 
     def parallel_trainer(self):
         n_cores = len(self.ensemble_sets)
@@ -189,6 +190,7 @@ def train_calc(inputs):
     train_split = training_params["test_split"]
     shuffle = training_params["shuffle"]
     filename = training_params["filename"]
+    verbose = training_params["verbose"]
 
     os.makedirs("./results/checkpoints", exist_ok=True)
 
@@ -284,6 +286,7 @@ def train_calc(inputs):
             device=device,
             train_split=train_split,
             callbacks=callbacks,
+            verbose=verbose,
             )
 
 

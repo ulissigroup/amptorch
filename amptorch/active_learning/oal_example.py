@@ -44,7 +44,7 @@ if __name__ == "__main__":
     }
 
     training_params = {
-        "uncertain_tol": 0.001,
+        "uncertain_tol": 0.1,
         "Gs": Gs,
         "morse": True,
         "morse_params": morse_params,
@@ -57,14 +57,15 @@ if __name__ == "__main__":
         "num_nodes": 20,
         "force_coefficient": 0.04,
         "learning_rate": 1e-1,
-        "epochs": 20,
+        "epochs": 100,
         "test_split": 0,
         "shuffle": False,
         "filename": "oal_test",
+        "verbose": 0
     }
 
     structure_optim = Relaxation(slab, BFGS, fmax=0.05, steps=None)
-    online_calc = AMPOnlineCalc(images, EMT(), 5, training_params)
+    online_calc = AMPOnlineCalc(images, EMT(), 10, training_params)
     structure_optim.run(online_calc, filename='relax_oal')
 
     # Calculate true relaxation
@@ -87,9 +88,9 @@ if __name__ == "__main__":
 
     initial_structure = images[0].positions
     print(f'Number of OAL steps: {len(final_oal_traj)}\nTotal # of queries (EMT calls): {n_parent_calls} \n')
-    print(f"Final AL Relaxed Energy: {ml_relaxation_energies[-1]}")
-    print(f'EMT evaluation at AL structure: {EMT().get_potential_energy(final_oal_traj[-1])}\n')
-    al_relaxed_structure = final_oal_traj[-1].positions
+    print(f"Final OAL Relaxed Energy: {ml_relaxation_energies[-1]}")
+    print(f'EMT evaluation at OAL structure: {EMT().get_potential_energy(final_oal_traj[-1])}\n')
+    oal_relaxed_structure = final_oal_traj[-1].positions
 
     print(f'Total number of EMT steps: {len(emt_relaxation_energies)}')
     print(f'Final EMT Relaxed Energy: {emt_relaxation_energies[-1]}\n')
@@ -97,7 +98,7 @@ if __name__ == "__main__":
 
 
     initial_structure_error = compute_loss(initial_structure, emt_relaxed_structure)
-    relaxed_structure_error = compute_loss(al_relaxed_structure, emt_relaxed_structure)
+    relaxed_structure_error = compute_loss(oal_relaxed_structure, emt_relaxed_structure)
 
     print(f'Initial structure error: {initial_structure_error}')
-    print(f'AL relaxed structure error: {relaxed_structure_error}')
+    print(f'OAL relaxed structure error: {relaxed_structure_error}')
