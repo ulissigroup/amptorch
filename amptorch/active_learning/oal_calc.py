@@ -126,9 +126,9 @@ class AMPOnlineCalc(Calculator):
         for _ in range(len(self.ensemble_sets)):
             parallel_params = self.training_params.copy()
             parallel_params["filename"] += str(_)
-            inputs = [self.ensemble_sets[_], parallel_params]
+            inputs = (self.ensemble_sets[_], parallel_params)
             input_data.append(inputs)
-        results = pool.map(train_calc, input_data)
+        results = pool.starmap(train_calc, input_data)
         return results
 
     def construct_calc(self, calc_parameters):
@@ -156,7 +156,7 @@ class AMPOnlineCalc(Calculator):
 
         if uncertainty >= self.uncertain_tol:
             new_data = atoms.copy()
-            new_data.set_calculator(self.parent_calc)
+            new_data.set_calculator(copy.copy(self.parent_calc))
 
             energy_pred = new_data.get_potential_energy(apply_constraint=False)
             force_pred = new_data.get_forces(apply_constraint=False)
@@ -174,9 +174,7 @@ class AMPOnlineCalc(Calculator):
         self.results["forces"] = force_pred
 
 #TODO: construct core trainer
-def train_calc(inputs):
-    images, training_params = inputs
-
+def train_calc(images, training_params):
     Gs = training_params["Gs"]
     morse = training_params["morse"]
     morse_params = training_params["morse_params"]
@@ -298,56 +296,3 @@ def train_calc(inputs):
     calc.train(overwrite=True)
 
     return [training_data, net, filename]
-
-
-if __name__ == "__main__":
-    mp.set_start_method("spawn")
-
-    Gs = {}
-    Gs["G2_etas"] = np.logspace(np.log10(0.05), np.log10(5.0), num=4)
-    Gs["G2_rs_s"] = [0] * 4
-    Gs["G4_etas"] = [0.005]
-    Gs["G4_zetas"] = [1.0, 4.0]
-    Gs["G4_gammas"] = [+1.0, -1]
-    Gs["cutoff"] = 5.876798323827276  # EMT asap_cutoff: False
-
-    slab = fcc100("Cu", size=(3, 3, 3))
-    adsorbate = molecule("C")
-    add_adsorbate(slab, adsorbate, 3, offset=(1,1))
-    constraints = FixAtoms(
-            indices=[atom.index for atom in slab if (atom.tag == 3)])
-    slab.set_constraint(constraints)
-    slab.center(vacuum=13.0, axis=2)
-    slab.set_pbc(True)
-    slab.wrap(pbc=[True] * 3)
-    slab.set_calculator(EMT())
-
-    images = [slab]
-    morse_params = {
-        "C": {"re": 0.972, "D": 6.379, "sig": 0.477},
-        "Cu": {"re": 2.168, "D": 3.8386, "sig": 1.696},
-    }
-
-    training_params = {
-        "uncertain_tol": 0.001,
-        "Gs": Gs,
-        "morse": True,
-        "morse_params": morse_params,
-        "forcetraining": True,
-        "cores": 10,
-        "optimizer": torch.optim.LBFGS,
-        "batch_size": 1000,
-        "criterion": CustomMSELoss,
-        "num_layers": 3,
-        "num_nodes": 20,
-        "force_coefficient": 0.04,
-        "learning_rate": 1e-1,
-        "epochs": 20,
-        "test_split": 0,
-        "shuffle": False,
-        "filename": "oal_test",
-    }
-
-    structure_optim = Relaxation(slab, BFGS, fmax=0.05, steps=None)
-    online_calc = AMPOnlineCalc(images, EMT(), 3, training_params)
-    structure_optim.run(online_calc, filename='relax_oal')

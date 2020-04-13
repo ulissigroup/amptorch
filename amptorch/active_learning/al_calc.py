@@ -1,4 +1,5 @@
 import os
+import copy
 import random
 import numpy as np
 
@@ -74,6 +75,7 @@ class AtomisticActiveLearning(Calculator):
         epochs = training_params["epochs"]
         train_split = training_params["test_split"]
         shuffle = training_params["shuffle"]
+        verbose = training_params["verbose"]
 
         os.makedirs("./results/checkpoints", exist_ok=True)
         os.makedirs(self.file_dir, exist_ok=True)
@@ -194,14 +196,13 @@ class AtomisticActiveLearning(Calculator):
         samples_to_retrain: Integer. Number of samples to be randomly selected
         for query and added to the training set.
         """
-        random.seed(3)
         sample_points = random.sample(
             range(1, len(sample_candidates)), samples_to_retrain
         )
         self.dft_calls += len(sample_points)
         for idx in sample_points:
             sample = sample_candidates[idx].copy()
-            sample.set_calculator(self.parent_calc)
+            sample.set_calculator(copy.copy(self.parent_calc))
             sample_energy = sample.get_potential_energy(apply_constraint=False)
             sample_forces = sample.get_forces(apply_constraint=False)
             sample.set_calculator(
@@ -324,16 +325,17 @@ class AtomisticActiveLearning(Calculator):
             #TODO Find a better way to structure this.
             method = al_convergence["method"]
             if method == 'iter':
-                 kwargs = {"current_i": iteration, "total_i":
+                 termination_args = {"current_i": iteration, "total_i":
                          al_convergence["num_iterations"]}
             elif method == 'spot':
-                kwargs = {"images": sample_candidates, "num2verify":
+                termination_args = {"images": sample_candidates, "num2verify":
                         al_convergence["num2verify"]}
 
-            terminate = self.termination_criteria(method=method, **kwargs)
+            terminate = self.termination_criteria(method=method,
+                    termination_args=termination_args)
         print('Totale # of parent calculator calls: {}'.format(self.dft_calls))
 
-    def termination_criteria(self, method='iter', **kwargs):
+    def termination_criteria(self, termination_args, method='iter'):
         """Criteria for AL termination
        Parameters
        ----------
@@ -352,18 +354,18 @@ class AtomisticActiveLearning(Calculator):
         terminate = False
 
         if method == "iter":
-            current_i = kwargs["current_i"]
-            total_i = kwargs["total_i"]
+            current_i = termination_args["current_i"]
+            total_i = termination_args["total_i"]
             if current_i > total_i:
                 terminate = True
 
         if method == "spot":
-            images = kwargs["images"]
-            num2verify = kwargs["num2verify"]
+            images = termination_args["images"]
+            num2verify = termination_args["num2verify"]
             points2verify = random.sample(range(len(images)), num2verify)
             for idx in points2verify:
                 sample = images[idx].copy()
-                sample.set_calculator(self.parent_calc)
+                sample.set_calculator(copy.copy(self.parent_calc))
                 sample_energy = sample.get_potential_energy(apply_constraint=False)
                 sample_forces = sample.get_forces(apply_constraint=False)
                 ml_energy = self.ml_calc.get_potential_energy(sample)
