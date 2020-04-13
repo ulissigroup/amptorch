@@ -227,6 +227,7 @@ def train_calc(inputs):
     torch.set_num_threads(1)
 
     if train_split == 0 or len(images)*train_split < 1:
+        train_split = 0
         on_train = True
     else:
         train_split = CVSplit(cv=train_split, random_state=1)
