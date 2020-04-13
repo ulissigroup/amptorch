@@ -1,3 +1,4 @@
+import os
 import multiprocessing as mp
 import numpy as np
 
@@ -58,15 +59,15 @@ if __name__ == "__main__":
         "force_coefficient": 0.04,
         "learning_rate": 1e-1,
         "epochs": 100,
-        "test_split": 0,
+        "test_split": 0.3,
         "shuffle": False,
         "filename": "oal_test",
-        "verbose": 0
+        "verbose": 1
     }
 
-    structure_optim = Relaxation(slab, BFGS, fmax=0.05, steps=None)
+    structure_optim = Relaxation(slab, BFGS, fmax=0.05, steps=50)
     online_calc = AMPOnlineCalc(parent_dataset=images, parent_calc=EMT(),
-            n_ensembles=3, n_cores='max', training_params=training_params)
+            n_ensembles=5, n_cores='max', training_params=training_params)
     structure_optim.run(online_calc, filename='relax_oal')
 
     # Calculate true relaxation
