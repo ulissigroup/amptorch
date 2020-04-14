@@ -70,7 +70,7 @@ class AMPOnlineCalc(Calculator):
         self.ensemble_sets, self.parent_dataset = self.bootstrap_ensemble(
                 parent_dataset, n_ensembles=n_ensembles
                 )
-        self.trained_calcs = self.construct_calc(self.parallel_trainer())
+        self.trained_calcs = self.parallel_trainer(self.ensemble)
         self.uncertain_tol = training_params["uncertain_tol"]
         self.parent_calls = 0
 
@@ -128,17 +128,9 @@ class AMPOnlineCalc(Calculator):
             parallel_params["filename"] += str(_)
             inputs = (self.ensemble_sets[_], parallel_params)
             input_data.append(inputs)
-        results = pool.starmap(train_calc, input_data)
-        return results
-
-    def construct_calc(self, calc_parameters):
-        calcs = []
-        for _ in  range(len(calc_parameters)):
-            calc = AMP(
-                calc_parameters[_][0], calc_parameters[_][1], calc_parameters[_][2]
-            )
-            calcs.append(calc)
-        return calcs
+        calc_parameters = pool.starmap(train_calc, input_data)
+        trained_calcs = [AMP(*params) for params in calc_parameters]
+        return trained_calcs
 
     def calculate(self, atoms, properties, system_changes):
         Calculator.calculate(self, atoms, properties, system_changes)
