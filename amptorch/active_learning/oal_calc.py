@@ -70,7 +70,7 @@ class AMPOnlineCalc(Calculator):
         self.ensemble_sets, self.parent_dataset = self.bootstrap_ensemble(
                 parent_dataset, n_ensembles=n_ensembles
                 )
-        self.trained_calcs = self.parallel_trainer(self.ensemble)
+        self.trained_calcs = self.parallel_trainer()
         self.uncertain_tol = training_params["uncertain_tol"]
         self.parent_calls = 0
 
@@ -159,7 +159,7 @@ class AMPOnlineCalc(Calculator):
                     self.parent_dataset, self.ensemble_sets, new_data=new_data
                     )
 
-            self.trained_calcs = self.construct_calc(self.parallel_trainer())
+            self.trained_calcs = self.parallel_trainer()
             self.parent_calls += 1
 
         self.results["energy"] = energy_pred
