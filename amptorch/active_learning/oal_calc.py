@@ -31,7 +31,7 @@ from amptorch.delta_models.morse import morse_potential
 from amptorch.utils import make_amp_descriptors_simple_nn
 from amptorch.data_preprocess import AtomsDataset, collate_amp
 from amptorch.model import FullNN, CustomMSELoss
-from amptorch.active_learning.generator_funcs import MDsimulate, Relaxation
+from amptorch.active_learning.atomistic_methods import MDsimulate, Relaxation
 
 
 __author__ = "Muhammed Shuaibi"
