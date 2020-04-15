@@ -11,7 +11,7 @@ from ase.optimize import BFGS, QuasiNewton
 import torch
 
 from amptorch.model import CustomMSELoss
-from amptorch.active_learning.generator_funcs  import MDsimulate, Relaxation
+from amptorch.active_learning.atomistic_methods  import MDsimulate, Relaxation
 from amptorch.active_learning.oal_calc  import AMPOnlineCalc
 
 
@@ -59,7 +59,7 @@ if __name__ == "__main__":
         "force_coefficient": 0.04,
         "learning_rate": 1e-1,
         "epochs": 100,
-        "test_split": 0.3,
+        "test_split": 0,
         "shuffle": False,
         "filename": "oal_test",
         "verbose": 1
