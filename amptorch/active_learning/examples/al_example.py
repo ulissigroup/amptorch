@@ -9,14 +9,17 @@ from ase.calculators.emt import EMT
 from ase.calculators.singlepoint import SinglePointCalculator as sp
 from ase.build import fcc100, add_adsorbate, molecule
 from ase.constraints import FixAtoms
-from ase.optimize import BFGS
+from ase.optimize import BFGS, BFGSLineSearch
 
-from amptorch.active_learning.generator_funcs import MDsimulate, Relaxation
-from amptorch.active_learning.al_calc import AtomisticActiveLearning
+from amptorch.active_learning.atomistic_methods import MDsimulate, Relaxation
+from amptorch.active_learning.learner import AtomisticActiveLearner
+from amptorch.active_learning.query_methods import random_query, max_uncertainty
 from amptorch.model import CustomMSELoss
 
+import multiprocessing as mp
+
 if __name__ == "__main__":
-    random.seed(0)
+    mp.set_start_method("spawn")
     # Define initial set of images, can be as few as 1. If 1, make sure to
     slab = fcc100("Cu", size=(3, 3, 3))
     ads = molecule("C")
@@ -33,7 +36,6 @@ if __name__ == "__main__":
     sample_forces = slab.get_forces(apply_constraint=False)
     slab.set_calculator(sp(atoms=slab, energy=sample_energy,
         forces=sample_forces))
-
 
     images = [slab]
 
@@ -69,25 +71,27 @@ if __name__ == "__main__":
             "force_coefficient": 0.04,
             "learning_rate": 1e-1,
             "epochs": 100,
-            "test_split": 0.3,
+            "test_split": 0,
             "shuffle": False,
-            "verbose": 1
+            "verbose": 1,
+            "filename": "relax_example",
+            "file_dir": "./"
             }
 
     # Define AL calculator
-    al_calc = AtomisticActiveLearning(
-            parent_calc=EMT(), images=images, filename="relax_example",
-            file_dir="./"
-            )
-    # Define AL generating function and training scheme.
-    al_calc.active_learner(
+    learner = AtomisticActiveLearner(
+            training_data=images,
+            training_params=training_params,
+            parent_calc=EMT(),
+            ensemble=False)
+    learner.learn(
             generating_function=Relaxation(
                 initial_geometry=images[0].copy(),
                 optimizer=BFGS,
                 fmax=0.05,
                 steps=50,
                 ),
-            training_params=training_params
+            query_strategy=random_query
             )
 
     # Calculate true relaxation
@@ -103,12 +107,18 @@ if __name__ == "__main__":
     #Compute actual energies for EMT relaxation structures
     emt_relaxation_energies = [image.get_potential_energy() for image in parent_calc_traj]
     steps = range(len(final_ml_traj))
+    al_iterations =  training_params["al_convergence"]["num_iterations"]
+    n_samples_iteration = training_params["samples_to_retrain"]
+    parent_calls = learner.parent_calls
 
     def compute_loss(a, b):
         return np.mean(np.sqrt(np.sum((a - b)**2, axis=1)))
 
     initial_structure = images[0].positions
-    print('Number of AL iterations: 3\nNumber of samples/iteration: 5\nTotal # of queries (EMT calls): 15 \n')
+    print(f'Number of AL iterations: {al_iterations}')
+    print(f'Number of samples/iteration: {n_samples_iteration}')
+    print(f'Total # of queries (parent calls): {parent_calls}\n')
+
     print(f'Final AL Relaxed Energy: {ml_relaxation_energies[-1]}')
     print(f'EMT evaluation at AL structure: {EMT().get_potential_energy(final_ml_traj[-1])}\n')
     al_relaxed_structure = final_ml_traj[-1].positions
