@@ -63,7 +63,7 @@ if __name__ == "__main__":
         "verbose": 1,
     }
 
-    structure_optim = Relaxation(slab, BFGS, fmax=0.05, steps=50)
+    structure_optim = Relaxation(slab, BFGS, fmax=0.05, steps=None)
     online_calc = AMPOnlineCalc(
         parent_dataset=images,
         parent_calc=EMT(),
