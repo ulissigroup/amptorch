@@ -21,6 +21,7 @@ __pycache__/
 amp_benchmark/
 amptorch/sigopt/
 amptorch/bench/*
+amptorch/md_work/*
 datasets/*
 
 .ipynb_checkpoints
