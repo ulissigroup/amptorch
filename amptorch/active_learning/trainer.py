@@ -140,30 +140,30 @@ def model_trainer(images, training_params):
             load_best_valid_loss,
         ]
 
-        net = NeuralNetRegressor(
-            module=FullNN(
-                unique_atoms,
-                [fp_length, num_layers, num_nodes],
-                device,
-                forcetraining=forcetraining,
-            ),
-            criterion=criterion,
-            criterion__force_coefficient=force_coefficient,
-            optimizer=optimizer,
-            lr=learning_rate,
-            batch_size=batch_size,
-            max_epochs=epochs,
-            iterator_train__collate_fn=collate_amp,
-            iterator_train__shuffle=shuffle,
-            iterator_valid__collate_fn=collate_amp,
-            iterator_valid__shuffle=False,
-            device=device,
-            train_split=train_split,
-            callbacks=callbacks,
-            verbose=verbose,
-        )
+    net = NeuralNetRegressor(
+        module=FullNN(
+            unique_atoms,
+            [fp_length, num_layers, num_nodes],
+            device,
+            forcetraining=forcetraining,
+        ),
+        criterion=criterion,
+        criterion__force_coefficient=force_coefficient,
+        optimizer=optimizer,
+        lr=learning_rate,
+        batch_size=batch_size,
+        max_epochs=epochs,
+        iterator_train__collate_fn=collate_amp,
+        iterator_train__shuffle=shuffle,
+        iterator_valid__collate_fn=collate_amp,
+        iterator_valid__shuffle=False,
+        device=device,
+        train_split=train_split,
+        callbacks=callbacks,
+        verbose=verbose,
+    )
 
-        calc = AMP(training_data, net, label=filename)
+    calc = AMP(training_data, net, label=filename)
     calc.train(overwrite=True)
 
     return [training_data, net, filename]

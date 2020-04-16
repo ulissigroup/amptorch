@@ -8,7 +8,7 @@ import numpy as np
 
 
 class MDsimulate:
-    def __init__(self, ensemble, dt, temp, count, initial_geometry=None):
+    def __init__(self, thermo_ensemble, dt, temp, count, initial_geometry=None):
         """
         Parameters
         ----------
@@ -17,7 +17,7 @@ class MDsimulate:
         temp: temperature (K)
         initial_slab: initial geometry to use, if None - will be generated
         """
-        self.ensemble = ensemble
+        self.ensemble = thermo_ensemble
         self.dt = dt
         self.temp = temp
         self.count = count
