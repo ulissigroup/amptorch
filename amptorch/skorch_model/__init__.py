@@ -43,7 +43,7 @@ class AMP(Calculator):
 
     implemented_properties = ["energy", "forces"]
 
-    def __init__(self, training_data, model, label, save_logs=True):
+    def __init__(self, training_data, model, label, save_logs=True, specific_atoms=False):
         Calculator.__init__(self)
 
         os.makedirs("results/", exist_ok=True)
@@ -61,6 +61,7 @@ class AMP(Calculator):
         self.descriptor = training_data.base_descriptor
         self.cores = training_data.cores
         self.training_data = training_data
+        self.specific_atoms = specific_atoms
         if self.delta:
             self.params = self.training_data.delta_data[3]
             self.delta_model = self.training_data.delta_data[4]
@@ -143,6 +144,7 @@ class AMP(Calculator):
             fprange=self.fprange,
             label=self.testlabel,
             cores=self.cores,
+            specific_atoms=self.specific_atoms
         )
         unique_atoms = dataset.unique()
         batch_size = len(dataset)
@@ -155,6 +157,8 @@ class AMP(Calculator):
         model.eval()
 
         for inputs in dataloader:
+            if self.specific_atoms is True:
+                unique_atoms = inputs[2]
             for element in unique_atoms:
                 inputs[0][element][0] = inputs[0][element][0].requires_grad_(True)
             energy, forces = model(inputs)
