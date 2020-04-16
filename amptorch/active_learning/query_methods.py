@@ -17,6 +17,7 @@ import copy
         parent_calc: Object. Parent calculator used to query energy and force
         calculations. """
 
+
 def random_query(images, sample_candidates, samples_to_retrain, parent_calc):
     """
     Randomly selects data points from a list of potential candidates to
@@ -29,6 +30,7 @@ def random_query(images, sample_candidates, samples_to_retrain, parent_calc):
     queried_images = compute_query(images_to_query, parent_calc)
     return queried_images
 
+
 def max_uncertainty(images, sample_candidates, samples_to_retrain, parent_calc):
     """Selects points with the largest uncertainty"""
     uncertainty = np.array([atoms.info["uncertainty"][0] for atoms in sample_candidates])
@@ -37,6 +39,7 @@ def max_uncertainty(images, sample_candidates, samples_to_retrain, parent_calc):
     images_to_query = [sample_candidates[idx] for idx in query_idx]
     queried_images = compute_query(images_to_query, parent_calc)
     return queried_images
+
 
 def compute_query(images_to_calculate, parent_calc):
     queried_images = []
@@ -49,6 +52,7 @@ def compute_query(images_to_calculate, parent_calc):
         )
         queried_images.append(image)
     return queried_images
+
 
 def termination_criteria(termination_args, method='iter'):
     """Criteria for AL termination

@@ -16,6 +16,7 @@ from val_test import (
     test_energy_only_skorch_val,
     test_energy_only_val,
 )
+from bootstrap_test import test_bootstrap
 
 
 class TestMethods(unittest.TestCase):
@@ -49,6 +50,9 @@ class TestMethods(unittest.TestCase):
         test_energy_only_skorch_val()
         print("Skorch validation tests passed!")
 
+    def test_active_learning(self):
+        test_bootstrap()
+        #TODO write remaining
 
 if __name__ == "__main__":
     unittest.main(warnings="ignore")

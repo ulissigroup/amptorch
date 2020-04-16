@@ -22,7 +22,7 @@ class MDsimulate:
         self.temp = temp
         self.count = count
         if initial_geometry is None:
-            raise Exception('Initial structure not provided!')
+            raise Exception("Initial structure not provided!")
         else:
             self.starting_geometry = initial_geometry
 
@@ -66,6 +66,7 @@ class MDsimulate:
         )
         return trajectory
 
+
 class Relaxation:
     def __init__(self, initial_geometry, optimizer, fmax=0.05, steps=None):
         self.initial_geometry = initial_geometry
@@ -76,9 +77,7 @@ class Relaxation:
     def run(self, calc, filename):
         structure = self.initial_geometry.copy()
         structure.set_calculator(calc)
-        dyn = self.optimizer(
-            structure, trajectory="{}.traj".format(filename)
-        )
+        dyn = self.optimizer(structure, trajectory="{}.traj".format(filename))
         dyn.run(fmax=self.fmax, steps=self.steps)
 
     def get_trajectory(self, filename, start_count, end_count, interval):

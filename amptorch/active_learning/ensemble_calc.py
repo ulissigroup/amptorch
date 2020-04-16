@@ -1,41 +1,12 @@
-import sys
-import copy
-import os
 import numpy as np
-import torch.multiprocessing as mp
-from torch.multiprocessing import Pool
-import random
 
-import torch
-from torch.nn import init
-
-import ase
-from ase.calculators.emt import EMT
-from ase.calculators.singlepoint import SinglePointCalculator as sp
-from ase.calculators.calculator import Calculator, Parameters
-from ase.md.nvtberendsen import NVTBerendsen
-from ase.build import fcc100, add_adsorbate, molecule
-from ase.constraints import FixAtoms
-from ase.optimize import BFGS, QuasiNewton
-
-import skorch
-from skorch import NeuralNetRegressor
-from skorch.dataset import CVSplit
-from skorch.callbacks import Checkpoint, EpochScoring
-from skorch.callbacks.lr_scheduler import LRScheduler
-
-from amptorch.gaussian import SNN_Gaussian
-from amptorch.skorch_model import AMP
-from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score, train_end_load_best_loss
-from amptorch.delta_models.morse import morse_potential
+from ase.calculators.calculator import Calculator
 from amptorch.utils import make_amp_descriptors_simple_nn
-from amptorch.data_preprocess import AtomsDataset, collate_amp
-from amptorch.model import FullNN, CustomMSELoss
-from amptorch.active_learning.atomistic_methods import MDsimulate, Relaxation
 
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
+
 
 class EnsembleCalc(Calculator):
     """Atomistics Machine-Learning Potential (AMP) ASE calculator
@@ -59,7 +30,7 @@ class EnsembleCalc(Calculator):
         self.training_params = training_params
 
     def calculate_stats(self, energies, forces):
-        median_idx = np.argsort(energies)[len(energies)//2]
+        median_idx = np.argsort(energies)[len(energies) // 2]
         energy_median = energies[median_idx]
         energy_var = np.var(energies)
         forces_median = forces[median_idx]
@@ -97,4 +68,4 @@ class EnsembleCalc(Calculator):
 
         self.results["energy"] = energy_pred
         self.results["forces"] = force_pred
-        atoms.info['uncertainty'] = np.array([uncertainty])
+        atoms.info["uncertainty"] = np.array([uncertainty])

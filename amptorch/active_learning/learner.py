@@ -15,11 +15,17 @@ from skorch.callbacks import Checkpoint, EpochScoring
 
 from amptorch.gaussian import SNN_Gaussian
 from amptorch.skorch_model import AMP
-from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score, train_end_load_best_loss
+from amptorch.skorch_model.utils import (
+    target_extractor,
+    energy_score,
+    forces_score,
+    train_end_load_best_loss,
+)
 from amptorch.data_preprocess import AtomsDataset, collate_amp
 from amptorch.model import FullNN, CustomMSELoss
 from amptorch.delta_models.morse import morse_potential
-from amptorch.active_learning.trainer import bootstrap_ensemble, train_calcs
+from amptorch.active_learning.trainer import train_calcs
+from amptorch.active_learning.bootstrap import bootstrap_ensemble
 from amptorch.active_learning.query_methods import termination_criteria
 
 
@@ -27,7 +33,7 @@ __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
 
 
-class AtomisticActiveLearner(object):
+class AtomisticActiveLearner:
     """Active Learner
 
     Parameters
@@ -47,11 +53,7 @@ class AtomisticActiveLearner(object):
 
     implemented_properties = ["energy", "forces"]
 
-    def __init__(self,
-                 training_data,
-                 training_params,
-                 parent_calc,
-                 ensemble=False):
+    def __init__(self, training_data, training_params, parent_calc, ensemble=False):
         self.training_data = training_data
         self.training_params = training_params
         self.parent_calc = parent_calc
@@ -59,17 +61,14 @@ class AtomisticActiveLearner(object):
         self.parent_calls = 0
 
         if ensemble:
-            assert(isinstance(ensemble, int) and ensemble > 1), 'Invalid ensemble!'
+            assert isinstance(ensemble, int) and ensemble > 1, "Invalid ensemble!"
             self.training_data, self.parent_dataset = bootstrap_ensemble(
-                    training_data, n_ensembles=ensemble)
+                training_data, n_ensembles=ensemble
+            )
         else:
             self.parent_dataset = self.training_data
 
-    def learn(
-        self,
-        generating_function,
-        query_strategy,
-    ):
+    def learn(self, atomistic_method, query_strategy):
         al_convergence = self.training_params["al_convergence"]
         samples_to_retrain = self.training_params["samples_to_retrain"]
         filename = self.training_params["filename"]
@@ -79,7 +78,7 @@ class AtomisticActiveLearner(object):
         iteration = 0
 
         while not terminate:
-            fn_label = f'{file_dir}{filename}_iter_{iteration}'
+            fn_label = f"{file_dir}{filename}_iter_{iteration}"
             # active learning random scheme
             if iteration > 0:
                 queried_images = query_strategy(
@@ -96,34 +95,42 @@ class AtomisticActiveLearner(object):
                 training_data=self.training_data,
                 training_params=self.training_params,
                 ensemble=self.ensemble,
-                ncores=3
+                ncores=3,
             )
-            # run generating function using trained ml calculator
-            generating_function.run(calc=trained_calc, filename=fn_label)
+            # run atomistic_method using trained ml calculator
+            atomistic_method.run(calc=trained_calc, filename=fn_label)
             # collect resulting trajectory files
-            sample_candidates = generating_function.get_trajectory(
+            sample_candidates = atomistic_method.get_trajectory(
                 filename=fn_label, start_count=0, end_count=-1, interval=1
             )
             iteration += 1
             # criteria to stop active learning
-            #TODO Find a better way to structure this.
+            # TODO Find a better way to structure this.
             method = al_convergence["method"]
-            if method == 'iter':
-                 termination_args = {"current_i": iteration, "total_i":
-                         al_convergence["num_iterations"]}
-            elif method == 'spot':
-                termination_args = {"images": sample_candidates, "num2verify":
-                        al_convergence["num2verify"]}
+            if method == "iter":
+                termination_args = {
+                    "current_i": iteration,
+                    "total_i": al_convergence["num_iterations"],
+                }
+            elif method == "spot":
+                termination_args = {
+                    "images": sample_candidates,
+                    "num2verify": al_convergence["num2verify"],
+                }
 
-            terminate = termination_criteria(method=method,
-                    termination_args=termination_args)
+            terminate = termination_criteria(
+                method=method, termination_args=termination_args
+            )
 
     def add_data(self, queried_images):
         if self.ensemble:
             for query in queried_images:
-                self.training_data, self.parent_dataset =bootstrap_ensemble(
-                        self.parent_dataset, self.training_data, query,
-                        n_ensembles=self.ensemble)
+                self.training_data, self.parent_dataset = bootstrap_ensemble(
+                    self.parent_dataset,
+                    self.training_data,
+                    query,
+                    n_ensembles=self.ensemble,
+                )
         else:
             self.training_data += queried_images
         return self.parent_dataset, self.training_data
