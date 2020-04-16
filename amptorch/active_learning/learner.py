@@ -73,6 +73,7 @@ class AtomisticActiveLearner:
         samples_to_retrain = self.training_params["samples_to_retrain"]
         filename = self.training_params["filename"]
         file_dir = self.training_params["file_dir"]
+        os.makedirs(file_dir, exist_ok=True)
 
         terminate = False
         iteration = 0
