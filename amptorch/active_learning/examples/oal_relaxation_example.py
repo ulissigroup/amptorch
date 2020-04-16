@@ -11,9 +11,8 @@ from ase.optimize import BFGS, QuasiNewton
 import torch
 
 from amptorch.model import CustomMSELoss
-from amptorch.active_learning.atomistic_methods  import MDsimulate, Relaxation
-from amptorch.active_learning.oal_calc  import AMPOnlineCalc
-
+from amptorch.active_learning.atomistic_methods import MDsimulate, Relaxation
+from amptorch.active_learning.oal_calc import AMPOnlineCalc
 
 
 if __name__ == "__main__":
@@ -29,9 +28,8 @@ if __name__ == "__main__":
 
     slab = fcc100("Cu", size=(3, 3, 3))
     adsorbate = molecule("C")
-    add_adsorbate(slab, adsorbate, 3, offset=(1,1))
-    constraints = FixAtoms(
-            indices=[atom.index for atom in slab if (atom.tag == 3)])
+    add_adsorbate(slab, adsorbate, 3, offset=(1, 1))
+    constraints = FixAtoms(indices=[atom.index for atom in slab if (atom.tag == 3)])
     slab.set_constraint(constraints)
     slab.center(vacuum=13.0, axis=2)
     slab.set_pbc(True)
@@ -62,45 +60,57 @@ if __name__ == "__main__":
         "test_split": 0,
         "shuffle": False,
         "filename": "oal_test",
-        "verbose": 1
+        "verbose": 1,
     }
 
     structure_optim = Relaxation(slab, BFGS, fmax=0.05, steps=50)
-    online_calc = AMPOnlineCalc(parent_dataset=images, parent_calc=EMT(),
-            n_ensembles=5, n_cores='max', training_params=training_params)
-    structure_optim.run(online_calc, filename='relax_oal')
+    online_calc = AMPOnlineCalc(
+        parent_dataset=images,
+        parent_calc=EMT(),
+        n_ensembles=5,
+        n_cores="max",
+        training_params=training_params,
+    )
+    structure_optim.run(online_calc, filename="relax_oal")
 
     # Calculate true relaxation
     true_relax = Relaxation(slab, BFGS)
-    true_relax.run(EMT(), 'true_relax')
-    parent_calc_traj = true_relax.get_trajectory('true_relax', 0, -1, 1)
+    true_relax.run(EMT(), "true_relax")
+    parent_calc_traj = true_relax.get_trajectory("true_relax", 0, -1, 1)
     n_parent_calls = online_calc.parent_calls
     final_oal_traj = ase.io.read("./relax_oal.traj", ":")
 
-    #Compute ML predicted energies
+    # Compute ML predicted energies
     ml_relaxation_energies = [image.get_potential_energy() for image in final_oal_traj]
-    #Compute actual (EMT) energies for ML predicted structures
-    emt_evaluated_ml_energies = [EMT().get_potential_energy(image) for image in final_oal_traj]
-    #Compute actual energies for EMT relaxation structures
-    emt_relaxation_energies = [image.get_potential_energy() for image in parent_calc_traj]
+    # Compute actual (EMT) energies for ML predicted structures
+    emt_evaluated_ml_energies = [
+        EMT().get_potential_energy(image) for image in final_oal_traj
+    ]
+    # Compute actual energies for EMT relaxation structures
+    emt_relaxation_energies = [
+        image.get_potential_energy() for image in parent_calc_traj
+    ]
     steps = range(len(final_oal_traj))
 
     def compute_loss(a, b):
-      return np.mean(np.sqrt(np.sum((a - b)**2, axis=1)))
+        return np.mean(np.sqrt(np.sum((a - b) ** 2, axis=1)))
 
     initial_structure = images[0].positions
-    print(f'Number of OAL steps: {len(final_oal_traj)}\nTotal # of queries (EMT calls): {n_parent_calls} \n')
+    print(
+        f"Number of OAL steps: {len(final_oal_traj)}\nTotal # of queries (EMT calls): {n_parent_calls} \n"
+    )
     print(f"Final OAL Relaxed Energy: {ml_relaxation_energies[-1]}")
-    print(f'EMT evaluation at OAL structure: {EMT().get_potential_energy(final_oal_traj[-1])}\n')
+    print(
+        f"EMT evaluation at OAL structure: {EMT().get_potential_energy(final_oal_traj[-1])}\n"
+    )
     oal_relaxed_structure = final_oal_traj[-1].positions
 
-    print(f'Total number of EMT steps: {len(emt_relaxation_energies)}')
-    print(f'Final EMT Relaxed Energy: {emt_relaxation_energies[-1]}\n')
+    print(f"Total number of EMT steps: {len(emt_relaxation_energies)}")
+    print(f"Final EMT Relaxed Energy: {emt_relaxation_energies[-1]}\n")
     emt_relaxed_structure = parent_calc_traj[-1].positions
-
 
     initial_structure_error = compute_loss(initial_structure, emt_relaxed_structure)
     relaxed_structure_error = compute_loss(oal_relaxed_structure, emt_relaxed_structure)
 
-    print(f'Initial structure error: {initial_structure_error}')
-    print(f'OAL relaxed structure error: {relaxed_structure_error}')
+    print(f"Initial structure error: {initial_structure_error}")
+    print(f"OAL relaxed structure error: {relaxed_structure_error}")
