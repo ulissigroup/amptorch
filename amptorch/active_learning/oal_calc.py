@@ -53,7 +53,6 @@ class AMPOnlineCalc(Calculator):
         energy_pred = self.ensemble_calc.get_potential_energy(atoms)
         force_pred = self.ensemble_calc.get_forces(atoms)
         uncertainty = atoms.info["uncertainty"][0]
-        print(uncertainty)
 
         if uncertainty >= self.uncertain_tol:
             new_data = atoms.copy()
