@@ -513,7 +513,7 @@ class TestDataset(Dataset):
     """
 
     def __init__(
-        self, images, unique_atoms, descriptor, Gs, fprange, label="example", cores=1, specific_atoms=False
+        self, images, unique_atoms, descriptor, Gs, fprange, label="example", cores=1, specific_atoms=False, save_test_fp=False
     ):
         self.images = images
         if type(images) is not list:
@@ -528,6 +528,7 @@ class TestDataset(Dataset):
         self.training_unique_atoms = unique_atoms
         self.hashed_images = amp_hash(self.atom_images)
         self.specific_atoms = specific_atoms
+        self.save_fp = save_test_fp
         G2_etas = Gs["G2_etas"]
         G2_rs_s = Gs["G2_rs_s"]
         G4_etas = Gs["G4_etas"]
@@ -542,7 +543,7 @@ class TestDataset(Dataset):
                 self.training_unique_atoms,
                 cores=cores,
                 label=label,
-                save=False,
+                save=self.save_fp,
                 specific_atoms=self.specific_atoms
             )
         self.unique_atoms = self.unique()

@@ -349,7 +349,10 @@ def reorganize(inp, delete_old=True, save=True):
         if os.path.exists(os.path.join("./data" + label,'simple_nn_log')):
             os.remove(os.path.join("./data" + label,'simple_nn_log'))
         os.remove(fp_dir+"/data{}.pickle".format(i + 1))
-    return x_list, x_der_dict
+    if save:
+        return None, None
+    else:
+        return x_list, x_der_dict
 
 
 class DummySimple_nn(object):
