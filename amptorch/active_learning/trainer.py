@@ -45,6 +45,8 @@ def ensemble_trainer(ensemble_datasets, training_params, ncores):
         inputs = (dataset, parallel_params)
         input_data.append(inputs)
     calc_parameters = pool.starmap(model_trainer, input_data)
+    pool.close()
+    pool.join()
     trained_calcs = [AMP(*params) for params in calc_parameters]
     ensemble_calc = EnsembleCalc(trained_calcs, training_params)
     return ensemble_calc
