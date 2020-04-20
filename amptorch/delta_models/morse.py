@@ -13,10 +13,8 @@ from functools import lru_cache
 
 class morse_potential:
     def __init__(self, images, params, cutoff, filename, combo='mean'):
-        if not os.path.exists("results"):
-            os.mkdir("results")
-        if not os.path.exists("results/logs"):
-            os.mkdir("results/logs")
+        os.makedirs("results", exist_ok=True)
+        os.makedirs("results/logs", exist_ok=True)
         self.filename = filename
         self.data = images
         self.params = params
