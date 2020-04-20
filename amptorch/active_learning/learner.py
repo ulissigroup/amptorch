@@ -38,23 +38,24 @@ class AtomisticActiveLearner:
 
     Parameters
     ----------
-     parent_calc : object
-         ASE parent calculator to be called for active learning queries.
+     training_data: list
+        List of Atoms objects representing the initial dataset.
 
-     images: list
-         Starting set of training images available.
+    training_params: dict
+        Dictionary of training parameters and model settings.
 
-     filename : str
-         Label to save model and generated trajectories.
+    parent_calc: object.
+        Calculator to be used for querying calculations.
 
-     file_dir: str
-         Directory to store results.
+    ensemble: boolean.
+        Whether to train an ensemble of models to make predictions. ensemble
+        must be True if uncertainty based query methods are to be used.
      """
 
     implemented_properties = ["energy", "forces"]
 
     def __init__(self, training_data, training_params, parent_calc, ensemble=False):
-        self.training_data = training_data
+        self.training_data = copy.deepcopy(training_data)
         self.training_params = training_params
         self.parent_calc = parent_calc
         self.ensemble = ensemble
@@ -63,7 +64,7 @@ class AtomisticActiveLearner:
         if ensemble:
             assert isinstance(ensemble, int) and ensemble > 1, "Invalid ensemble!"
             self.training_data, self.parent_dataset = bootstrap_ensemble(
-                training_data, n_ensembles=ensemble
+                self.training_data, n_ensembles=ensemble
             )
         else:
             self.parent_dataset = self.training_data
