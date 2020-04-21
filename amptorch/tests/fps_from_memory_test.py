@@ -13,6 +13,7 @@ from amptorch.gaussian import SNN_Gaussian
 from amptorch.data_preprocess import AtomsDataset, TestDataset
 from ase.calculators.emt import EMT
 
+
 def test_fps_memory():
     slab = fcc100("Cu", size=(3, 3, 3))
     ads = molecule("CO")
@@ -66,12 +67,18 @@ def test_fps_memory():
             simple_nn_prime = load(f)
         os.system("rm amp-data-fingerprint-primes.ampdb/loose/" + s_nn_hash)
 
-        test = TestDataset(images[idx], base.elements, base.base_descriptor, Gs,
-                    base.fprange, 'test2', cores=2)
+        test = TestDataset(
+            images[idx],
+            base.elements,
+            base.base_descriptor,
+            Gs,
+            base.fprange,
+            "test2",
+            cores=2,
+            save_fps=False,
+        )
         test_fp = test.fps
         test_prime = test.fp_primes
-
-
 
         key = simple_nn_prime.keys()
 
