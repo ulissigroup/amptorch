@@ -43,7 +43,7 @@ class AMP(Calculator):
 
     implemented_properties = ["energy", "forces"]
 
-    def __init__(self, training_data, model, label, save_logs=True):
+    def __init__(self, training_data, model, label, save_fps=False, save_logs=True):
         Calculator.__init__(self)
 
         os.makedirs("results/", exist_ok=True)
@@ -61,6 +61,7 @@ class AMP(Calculator):
         self.descriptor = training_data.base_descriptor
         self.cores = training_data.cores
         self.training_data = training_data
+        self.save_fps = save_fps
         if self.delta:
             self.params = self.training_data.delta_data[3]
             self.delta_model = self.training_data.delta_data[4]
@@ -143,6 +144,7 @@ class AMP(Calculator):
             fprange=self.fprange,
             label=self.testlabel,
             cores=self.cores,
+            save_fps=self.save_fps,
         )
         unique_atoms = dataset.unique()
         batch_size = len(dataset)
