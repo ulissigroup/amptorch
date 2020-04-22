@@ -15,6 +15,7 @@ from skorch.callbacks import Checkpoint, EpochScoring
 from amptorch.skorch_model.utils import forces_score, target_extractor, energy_score
 import ase
 
+
 def test_skorch_delta():
     from amptorch.skorch_model import AMP
 
@@ -60,16 +61,9 @@ def test_skorch_delta():
     Gs["G4_gammas"] = [+1.0, -1]
     Gs["cutoff"] = 6.5
 
-    params = {
-            "C": {"re": 0.972, "D": 6.379, "sig": 0.477},
-            "O": {"re": 1.09, "D": 8.575, "sig": 0.603},
-            "Cu": {"re": 2.168, "D": 3.8386, "sig": 1.696},
-        }
-
-    morse_model = morse_potential(images, params, Gs["cutoff"], label)
-    morse_energies, morse_forces, num_atoms = morse_model.morse_pred(
-        images, params)
-    morse_data = [morse_energies, morse_forces, num_atoms, params, morse_model]
+    morse_model = morse_potential(images, Gs["cutoff"], label)
+    morse_energies, morse_forces, num_atoms = morse_model.morse_pred(images)
+    morse_data = [morse_energies, morse_forces, num_atoms, morse_model]
 
     forcetraining = True
     training_data = AtomsDataset(
