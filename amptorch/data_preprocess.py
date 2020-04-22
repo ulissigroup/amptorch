@@ -472,7 +472,7 @@ def collate_amp(training_data):
             atom_element = fingerprint[0]
             atom_fingerprint = fingerprint[1]
             element_specific_fingerprints[atom_element][0].append(
-                torch.tensor(atom_fingerprint)
+                torch.tensor(atom_fingerprint, dtype=torch.get_default_dtype())
             )
             element_specific_fingerprints[atom_element][1].append(fp_index)
     for element in unique_atoms:
@@ -713,7 +713,7 @@ class TestDataset(Dataset):
                 atom_element = fingerprint[0]
                 atom_fingerprint = fingerprint[1]
                 element_specific_fingerprints[atom_element][0].append(
-                    torch.tensor(atom_fingerprint)
+                    torch.tensor(atom_fingerprint, dtype=torch.get_default_dtype())
                 )
                 element_specific_fingerprints[atom_element][1].append(fp_index)
         for element in self.unique_atoms:
