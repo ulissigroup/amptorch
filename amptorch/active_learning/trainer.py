@@ -55,7 +55,6 @@ def ensemble_trainer(ensemble_datasets, training_params, ncores):
 def model_trainer(images, training_params):
     Gs = training_params["Gs"]
     morse = training_params["morse"]
-    morse_params = training_params["morse_params"]
     forcetraining = training_params["forcetraining"]
     cores = training_params["cores"]
     optimizer = training_params["optimizer"]
@@ -77,10 +76,9 @@ def model_trainer(images, training_params):
     morse_data = None
     device = "cpu"
     if morse:
-        params = morse_params
-        morse_model = morse_potential(images, params, cutoff, filename, combo="mean")
-        morse_energies, morse_forces, num_atoms = morse_model.morse_pred(images, params)
-        morse_data = [morse_energies, morse_forces, num_atoms, params, morse_model]
+        morse_model = morse_potential(images, cutoff, filename, combo="mean")
+        morse_energies, morse_forces, num_atoms = morse_model.morse_pred(images)
+        morse_data = [morse_energies, morse_forces, num_atoms, morse_model]
 
     forcetraining = forcetraining
     training_data = AtomsDataset(

@@ -46,18 +46,12 @@ if __name__ == "__main__":
     Gs["cutoff"] = 5.876798323827276  # EMT asap_cutoff: False
 
     # Define morse parameters if Delta-ML model, o/w morse = False
-    morse = True
-    morse_params = {
-        "C": {"re": 0.972, "D": 6.379, "sig": 0.477},
-        "Cu": {"re": 2.168, "D": 3.8386, "sig": 1.696},
-    }
 
     training_params = {
         "al_convergence": {"method": "iter", "num_iterations": 3},
         "samples_to_retrain": 5,
         "Gs": Gs,
         "morse": True,
-        "morse_params": morse_params,
         "forcetraining": True,
         "cores": 10,
         "optimizer": torch.optim.LBFGS,
