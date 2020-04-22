@@ -12,14 +12,8 @@ addons:
 install:
   - pip install python-coveralls
   - pip install coverage
-  - pip install 'scikit-learn==0.21.3'
-  - pip install 'skorch==0.6.0'
   - pip install git+https://github.com/mshuaibii/SIMPLE-NN
   - pip install git+https://bitbucket.org/andrewpeterson/amp.git
-  - pip install spglib
-  - pip install torch
-  - pip install ase
-  - pip install scipy
   - pip install .
 script:
   - coverage run ./amptorch/tests/test_script.py 
