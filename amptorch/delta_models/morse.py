@@ -3,21 +3,28 @@ import os
 import time
 from itertools import product
 import numpy as np
+import amptorch
 from scipy.optimize import minimize
 from ase.neighborlist import NeighborList, NewPrimitiveNeighborList
 from amptorch.gaussian import NeighborlistCalculator, Data
 from amptorch.utils import Logger, hash_images, get_hash
 import matplotlib.pyplot as plt
+import pandas as pd
 from functools import lru_cache
 
 
 class morse_potential:
-    def __init__(self, images, params, cutoff, filename, combo='mean'):
+    def __init__(self, images, cutoff, filename, combo="mean", params=None):
         os.makedirs("results", exist_ok=True)
         os.makedirs("results/logs", exist_ok=True)
         self.filename = filename
         self.data = images
         self.params = params
+        if self.params is None:
+            unique_elements = np.unique(
+                np.array([atom.symbol for atoms in images for atom in atoms])
+            )
+            self.params = self.get_params(unique_elements)
         self.combo = combo
         self.cutoff = cutoff
         self.hashed_images = hash_images(images)
@@ -32,13 +39,15 @@ class morse_potential:
         image_neighbors = neighborlist[image_hash]
         return image_neighbors
 
-    def image_pred(self, image, params_dict):
+    def image_pred(self, image):
+        params_dict = self.params
         chemical_symbols = np.array(image.get_chemical_symbols())
         params = []
         for element in chemical_symbols:
             re = params_dict[element]["re"]
-            D = params_dict[element]["D"]
-            sig = params_dict[element]["sig"]
+            D = params_dict[element]["De"]
+            # sig calculated from pubs.acs.org/doi/pdf/10.1021/acs.jpca.7b11252 
+            sig = re - np.log(2)/params_dict[element]["a"]
             params.append(np.array([[re, D, sig]]))
         params = np.vstack(np.array(params))
         natoms = len(image)
@@ -62,11 +71,11 @@ class morse_potential:
             re_n = params[neighbors][:, 0]
             D_n = params[neighbors][:, 1]
             sig_n = params[neighbors][:, 2]
-            if self.combo == 'mean':
-                D = np.sqrt(D_1*D_n)
+            if self.combo == "mean":
+                D = np.sqrt(D_1 * D_n)
                 sig = (sig_1 + sig_n) / 2
                 re = (re_1 + re_n) / 2
-            elif self.combo == 'yang':
+            elif self.combo == "yang":
                 D = (2 * D_1 * D_n) / (D_1 + D_n)
                 sig = (sig_1 * sig_n) * (sig_1 + sig_n) / (sig_1 ** 2 + sig_n ** 2)
                 re = (re_1 * re_n) * (re_1 + re_n) / (re_1 ** 2 + re_n ** 2)
@@ -85,30 +94,46 @@ class morse_potential:
                 * (
                     np.exp(-2 * C * (r_star - re_star))
                     - np.exp(-C * (r_star - re_star))
-                    ))[:, np.newaxis] * d
+                )
+            )[:, np.newaxis] * d
             forces[a1] -= f.sum(axis=0)
             for a2, f2 in zip(neighbors, f):
                 forces[a2] += f2
         return energy, forces, natoms
 
-    def morse_pred(self, data, params):
+    def morse_pred(self, data):
         predicted_energies = []
         predicted_forces = []
         num_atoms = []
         for image in data:
-            energy, forces, natoms = self.image_pred(image, params)
+            energy, forces, natoms = self.image_pred(image)
             predicted_energies.append(energy)
             predicted_forces.append(forces)
             num_atoms.append(natoms)
         return predicted_energies, predicted_forces, num_atoms
 
+    def get_params(self, elements):
+        params = {}
+        for elem in elements:
+            home_dir = os.path.dirname(amptorch.delta_models.__file__)
+            try:
+                element_params = (
+                    pd.read_csv(f"{home_dir}/morse_params/{elem}{elem}.csv")
+                    .iloc[0]
+                    .to_dict()
+                )
+            except Exception:
+                print(
+                    """Morse parameters not available for {elem}, requires
+                manual definition"""
+                )
+            params[elem] = element_params
+        return params
+
     def logresults(self, log, params):
         log("%s" % time.asctime())
         log("-" * 50)
-        log(
-            "Model parameters: %s"
-            % (params)
-        )
+        log("Model parameters: %s" % (params))
         log("Combination rule: {}\n".format(self.combo))
 
     def parity(self, predicted_energies, predicted_forces):
