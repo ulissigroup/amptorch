@@ -14,17 +14,16 @@ from functools import lru_cache
 
 
 class morse_potential:
-    def __init__(self, images, cutoff, filename, combo="mean", params=None):
+    def __init__(self, images, cutoff, filename, combo="mean"):
+        #TODO Implement optional morse params input
         os.makedirs("results", exist_ok=True)
         os.makedirs("results/logs", exist_ok=True)
         self.filename = filename
         self.data = images
-        self.params = params
-        if self.params is None:
-            unique_elements = np.unique(
-                np.array([atom.symbol for atoms in images for atom in atoms])
-            )
-            self.params = self.get_params(unique_elements)
+        unique_elements = np.unique(
+            np.array([atom.symbol for atoms in images for atom in atoms])
+        )
+        self.params = self.get_params(unique_elements)
         self.combo = combo
         self.cutoff = cutoff
         self.hashed_images = hash_images(images)

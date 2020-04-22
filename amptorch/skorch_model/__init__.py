@@ -63,8 +63,7 @@ class AMP(Calculator):
         self.training_data = training_data
         self.save_fps = save_fps
         if self.delta:
-            self.params = self.training_data.delta_data[3]
-            self.delta_model = self.training_data.delta_data[4]
+            self.delta_model = self.training_data.delta_data[3]
 
         # TODO make utility logging function
         self.log = Logger("results/logs/{}.txt".format(label))
@@ -167,9 +166,7 @@ class AMP(Calculator):
         image_hash = hash_images([atoms])
         if self.delta:
             self.delta_model.neighborlist.calculate_items(image_hash)
-            delta_energy, delta_forces, _ = self.delta_model.image_pred(
-                atoms, self.params
-            )
+            delta_energy, delta_forces, _ = self.delta_model.image_pred(atoms)
             delta_energy = np.squeeze(delta_energy)
             energy += delta_energy + num_atoms*(self.target_ref_per_atom - self.delta_ref_per_atom)
             forces += delta_forces
