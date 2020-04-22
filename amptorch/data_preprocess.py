@@ -13,7 +13,7 @@ from torch.utils.data import Dataset, SubsetRandomSampler
 import scipy.sparse as sparse
 from collections import OrderedDict
 import ase
-from amptorch.gaussian import make_symmetry_functions
+from amptorch.gaussian import make_symmetry_functions, SNN_Gaussian
 from amptorch.utils import (
     make_amp_descriptors_simple_nn,
     calculate_fingerprints_range,
@@ -98,7 +98,7 @@ class AtomsDataset(Dataset):
             if extension != (".traj" or ".db"):
                 self.atom_images = ase.io.read(images, ":")
         self.elements = self.unique()
-        #TODO Print log - control verbose
+        # TODO Print log - control verbose
         print("Calculating fingerprints...")
         G2_etas = Gs["G2_etas"]
         G2_rs_s = Gs["G2_rs_s"]
@@ -107,7 +107,7 @@ class AtomsDataset(Dataset):
         G4_gammas = Gs["G4_gammas"]
         cutoff = Gs["cutoff"]
         # create simple_nn fingerprints
-        if str(descriptor)[8:16] == "amptorch":
+        if descriptor == SNN_Gaussian:
             self.hashed_images = hash_images(self.atom_images, Gs=Gs)
             make_amp_descriptors_simple_nn(
                 self.atom_images, Gs, self.elements, cores=cores, label=label
@@ -175,18 +175,21 @@ class AtomsDataset(Dataset):
                 image_fingerprint[i] = (atom, _afp)
                 atom_order.append(atom)
             fingerprint_dataset.append(image_fingerprint)
-            image_potential_energy = self.hashed_images[hash_name].get_potential_energy(
-                apply_constraint=False
-            )/n_atoms
-            energy_dataset = np.append(energy_dataset,
-                    image_potential_energy)
-            if self.forcetraining:
-                image_forces = self.hashed_images[hash_name].get_forces(
+            image_potential_energy = (
+                self.hashed_images[hash_name].get_potential_energy(
                     apply_constraint=False
-                )/n_atoms
+                )
+                / n_atoms
+            )
+            energy_dataset = np.append(energy_dataset, image_potential_energy)
+            if self.forcetraining:
+                image_forces = (
+                    self.hashed_images[hash_name].get_forces(apply_constraint=False)
+                    / n_atoms
+                )
                 # subtract off delta force contributions
                 if self.delta:
-                    delta_forces = self.delta_forces[index]/n_atoms
+                    delta_forces = self.delta_forces[index] / n_atoms
                     image_forces -= delta_forces
                 if self.store_primes and os.path.isfile("./stored-primes/" + hash_name):
                     pass
@@ -215,7 +218,7 @@ class AtomsDataset(Dataset):
                         fprange_dif = fprange_atom[:, 1] - fprange_atom[:, 0]
                         fprange_dif[fprange_dif < 10.0 ** (-8.0)] = 2
                         fprime = np.array(image_primes[key])
-                        fprime = 2*fprime/fprange_dif
+                        fprime = 2 * fprime / fprange_dif
                         _image_primes[key] = fprime
 
                     image_prime_values = list(_image_primes.values())
@@ -323,6 +326,7 @@ class AtomsDataset(Dataset):
 def make_sparse(primes):
     primes = primes.to_sparse()
     return primes
+
 
 def factorize_data(training_data):
     """
@@ -442,6 +446,7 @@ def factorize_data(training_data):
         rearange_set,
     )
 
+
 def collate_amp(training_data):
     """
     Reshuffling scheme that reads in raw data and organizes it into element
@@ -467,7 +472,7 @@ def collate_amp(training_data):
             atom_element = fingerprint[0]
             atom_fingerprint = fingerprint[1]
             element_specific_fingerprints[atom_element][0].append(
-                torch.tensor(atom_fingerprint)
+                torch.tensor(atom_fingerprint, dtype=torch.get_default_dtype())
             )
             element_specific_fingerprints[atom_element][1].append(fp_index)
     for element in unique_atoms:
@@ -519,13 +524,7 @@ class TestDataset(Dataset):
         self.fprange = fprange
         self.training_unique_atoms = unique_atoms
         self.hashed_images = amp_hash(self.atom_images)
-        G2_etas = Gs["G2_etas"]
-        G2_rs_s = Gs["G2_rs_s"]
-        G4_etas = Gs["G4_etas"]
-        G4_zetas = Gs["G4_zetas"]
-        G4_gammas = Gs["G4_gammas"]
-        cutoff = Gs["cutoff"]
-        if str(descriptor)[8:16] == "amptorch":
+        if descriptor == SNN_Gaussian:
             self.hashed_images = hash_images(self.atom_images, Gs)
             self.fps, self.fp_primes = make_amp_descriptors_simple_nn(
                 self.atom_images,
@@ -541,8 +540,6 @@ class TestDataset(Dataset):
         return len(self.hashed_images)
 
     def __getitem__(self, index):
-        # hash_name = list(self.hashed_images.keys())[index]
-        # image_fingerprint = self.descriptor.fingerprints[hash_name]
         image_fingerprint = self.fps
         fprange = self.fprange
         atom_order = []
@@ -676,7 +673,7 @@ class TestDataset(Dataset):
                 atom_element = fingerprint[0]
                 atom_fingerprint = fingerprint[1]
                 element_specific_fingerprints[atom_element][0].append(
-                    torch.tensor(atom_fingerprint)
+                    torch.tensor(atom_fingerprint, dtype=torch.get_default_dtype())
                 )
                 element_specific_fingerprints[atom_element][1].append(fp_index)
         for element in self.unique_atoms:
