@@ -6,8 +6,10 @@ import numpy as np
 
 import torch
 
+import ase.db
 from ase.calculators.calculator import Calculator
 from ase.calculators.singlepoint import SinglePointCalculator as sp
+
 
 import skorch
 from skorch import NeuralNetRegressor
@@ -25,6 +27,7 @@ from amptorch.skorch_model.utils import (
 from amptorch.data_preprocess import AtomsDataset, collate_amp
 from amptorch.model import FullNN, CustomMSELoss
 from amptorch.delta_models.morse import morse_potential
+from amptorch.active_learning.al_utils import write_to_db
 from amptorch.active_learning.trainer import train_calcs
 from amptorch.active_learning.bootstrap import bootstrap_ensemble
 from amptorch.active_learning.query_methods import termination_criteria
@@ -75,6 +78,7 @@ class AtomisticActiveLearner:
         samples_to_retrain = self.training_params["samples_to_retrain"]
         filename = self.training_params["filename"]
         file_dir = self.training_params["file_dir"]
+        queries_db = ase.db.connect("{}.db".format(filename))
         os.makedirs(file_dir, exist_ok=True)
 
         terminate = False
@@ -90,6 +94,7 @@ class AtomisticActiveLearner:
                     samples_to_retrain,
                     parent_calc=self.parent_calc,
                 )
+                write_to_db(queries_db, queried_images)
                 self.parent_dataset, self.training_data = self.add_data(queried_images)
                 self.parent_calls += len(queried_images)
 

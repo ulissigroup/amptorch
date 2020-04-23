@@ -39,3 +39,8 @@ def construct_sp(image):
         sp(atoms=image, energy=sample_energy, forces=sample_forces)
     )
     return image
+
+
+def write_to_db(database, queried_images):
+    for image in queried_images:
+        database.write(image)
