@@ -64,6 +64,7 @@ class AtomisticActiveLearner:
         self.parent_calc = parent_calc
         self.ensemble = ensemble
         self.parent_calls = 0
+        self.iteration = 0
 
         if ensemble:
             assert isinstance(ensemble, int) and ensemble > 1, "Invalid ensemble!"
@@ -82,12 +83,11 @@ class AtomisticActiveLearner:
         os.makedirs(file_dir, exist_ok=True)
 
         terminate = False
-        iteration = 0
 
         while not terminate:
-            fn_label = f"{file_dir}{filename}_iter_{iteration}"
+            fn_label = f"{file_dir}{filename}_iter_{self.iteration}"
             # active learning random scheme
-            if iteration > 0:
+            if self.iteration > 0:
                 queried_images = query_strategy(
                     self.parent_dataset,
                     sample_candidates,
@@ -111,13 +111,13 @@ class AtomisticActiveLearner:
             sample_candidates = atomistic_method.get_trajectory(
                 filename=fn_label, start_count=0, end_count=-1, interval=1
             )
-            iteration += 1
+            self.iteration += 1
             # criteria to stop active learning
             # TODO Find a better way to structure this.
             method = al_convergence["method"]
             if method == "iter":
                 termination_args = {
-                    "current_i": iteration,
+                    "current_i": self.iteration,
                     "total_i": al_convergence["num_iterations"],
                 }
             elif method == "final":
