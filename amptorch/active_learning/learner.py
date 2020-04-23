@@ -120,11 +120,14 @@ class AtomisticActiveLearner:
                     "current_i": iteration,
                     "total_i": al_convergence["num_iterations"],
                 }
-            elif method == "spot":
+            elif method == "final":
                 termination_args = {
                     "images": sample_candidates,
-                    "num2verify": al_convergence["num2verify"],
+                    "calc": self.parent_calc,
+                    "energy_tol": al_convergence["energy_tol"],
+                    "force_tol": al_convergence["force_tol"],
                 }
+                self.parent_calls += 1
 
             terminate = termination_criteria(
                 method=method, termination_args=termination_args
