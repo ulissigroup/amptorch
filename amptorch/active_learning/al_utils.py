@@ -67,6 +67,7 @@ def progressive_plot(filename, true_relaxed, samples_per_iter, num_iterations, s
         distance_rmse.append(loss)
     plt.plot(np.array(data_size)+1, distance_rmse)
     plt.xlabel("Training Images")
+    plt.xticks(np.array(data_size)+1)
     plt.ylabel("Distance RMSE")
     plt.title("AL Relaxation Learning Curve")
     plt.savefig(save_to+".png", dpi=300)
