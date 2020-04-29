@@ -19,6 +19,7 @@ from amptorch.model import CustomMSELoss
 import multiprocessing as mp
 
 if __name__ == "__main__":
+    random.seed(1)
     mp.set_start_method("spawn")
     # Define initial set of images, can be as few as 1. If 1, make sure to
     slab = fcc100("Cu", size=(3, 3, 3))
@@ -45,8 +46,6 @@ if __name__ == "__main__":
     Gs["G4_gammas"] = [+1.0, -1]
     Gs["cutoff"] = 5.876798323827276  # EMT asap_cutoff: False
 
-    # Define morse parameters if Delta-ML model, o/w morse = False
-
     training_params = {
         "al_convergence": {"method": "iter", "num_iterations": 3},
         "samples_to_retrain": 5,
@@ -60,7 +59,7 @@ if __name__ == "__main__":
         "num_layers": 3,
         "num_nodes": 20,
         "force_coefficient": 0.04,
-        "learning_rate": 1e-1,
+        "learning_rate": 1e-2,
         "epochs": 100,
         "test_split": 0,
         "shuffle": False,
@@ -84,10 +83,12 @@ if __name__ == "__main__":
     )
 
     # Calculate true relaxation
+    al_iterations = learner.iteration - 1
+    file_path = training_params["file_dir"]+training_params["filename"]
     true_relax = Relaxation(slab, BFGS)
     true_relax.run(EMT(), "true_relax")
     parent_calc_traj = true_relax.get_trajectory("true_relax", 0, -1, 1)
-    final_ml_traj = ase.io.read("./relax_example_iter_3.traj", ":")
+    final_ml_traj = ase.io.read("{}_iter_{}.traj".format(file_path, al_iterations), ":")
 
     # Compute ML predicted energies
     ml_relaxation_energies = [image.get_potential_energy() for image in final_ml_traj]
@@ -100,7 +101,6 @@ if __name__ == "__main__":
         image.get_potential_energy() for image in parent_calc_traj
     ]
     steps = range(len(final_ml_traj))
-    al_iterations = training_params["al_convergence"]["num_iterations"]
     n_samples_iteration = training_params["samples_to_retrain"]
     parent_calls = learner.parent_calls
 
