@@ -6,7 +6,12 @@ import torch
 import torch.nn as nn
 from torch.nn import Tanh
 from torch.autograd import grad
-from torch_sparse import spmm
+try:
+    from torch_sparse import spmm
+    spmm_exists = True
+except:
+    spmm_exists = False
+    pass
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
@@ -130,12 +135,15 @@ class BPNN(nn.Module):
                 sparse.
                 Multiplies a 3QxPQ tensor with a PQx1 tensor to return a 3Qx1 tensor
                 containing the x,y,z directional forces for each atom"""
-                dE_dFP = dE_dFP.t()
-                fprimes = fprimes.t()
-                dim1, dim2 = fprimes.shape
-                fprime_t_idx = fprimes._indices()
-                fprime_t_val = fprimes._values()
-                force_pred = -1 * spmm(fprime_t_idx, fprime_t_val, dim1, dim2, dE_dFP)
+                if spmm_exists:
+                    dE_dFP = dE_dFP.t()
+                    fprimes = fprimes.t()
+                    dim1, dim2 = fprimes.shape
+                    fprime_t_idx = fprimes._indices()
+                    fprime_t_val = fprimes._values()
+                    force_pred = -1 * spmm(fprime_t_idx, fprime_t_val, dim1, dim2, dE_dFP)
+                else:
+                    force_pred = -1 * torch.sparse.mm(fprimes.t(), dE_dFP.t())
                 """Reshapes the force tensor into a Qx3 matrix containing all the force
                 predictions in the same order and shape as the target forces calculated
                 from AMP."""
