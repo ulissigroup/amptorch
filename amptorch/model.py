@@ -1,16 +1,12 @@
-"""NN_model.py: Constructs a model consisting of element specific Neural
+"""model.py: Constructs a model consisting of element specific Neural
 Networks as understood from Behler and Parrinello's works. A model instance is
 constructed based off the unique number of atoms in the dataset."""
 
-import sys
-from collections import defaultdict
 import torch
 import torch.nn as nn
-from torch.nn import Tanh, Softplus, LeakyReLU
-from torch.nn import init
-from torch.nn.init import xavier_uniform_, kaiming_uniform_
+from torch.nn import Tanh
 from torch.autograd import grad
-from amptorch.utils import Logger
+from torch_sparse import spmm
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
@@ -56,7 +52,7 @@ class MLP(nn.Module):
         return self.model_net(inputs)
 
 
-class FullNN(nn.Module):
+class BPNN(nn.Module):
     """Combines element specific NNs into a model to predict energy of a given
     structure
 
@@ -66,7 +62,7 @@ class FullNN(nn.Module):
         self, unique_atoms, architecture, device, forcetraining,
         activation=Tanh, require_grd=True
     ):
-        super(FullNN, self).__init__()
+        super(BPNN, self).__init__()
         self.device = device
         self.req_grad = require_grd
         self.forcetraining = forcetraining
@@ -134,7 +130,12 @@ class FullNN(nn.Module):
                 sparse.
                 Multiplies a 3QxPQ tensor with a PQx1 tensor to return a 3Qx1 tensor
                 containing the x,y,z directional forces for each atom"""
-                force_pred = -1 * torch.sparse.mm(fprimes.t(), dE_dFP.t())
+                dE_dFP = dE_dFP.t()
+                fprimes = fprimes.t()
+                dim1, dim2 = fprimes.shape
+                fprime_t_idx = fprimes._indices()
+                fprime_t_val = fprimes._values()
+                force_pred = -1 * spmm(fprime_t_idx, fprime_t_val, dim1, dim2, dE_dFP)
                 """Reshapes the force tensor into a Qx3 matrix containing all the force
                 predictions in the same order and shape as the target forces calculated
                 from AMP."""
