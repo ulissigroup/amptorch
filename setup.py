@@ -12,15 +12,13 @@ setup(
     url="https://github.com/ulissigroup/amptorch",
     packages=find_packages(),
     include_package_data=True,
-    setup_requires=["torch"],
     install_requires=[
+        "torch",
         "spglib",
         "scikit-learn==0.21.3",
         "skorch==0.6.0",
         "ase",
         "scipy",
         "pandas",
-        "torch-scatter",
-        "torch-sparse"
     ],
 )
