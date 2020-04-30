@@ -25,7 +25,7 @@ from amptorch.skorch_model.utils import (
     train_end_load_best_loss,
 )
 from amptorch.data_preprocess import AtomsDataset, collate_amp
-from amptorch.model import FullNN, CustomMSELoss
+from amptorch.model import BPNN, CustomMSELoss
 from amptorch.delta_models.morse import morse_potential
 from amptorch.active_learning.al_utils import write_to_db
 from amptorch.active_learning.trainer import train_calcs
