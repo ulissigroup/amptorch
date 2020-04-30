@@ -20,6 +20,15 @@ The simplest way to install Amptorch is with pip; you can follow the instruction
 - ```pip install git+https://github.com/mshuaibii/SIMPLE-NN.git```
 - ```pip install amp-atomistics```
 
+For improving sparse algebra operations:
+```
+pip install torch-scatter==latest+${CUDA} torch-sparse==latest+${CUDA} -f https://pytorch-geometric.com/whl/torch-1.5.0.htm
+```
+Where ```${CUDA}``` is replaced with the CUDA version of your PyTorch installation (`cpu`, `cu92`, `cu101`, or `cu102`). If installed through the above instructions use ```cu102```. Otherwise, check the version with:
+```
+python -c "import torch; print(torch.version.cuda)"
+```
+
 For more customized installations, for example if you want to be able to easily play with the code of Amptorch without reinstalling, you can do the following:
 
 - Install and make sure you can import (into python3) the following dependencies (names for pip installations are in square brackets):
