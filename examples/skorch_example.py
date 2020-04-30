@@ -7,7 +7,7 @@ from skorch.callbacks.lr_scheduler import LRScheduler
 import skorch.callbacks.base
 from amp.descriptor.gaussian import Gaussian
 from amptorch.gaussian import SNN_Gaussian
-from amptorch.model import FullNN, CustomMSELoss
+from amptorch.model import BPNN, CustomMSELoss
 from amptorch.data_preprocess import AtomsDataset, factorize_data, collate_amp, TestDataset
 from amptorch.skorch_model import AMP
 from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score, train_end_load_best_loss
@@ -62,7 +62,7 @@ fp_length = training_data.fp_length
 device = "cpu"
 
 net = NeuralNetRegressor(
-    module=FullNN(unique_atoms, [fp_length, 3, 10], device, forcetraining=forcetraining),
+    module=BPNN(unique_atoms, [fp_length, 3, 10], device, forcetraining=forcetraining),
     criterion=CustomMSELoss,
     criterion__force_coefficient=0.3,
     optimizer=torch.optim.LBFGS,

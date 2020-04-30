@@ -5,7 +5,7 @@ from ase.calculators.emt import EMT
 from amptorch.gaussian import SNN_Gaussian
 from amptorch.data_preprocess import AtomsDataset, collate_amp
 from amptorch.core import AMPTorch
-from amptorch.model import CustomMSELoss, FullNN
+from amptorch.model import CustomMSELoss, BPNN
 from amptorch.delta_models.morse import morse_potential
 import numpy as np
 import torch
@@ -81,7 +81,7 @@ def test_skorch_delta():
     device = "cpu"
 
     net = NeuralNetRegressor(
-        module=FullNN(
+        module=BPNN(
             unique_atoms, [fp_length, 2, 2], device, forcetraining=forcetraining
         ),
         criterion=CustomMSELoss,

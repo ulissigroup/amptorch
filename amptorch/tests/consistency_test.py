@@ -25,7 +25,7 @@ from amptorch.data_preprocess import (
     collate_amp,
     TestDataset,
 )
-from amptorch.model import FullNN, CustomMSELoss, MLP
+from amptorch.model import BPNN, CustomMSELoss, MLP
 from amptorch.skorch_model import AMP
 from amptorch.core import AMPTorch
 from amp.utilities import hash_images as amp_hash
@@ -177,7 +177,7 @@ def test_calcs():
     fp_length = dataset.fp_length
     batch_size = len(dataset)
     dataloader = DataLoader(dataset, batch_size, collate_fn=collate_amp, shuffle=False)
-    model = FullNN(elements, [fp_length, 2, 2], device, forcetraining=True)
+    model = BPNN(elements, [fp_length, 2, 2], device, forcetraining=True)
     model.state_dict()["elementwise_models.O.model_net.0.weight"].copy_(
         torch_O_weights_1
     )

@@ -12,7 +12,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from amp.descriptor.gaussian import Gaussian
 from amptorch.utils import Logger
-from .model import FullNN, CustomMSELoss
+from .model import BPNN, CustomMSELoss
 from .data_preprocess import AtomsDataset, collate_amp
 from .trainer import Trainer
 
@@ -208,7 +208,7 @@ class AMPTorch:
         self.log("Resampled Points = %s" % self.resample)
         architecture = copy.copy(self.structure)
         architecture.insert(0, fp_length)
-        model = FullNN(
+        model = BPNN(
             self.unique_atoms, architecture, self.device, self.forcetraining
         ).to(self.device)
         if self.fine_tune is not None:

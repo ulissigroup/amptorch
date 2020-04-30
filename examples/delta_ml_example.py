@@ -8,7 +8,7 @@ from skorch.callbacks import Checkpoint, EpochScoring
 from skorch.callbacks.lr_scheduler import LRScheduler
 
 from amptorch.gaussian import SNN_Gaussian
-from amptorch.model import FullNN, CustomMSELoss
+from amptorch.model import BPNN, CustomMSELoss
 from amptorch.data_preprocess import (
     AtomsDataset,
     collate_amp,
@@ -78,7 +78,7 @@ fp_length = training_data.fp_length
 device = "cpu"
 
 net = NeuralNetRegressor(
-    module=FullNN(
+    module=BPNN(
         unique_atoms, [fp_length, 3, 10], device, forcetraining=forcetraining
     ),
     criterion=CustomMSELoss,
