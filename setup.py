@@ -20,5 +20,7 @@ setup(
         "ase",
         "scipy",
         "pandas",
+        "torch-scatter",
+        "torch-sparse"
     ],
 )
