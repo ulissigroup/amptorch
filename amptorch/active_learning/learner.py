@@ -6,8 +6,10 @@ import numpy as np
 
 import torch
 
+import ase.db
 from ase.calculators.calculator import Calculator
 from ase.calculators.singlepoint import SinglePointCalculator as sp
+
 
 import skorch
 from skorch import NeuralNetRegressor
@@ -25,6 +27,7 @@ from amptorch.skorch_model.utils import (
 from amptorch.data_preprocess import AtomsDataset, collate_amp
 from amptorch.model import FullNN, CustomMSELoss
 from amptorch.delta_models.morse import morse_potential
+from amptorch.active_learning.al_utils import write_to_db
 from amptorch.active_learning.trainer import train_calcs
 from amptorch.active_learning.bootstrap import bootstrap_ensemble
 from amptorch.active_learning.query_methods import termination_criteria
@@ -61,6 +64,7 @@ class AtomisticActiveLearner:
         self.parent_calc = parent_calc
         self.ensemble = ensemble
         self.parent_calls = 0
+        self.iteration = 0
 
         if ensemble:
             assert isinstance(ensemble, int) and ensemble > 1, "Invalid ensemble!"
@@ -75,21 +79,22 @@ class AtomisticActiveLearner:
         samples_to_retrain = self.training_params["samples_to_retrain"]
         filename = self.training_params["filename"]
         file_dir = self.training_params["file_dir"]
+        queries_db = ase.db.connect("{}.db".format(filename))
         os.makedirs(file_dir, exist_ok=True)
 
         terminate = False
-        iteration = 0
 
         while not terminate:
-            fn_label = f"{file_dir}{filename}_iter_{iteration}"
+            fn_label = f"{file_dir}{filename}_iter_{self.iteration}"
             # active learning random scheme
-            if iteration > 0:
+            if self.iteration > 0:
                 queried_images = query_strategy(
                     self.parent_dataset,
                     sample_candidates,
                     samples_to_retrain,
                     parent_calc=self.parent_calc,
                 )
+                write_to_db(queries_db, queried_images)
                 self.parent_dataset, self.training_data = self.add_data(queried_images)
                 self.parent_calls += len(queried_images)
 
@@ -106,20 +111,23 @@ class AtomisticActiveLearner:
             sample_candidates = atomistic_method.get_trajectory(
                 filename=fn_label, start_count=0, end_count=-1, interval=1
             )
-            iteration += 1
+            self.iteration += 1
             # criteria to stop active learning
             # TODO Find a better way to structure this.
             method = al_convergence["method"]
             if method == "iter":
                 termination_args = {
-                    "current_i": iteration,
+                    "current_i": self.iteration,
                     "total_i": al_convergence["num_iterations"],
                 }
-            elif method == "spot":
+            elif method == "final":
                 termination_args = {
                     "images": sample_candidates,
-                    "num2verify": al_convergence["num2verify"],
+                    "calc": self.parent_calc,
+                    "energy_tol": al_convergence["energy_tol"],
+                    "force_tol": al_convergence["force_tol"],
                 }
+                self.parent_calls += 1
 
             terminate = termination_criteria(
                 method=method, termination_args=termination_args
