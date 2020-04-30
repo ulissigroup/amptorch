@@ -37,16 +37,11 @@ if __name__ == "__main__":
     slab.set_calculator(EMT())
 
     images = [slab]
-    morse_params = {
-        "C": {"re": 0.972, "D": 6.379, "sig": 0.477},
-        "Cu": {"re": 2.168, "D": 3.8386, "sig": 1.696},
-    }
 
     training_params = {
         "uncertain_tol": 0.1,
         "Gs": Gs,
         "morse": True,
-        "morse_params": morse_params,
         "forcetraining": True,
         "cores": 10,
         "optimizer": torch.optim.LBFGS,

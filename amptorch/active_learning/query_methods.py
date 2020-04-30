@@ -87,4 +87,25 @@ def termination_criteria(termination_args, method="iter"):
         total_i = termination_args["total_i"]
         if current_i > total_i:
             terminate = True
+    if method == "final":
+        calc = copy.copy(termination_args["calc"])
+        final_image = termination_args["images"][-1]
+        e_tol = termination_args["energy_tol"]
+        f_tol = termination_args["force_tol"]
+
+        ml_energy = final_image.get_potential_energy(apply_constraint=False)
+        ml_forces = final_image.get_forces(apply_constraint=False).flatten()
+
+        parent_energy = calc.get_potential_energy(final_image)
+        parent_forces = calc.get_forces(final_image).flatten()
+
+        e_terminate = False
+        f_terminate = False
+
+        if np.abs(ml_energy-parent_energy)/len(final_image) <= e_tol:
+            e_terminate = True
+        if np.sum(np.abs(ml_forces-parent_forces))/(3*len(final_image)) <= f_tol:
+            f_terminate = True
+
+        terminate = e_terminate and f_terminate
     return terminate
