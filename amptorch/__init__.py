@@ -12,7 +12,7 @@ from amptorch.data_preprocess import (
     factorize_data,
     collate_amp,
 )
-from amptorch.model import FullNN, CustomMSELoss
+from amptorch.model import BPNN, CustomMSELoss
 from ase.calculators.calculator import Calculator, Parameters
 import torch
 
@@ -88,9 +88,9 @@ class AMP(Calculator):
             dataset, batch_size, collate_fn=dataset.collate_test, shuffle=False
         )
         if properties == ["energy"]:
-            model = FullNN(self.training_elements, architecture, "cpu", forcetraining=False)
+            model = BPNN(self.training_elements, architecture, "cpu", forcetraining=False)
         elif properties == ["forces"]:
-            model = FullNN(self.training_elements, architecture, "cpu", forcetraining=True)
+            model = BPNN(self.training_elements, architecture, "cpu", forcetraining=True)
         model.load_state_dict(torch.load(self.label))
         model.eval()
 

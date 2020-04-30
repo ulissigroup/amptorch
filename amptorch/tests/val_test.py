@@ -8,7 +8,7 @@ from amptorch import AMP
 from amptorch.gaussian import SNN_Gaussian
 from amptorch.skorch_model import AMP as AMP_skorch
 from amptorch.skorch_model.utils import target_extractor, energy_score, forces_score
-from amptorch.model import FullNN, CustomMSELoss
+from amptorch.model import BPNN, CustomMSELoss
 from amptorch.data_preprocess import AtomsDataset, collate_amp
 import numpy as np
 from ase import Atoms
@@ -63,7 +63,7 @@ def test_skorch_val():
     device = "cpu"
 
     net = NeuralNetRegressor(
-        module=FullNN(
+        module=BPNN(
             unique_atoms, [fp_length, 2, 2], device, forcetraining=forcetraining
         ),
         criterion=CustomMSELoss,
@@ -174,7 +174,7 @@ def test_energy_only_skorch_val():
     device = "cpu"
 
     net = NeuralNetRegressor(
-        module=FullNN(
+        module=BPNN(
             unique_atoms, [fp_length, 2, 2], device, forcetraining=forcetraining
         ),
         criterion=CustomMSELoss,

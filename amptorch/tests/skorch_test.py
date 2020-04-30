@@ -8,7 +8,7 @@ from amptorch.skorch_model.utils import (
         energy_score,
         forces_score,
         )
-from amptorch.model import FullNN, CustomMSELoss
+from amptorch.model import BPNN, CustomMSELoss
 from amptorch.data_preprocess import (
         AtomsDataset,
         collate_amp,
@@ -65,7 +65,7 @@ def test_skorch():
     device = "cpu"
 
     net = NeuralNetRegressor(
-            module=FullNN(
+            module=BPNN(
                 unique_atoms, [fp_length, 2, 2], device, forcetraining=forcetraining
                 ),
             criterion=CustomMSELoss,
@@ -180,7 +180,7 @@ def test_e_only_skorch():
     device = "cpu"
 
     net = NeuralNetRegressor(
-            module=FullNN(
+            module=BPNN(
                 unique_atoms, [fp_length, 2, 2], device, forcetraining=forcetraining
                 ),
             criterion=CustomMSELoss,
