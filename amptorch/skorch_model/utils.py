@@ -19,34 +19,39 @@ def energy_score(net, X, y):
     device = energy_pred.device
     if not hasattr(X, "scalings"):
         X = X.dataset
+    scale = X.scalings[-1]
     num_atoms = torch.FloatTensor(np.concatenate(y[1::3])).reshape(-1, 1).to(device)
     dataset_size = len(energy_pred)
     energy_targets_per_atom = torch.tensor(np.concatenate(y[0::3])).to(device).reshape(-1, 1)
+    energy_targets_per_atom = scale.denorm(energy_targets_per_atom)
     energy_preds_per_atom = torch.div(energy_pred, num_atoms)
+    energy_preds_per_atom = scale.denorm(energy_preds_per_atom)
     energy_loss = mse_loss(energy_preds_per_atom, energy_targets_per_atom)
     energy_loss /= dataset_size
     energy_rmse = torch.sqrt(energy_loss)
     return energy_rmse
 
 def forces_score(net, X, y):
-    mse_loss = MSELoss(reduction="sum")
+    mse_loss = MSELoss(reduction='none')
     _, force_pred = net.forward(X)
     if force_pred.nelement() == 0:
         raise Exception("Force training disabled. Disable force scoring!")
     device = force_pred.device
     if not hasattr(X, "scalings"):
         X = X.dataset
+    scale = X.scalings[-1]
     num_atoms = torch.FloatTensor(np.concatenate(y[1::3])).reshape(-1, 1).to(device)
     force_targets_per_atom = torch.tensor(np.concatenate(y[2::3])).to(device)
+    force_targets_per_atom = scale.denorm(force_targets_per_atom)
     device = force_pred.device
     dataset_size = len(num_atoms)
-    num_atoms_extended = torch.cat([idx.repeat(int(idx)) for idx in num_atoms])
-    num_atoms_extended = torch.sqrt(num_atoms_extended).reshape(-1, 1)
-    force_pred_per_atom = torch.div(force_pred, num_atoms_extended)
-    force_targets_per_atom = force_targets_per_atom*num_atoms_extended
-    force_mse = mse_loss(force_pred_per_atom, force_targets_per_atom)
-    force_mse /= 3 * dataset_size
-    force_rmse = torch.sqrt(force_mse)
+    num_atoms_extended = torch.cat([idx.repeat(int(idx)) for idx in num_atoms]).reshape(-1, 1)
+    force_pred_per_atom = scale.denorm(torch.div(force_pred, num_atoms_extended))
+    force_targets = force_targets_per_atom*num_atoms_extended
+    force_pred = force_pred_per_atom*num_atoms_extended
+    force_mse = mse_loss(force_pred, force_targets)
+    force_mse /= 3 * dataset_size * num_atoms_extended
+    force_rmse = torch.sqrt(force_mse.sum())
     return force_rmse
 
 def make_force_header(log):
