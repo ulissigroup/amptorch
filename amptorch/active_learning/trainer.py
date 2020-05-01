@@ -18,7 +18,7 @@ from amptorch.skorch_model.utils import (
 )
 from amptorch.delta_models.morse import morse_potential
 from amptorch.data_preprocess import AtomsDataset, collate_amp
-from amptorch.model import FullNN
+from amptorch.model import BPNN
 from amptorch.active_learning.ensemble_calc import EnsembleCalc
 
 
@@ -141,7 +141,7 @@ def model_trainer(images, training_params):
         ]
 
     net = NeuralNetRegressor(
-        module=FullNN(
+        module=BPNN(
             unique_atoms,
             [fp_length, num_layers, num_nodes],
             device,
