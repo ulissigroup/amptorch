@@ -9,7 +9,7 @@ class Transform():
             self.mean = torch.mean(tensor, dim=0)
             self.std = torch.std(tensor, dim=0)
         else:
-            self.mean = 0
+            self.mean = tensor[0]
             self.std = 1
 
     def norm(self, tensor, energy=True):
