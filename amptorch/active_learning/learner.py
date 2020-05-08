@@ -103,14 +103,12 @@ class AtomisticActiveLearner:
                 training_data=self.training_data,
                 training_params=self.training_params,
                 ensemble=self.ensemble,
-                ncores=3,
+                ncores=self.training_params["cores"],
             )
             # run atomistic_method using trained ml calculator
             atomistic_method.run(calc=trained_calc, filename=fn_label)
             # collect resulting trajectory files
-            sample_candidates = atomistic_method.get_trajectory(
-                filename=fn_label, start_count=0, end_count=-1, interval=1
-            )
+            sample_candidates = atomistic_method.get_trajectory(filename=fn_label)
             self.iteration += 1
             # criteria to stop active learning
             # TODO Find a better way to structure this.
