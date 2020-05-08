@@ -14,6 +14,7 @@ import scipy.sparse as sparse
 from collections import OrderedDict
 import ase
 from amptorch.gaussian import make_symmetry_functions, SNN_Gaussian
+from amptorch.data_utils import Transform
 from amptorch.utils import (
     make_amp_descriptors_simple_nn,
     calculate_fingerprints_range,
@@ -256,6 +257,12 @@ class AtomsDataset(Dataset):
         else:
             energy_dataset = torch.FloatTensor(energy_dataset)
             scalings = [0, 0]
+        scale = Transform(energy_dataset)
+        energy_dataset = scale.norm(energy_dataset)
+        if self.forcetraining:
+            for idx, force in enumerate(forces_dataset):
+                forces_dataset[idx] = scale.norm(force, energy=False)
+        scalings.append(scale)
 
         return (
             fingerprint_dataset,

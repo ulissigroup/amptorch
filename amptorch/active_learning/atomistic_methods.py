@@ -60,10 +60,8 @@ class MDsimulate:
             dyn.attach(printenergy, interval=10)
         dyn.run(self.count)
 
-    def get_trajectory(self, filename, start_count, end_count, interval):
-        trajectory = ase.io.read(
-            filename + ".traj", "{}:{}:{}".format(start_count, end_count, interval)
-        )
+    def get_trajectory(self, filename):
+        trajectory = ase.io.read(filename + ".traj", ":")
         return trajectory
 
 
@@ -80,8 +78,6 @@ class Relaxation:
         dyn = self.optimizer(structure, trajectory="{}.traj".format(filename))
         dyn.run(fmax=self.fmax, steps=self.steps)
 
-    def get_trajectory(self, filename, start_count, end_count, interval):
-        trajectory = ase.io.read(
-            filename + ".traj", "{}:{}:{}".format(start_count, end_count, interval)
-        )
+    def get_trajectory(self, filename):
+        trajectory = ase.io.read(filename + ".traj", ":")
         return trajectory
