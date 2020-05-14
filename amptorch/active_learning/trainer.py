@@ -6,7 +6,7 @@ import torch
 
 from skorch import NeuralNetRegressor
 from skorch.dataset import CVSplit
-from skorch.callbacks import Checkpoint, EpochScoring
+from skorch.callbacks import Checkpoint, EpochScoring, LRScheduler
 
 from amptorch.gaussian import SNN_Gaussian
 from amptorch.skorch_model import AMP
@@ -69,6 +69,8 @@ def model_trainer(images, training_params):
     shuffle = training_params["shuffle"]
     filename = training_params["filename"]
     verbose = training_params["verbose"]
+    scheduler = training_params["scheduler"]["policy"]
+    scheduler_params = training_params["scheduler"]["params"]
 
     os.makedirs("./results/checkpoints", exist_ok=True)
 
@@ -79,6 +81,8 @@ def model_trainer(images, training_params):
         morse_model = morse_potential(images, cutoff, filename, combo="mean")
         morse_energies, morse_forces, num_atoms = morse_model.morse_pred(images)
         morse_data = [morse_energies, morse_forces, num_atoms, morse_model]
+    if scheduler:
+        scheduler = LRScheduler(scheduler, **scheduler_params)
 
     forcetraining = forcetraining
     training_data = AtomsDataset(
@@ -123,6 +127,7 @@ def model_trainer(images, training_params):
                 fn_prefix="./results/checkpoints/{}_".format(filename),
             ),
             load_best_valid_loss,
+            LRScheduler,
         ]
     else:
         force_coefficient = 0
@@ -138,6 +143,7 @@ def model_trainer(images, training_params):
                 fn_prefix="./results/checkpoints/{}_".format(filename),
             ),
             load_best_valid_loss,
+            LRScheduler
         ]
 
     net = NeuralNetRegressor(
