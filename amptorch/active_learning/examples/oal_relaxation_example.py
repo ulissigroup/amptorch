@@ -50,7 +50,7 @@ if __name__ == "__main__":
         "num_layers": 3,
         "num_nodes": 20,
         "force_coefficient": 0.04,
-        "learning_rate": 1e-1,
+        "learning_rate": 1e-2,
         "epochs": 100,
         "test_split": 0,
         "shuffle": False,
@@ -58,7 +58,7 @@ if __name__ == "__main__":
         "verbose": 1,
     }
 
-    structure_optim = Relaxation(slab, BFGS, fmax=0.05, steps=None)
+    structure_optim = Relaxation(slab, BFGS, fmax=0.05, steps=100)
     online_calc = AMPOnlineCalc(
         parent_dataset=images,
         parent_calc=EMT(),
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     # Calculate true relaxation
     true_relax = Relaxation(slab, BFGS)
     true_relax.run(EMT(), "true_relax")
-    parent_calc_traj = true_relax.get_trajectory("true_relax", 0, -1, 1)
+    parent_calc_traj = true_relax.get_trajectory("true_relax")
     n_parent_calls = online_calc.parent_calls
     final_oal_traj = ase.io.read("./relax_oal.traj", ":")
 
