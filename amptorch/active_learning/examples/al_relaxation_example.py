@@ -87,7 +87,7 @@ if __name__ == "__main__":
     file_path = training_params["file_dir"]+training_params["filename"]
     true_relax = Relaxation(slab, BFGS)
     true_relax.run(EMT(), "true_relax")
-    parent_calc_traj = true_relax.get_trajectory("true_relax", 0, -1, 1)
+    parent_calc_traj = true_relax.get_trajectory("true_relax")
     final_ml_traj = ase.io.read("{}_iter_{}.traj".format(file_path, al_iterations), ":")
 
     # Compute ML predicted energies
