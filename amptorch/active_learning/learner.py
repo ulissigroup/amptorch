@@ -131,6 +131,8 @@ class AtomisticActiveLearner:
                 method=method, termination_args=termination_args
             )
 
+        return trained_calc
+
     def add_data(self, queried_images):
         if self.ensemble:
             for query in queried_images:
