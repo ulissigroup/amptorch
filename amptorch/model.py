@@ -128,7 +128,7 @@ class BPNN(nn.Module):
                 """Constructs a 1xPQ tensor that contains the derivatives with respect to
                 each atom's fingerprint"""
                 boolean = idx[:, None] == torch.unique(idx)
-                ordered_idx = torch.nonzero(boolean.t())[:, -1]
+                ordered_idx = torch.nonzero(boolean.t(), as_tuple=False)[:, -1]
                 dE_dFP = torch.index_select(dE_dFP, 0, ordered_idx)
                 dE_dFP = torch.index_select(dE_dFP, 0, rearange).reshape(1, -1)
                 """Sparse multiplication requires the first matrix to be
