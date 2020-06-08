@@ -58,13 +58,15 @@ class AtomisticActiveLearner:
 
     implemented_properties = ["energy", "forces"]
 
-    def __init__(self, training_data, training_params, parent_calc, ensemble=False):
+    def __init__(self, training_data, training_params, parent_calc,
+                 ensemble=False, uncertainty_method=None):
         self.training_data = copy.deepcopy(training_data)
         self.training_params = training_params
         self.parent_calc = parent_calc
         self.ensemble = ensemble
         self.parent_calls = 0
         self.iteration = 0
+        self.uncertainty_method = uncertainty_method
 
         if ensemble:
             assert isinstance(ensemble, int) and ensemble > 1, "Invalid ensemble!"
@@ -93,6 +95,8 @@ class AtomisticActiveLearner:
                     sample_candidates,
                     samples_to_retrain,
                     parent_calc=self.parent_calc,
+                    params = self.training_params,
+                    method = self.uncertainty_method
                 )
                 write_to_db(queries_db, queried_images)
                 self.parent_dataset, self.training_data = self.add_data(queried_images)
@@ -130,8 +134,6 @@ class AtomisticActiveLearner:
             terminate = termination_criteria(
                 method=method, termination_args=termination_args
             )
-
-        return trained_calc
 
     def add_data(self, queried_images):
         if self.ensemble:

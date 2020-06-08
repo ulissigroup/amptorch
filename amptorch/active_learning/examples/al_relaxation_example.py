@@ -1,4 +1,4 @@
-import sys
+import sys, os
 import numpy as np
 import random
 import torch
@@ -14,6 +14,7 @@ from ase.optimize import BFGS, BFGSLineSearch
 from amptorch.active_learning.atomistic_methods import MDsimulate, Relaxation
 from amptorch.active_learning.learner import AtomisticActiveLearner
 from amptorch.active_learning.query_methods import random_query, max_uncertainty
+from amptorch.active_learning.new_query_methods import random_query_with_prob
 from amptorch.model import CustomMSELoss
 
 import multiprocessing as mp
@@ -21,6 +22,7 @@ import multiprocessing as mp
 if __name__ == "__main__":
     random.seed(1)
     mp.set_start_method("spawn")
+    os.system("rm -rf *traj results/* amp-data* *db")
     # Define initial set of images, can be as few as 1. If 1, make sure to
     slab = fcc100("Cu", size=(3, 3, 3))
     ads = molecule("C")
@@ -52,20 +54,26 @@ if __name__ == "__main__":
         "Gs": Gs,
         "morse": True,
         "forcetraining": True,
-        "cores": 10,
+        # "cores": 10,
+        "cores": 4,
         "optimizer": torch.optim.LBFGS,
         "batch_size": 1000,
         "criterion": CustomMSELoss,
         "num_layers": 3,
         "num_nodes": 20,
         "force_coefficient": 0.04,
-        "learning_rate": 1e-2,
-        "epochs": 100,
+        "learning_rate": 1e-3,
+        # "epochs": 100,
+        "epochs": 50,
         "test_split": 0,
         "shuffle": False,
         "verbose": 1,
-        "filename": "relax_example",
+        "filename": "relax_example_new",
         "file_dir": "./",
+        "scheduler": {
+        "policy": 'WarmRestartLR',
+        "params": {"initial_lr": 1e-3, "steps": 10}
+    }
     }
 
     # Define AL calculator
@@ -74,12 +82,14 @@ if __name__ == "__main__":
         training_params=training_params,
         parent_calc=EMT(),
         ensemble=False,
+        uncertainty_method='distance'
     )
     learner.learn(
         atomistic_method=Relaxation(
             initial_geometry=images[0].copy(), optimizer=BFGS, fmax=0.05, steps=50
         ),
-        query_strategy=random_query,
+        # query_strategy=random_query,
+        query_strategy=random_query_with_prob,
     )
 
     # Calculate true relaxation
