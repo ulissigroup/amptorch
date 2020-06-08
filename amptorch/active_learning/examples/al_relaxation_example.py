@@ -13,8 +13,7 @@ from ase.optimize import BFGS, BFGSLineSearch
 
 from amptorch.active_learning.atomistic_methods import MDsimulate, Relaxation
 from amptorch.active_learning.learner import AtomisticActiveLearner
-from amptorch.active_learning.query_methods import random_query, max_uncertainty
-from amptorch.active_learning.new_query_methods import random_query_with_prob
+from amptorch.active_learning.query_methods import random_query, max_uncertainty, random_query_with_prob
 from amptorch.model import CustomMSELoss
 
 import multiprocessing as mp
@@ -62,7 +61,7 @@ if __name__ == "__main__":
         "num_layers": 3,
         "num_nodes": 20,
         "force_coefficient": 0.04,
-        "learning_rate": 1e-3,
+        "learning_rate": 5e-3,
         # "epochs": 100,
         "epochs": 50,
         "test_split": 0,
@@ -72,7 +71,7 @@ if __name__ == "__main__":
         "file_dir": "./",
         "scheduler": {
         "policy": 'WarmRestartLR',
-        "params": {"initial_lr": 1e-3, "steps": 10}
+        "params": {"initial_lr": 5e-3, "steps": 10}
     }
     }
 
@@ -82,7 +81,8 @@ if __name__ == "__main__":
         training_params=training_params,
         parent_calc=EMT(),
         ensemble=False,
-        uncertainty_method='distance'
+        uncertainty_method='distance',
+        # uncertainty_method='density'
     )
     learner.learn(
         atomistic_method=Relaxation(

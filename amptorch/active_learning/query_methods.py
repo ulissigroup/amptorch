@@ -290,7 +290,7 @@ def uncertainty_func(x, scale=1., method='mean'):
 
 def get_debu(fps_train, fps_target, nbins=50, with_pca=True, n_components=10,
                 normalized=True, scale=0.1):
-        """histogram density-based uncertainty (DEBU) method
+        """histogram density-based uncertainty (DEBU) method.
 
         Parameters
         ------------
@@ -298,8 +298,7 @@ def get_debu(fps_train, fps_target, nbins=50, with_pca=True, n_components=10,
         vectors as constructed from the training set.
 
         fps_target: list or numpy array
-        vector(s) as constructed from the target image. Note that at one time
-        only the confidence of one image can be evaluated.
+        vector(s) as constructed from the target images.
 
         nbins : int
         number of bins for density estimation
@@ -316,10 +315,7 @@ def get_debu(fps_train, fps_target, nbins=50, with_pca=True, n_components=10,
 
         Return
         --------
-        The weighted proportions of features in the interpolation region
-        for all target feature vectors.
-
-        TODO: add kernel density estimation
+        Density-based uncertainty levels for the target images
         """
         from sklearn.preprocessing import MinMaxScaler
         nbins = int(nbins)
@@ -336,7 +332,7 @@ def get_debu(fps_train, fps_target, nbins=50, with_pca=True, n_components=10,
             fpv_target = pca.transform(fpv_target)
             variances = pca.explained_variance_ratio_
         n_cols = fpv.shape[1]
-        # Compute histogram densities and bin_edges of training images
+        # Compute histogram densities and bin_edges on training images
         hist_density, bin_edges = [], []
         for k in range(n_cols):
             hist, edges = np.histogram(fpv[:, k], bins=nbins, density=True)
