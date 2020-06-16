@@ -56,6 +56,10 @@ if __name__ == "__main__":
         "shuffle": False,
         "filename": "oal_test",
         "verbose": 1,
+        "scheduler": {
+            "policy": None,
+            "params": None,
+            }
     }
 
     structure_optim = Relaxation(slab, BFGS, fmax=0.05, steps=100)

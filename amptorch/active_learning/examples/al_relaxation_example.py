@@ -66,7 +66,11 @@ if __name__ == "__main__":
         "verbose": 1,
         "filename": "relax_example",
         "file_dir": "./",
-    }
+        "scheduler": {
+            "policy": None,
+            "params": None,
+            }
+        }
 
     # Define AL calculator
     learner = AtomisticActiveLearner(
