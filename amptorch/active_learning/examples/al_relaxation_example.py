@@ -70,10 +70,17 @@ if __name__ == "__main__":
         "filename": "relax_example_new",
         "file_dir": "./",
         "scheduler": {
+<<<<<<< HEAD
         "policy": 'WarmRestartLR',
         "params": {"initial_lr": 5e-3, "steps": 10}
     }
     }
+=======
+            "policy": None,
+            "params": None,
+            }
+        }
+>>>>>>> a91f59a80bf273b9bf9029a6b11d9961ea240162
 
     # Define AL calculator
     learner = AtomisticActiveLearner(
