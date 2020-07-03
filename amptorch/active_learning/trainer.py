@@ -53,6 +53,7 @@ def ensemble_trainer(ensemble_datasets, training_params, ncores):
 
 
 def model_trainer(images, training_params):
+    # TODO clean up arg parser
     Gs = training_params["Gs"]
     morse = training_params["morse"]
     forcetraining = training_params["forcetraining"]
@@ -69,8 +70,12 @@ def model_trainer(images, training_params):
     shuffle = training_params["shuffle"]
     filename = training_params["filename"]
     verbose = training_params["verbose"]
-    scheduler = training_params["scheduler"]["policy"]
-    scheduler_params = training_params["scheduler"]["params"]
+    try:
+        scheduler = training_params["scheduler"]["policy"]
+        scheduler_params = training_params["scheduler"]["params"]
+    except:
+        scheduler = None
+        scheduler_params = None
 
     os.makedirs("./results/checkpoints", exist_ok=True)
 
