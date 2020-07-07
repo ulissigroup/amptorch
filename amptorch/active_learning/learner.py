@@ -32,6 +32,7 @@ from amptorch.active_learning.trainer import train_calcs
 from amptorch.active_learning.bootstrap import bootstrap_ensemble
 from amptorch.active_learning.query_methods import termination_criteria
 
+import matplotlib.pyplot as plt
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
@@ -39,18 +40,14 @@ __email__ = "mshuaibi@andrew.cmu.edu"
 
 class AtomisticActiveLearner:
     """Active Learner
-
     Parameters
     ----------
      training_data: list
         List of Atoms objects representing the initial dataset.
-
     training_params: dict
         Dictionary of training parameters and model settings.
-
     parent_calc: object.
         Calculator to be used for querying calculations.
-
     ensemble: boolean.
         Whether to train an ensemble of models to make predictions. ensemble
         must be True if uncertainty based query methods are to be used.
@@ -81,13 +78,13 @@ class AtomisticActiveLearner:
         file_dir = self.training_params["file_dir"]
         queries_db = ase.db.connect("{}.db".format(filename))
         os.makedirs(file_dir, exist_ok=True)
-
-        terminate = False
-
-        while not terminate:
+        convergence_criteria_list = []
+        f_terminate = False
+        method = al_convergence["method"]
+        while not f_terminate:
             fn_label = f"{file_dir}{filename}_iter_{self.iteration}"
             # active learning random scheme
-            if self.iteration > 0:
+            if self.iteration > 0 and method != 'neb_iter':
                 queried_images = query_strategy(
                     self.parent_dataset,
                     sample_candidates,
@@ -109,15 +106,26 @@ class AtomisticActiveLearner:
             atomistic_method.run(calc=trained_calc, filename=fn_label)
             # collect resulting trajectory files
             sample_candidates = atomistic_method.get_trajectory(filename=fn_label)
+
+            #FOR NEBs:
+            if method == "neb_iter":
+              samples_index = atomistic_method.intermediate_samples + 2
+              sample_candidates = sample_candidates[-samples_index:]
+              ml2relax = atomistic_method.ml2relax
             self.iteration += 1
+
             # criteria to stop active learning
             # TODO Find a better way to structure this.
-            method = al_convergence["method"]
+            
             if method == "iter":
                 termination_args = {
                     "current_i": self.iteration,
                     "total_i": al_convergence["num_iterations"],
                 }
+                terminate_list = termination_criteria(method=method, termination_args=termination_args)
+                terminate = terminate_list[0]
+                convergence_criteria_list.append(terminate_list[1])
+
             elif method == "final":
                 termination_args = {
                     "images": sample_candidates,
@@ -126,12 +134,40 @@ class AtomisticActiveLearner:
                     "force_tol": al_convergence["force_tol"],
                 }
                 self.parent_calls += 1
+                terminate_list = termination_criteria(method=method, termination_args=termination_args)
+                terminate = terminate_list[0]
+                convergence = terminate_list[1]
+                convergence_criteria_list.append(convergence)
 
-            terminate = termination_criteria(
-                method=method, termination_args=termination_args
-            )
+            elif method == "neb_iter":
+                termination_args = {
+                    "current_i": self.iteration,
+                    "total_i": al_convergence["num_iterations"],
+                    "images": sample_candidates,
+                    "calc": self.parent_calc,
+                    "samples_to_retrain": samples_to_retrain,
+                    "energy_tol": al_convergence["energy_tol"],
+                    "ml2relax": ml2relax
+                }
+                terminate_list = neb_query(method=method, termination_args=termination_args)
+                terminate = terminate_list[0]
+                e_convergence = terminate_list[1]
+                queried_images = terminate_list[2]
+                convergence_criteria_list.append(e_convergence)
+                write_to_db(queries_db, queried_images)
+                self.parent_dataset, self.training_data = self.add_data(queried_images)
+                self.parent_calls += len(queried_images)
+                
+            f_terminate = terminate
 
-        return trained_calc
+        if self.iteration >= al_convergence["num_iterations"]:
+          print('Terminating! Total number of iterations reached')
+        else:
+          print('Terminating! Convergence criteria has been met')
+
+        if method != "iter":
+          self.convergence_plot(convergence_criteria_list)
+        return trained_calc,self.iteration
 
     def add_data(self, queried_images):
         if self.ensemble:
@@ -145,3 +181,12 @@ class AtomisticActiveLearner:
         else:
             self.training_data += queried_images
         return self.parent_dataset, self.training_data
+    
+    def convergence_plot(self,criteria):
+      x_axis = np.arange(0,self.iteration,1)
+      plt.semilogy(x_axis,criteria)
+      plt.title('convergence plot')
+      plt.xlabel('Iterations')
+      plt.ylabel('Convergence Condition')
+      plt.savefig('convergence plot.png')
+      plt.show()

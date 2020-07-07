@@ -7,26 +7,7 @@ from ase.calculators.calculator import Calculator
 from ase.calculators.singlepoint import SinglePointCalculator as sp
 
 from matplotlib import pyplot as plt
-
-
-class CounterCalc(Calculator):
-    implemented_properties = ["energy", "forces", "uncertainty"]
-    """Parameters
-    --------------
-        calc: object. Parent calculator to track force calls."""
-
-    def __init__(self, calc, **kwargs):
-        super().__init__()
-        self.calc = calc
-        self.force_calls = 0
-
-    def calculate(self, atoms, properties, system_changes):
-        super().calculate(atoms, properties, system_changes)
-        calc = copy.deepcopy(self.calc)
-        self.results["energy"] = calc.get_potential_energy(atoms)
-        self.results["forces"] = calc.get_forces(atoms)
-        self.force_calls += 1
-
+import ase
 
 def attach_sp_calc(images):
     "Converts images calculators to single point calculators to avoid double calculations'"
@@ -71,3 +52,24 @@ def progressive_plot(filename, true_relaxed, samples_per_iter, num_iterations, s
     plt.ylabel("Distance RMSE")
     plt.title("AL Relaxation Learning Curve")
     plt.savefig(save_to+".png", dpi=300)
+
+class CounterCalc(Calculator):
+    implemented_properties = ["energy", "forces", "uncertainty"]
+    """Parameters
+    --------------
+        calc: object. Parent calculator to track force calls and stores the calculations
+        in a database."""
+
+    def __init__(self, calc,fname, **kwargs):
+        super().__init__()
+        self.calc = copy.deepcopy(calc)
+        self.force_calls = 0
+        self.calc_db = ase.db.connect("{}.db".format(fname))
+
+    def calculate(self, atoms, properties, system_changes):
+        super().calculate(atoms, properties, system_changes)
+        calc = self.calc
+        self.results["energy"] = calc.get_potential_energy(atoms)
+        self.results["forces"] = calc.get_forces(atoms)
+        self.force_calls += 1
+        write_to_db(self.calc_db, [atoms])
