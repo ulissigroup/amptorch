@@ -128,7 +128,7 @@ def neb_query(termination_args, method="neb_iter"):
         for image in neb_images:
           e = image.get_total_energy()
           energies_list.append(e)
-        maxe_index = np.argmax(np.abs(energies_list))
+        maxe_index = np.argmax(energies_list)
         saddle_point = neb_images[maxe_index]
 
         if current_i > total_i:
