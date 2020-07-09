@@ -27,7 +27,7 @@ from amptorch.skorch_model.utils import (
 from amptorch.data_preprocess import AtomsDataset, collate_amp
 from amptorch.model import BPNN, CustomMSELoss
 from amptorch.delta_models.morse import morse_potential
-from amptorch.active_learning.al_utils import write_to_db
+from amptorch.active_learning.al_utils import write_to_db,CounterCalc
 from amptorch.active_learning.trainer import train_calcs
 from amptorch.active_learning.bootstrap import bootstrap_ensemble
 from amptorch.active_learning.query_methods import termination_criteria,neb_query
@@ -58,7 +58,7 @@ class AtomisticActiveLearner:
     def __init__(self, training_data, training_params, parent_calc, ensemble=False):
         self.training_data = copy.deepcopy(training_data)
         self.training_params = training_params
-        self.parent_calc = parent_calc
+        self.parent_calc = CounterCalc(parent_calc,'parent_learner')
         self.ensemble = ensemble
         self.parent_calls = 0
         self.iteration = 0
