@@ -75,6 +75,14 @@ class AtomisticActiveLearner:
             self.parent_dataset = self.training_data
 
     def learn(self, atomistic_method, query_strategy):
+        db_filepath = self.training_params["db_filepath"]
+        db = connect("{}".format(db_filepath))
+        def set_database():
+            database = []
+            for row in db.select():
+                a = db.get_atoms(id=row.id)
+                database.append(a)
+        return database
         al_convergence = self.training_params["al_convergence"]
         samples_to_retrain = self.training_params["samples_to_retrain"]
         filename = self.training_params["filename"]
@@ -99,12 +107,20 @@ class AtomisticActiveLearner:
                 self.parent_calls += len(queried_images)
 
             # train ml calculator
-            trained_calc = train_calcs(
-                training_data=self.training_data,
-                training_params=self.training_params,
-                ensemble=self.ensemble,
-                ncores=self.training_params["cores"],
-            )
+            if len(set_database()) > 0:
+                 trained_calc = train_calcs(
+                   training_data=set_database(),
+                   training_params=self.training_params,
+                   ensemble=self.ensemble,
+                   ncores=self.training_params["cores"],
+                )
+            else:
+                 trained_calc = train_calcs(
+                     training_data=self.training_data,
+                     training_params=self.training_params,
+                     ensemble=self.ensemble,
+                     ncores=self.training_params["cores"],
+                )
             # run atomistic_method using trained ml calculator
             atomistic_method.run(calc=trained_calc, filename=fn_label)
             # collect resulting trajectory files
