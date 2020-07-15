@@ -1,13 +1,7 @@
-"""data_preprocess.py: Defines the PyTorch required Dataset class. Takes in raw
-training data, computes/scales image fingerprints and potential energies.
-Functions are included to factorize the data and organize it accordingly in
-'collate_amp' as needed to be fed into the PyTorch required DataLoader class"""
-
-import copy
 import os
 import numpy as np
 import torch
-from torch.utils.data import Dataset, SubsetRandomSampler
+from torch.utils.data import Dataset
 from collections import OrderedDict
 import ase
 from amptorch.gaussian import make_symmetry_functions, SNN_Gaussian
@@ -42,6 +36,7 @@ class AtomsDataset(Dataset):
             if extension != (".traj" or ".db"):
                 self.atom_images = ase.io.read(images, ":")
         self.elements = self.unique()
+        # wrap all fingerprinting work into its own module
 
         print("Calculating fingerprints...")
         G2_etas = Gs["G2_etas"]
@@ -132,6 +127,7 @@ class AtomsDataset(Dataset):
                 data.fprimes = fingerprintprimes
 
             data_list.append(data)
+            # write dataset as *.pt file for future use
         return data_list
 
     def unique(self):
