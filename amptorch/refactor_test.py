@@ -3,13 +3,16 @@ import numpy as np
 from amptorch.gaussian import SNN_Gaussian
 from amptorch.dataset import (
     AtomsDataset,
+    collate_amp
 )
+from amptorch.model_geometric import BPNN
 
 from ase import Atoms
 from ase.calculators.emt import EMT
 from ase.io import read
 
-from torch_geometric.data import DataLoader
+# from torch_geometric.data import DataLoader
+from torch.utils.data import DataLoader
 
 
 # Generate sample dataset
@@ -49,6 +52,13 @@ dataset = AtomsDataset(
     cores=4,
 )
 
-dataloader = DataLoader(dataset, batch_size=2, shuffle=False)
+dataloader = DataLoader(dataset, batch_size=2, shuffle=False, collate_fn=collate_amp)
 k = next(iter(dataloader))
-import pdb; pdb.set_trace()
+
+unique_atoms = [29, 6, 8]
+architecture = [36, 3, 5]
+device = "cpu"
+forcetraining = True
+
+model = BPNN(unique_atoms, architecture, device, forcetraining)
+model(k)
