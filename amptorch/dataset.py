@@ -4,6 +4,7 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 from collections import OrderedDict
+import itertools
 import ase
 from amptorch.gaussian import make_symmetry_functions, SNN_Gaussian
 from amptorch.data_utils import Transform
@@ -17,21 +18,11 @@ from amp.utilities import get_hash as get_amp_hash
 
 from torch_geometric.data import Data, Batch
 from tqdm import tqdm
+
 # from scipy.sparse import coo_matrix, block_diag
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
-
-
-class AtomsData(Data):
-    def __init(self):
-        super(AtomsData, self).__init__()
-
-    def __cat_dim__(self, key, value):
-        if 'fprimes' in key:
-            return 1
-        else:
-            return 0
 
 
 class AtomsDataset(Dataset):
@@ -61,8 +52,7 @@ class AtomsDataset(Dataset):
 
         # create fingerprints
         self.hashed_images = amp_hash(self.atom_images)
-        G = make_symmetry_functions(
-            elements=self.elements, type="G2", etas=G2_etas)
+        G = make_symmetry_functions(elements=self.elements, type="G2", etas=G2_etas)
         G += make_symmetry_functions(
             elements=self.elements,
             type="G4",
@@ -78,8 +68,7 @@ class AtomsDataset(Dataset):
         )
 
         print("Fingerprints Calculated!")
-        self.fprange = calculate_fingerprints_range(
-            self.descriptor, self.hashed_images)
+        self.fprange = calculate_fingerprints_range(self.descriptor, self.hashed_images)
 
         # perform preprocessing
         self.dataset = self.process()
@@ -105,17 +94,19 @@ class AtomsDataset(Dataset):
                         )
                 image_fingerprint[i] = (atom, _afp)
 
-            #convert amp structure
+            # convert amp structure
             fp_length = len(image_fingerprint[0][1])
             natoms = len(image_fingerprint)
-            image_fingerprint = torch.tensor(np.vstack([fp[1] for fp in image_fingerprint]))
+            image_fingerprint = torch.tensor(
+                np.vstack([fp[1] for fp in image_fingerprint])
+            )
             potential_energy = self.hashed_images[hash_name].get_potential_energy(
                 apply_constraint=False
             )
             atomic_numbers = torch.tensor(atoms.get_atomic_numbers())
             image_idx = torch.full((1, natoms), idx, dtype=torch.int64).view(-1)
 
-            data = AtomsData(
+            data = Data(
                 fingerprint=image_fingerprint,
                 image_idx=image_idx,
                 atomic_numbers=atomic_numbers,
@@ -125,8 +116,8 @@ class AtomsDataset(Dataset):
 
             if self.forcetraining:
                 image_forces = self.hashed_images[hash_name].get_forces(
-                        apply_constraint=False
-                    )
+                    apply_constraint=False
+                )
                 # scale fingerprintprimes
                 image_primes = self.descriptor.fingerprintprimes[hash_name]
                 _image_primes = copy.copy(image_primes)
@@ -142,20 +133,18 @@ class AtomsDataset(Dataset):
                 image_prime_values = list(_image_primes.values())
                 image_prime_keys = list(_image_primes.keys())
                 # convert amp fprime format to matrix
-                fingerprintprimes = torch.zeros(
-                    fp_length * natoms, 3 * natoms
-                )
+                fingerprintprimes = torch.zeros(fp_length * natoms, 3 * natoms)
                 for idx, fp_key in enumerate(image_prime_keys):
                     image_prime = torch.tensor(image_prime_values[idx])
                     base_atom = fp_key[2]
                     wrt_atom = fp_key[0]
                     coord = fp_key[4]
                     fingerprintprimes[
-                        base_atom * fp_length: base_atom * fp_length + fp_length,
+                        base_atom * fp_length : base_atom * fp_length + fp_length,
                         wrt_atom * 3 + coord,
                     ] = image_prime
 
-                data.forces = torch.tensor(image_forces)
+                data.forces = torch.FloatTensor(image_forces)
                 data.fprimes = fingerprintprimes
 
             data_list.append(data)
@@ -164,7 +153,8 @@ class AtomsDataset(Dataset):
 
     def unique(self):
         elements = np.array(
-                [atom.symbol for atoms in self.atom_images for atom in atoms])
+            [atom.symbol for atoms in self.atom_images for atom in atoms]
+        )
         _, idx = np.unique(elements, return_index=True)
         elements = list(elements[np.sort(idx)])
         return elements
@@ -173,21 +163,36 @@ class AtomsDataset(Dataset):
         return self.dataset[index]
 
 
-def block_diag(arrs):
-    #TODO: make sparse
-    # https://github.com/pytorch/pytorch/issues/31932
-    bad_args = [k for k in range(len(arrs)) if not (isinstance(arrs[k], torch.Tensor) and arrs[k].ndim == 2)]
+def sparse_block_diag(arrs):
+    # Adapted from https://github.com/pytorch/pytorch/issues/31942
+    bad_args = [
+        k
+        for k in range(len(arrs))
+        if not (isinstance(arrs[k], torch.Tensor) and arrs[k].ndim == 2)
+    ]
     if bad_args:
-        raise ValueError("arguments in the following positions must be 2-dimension tensor: %s" % bad_args )
+        raise ValueError(
+            "arguments in the following positions must be 2-dimension tensor: %s"
+            % bad_args
+        )
 
     shapes = torch.tensor([a.shape for a in arrs])
-    out = torch.zeros(torch.sum(shapes, dim=0).tolist(), dtype=arrs[0].dtype, device=arrs[0].device)
 
+    i = []
+    v = []
     r, c = 0, 0
-    for i, (rr, cc) in enumerate(shapes):
-        out[r:r + rr, c:c + cc] = arrs[i]
+    for k, (rr, cc) in enumerate(shapes):
+        i += [
+            torch.LongTensor(
+                list(itertools.product(np.arange(r, r+rr), np.arange(c, c+cc)))
+            ).t()
+        ]
+        v += [arrs[k].flatten()]
         r += rr
         c += cc
+    out = torch.sparse.DoubleTensor(
+        torch.cat(i, dim=1), torch.cat(v), torch.sum(shapes, dim=0).tolist()
+    )
     return out
 
 
@@ -197,6 +202,8 @@ def collate_amp(data_list):
         mtxs.append(data.fprimes)
         data.fprimes = None
     batch = Batch.from_data_list(data_list)
-    block_matrix = block_diag(mtxs)
+    for i, data in enumerate(data_list):
+        data.fprimes = mtxs[i]
+    block_matrix = sparse_block_diag(mtxs)
     batch.fprimes = block_matrix
-    return batch
+    return batch, (batch.energy, batch.forces)
