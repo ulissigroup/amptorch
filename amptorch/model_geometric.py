@@ -36,12 +36,11 @@ class MLP(nn.Module):
 class ElementMask(nn.Module):
     def __init__(self, elements):
         super(ElementMask, self).__init__()
-        self.nelems = len(elements)
-        self.mask = nn.Embedding(100, self.nelems)
+        nelems = len(elements)
+        weights = torch.zeros(100, nelems)
+        weights[elements, range(nelems)] = 1.0
 
-        weights = torch.zeros(100, self.nelems)
-        for idx, Z in enumerate(elements):
-            weights[Z, idx] = 1.0
+        self.mask = nn.Embedding(100, nelems)
         self.mask.weight.data = weights
 
     def forward(self, atomic_numbers):
@@ -83,6 +82,7 @@ class BPNN(nn.Module):
         self.element_mask = ElementMask(unique_atoms)
 
     def forward(self, batch):
+        batch = batch[0]
         atomic_numbers = batch.atomic_numbers
         fingerprints = batch.fingerprint.float()
         fingerprints.requires_grad = True
@@ -101,7 +101,7 @@ class BPNN(nn.Module):
                 create_graph=True,
             )[0].view(1, -1)
 
-            forces = -1 * torch.matmul(gradients, batch.fprimes).view(-1, 3)
+            forces = -1 * torch.sparse.mm(batch.fprimes.t(), gradients.t()).view(-1, 3)
         return energy, forces
 
 
@@ -119,24 +119,16 @@ class CustomMSELoss(nn.Module):
     def forward(self, prediction, target):
 
         energy_pred = prediction[0]
-        energy_targets_per_atom = target[0]
-        num_atoms = target[1]
-        MSE_loss = nn.MSELoss(reduction="sum")
-        energy_pred_per_atom = torch.div(energy_pred, num_atoms)
-        energy_loss = MSE_loss(energy_pred_per_atom, energy_targets_per_atom)
+        energy_target = target[0]
+        MSE_loss = nn.MSELoss()
+        energy_loss = MSE_loss(energy_pred, energy_target)
 
         if self.alpha > 0:
             force_pred = prediction[1]
+            force_target = target[1]
             if force_pred.nelement() == 0:
                 raise Exception("Force training disabled. Set force_coefficient to 0")
-            force_targets_per_atom = target[-1]
-            num_atoms_extended = torch.cat([idx.repeat(int(idx)) for idx in num_atoms])
-            num_atoms_extended = torch.sqrt(num_atoms_extended.reshape(-1, 1))
-            force_pred_per_atom = torch.div(force_pred, num_atoms_extended)
-            force_targets_per_atom = force_targets_per_atom * num_atoms_extended
-            force_loss = (self.alpha / 3) * MSE_loss(
-                force_pred_per_atom, force_targets_per_atom
-            )
+            force_loss = MSE_loss(force_pred, force_target)
             loss = 0.5 * (energy_loss + force_loss)
         else:
             loss = 0.5 * energy_loss
