@@ -82,7 +82,6 @@ class BPNN(nn.Module):
         self.element_mask = ElementMask(unique_atoms)
 
     def forward(self, batch):
-        batch = batch[0]
         atomic_numbers = batch.atomic_numbers
         fingerprints = batch.fingerprint.float()
         fingerprints.requires_grad = True

@@ -3,11 +3,10 @@ import os
 import numpy as np
 import torch
 from torch.utils.data import Dataset
-from collections import OrderedDict
 import itertools
 import ase
-from amptorch.gaussian import make_symmetry_functions, SNN_Gaussian
-from amptorch.data_utils import Transform
+from amptorch.gaussian import make_symmetry_functions
+from amptorch.data_utils import Normalize
 from amptorch.utils import (
     make_amp_descriptors_simple_nn,
     calculate_fingerprints_range,
@@ -18,8 +17,6 @@ from amp.utilities import get_hash as get_amp_hash
 
 from torch_geometric.data import Data, Batch
 from tqdm import tqdm
-
-# from scipy.sparse import coo_matrix, block_diag
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
@@ -68,7 +65,9 @@ class AtomsDataset(Dataset):
         )
 
         print("Fingerprints Calculated!")
-        self.fprange = calculate_fingerprints_range(self.descriptor, self.hashed_images)
+        self.fprange = calculate_fingerprints_range(
+            self.descriptor, self.hashed_images
+        )
 
         # perform preprocessing
         self.dataset = self.process()
@@ -76,9 +75,12 @@ class AtomsDataset(Dataset):
     def __len__(self):
         return len(self.atom_images)
 
+    def __getitem__(self, index):
+        return self.dataset[index]
+
     def process(self):
         data_list = []
-        for idx, atoms in tqdm(enumerate(self.images)):
+        for idx, atoms in tqdm(enumerate(self.images), total=len(self)):
             hash_name = get_amp_hash(atoms)
 
             # scale fingerprints
@@ -149,6 +151,8 @@ class AtomsDataset(Dataset):
 
             data_list.append(data)
             # write dataset as *.pt file for future use
+        normalizer = Normalize(data_list)
+        data_list = normalizer.norm(data_list)
         return data_list
 
     def unique(self):
@@ -159,12 +163,9 @@ class AtomsDataset(Dataset):
         elements = list(elements[np.sort(idx)])
         return elements
 
-    def __getitem__(self, index):
-        return self.dataset[index]
 
-
+# Adapted from https://github.com/pytorch/pytorch/issues/31942
 def sparse_block_diag(arrs):
-    # Adapted from https://github.com/pytorch/pytorch/issues/31942
     bad_args = [
         k
         for k in range(len(arrs))
