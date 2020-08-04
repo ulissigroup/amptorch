@@ -385,7 +385,8 @@ class Data:
         self.close()
 
 
-def make_symmetry_functions(elements, type, etas, zetas=None, gammas=None):
+def make_symmetry_functions(elements, type, etas, offsets=None,
+                            zetas=None, gammas=None):
     """Helper function to create Gaussian symmetry functions.
     Returns a list of dictionaries with symmetry function parameters
     in the format expected by the Gaussian class.
@@ -393,12 +394,13 @@ def make_symmetry_functions(elements, type, etas, zetas=None, gammas=None):
     Parameters
     ----------
     elements : list of str
-        List of element types. The first in the list is considered the
-        central element for this fingerprint. #FIXME: Does that matter?
+        List of element types to be observed in this fingerprint.
     type : str
         Either G2, G4, or G5.
     etas : list of floats
         eta values to use in G2, G4 or G5 fingerprints
+    offsets: list of floats
+        offset values to use in G2 fingerprints
     zetas : list of floats
         zeta values to use in G4, and G5 fingerprints
     gammas : list of floats
@@ -410,14 +412,14 @@ def make_symmetry_functions(elements, type, etas, zetas=None, gammas=None):
         A list, each item in the list contains a dictionary of fingerprint
         parameters.
     """
-    if type == "G2":
-        G = [
-            {"type": "G2", "element": element, "eta": eta}
-            for eta in etas
-            for element in elements
-        ]
+    if type == 'G2':
+        offsets = [0.] if offsets is None else offsets
+        G = [{'type': 'G2', 'element': element, 'eta': eta, 'offset': offset}
+             for eta in etas
+             for element in elements
+             for offset in offsets]
         return G
-    elif type == "G4":
+    elif type == 'G4':
         G = []
         for eta in etas:
             for zeta in zetas:
@@ -425,17 +427,13 @@ def make_symmetry_functions(elements, type, etas, zetas=None, gammas=None):
                     for i1, el1 in enumerate(elements):
                         for el2 in elements[i1:]:
                             els = sorted([el1, el2])
-                            G.append(
-                                {
-                                    "type": "G4",
-                                    "elements": els,
-                                    "eta": eta,
-                                    "gamma": gamma,
-                                    "zeta": zeta,
-                                }
-                            )
+                            G.append({'type': 'G4',
+                                      'elements': els,
+                                      'eta': eta,
+                                      'gamma': gamma,
+                                      'zeta': zeta})
         return G
-    elif type == "G5":
+    elif type == 'G5':
         G = []
         for eta in etas:
             for zeta in zetas:
@@ -443,14 +441,10 @@ def make_symmetry_functions(elements, type, etas, zetas=None, gammas=None):
                     for i1, el1 in enumerate(elements):
                         for el2 in elements[i1:]:
                             els = sorted([el1, el2])
-                            G.append(
-                                {
-                                    "type": "G5",
-                                    "elements": els,
-                                    "eta": eta,
-                                    "gamma": gamma,
-                                    "zeta": zeta,
-                                }
-                            )
+                            G.append({'type': 'G5',
+                                      'elements': els,
+                                      'eta': eta,
+                                      'gamma': gamma,
+                                      'zeta': zeta})
         return G
-    raise NotImplementedError("Unknown type: {}.".format(type))
+    raise NotImplementedError('Unknown type: {}.'.format(type))
