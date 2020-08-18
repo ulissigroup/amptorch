@@ -286,14 +286,8 @@ def convert_simple_nn_fps(traj, Gs, cores, label, save, delete_old=True):
     from multiprocessing import Pool
 
     # make the directories
-    if not os.path.isdir("./amp-data-fingerprints.ampdb"):
-        os.mkdir("./amp-data-fingerprints.ampdb")
-    if not os.path.isdir("./amp-data-fingerprints.ampdb/loose"):
-        os.mkdir("./amp-data-fingerprints.ampdb/loose")
-    if not os.path.isdir("./amp-data-fingerprint-primes.ampdb"):
-        os.mkdir("./amp-data-fingerprint-primes.ampdb")
-    if not os.path.isdir("./amp-data-fingerprint-primes.ampdb/loose"):
-        os.mkdir("amp-data-fingerprint-primes.ampdb/loose")
+    os.makedirs("./amp-data-fingerprints.ampdb/loose", exist_ok=True)
+    os.makedirs("amp-data-fingerprint-primes.ampdb/loose", exist_ok=True)
     # perform the reorganization
     l_trajs = list(enumerate(traj))
     fp_dir = "data"+label
