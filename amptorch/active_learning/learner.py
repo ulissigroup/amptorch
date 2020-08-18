@@ -109,27 +109,28 @@ class AtomisticActiveLearner:
             atomistic_method.run(calc=trained_calc, filename=fn_label)
             # collect resulting trajectory files
             sample_candidates = atomistic_method.get_trajectory(filename=fn_label)
-            self.iteration += 1
             # criteria to stop active learning
             # TODO Find a better way to structure this.
             method = al_convergence["method"]
-            if method == "iter":
-                termination_args = {
-                    "current_i": self.iteration,
-                    "total_i": al_convergence["num_iterations"],
-                }
-            elif method == "final":
-                termination_args = {
-                    "images": sample_candidates,
-                    "calc": self.parent_calc,
-                    "energy_tol": al_convergence["energy_tol"],
-                    "force_tol": al_convergence["force_tol"],
-                }
-                self.parent_calls += 1
+            if self.iteration > 0:
+                if method == "iter":
+                    termination_args = {
+                        "current_i": self.iteration,
+                        "total_i": al_convergence["num_iterations"],
+                    }
+                elif method == "final":
+                    termination_args = {
+                        "queried": queried_images,
+                        "force_tol": al_convergence["force_tol"],
+                    }
 
-            terminate = termination_criteria(
-                method=method, termination_args=termination_args
-            )
+                terminate = termination_criteria(
+                    method=method, termination_args=termination_args
+                )
+            if self.iteration > 25:
+                print("Early termination!")
+                terminate = True
+            self.iteration += 1
 
         return trained_calc
 

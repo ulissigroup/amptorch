@@ -1,3 +1,4 @@
+import os
 import sys
 import copy
 
@@ -54,15 +55,20 @@ class AMPOnlineCalc(Calculator):
         force_pred = self.ensemble_calc.get_forces(atoms)
         uncertainty = atoms.info["uncertainty"][0]
 
+        cwd = os.getcwd()
         if uncertainty >= self.uncertain_tol:
             new_data = atoms.copy()
             new_data.set_calculator(copy.copy(self.parent_calc))
+            os.makedirs("./temp", exist_ok=True)
+            os.chdir("./temp")
 
             energy_pred = new_data.get_potential_energy(apply_constraint=False)
             force_pred = new_data.get_forces(apply_constraint=False)
             new_data.set_calculator(
                 sp(atoms=new_data, energy=energy_pred, forces=force_pred)
             )
+            os.chdir(cwd)
+            os.system("rm -rf ./temp")
 
             self.ensemble_sets, self.parent_dataset = bootstrap_ensemble(
                 self.parent_dataset, self.ensemble_sets, new_data=new_data
