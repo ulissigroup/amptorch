@@ -9,7 +9,7 @@ from subprocess import check_output
 install_requires = [
     "torch",
     "spglib",
-    "scikit-learn==0.21.3",
+    # "scikit-learn==0.21.3",
     "skorch==0.6.0",
     "scipy",
     "pandas",
