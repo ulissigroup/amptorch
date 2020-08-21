@@ -73,7 +73,7 @@ class AMPTorchDataset(Dataset):
             for element in element_list:
                 atomic_number = ATOM_SYMBOL_TO_INDEX_DICT[element]
                 size_info = image_data[element]["size_info"]
-                num_element = size_info[0]
+                num_element = size_info[1]
                 atomic_numbers += [atomic_number] * num_element
                 natoms += num_element
                 image_fp_list.append(image_data[element]["descriptors"])
