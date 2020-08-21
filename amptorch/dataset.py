@@ -7,6 +7,7 @@ from torch_geometric.data import Data, Batch
 from scipy.sparse import coo_matrix, vstack
 import torch
 import numpy as np
+import itertools
 
 class AMPTorchDataset(Dataset):
     def __init__(
