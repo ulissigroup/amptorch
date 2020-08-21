@@ -101,6 +101,8 @@ class AMPTorchDataset(Dataset):
                     fp_prime_size  = image_data[element]["descriptor_primes"]["size"]
 
                     element_fp_prime_matrix = coo_matrix((fp_prime_value, (fp_prime_row, fp_prime_col)), shape=fp_prime_size)
+
+                    image_forces_list.append(forces)
                     image_fp_primes_list.append(element_fp_prime_matrix)
                     
                 image_fp_primes = vstack(image_fp_primes_list)
