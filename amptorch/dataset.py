@@ -59,6 +59,7 @@ class AMPTorchDataset(Dataset):
         self._prepare_data()
 
     def _prepare_data(self):
+
         data_list = []
         raw_data = self.descriptor_calculator._get_calculated_descriptors() 
         element_list = self.descriptor_calculator.element_list
@@ -119,6 +120,8 @@ class AMPTorchDataset(Dataset):
 
                 # data.forces = torch.FloatTensor(image_forces)
                 # data.fprimes = fingerprintprimes
+            
+            data_list.append(data)
 
         self.data_length = len(data_list)
         self.data = data_list
