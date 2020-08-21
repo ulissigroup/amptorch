@@ -120,7 +120,7 @@ class AMPTorchDataset(Dataset):
                 # data.forces = torch.FloatTensor(image_forces)
                 # data.fprimes = fingerprintprimes
 
-        self.data_length = len(raw_data)
+        self.data_length = len(data_list)
         self.data = data_list
 
     def __len__(self):
