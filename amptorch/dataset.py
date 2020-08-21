@@ -148,6 +148,7 @@ def sparse_block_diag(arrs):
         )
 
     shapes = torch.tensor([a.shape for a in arrs])
+    print(shapes)
 
     i = []
     v = []
