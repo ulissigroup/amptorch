@@ -20,7 +20,7 @@ class AMPTorchDataset(Dataset):
         self.descriptor_calculator = DescriptorCalculator(
             trajs = trajs,
             descriptor = descriptor,
-            automatic_calculation=automatic_calculation,
+            automatic_calculation=False,
             calculate_descriptor_primes=calculate_descriptor_primes,
             sparse_prime=sparse_prime,
             store_descriptors=store_descriptors,
@@ -29,6 +29,14 @@ class AMPTorchDataset(Dataset):
             parallel=parallel,
             cores=cores
         )
+
+        if automatic_calculation:
+            self.process()
+
+    def process(self):
+        self.descriptor_calculator.prepare_descriptors()
+        self.length = 
+        self.data = 
 
     def __len__(self):
         pass

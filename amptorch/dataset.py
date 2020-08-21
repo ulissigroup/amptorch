@@ -1,113 +1,85 @@
-import copy
-import os
-import numpy as np
-import torch
 from torch.utils.data import Dataset
-import itertools
-import ase
-from amptorch.gaussian import make_symmetry_functions
-from amptorch.data_utils import Normalize
-from amptorch.utils import (
-    make_amp_descriptors_simple_nn,
-    calculate_fingerprints_range,
-    hash_images,
-)
-from amp.utilities import hash_images as amp_hash
-from amp.utilities import get_hash as get_amp_hash
-
+from .amptorch_descriptor.descriptor_base import AMPTorchDescriptorBase
+from .amptorch_descriptor.descriptor_calculator import DescriptorCalculator
+from .amptorch_descriptor.constants import ATOM_INDEX_TO_SYMBOL_DICT, ATOM_SYMBOL_TO_INDEX_DICT
+from ase import Atoms
 from torch_geometric.data import Data, Batch
-from tqdm import tqdm
+from scipy.sparse import coo_matrix, vstack
 
-__author__ = "Muhammed Shuaibi"
-__email__ = "mshuaibi@andrew.cmu.edu"
+class AMPTorchDataset(Dataset):
+    def __init__(
+        self,
+        trajs,
+        descriptor,
+        automatic_calculation = True,
+        force_calculation = True,
+        # calculate_descriptor_primes = True,
+        sparse_prime = True,
+        store_descriptors = True,
+        PCA_transform = False,
+        PCA_ncomponents = 10,
+        scaling = True,
+        training_data = False,
+        result_dir = "./_results_/",
+        parallel = False,
+        cores = 1,
+    ):
 
+        self.force_calculation = force_calculation
+        self.PCA_transform = PCA_transform
+        self.PCA_ncomponents = PCA_ncomponents
+        self.scaling = scaling
 
-class AtomsDataset(Dataset):
-    def __init__(self, images, descriptor, Gs, forcetraining, label, cores):
-        self.images = images
-        self.base_descriptor = descriptor
-        self.descriptor = descriptor
-        self.Gs = Gs
-        self.atom_images = self.images
-        self.forcetraining = forcetraining
-        self.cores = cores
-
-        if isinstance(images, str):
-            extension = os.path.splitext(images)[1]
-            if extension != (".traj" or ".db"):
-                self.atom_images = ase.io.read(images, ":")
-        self.elements = self.unique()
-        # wrap all fingerprinting work into its own module
-
-        print("Calculating fingerprints...")
-        G2_etas = Gs["G2_etas"]
-        G2_rs_s = Gs["G2_rs_s"]
-        G4_etas = Gs["G4_etas"]
-        G4_zetas = Gs["G4_zetas"]
-        G4_gammas = Gs["G4_gammas"]
-        cutoff = Gs["cutoff"]
-
-        # create fingerprints
-        self.hashed_images = amp_hash(self.atom_images)
-        G = make_symmetry_functions(elements=self.elements, type="G2", etas=G2_etas)
-        G += make_symmetry_functions(
-            elements=self.elements,
-            type="G4",
-            etas=G4_etas,
-            zetas=G4_zetas,
-            gammas=G4_gammas,
+        self.descriptor_calculator = DescriptorCalculator(
+            trajs = trajs,
+            descriptor = descriptor,
+            automatic_calculation=False,
+            calculate_descriptor_primes=self.force_calculation,
+            sparse_prime=sparse_prime,
+            store_descriptors=store_descriptors,
+            training_data=training_data,
+            result_dir=result_dir,
+            parallel=parallel,
+            cores=cores
         )
-        for g in list(G):
-            g["Rs"] = G2_rs_s
-        self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
-        self.descriptor.calculate_fingerprints(
-            self.hashed_images, calculate_derivatives=forcetraining
-        )
-
-        print("Fingerprints Calculated!")
-        self.fprange = calculate_fingerprints_range(
-            self.descriptor, self.hashed_images
-        )
-
-        # perform preprocessing
-        self.dataset = self.process()
-
-    def __len__(self):
-        return len(self.atom_images)
-
-    def __getitem__(self, index):
-        return self.dataset[index]
+        
+        if automatic_calculation:
+            self.process()
 
     def process(self):
+        self.descriptor_calculator.prepare_descriptors()
+
+        if self.PCA_transform:
+            self.descriptor_calculator.calculate_PCA(n_components = self.PCA_ncomponents)
+        if self.scaling:
+            self.descriptor_calculator.calculate_scaling()
+
+        self._prepare_data()
+
+    def _prepare_data(self):
         data_list = []
-        for idx, atoms in tqdm(enumerate(self.images), total=len(self)):
-            hash_name = get_amp_hash(atoms)
+        raw_data = self.descriptor_calculator._get_calculated_descriptors() 
+        element_list = self.descriptor_calculator.element_list
+        
+        for idx, image_data in enumerate(raw_data):
+            potential_energy = image_data["energy"]
+            image_fp_list = []
+            atomic_numbers = []
+            natoms = 0
 
-            # scale fingerprints
-            image_fingerprint = self.descriptor.fingerprints[hash_name]
-            for i, (atom, afp) in enumerate(image_fingerprint):
-                _afp = copy.copy(afp)
-                fprange_atom = np.array(self.fprange[atom])
-                for _ in range(np.shape(_afp)[0]):
-                    if (fprange_atom[_][1] - fprange_atom[_][0]) > (10.0 ** (-8.0)):
-                        _afp[_] = -1 + 2.0 * (
-                            (_afp[_] - fprange_atom[_][0])
-                            / (fprange_atom[_][1] - fprange_atom[_][0])
-                        )
-                image_fingerprint[i] = (atom, _afp)
+            for element in element_list:
+                atomic_number = ATOM_SYMBOL_TO_INDEX_DICT[element]
+                size = image_data[element]["size_info"]
+                num_element = size_info[0]
+                atomic_numbers += [atomic_number] * num_element
+                natoms += num_element
+                image_fp_list.append(image_data[element]["descriptors"])
 
-            # convert amp structure
-            fp_length = len(image_fingerprint[0][1])
-            natoms = len(image_fingerprint)
             image_fingerprint = torch.tensor(
-                np.vstack([fp[1] for fp in image_fingerprint])
+                np.vstack(image_fp_list)
             )
-            potential_energy = self.hashed_images[hash_name].get_potential_energy(
-                apply_constraint=False
-            )
-            atomic_numbers = torch.tensor(atoms.get_atomic_numbers())
+            atomic_numbers = torch.tensor(atomic_numbers)
             image_idx = torch.full((1, natoms), idx, dtype=torch.int64).view(-1)
-
             data = Data(
                 fingerprint=image_fingerprint,
                 image_idx=image_idx,
@@ -116,52 +88,42 @@ class AtomsDataset(Dataset):
                 natoms=natoms,
             )
 
-            if self.forcetraining:
-                image_forces = self.hashed_images[hash_name].get_forces(
-                    apply_constraint=False
-                )
-                # scale fingerprintprimes
-                image_primes = self.descriptor.fingerprintprimes[hash_name]
-                _image_primes = copy.copy(image_primes)
-                for _, key in enumerate(list(image_primes.keys())):
-                    base_atom = key[3]
-                    fprange_atom = np.array(self.fprange[base_atom])
-                    fprange_dif = fprange_atom[:, 1] - fprange_atom[:, 0]
-                    fprange_dif[fprange_dif < 10.0 ** (-8.0)] = 2
-                    fprime = np.array(image_primes[key])
-                    fprime = 2 * fprime / fprange_dif
-                    _image_primes[key] = fprime
+            if self.force_calculation:
+                image_forces_list = []
+                image_fp_primes_list = []
+                for element in element_list:
+                    forces = image_data[element]["forces"]
+                    fp_prime_value = image_data[element]["descriptor_primes"]["value"]
+                    fp_prime_row   = image_data[element]["descriptor_primes"]["row"]
+                    fp_prime_col   = image_data[element]["descriptor_primes"]["col"]
+                    fp_prime_size  = image_data[element]["descriptor_primes"]["size"]
 
-                image_prime_values = list(_image_primes.values())
-                image_prime_keys = list(_image_primes.keys())
-                # convert amp fprime format to matrix
-                fingerprintprimes = torch.zeros(fp_length * natoms, 3 * natoms)
-                for idx, fp_key in enumerate(image_prime_keys):
-                    image_prime = torch.tensor(image_prime_values[idx])
-                    base_atom = fp_key[2]
-                    wrt_atom = fp_key[0]
-                    coord = fp_key[4]
-                    fingerprintprimes[
-                        base_atom * fp_length : base_atom * fp_length + fp_length,
-                        wrt_atom * 3 + coord,
-                    ] = image_prime
+                    element_fp_prime_matrix = coo_matrix((fp_prime_value, (fp_prime_row, fp_prime_col)), shape=fp_prime_size)
+                    image_fp_primes_list.append(element_fp_prime_matrix)
+                    
+                image_fp_primes = vstack(image_fp_primes_list)
+                # scipy_sparse_fp_prime.data, scipy_sparse_fp_prime.row, scipy_sparse_fp_prime.col, np.array(fp_prime.shape)
+                indices = np.vstack((image_fp_primes.row, image_fp_primes.col))
+                torch_indices = torch.LongTensor(indices)
+                torch_values = torch.FloatTensor(image_fp_primes.data)
+                fp_primes_torch_sparse = torch.sparse.FloatTensor(torch_indices, torch_values, torch.Size(image_fp_primes.shape))
+
+                image_forces = np.vstack(image_forces_list)
 
                 data.forces = torch.FloatTensor(image_forces)
-                data.fprimes = fingerprintprimes
+                data.fprimes = fp_primes_torch_sparse
 
-            data_list.append(data)
-            # write dataset as *.pt file for future use
-        normalizer = Normalize(data_list)
-        data_list = normalizer.norm(data_list)
-        return data_list
+                # data.forces = torch.FloatTensor(image_forces)
+                # data.fprimes = fingerprintprimes
 
-    def unique(self):
-        elements = np.array(
-            [atom.symbol for atoms in self.atom_images for atom in atoms]
-        )
-        _, idx = np.unique(elements, return_index=True)
-        elements = list(elements[np.sort(idx)])
-        return elements
+        self.data_length = len(raw_data)
+        self.data = data_list
+
+    def __len__(self):
+        return self.data_length
+
+    def __getitem__(self, index):
+        return self.data[index]
 
 
 # Adapted from https://github.com/pytorch/pytorch/issues/31942
