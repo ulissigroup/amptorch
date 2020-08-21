@@ -5,6 +5,7 @@ from .amptorch_descriptor.constants import ATOM_INDEX_TO_SYMBOL_DICT, ATOM_SYMBO
 from ase import Atoms
 from torch_geometric.data import Data, Batch
 from scipy.sparse import coo_matrix, vstack
+import torch
 
 class AMPTorchDataset(Dataset):
     def __init__(
