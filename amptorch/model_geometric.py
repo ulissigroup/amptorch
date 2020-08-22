@@ -83,6 +83,7 @@ class BPNN(nn.Module):
 
     def forward(self, batch):
         print(batch)
+        print(len(batch))
         print(batch.atomic_numbers)
         atomic_numbers = batch.atomic_numbers
         fingerprints = batch.fingerprint.float()
