@@ -154,11 +154,11 @@ def sparse_block_diag(arrs):
     v = []
     r, c = 0, 0
     for k, (rr, cc) in enumerate(shapes):
-        print(r, rr, rr.numpy())
-        print(np.arange(r, r+rr.numpy()))
-        print(np.arange(c, c+cc.numpy()))
+        # print(r, rr, rr.numpy())
+        # print(np.arange(r, r+rr.numpy()))
+        # print(np.arange(c, c+cc.numpy()))
         # print(itertools.product(np.arange(r, r+rr.numpy()).astype(int), np.arange(c, c+cc.numpy()).astype(int)))
-        print(list(itertools.product(np.arange(r, r+rr.numpy()), np.arange(c, c+cc.numpy()))))
+        # print(list(itertools.product(np.arange(r, r+rr.numpy()), np.arange(c, c+cc.numpy()))))
         i += [
             torch.LongTensor(
                 list(itertools.product(np.arange(r, r+rr.numpy()), np.arange(c, c+cc.numpy())))
