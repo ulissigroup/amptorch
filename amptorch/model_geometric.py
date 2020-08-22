@@ -88,7 +88,7 @@ class BPNN(nn.Module):
         print(batch[0])
         print(batch[1])
         print(batch.atomic_numbers)
-        inputs = batch
+        inputs = batch[0]
 
         atomic_numbers = inputs.atomic_numbers
         fingerprints = inputs.fingerprint.float()
