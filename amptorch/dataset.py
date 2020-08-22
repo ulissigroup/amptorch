@@ -165,7 +165,8 @@ def sparse_block_diag(arrs):
                 # list(itertools.product(np.arange(r, r+rr).astype(int), np.arange(c, c+cc).astype(int)))
             ).t()
         ]
-        v += [arrs[k].flatten()]
+        # v += [arrs[k].flatten()]
+        v += [arrs[k].to_dense().flatten()]
         r += rr
         c += cc
     out = torch.sparse.DoubleTensor(
