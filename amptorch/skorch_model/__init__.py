@@ -55,6 +55,7 @@ class AMP(Calculator):
         self.scalings = training_data.scalings
         self.target_ref_per_atom = self.scalings[0]
         self.delta_ref_per_atom = self.scalings[1]
+        self.scale = self.scalings[2]
         self.delta = training_data.delta
         self.Gs = training_data.Gs
         self.fprange = training_data.fprange
@@ -144,6 +145,7 @@ class AMP(Calculator):
             label=self.testlabel,
             cores=self.cores,
         )
+        num_atoms = len(atoms)
         unique_atoms = dataset.unique()
         batch_size = len(dataset)
         dataloader = DataLoader(
@@ -158,9 +160,10 @@ class AMP(Calculator):
             for element in unique_atoms:
                 inputs[0][element][0] = inputs[0][element][0].requires_grad_(True)
             energy, forces = model(inputs)
+            energy = energy*self.scale.std + self.scale.mean*num_atoms
+            forces = self.scale.denorm(forces, energy=False)
         energy = np.concatenate(energy.detach().numpy())
         forces = forces.detach().numpy()
-        num_atoms = forces.shape[0]
 
         image_hash = hash_images([atoms])
         if self.delta:
