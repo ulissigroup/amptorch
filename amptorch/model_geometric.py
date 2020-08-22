@@ -81,16 +81,41 @@ class BPNN(nn.Module):
 
         self.element_mask = ElementMask(unique_atoms)
 
+
     def forward(self, batch):
-        print(batch)
-        print(len(batch))
-        print(batch[0])
-        print(batch[1])
-        print(batch[0].atomic_numbers)
-        atomic_numbers = batch[0].atomic_numbers
-        fingerprints = batch[0].fingerprint.float()
+        inputs = batch[0]
+
+        atomic_numbers = inputs.atomic_numbers
+        fingerprints = inputs.fingerprint.float()
         fingerprints.requires_grad = True
-        image_idx = batch[0].image_idx
+        image_idx = inputs.image_idx
+        mask = self.element_mask(atomic_numbers)
+        o = torch.sum(
+            mask * torch.cat([net(fingerprints) for net in self.elementwise_models], 1), dim=1
+        )
+        energy = scatter(o, image_idx)
+
+        if self.forcetraining:
+            gradients = grad(
+                energy,
+                fingerprints,
+                grad_outputs=torch.ones_like(energy),
+                create_graph=True,
+            )[0].view(1, -1)
+
+            forces = -1 * torch.sparse.mm(inputs.fprimes.t(), gradients.t()).view(-1, 3)
+        return energy, forces
+
+    def forward_backup(self, batch):
+        print(batch)
+        # print(len(batch))
+        # print(batch[0])
+        # print(batch[1])
+        # print(batch.atomic_numbers)
+        atomic_numbers = batch.atomic_numbers
+        fingerprints = batch.fingerprint.float()
+        fingerprints.requires_grad = True
+        image_idx = batch.image_idx
         mask = self.element_mask(atomic_numbers)
         o = torch.sum(
             mask * torch.cat([net(fingerprints) for net in self.elementwise_models], 1), dim=1
