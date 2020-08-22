@@ -1,6 +1,5 @@
 import numpy as np
 
-from amptorch.gaussian import SNN_Gaussian
 from amptorch.dataset import (
     AMPTorchDataset,
     collate_amp
@@ -36,19 +35,11 @@ Gs = {"G2": {"etas": np.logspace(np.log10(0.05), np.log10(5.0), num=4), "rs_s": 
 descriptor = BPSymmetryFunction(Gs = Gs, elements = elements)
 
 
-dataset = AtomsDataset(trajectories, descriptor)
+dataset = AMPTorchDataset(trajectories, descriptor, training_data = True)
 
 
-# forcetraining = True
-# dataset = AtomsDataset(
-#     images,
-#     SNN_Gaussian,
-#     Gs,
-#     forcetraining=forcetraining,
-#     label="test",
-#     cores=4,
-# )
-
+print(len(dataset))
+print(dataset[0])
 dataloader = DataLoader(dataset, batch_size=2, shuffle=False, collate_fn=collate_amp)
 k = next(iter(dataloader))
 
