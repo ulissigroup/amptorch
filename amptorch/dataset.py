@@ -168,8 +168,8 @@ def sparse_block_diag(arrs):
         ]
         # v += [arrs[k].flatten()]
         v += [arrs[k].to_dense().flatten()]
-        r += rr
-        c += cc
+        r += rr.numpy()
+        c += cc.numpy()
     out = torch.sparse.DoubleTensor(
         torch.cat(i, dim=1), torch.cat(v), torch.sum(shapes, dim=0).tolist()
     )
