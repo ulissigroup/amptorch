@@ -86,11 +86,11 @@ class BPNN(nn.Module):
         print(len(batch))
         print(batch[0])
         print(batch[1])
-        print(batch.atomic_numbers)
-        atomic_numbers = batch.atomic_numbers
-        fingerprints = batch.fingerprint.float()
+        print(batch[0].atomic_numbers)
+        atomic_numbers = batch[0].atomic_numbers
+        fingerprints = batch[0].fingerprint.float()
         fingerprints.requires_grad = True
-        image_idx = batch.image_idx
+        image_idx = batch[0].image_idx
         mask = self.element_mask(atomic_numbers)
         o = torch.sum(
             mask * torch.cat([net(fingerprints) for net in self.elementwise_models], 1), dim=1
