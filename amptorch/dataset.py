@@ -162,9 +162,10 @@ class AMPTorchDataset(Dataset):
         for idx, image_data in enumerate(raw_data):
             natoms = 0
             for element in element_list:
-                size_info = image_data[element]["size_info"]
-                num_element = size_info[1]
-                natoms += num_element
+                if element in image_data.keys():
+                    size_info = image_data[element]["size_info"]
+                    num_element = size_info[1]
+                    natoms += num_element
             if max_natoms < natoms:
                 max_natoms = natoms
         return max_natoms
