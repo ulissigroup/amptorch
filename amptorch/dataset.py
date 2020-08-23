@@ -59,12 +59,15 @@ class AMPTorchDataset(Dataset):
 
         self._prepare_data()
 
-    def _prepare_data(self):
+    def _prepare_data(self, match_max_natoms = True):
 
         data_list = []
         raw_data = self.descriptor_calculator._get_calculated_descriptors() 
         element_list = self.descriptor_calculator.element_list
-        
+
+        if match_max_natoms:
+            max_natoms = self._get_max_natoms(raw_data, element_list)
+
         for idx, image_data in enumerate(raw_data):
             potential_energy = image_data["energy"]
             image_fp_list = []
@@ -78,6 +81,14 @@ class AMPTorchDataset(Dataset):
                 atomic_numbers += [atomic_number] * num_element
                 natoms += num_element
                 image_fp_list.append(image_data[element]["descriptors"])
+            
+            if match_max_natoms:
+                num_dummy_atoms = max_natoms - natoms
+                num_descriptors = (image_fp_list[0].shape)[1]
+                image_fp_list.append(np.zeros(num_dummy_atoms, num_descriptors))
+                atomic_numbers += [0] * num_dummy_atoms
+                natoms += num_dummy_atoms
+
 
             image_fingerprint = torch.tensor(
                 np.vstack(image_fp_list)
@@ -101,11 +112,26 @@ class AMPTorchDataset(Dataset):
                     fp_prime_row   = image_data[element]["descriptor_primes"]["row"]
                     fp_prime_col   = image_data[element]["descriptor_primes"]["col"]
                     fp_prime_size  = image_data[element]["descriptor_primes"]["size"]
+                    #size should be [n_atom_select * n_descriptor, 3 * n_atom_actual]
+
+                    if match_max_natoms:
+                        # need to change size to [n_atom_select * n_descriptor, 3 * max_atoms]
+                        actual_size = np.array([fp_prime_size[0], max_natoms * 3])
+                    else:
+                        actual_size = fp_prime_size
 
                     element_fp_prime_matrix = coo_matrix((fp_prime_value, (fp_prime_row, fp_prime_col)), shape=fp_prime_size)
 
                     image_forces_list.append(forces)
                     image_fp_primes_list.append(element_fp_prime_matrix)
+                
+                if match_max_natoms:
+                    image_forces_list.append(np.zeros((num_dummy_atoms, 3)))
+                    empty_arr = np.array([])
+                    dummy_fp_prime_matrix_size = np.array([num_dummy_atoms, max_natoms * 3])
+                    dummy_fp_prime_matrix = coo_matrix((empty_arr, (empty_arr, empty_arr)), shape=fp_prime_size)
+                    image_fp_primes_list.append(dummy_fp_prime_matrix)
+                    
                     
                 image_fp_primes = vstack(image_fp_primes_list)
                 # scipy_sparse_fp_prime.data, scipy_sparse_fp_prime.row, scipy_sparse_fp_prime.col, np.array(fp_prime.shape)
@@ -126,6 +152,18 @@ class AMPTorchDataset(Dataset):
 
         self.data_length = len(data_list)
         self.data = data_list
+
+    def _get_max_natoms(self, raw_data, element_list):
+        max_natoms = 0
+        for idx, image_data in enumerate(raw_data):
+            natoms = 0
+            for element in element_list:
+                size_info = image_data[element]["size_info"]
+                num_element = size_info[1]
+                natoms += num_element
+            if max_natoms < natoms:
+                max_natoms = natoms
+        return max_natoms
 
     def __len__(self):
         return self.data_length
