@@ -75,12 +75,13 @@ class AMPTorchDataset(Dataset):
             natoms = 0
 
             for element in element_list:
-                atomic_number = ATOM_SYMBOL_TO_INDEX_DICT[element]
-                size_info = image_data[element]["size_info"]
-                num_element = size_info[1]
-                atomic_numbers += [atomic_number] * num_element
-                natoms += num_element
-                image_fp_list.append(image_data[element]["descriptors"])
+                if element in image_data.keys():
+                    atomic_number = ATOM_SYMBOL_TO_INDEX_DICT[element]
+                    size_info = image_data[element]["size_info"]
+                    num_element = size_info[1]
+                    atomic_numbers += [atomic_number] * num_element
+                    natoms += num_element
+                    image_fp_list.append(image_data[element]["descriptors"])
             
             if match_max_natoms:
                 num_dummy_atoms = max_natoms - natoms
@@ -109,23 +110,24 @@ class AMPTorchDataset(Dataset):
                 image_forces_list = []
                 image_fp_primes_list = []
                 for element in element_list:
-                    forces = image_data[element]["forces"]
-                    fp_prime_value = image_data[element]["descriptor_primes"]["value"]
-                    fp_prime_row   = image_data[element]["descriptor_primes"]["row"]
-                    fp_prime_col   = image_data[element]["descriptor_primes"]["col"]
-                    fp_prime_size  = image_data[element]["descriptor_primes"]["size"]
-                    #size should be [n_atom_select * n_descriptor, 3 * n_atom_actual]
+                    if element in image_data.keys():
+                        forces = image_data[element]["forces"]
+                        fp_prime_value = image_data[element]["descriptor_primes"]["value"]
+                        fp_prime_row   = image_data[element]["descriptor_primes"]["row"]
+                        fp_prime_col   = image_data[element]["descriptor_primes"]["col"]
+                        fp_prime_size  = image_data[element]["descriptor_primes"]["size"]
+                        #size should be [n_atom_select * n_descriptor, 3 * n_atom_actual]
 
-                    if match_max_natoms:
-                        # need to change size to [n_atom_select * n_descriptor, 3 * max_atoms]
-                        actual_size = np.array([fp_prime_size[0], max_natoms * 3])
-                    else:
-                        actual_size = fp_prime_size
+                        if match_max_natoms:
+                            # need to change size to [n_atom_select * n_descriptor, 3 * max_atoms]
+                            actual_size = np.array([fp_prime_size[0], max_natoms * 3])
+                        else:
+                            actual_size = fp_prime_size
 
-                    element_fp_prime_matrix = coo_matrix((fp_prime_value, (fp_prime_row, fp_prime_col)), shape=fp_prime_size)
+                        element_fp_prime_matrix = coo_matrix((fp_prime_value, (fp_prime_row, fp_prime_col)), shape=fp_prime_size)
 
-                    image_forces_list.append(forces)
-                    image_fp_primes_list.append(element_fp_prime_matrix)
+                        image_forces_list.append(forces)
+                        image_fp_primes_list.append(element_fp_prime_matrix)
                 
                 if match_max_natoms and num_dummy_atoms > 0:
                     image_forces_list.append(np.zeros((num_dummy_atoms, 3)))

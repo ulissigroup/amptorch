@@ -56,9 +56,10 @@ class DescriptorCalculator:
                 # result[element] = []
                 element_descriptor_list = []
                 for calculated_decsriptor in self.calculated_decsriptor_list:
-                    temp = calculated_decsriptor[element]["descriptors"].copy()
-                    element_descriptor_list.append(temp)
-                    # element_descriptor_array = np.vstack([element_descriptor_array, temp]) if element_descriptor_array.size else temp
+                    if element in calculated_decsriptor.keys():
+                        temp = calculated_decsriptor[element]["descriptors"].copy()
+                        element_descriptor_list.append(temp)
+                        # element_descriptor_array = np.vstack([element_descriptor_array, temp]) if element_descriptor_array.size else temp
                 result[element] = element_descriptor_list
             return result
         
@@ -68,9 +69,10 @@ class DescriptorCalculator:
             for calculated_decsriptor in self.calculated_decsriptor_list:
                 descriptors = np.array([])
                 for element in self.element_list:
-                    temp = calculated_decsriptor[element]["descriptors"].copy()
-                    descriptors = np.vstack([descriptors, temp]) if descriptors.size else temp
-                    descriptors.append(temp)
+                    if element in calculated_decsriptor.keys():
+                        temp = calculated_decsriptor[element]["descriptors"].copy()
+                        descriptors = np.vstack([descriptors, temp]) if descriptors.size else temp
+                        descriptors.append(temp)
                 result.append(descriptors)
             return result
 
@@ -86,12 +88,15 @@ class DescriptorCalculator:
                 element_descriptor_prime_list = []
                 
                 for calculated_decsriptor in self.calculated_decsriptor_list:
-                    fp_primes_val  = calculated_decsriptor[element]["descriptor_primes"]["value"].copy()
-                    fp_primes_row  = calculated_decsriptor[element]["descriptor_primes"]["row"].copy()
-                    fp_primes_col  = calculated_decsriptor[element]["descriptor_primes"]["col"].copy()
-                    fp_primes_size = calculated_decsriptor[element]["descriptor_primes"]["size"].copy()
-                    temp = coo_matrix((fp_primes_val, (fp_primes_row, fp_primes_col)), shape=fp_primes_size)
-                    element_descriptor_prime_list.append(temp)
+                    if element in calculated_decsriptor.keys():
+                        fp_primes_val  = calculated_decsriptor[element]["descriptor_primes"]["value"].copy()
+                        fp_primes_row  = calculated_decsriptor[element]["descriptor_primes"]["row"].copy()
+                        fp_primes_col  = calculated_decsriptor[element]["descriptor_primes"]["col"].copy()
+                        fp_primes_size = calculated_decsriptor[element]["descriptor_primes"]["size"].copy()
+                        temp = coo_matrix((fp_primes_val, (fp_primes_row, fp_primes_col)), shape=fp_primes_size)
+                        element_descriptor_prime_list.append(temp)
+                    else:
+                        element_descriptor_prime_list.append([])
                     # element_descriptor_array = np.vstack([element_descriptor_array, temp]) if element_descriptor_array.size else temp
                 result[element] = element_descriptor_prime_list
             return result
@@ -102,11 +107,12 @@ class DescriptorCalculator:
             for calculated_decsriptor in self.calculated_decsriptor_list:
                 descriptor_primes = []
                 for element in self.element_list:
-                    fp_primes_val  = calculated_decsriptor[element]["descriptor_primes"]["value"].copy()
-                    fp_primes_row  = calculated_decsriptor[element]["descriptor_primes"]["row"].copy()
-                    fp_primes_col  = calculated_decsriptor[element]["descriptor_primes"]["col"].copy()
-                    fp_primes_size = calculated_decsriptor[element]["descriptor_primes"]["size"].copy()
-                    temp = coo_matrix((fp_primes_val, (fp_primes_row, fp_primes_col)), shape=fp_primes_size)
+                    if element in calculated_decsriptor.keys():
+                        fp_primes_val  = calculated_decsriptor[element]["descriptor_primes"]["value"].copy()
+                        fp_primes_row  = calculated_decsriptor[element]["descriptor_primes"]["row"].copy()
+                        fp_primes_col  = calculated_decsriptor[element]["descriptor_primes"]["col"].copy()
+                        fp_primes_size = calculated_decsriptor[element]["descriptor_primes"]["size"].copy()
+                        temp = coo_matrix((fp_primes_val, (fp_primes_row, fp_primes_col)), shape=fp_primes_size)
                     descriptor_primes.append(temp)
                 descriptor_primes = vstack(descriptor_primes)
                 result.append(descriptor_primes)
@@ -156,14 +162,15 @@ class DescriptorCalculator:
                 count = 0
                 for calculated_decsriptor in self.calculated_decsriptor_list:
                     count += 1
-                    print("start applying PCA image: {} / {}".format(count, total_length))
-                    size_info = calculated_decsriptor[element]["size_info"]
-                    calculated_decsriptor[element]["descriptors"] = model.transform(calculated_decsriptor[element]["descriptors"])
-                    if self.calculate_descriptor_primes:
-                        calculated_decsriptor[element]["descriptor_primes"] = \
-                            self._apply_pca_model_to_descriptor_primes(calculated_decsriptor[element]["descriptor_primes"], size_info[0], size_info[1], size_info[2], model)
-                    new_size_info = np.array([size_info[0], size_info[1], model.n_components_])
-                    calculated_decsriptor[element]["size_info"] = new_size_info
+                    if element in calculated_decsriptor.keys():
+                        print("start applying PCA image: {} / {}".format(count, total_length))
+                        size_info = calculated_decsriptor[element]["size_info"]
+                        calculated_decsriptor[element]["descriptors"] = model.transform(calculated_decsriptor[element]["descriptors"])
+                        if self.calculate_descriptor_primes:
+                            calculated_decsriptor[element]["descriptor_primes"] = \
+                                self._apply_pca_model_to_descriptor_primes(calculated_decsriptor[element]["descriptor_primes"], size_info[0], size_info[1], size_info[2], model)
+                        new_size_info = np.array([size_info[0], size_info[1], model.n_components_])
+                        calculated_decsriptor[element]["size_info"] = new_size_info
 
         else:
             print("WARNING: NOT implemented")
@@ -290,14 +297,15 @@ class DescriptorCalculator:
                 count = 0
                 for calculated_decsriptor in self.calculated_decsriptor_list:
                     count += 1
-                    print("start scaling image: {} / {}".format(count, total_length))
-                    size_info = calculated_decsriptor[element]["size_info"]
-                    calculated_decsriptor[element]["descriptors"] = model.transform(calculated_decsriptor[element]["descriptors"])
-                    if self.calculate_descriptor_primes:
-                        calculated_decsriptor[element]["descriptor_primes"] = \
-                            self._apply_scaling_model_to_descriptor_primes(calculated_decsriptor[element]["descriptor_primes"], size_info[0], size_info[1], size_info[2], model)
-                    # new_size_info = np.array([size_info[0], size_info[1], model.n_components_])
-                    # calculated_decsriptor[element]["size_info"] = new_size_info
+                    if element in calculated_decsriptor.keys():
+                        print("start scaling image: {} / {}".format(count, total_length))
+                        size_info = calculated_decsriptor[element]["size_info"]
+                        calculated_decsriptor[element]["descriptors"] = model.transform(calculated_decsriptor[element]["descriptors"])
+                        if self.calculate_descriptor_primes:
+                            calculated_decsriptor[element]["descriptor_primes"] = \
+                                self._apply_scaling_model_to_descriptor_primes(calculated_decsriptor[element]["descriptor_primes"], size_info[0], size_info[1], size_info[2], model)
+                        # new_size_info = np.array([size_info[0], size_info[1], model.n_components_])
+                        # calculated_decsriptor[element]["size_info"] = new_size_info
 
         else:
             print("WARNING: NOT implemented")
