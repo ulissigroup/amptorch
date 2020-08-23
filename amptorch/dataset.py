@@ -85,6 +85,7 @@ class AMPTorchDataset(Dataset):
             if match_max_natoms:
                 num_dummy_atoms = max_natoms - natoms
                 num_descriptors = (image_fp_list[0].shape)[1]
+                print("added dummy atoms: {} \t num descriptors: {}".format(num_dummy_atoms, num_descriptors))
                 image_fp_list.append(np.zeros(num_dummy_atoms, num_descriptors))
                 atomic_numbers += [0] * num_dummy_atoms
                 natoms += num_dummy_atoms
