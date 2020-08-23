@@ -84,11 +84,12 @@ class AMPTorchDataset(Dataset):
             
             if match_max_natoms:
                 num_dummy_atoms = max_natoms - natoms
-                num_descriptors = (image_fp_list[0].shape)[1]
-                print("added dummy atoms: {} \t num descriptors: {}".format(num_dummy_atoms, num_descriptors))
-                image_fp_list.append(np.zeros(num_dummy_atoms, num_descriptors))
-                atomic_numbers += [0] * num_dummy_atoms
-                natoms += num_dummy_atoms
+                if num_dummy_atoms > 0:
+                    num_descriptors = (image_fp_list[0].shape)[1]
+                    print("added dummy atoms: {} \t num descriptors: {}".format(num_dummy_atoms, num_descriptors))
+                    image_fp_list.append(np.zeros(num_dummy_atoms, num_descriptors))
+                    atomic_numbers += [0] * num_dummy_atoms
+                    natoms += num_dummy_atoms
 
 
             image_fingerprint = torch.tensor(
@@ -126,7 +127,7 @@ class AMPTorchDataset(Dataset):
                     image_forces_list.append(forces)
                     image_fp_primes_list.append(element_fp_prime_matrix)
                 
-                if match_max_natoms:
+                if match_max_natoms and num_dummy_atoms > 0:
                     image_forces_list.append(np.zeros((num_dummy_atoms, 3)))
                     empty_arr = np.array([])
                     dummy_fp_prime_matrix_size = np.array([num_dummy_atoms, max_natoms * 3])
