@@ -27,70 +27,85 @@ class BPSymmetryFunction(AMPTorchDescriptorBase):
         self.get_descriptor_setup_hash()
 
     def prepare_descriptor_parameters(self):
-        # prepare self.params_set
-        descriptor_setup = []
-        cutoff = self.Gs["cutoff"]
-        # element_indices = list_symbols_to_indices(self.elements)
-        if "G2" in self.Gs:
-            descriptor_setup += [
-                [2, element1, 0, cutoff, eta, rs, 0.0]
-                for element1 in self.element_indices
-                for eta in self.Gs["G2"]["etas"]
-                for rs in self.Gs["G2"]["rs_s"]
-            ]
-        
-        if "G4" in self.Gs:
-            descriptor_setup += [
-                [4, element1, element2, cutoff, eta, zeta, gamma]
-                for element1 in self.element_indices
-                for element2 in self.element_indices
-                for eta in self.Gs["G4"]["etas"]
-                for zeta in self.Gs["G4"]["zetas"]
-                for gamma in self.Gs["G4"]["gammas"]
-            ]
-
-        if "G5" in self.Gs:
-            descriptor_setup += [
-                [4, element1, element2, cutoff, eta, zeta, gamma]
-                for element1 in self.element_indices
-                for element2 in self.element_indices
-                for eta in self.Gs["G4"]["etas"]
-                for zeta in self.Gs["G4"]["zetas"]
-                for gamma in self.Gs["G4"]["gammas"]
-            ]
-
-        self.descriptor_setup = np.array(descriptor_setup)
+        # # prepare self.params_set
+        self.descriptor_setup = {}
+        for element in self.elements:
+            if element in self.Gs:
+                self.descriptor_setup[element] = self._prepare_descriptor_parameters_element(self.Gs[element], self.element_indices)
+            elif "default" in self.Gs:
+                self.descriptor_setup[element] = self._prepare_descriptor_parameters_element(self.Gs["default"], self.element_indices)
+            else:
+                print("ERROR symmetry function for element {} NOT defined")
+                raise NotImplementedError
 
         self.params_set = dict()
-        for element_index in self.element_indices:
+        for element in self.elements:
+            element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
             self.params_set[element_index] = dict()
-            params_i = np.asarray(self.descriptor_setup[:,:3].copy(), dtype=np.intc, order='C')
-            params_d = np.asarray(self.descriptor_setup[:,3:].copy(), dtype=np.float64, order='C')
+            params_i = np.asarray(self.descriptor_setup[element][:,:3].copy(), dtype=np.intc, order='C')
+            params_d = np.asarray(self.descriptor_setup[element][:,3:].copy(), dtype=np.float64, order='C')
             self.params_set[element_index]["i"] = params_i
             self.params_set[element_index]["d"] = params_d
             self.params_set[element_index]['ip'] = _gen_2Darray_for_ffi(self.params_set[element_index]['i'], ffi, "int")
             self.params_set[element_index]['dp'] = _gen_2Darray_for_ffi(self.params_set[element_index]['d'], ffi)
             self.params_set[element_index]['total'] = np.concatenate((self.params_set[element_index]['i'], self.params_set[element_index]['d']), axis=1)
-            self.params_set[element_index]['num'] = len(self.descriptor_setup)
+            self.params_set[element_index]['num'] = len(self.descriptor_setup[element])
 
         return
-    
+
+    def _prepare_descriptor_parameters_element(self, Gs, element_indices):
+        descriptor_setup = []
+        cutoff = Gs["cutoff"]
+        # element_indices = list_symbols_to_indices(self.elements)
+        if "G2" in Gs:
+            descriptor_setup += [
+                [2, element1, 0, cutoff, eta, rs, 0.0]
+                for element1 in element_indices
+                for eta in Gs["G2"]["etas"]
+                for rs in Gs["G2"]["rs_s"]
+            ]
+        
+        if "G4" in Gs:
+            descriptor_setup += [
+                [4, element1, element2, cutoff, eta, zeta, gamma]
+                for element1 in element_indices
+                for element2 in element_indices
+                for eta in Gs["G4"]["etas"]
+                for zeta in Gs["G4"]["zetas"]
+                for gamma in Gs["G4"]["gammas"]
+            ]
+
+        if "G5" in Gs:
+            descriptor_setup += [
+                [5, element1, element2, cutoff, eta, zeta, gamma]
+                for element1 in element_indices
+                for element2 in element_indices
+                for eta in Gs["G4"]["etas"]
+                for zeta in Gs["G4"]["zetas"]
+                for gamma in Gs["G4"]["gammas"]
+            ]
+
+        return np.array(descriptor_setup)
     
     def get_descriptor_setup_hash(self):
         #set self.descriptor_setup_hash
         import hashlib
         string = ""
-        for desc in self.descriptor_setup:
-            for num in desc:
-                string += "%.15f" % num
+        for element in self.descriptor_setup.keys():
+            string += element
+            for desc in self.descriptor_setup[element]:
+                for num in desc:
+                    string += "%.15f" % num
         md5 = hashlib.md5(string.encode("utf-8"))
         hash_result = md5.hexdigest()
         self.descriptor_setup_hash = hash_result
 
     def save_descriptor_setup(self, filename):
         with open(filename, 'w') as out_file:
-            for desc in self.descriptor_setup:
-                out_file.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(int(desc[0]), int(desc[1]), int(desc[2]), desc[3], desc[4], desc[5], desc[6]))
+            for element in self.descriptor_setup.keys():
+                out_file.write("===========\nElement: {}\n".format(element)
+                for desc in self.descriptor_setup[element]:
+                    out_file.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(int(desc[0]), int(desc[1]), int(desc[2]), desc[3], desc[4], desc[5], desc[6]))
 
 
     def calculate_fingerprints(self, atoms, element, log=None, calculate_derivatives=True):

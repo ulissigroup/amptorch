@@ -59,43 +59,17 @@ class AMPTorchDataset(Dataset):
 
         self._prepare_data()
 
-    def _prepare_data(self, match_max_natoms = True):
-
+    def _prepare_data(self):
         data_list = []
         raw_data = self.descriptor_calculator._get_calculated_descriptors() 
         element_list = self.descriptor_calculator.element_list
 
-        if match_max_natoms:
-            max_natoms = self._get_max_natoms(raw_data, element_list)
-
         for idx, image_data in enumerate(raw_data):
             potential_energy = image_data["energy"]
-            image_fp_list = []
-            atomic_numbers = []
-            natoms = 0
+            natoms = image_data["num_atoms"]
+            image_fingerprint = image_data["descriptors"]
 
-            for element in element_list:
-                if element in image_data.keys():
-                    atomic_number = ATOM_SYMBOL_TO_INDEX_DICT[element]
-                    size_info = image_data[element]["size_info"]
-                    num_element = size_info[1]
-                    atomic_numbers += [atomic_number] * num_element
-                    natoms += num_element
-                    image_fp_list.append(image_data[element]["descriptors"])
-            
-            if match_max_natoms:
-                num_dummy_atoms = max_natoms - natoms
-                if num_dummy_atoms > 0:
-                    num_descriptors = (image_fp_list[0].shape)[1]
-                    print("added dummy atoms: {} \t num descriptors: {}".format(num_dummy_atoms, num_descriptors))
-                    image_fp_list.append(np.zeros((num_dummy_atoms, num_descriptors)))
-                    atomic_numbers += [0] * num_dummy_atoms
-                    natoms += num_dummy_atoms
-
-
-            image_fingerprint = torch.tensor(
-                np.vstack(image_fp_list)
-            )
+            image_fingerprint = torch.tensor(image_fingerprint)
             atomic_numbers = torch.tensor(atomic_numbers)
             image_idx = torch.full((1, natoms), idx, dtype=torch.int64).view(-1)
             data = Data(
@@ -105,70 +79,111 @@ class AMPTorchDataset(Dataset):
                 energy=potential_energy,
                 natoms=natoms,
             )
-
             if self.force_calculation:
-                image_forces_list = []
-                image_fp_primes_list = []
-                for element in element_list:
-                    if element in image_data.keys():
-                        forces = image_data[element]["forces"]
-                        fp_prime_value = image_data[element]["descriptor_primes"]["value"]
-                        fp_prime_row   = image_data[element]["descriptor_primes"]["row"]
-                        fp_prime_col   = image_data[element]["descriptor_primes"]["col"]
-                        fp_prime_size  = image_data[element]["descriptor_primes"]["size"]
-                        #size should be [n_atom_select * n_descriptor, 3 * n_atom_actual]
+                forces = image_data["forces"]
+                fp_prime_value = image_data["descriptor_primes"]["val"]
+                fp_prime_row   = image_data["descriptor_primes"]["row"]
+                fp_prime_col   = image_data["descriptor_primes"]["col"]
+                fp_prime_size  = image_data["descriptor_primes"]["size"]
 
-                        if match_max_natoms:
-                            # need to change size to [n_atom_select * n_descriptor, 3 * max_atoms]
-                            actual_size = np.array([fp_prime_size[0], max_natoms * 3])
-                        else:
-                            actual_size = fp_prime_size
-
-                        element_fp_prime_matrix = coo_matrix((fp_prime_value, (fp_prime_row, fp_prime_col)), shape=fp_prime_size)
-
-                        image_forces_list.append(forces)
-                        image_fp_primes_list.append(element_fp_prime_matrix)
-                
-                if match_max_natoms and num_dummy_atoms > 0:
-                    image_forces_list.append(np.zeros((num_dummy_atoms, 3)))
-                    empty_arr = np.array([])
-                    dummy_fp_prime_matrix_size = np.array([num_dummy_atoms, max_natoms * 3])
-                    dummy_fp_prime_matrix = coo_matrix((empty_arr, (empty_arr, empty_arr)), shape=fp_prime_size)
-                    image_fp_primes_list.append(dummy_fp_prime_matrix)
-                    
-                    
-                image_fp_primes = vstack(image_fp_primes_list)
-                # scipy_sparse_fp_prime.data, scipy_sparse_fp_prime.row, scipy_sparse_fp_prime.col, np.array(fp_prime.shape)
-                indices = np.vstack((image_fp_primes.row, image_fp_primes.col))
+                indices = np.vstack((fp_prime_row, fp_prime_col))
                 torch_indices = torch.LongTensor(indices)
-                torch_values = torch.FloatTensor(image_fp_primes.data)
-                fp_primes_torch_sparse = torch.sparse.FloatTensor(torch_indices, torch_values, torch.Size(image_fp_primes.shape))
+                torch_values = torch.FloatTensor(fp_prime_value)
+                fp_primes_torch_sparse = torch.sparse.FloatTensor(torch_indices, torch_values, torch.Size(fp_prime_size))
 
-                image_forces = np.vstack(image_forces_list)
-
-                data.forces = torch.FloatTensor(image_forces)
+                data.forces = torch.FloatTensor(forces)
                 data.fprimes = fp_primes_torch_sparse
-
-                # data.forces = torch.FloatTensor(image_forces)
-                # data.fprimes = fingerprintprimes
             
             data_list.append(data)
 
         self.data_length = len(data_list)
         self.data = data_list
 
-    def _get_max_natoms(self, raw_data, element_list):
-        max_natoms = 0
-        for idx, image_data in enumerate(raw_data):
-            natoms = 0
-            for element in element_list:
-                if element in image_data.keys():
-                    size_info = image_data[element]["size_info"]
-                    num_element = size_info[1]
-                    natoms += num_element
-            if max_natoms < natoms:
-                max_natoms = natoms
-        return max_natoms
+    # def _prepare_data(self, match_max_natoms = True):
+
+    #     data_list = []
+    #     raw_data = self.descriptor_calculator._get_calculated_descriptors() 
+    #     element_list = self.descriptor_calculator.element_list
+
+    #     for idx, image_data in enumerate(raw_data):
+    #         potential_energy = image_data["energy"]
+    #         image_fp_list = []
+    #         atomic_numbers = []
+    #         natoms = 0
+
+    #         for element in element_list:
+    #             if element in image_data.keys():
+    #                 atomic_number = ATOM_SYMBOL_TO_INDEX_DICT[element]
+    #                 size_info = image_data[element]["size_info"]
+    #                 num_element = size_info[1]
+    #                 atomic_numbers += [atomic_number] * num_element
+    #                 natoms += num_element
+    #                 image_fp_list.append(image_data[element]["descriptors"])
+
+
+    #         image_fingerprint = torch.tensor(
+    #             np.vstack(image_fp_list)
+    #         )
+    #         atomic_numbers = torch.tensor(atomic_numbers)
+    #         image_idx = torch.full((1, natoms), idx, dtype=torch.int64).view(-1)
+    #         data = Data(
+    #             fingerprint=image_fingerprint,
+    #             image_idx=image_idx,
+    #             atomic_numbers=atomic_numbers,
+    #             energy=potential_energy,
+    #             natoms=natoms,
+    #         )
+
+    #         if self.force_calculation:
+    #             image_forces_list = []
+    #             image_fp_primes_list = []
+    #             for element in element_list:
+    #                 if element in image_data.keys():
+    #                     forces = image_data[element]["forces"]
+    #                     fp_prime_value = image_data[element]["descriptor_primes"]["value"]
+    #                     fp_prime_row   = image_data[element]["descriptor_primes"]["row"]
+    #                     fp_prime_col   = image_data[element]["descriptor_primes"]["col"]
+    #                     fp_prime_size  = image_data[element]["descriptor_primes"]["size"]
+
+    #                     element_fp_prime_matrix = coo_matrix((fp_prime_value, (fp_prime_row, fp_prime_col)), shape=fp_prime_size)
+
+    #                     image_forces_list.append(forces)
+    #                     image_fp_primes_list.append(element_fp_prime_matrix)
+                
+                    
+                    
+    #             image_fp_primes = vstack(image_fp_primes_list)
+    #             # scipy_sparse_fp_prime.data, scipy_sparse_fp_prime.row, scipy_sparse_fp_prime.col, np.array(fp_prime.shape)
+    #             indices = np.vstack((image_fp_primes.row, image_fp_primes.col))
+    #             torch_indices = torch.LongTensor(indices)
+    #             torch_values = torch.FloatTensor(image_fp_primes.data)
+    #             fp_primes_torch_sparse = torch.sparse.FloatTensor(torch_indices, torch_values, torch.Size(image_fp_primes.shape))
+
+    #             image_forces = np.vstack(image_forces_list)
+
+    #             data.forces = torch.FloatTensor(image_forces)
+    #             data.fprimes = fp_primes_torch_sparse
+
+    #             # data.forces = torch.FloatTensor(image_forces)
+    #             # data.fprimes = fingerprintprimes
+            
+    #         data_list.append(data)
+
+    #     self.data_length = len(data_list)
+    #     self.data = data_list
+
+    # def _get_max_natoms(self, raw_data, element_list):
+    #     max_natoms = 0
+    #     for idx, image_data in enumerate(raw_data):
+    #         natoms = 0
+    #         for element in element_list:
+    #             if element in image_data.keys():
+    #                 size_info = image_data[element]["size_info"]
+    #                 num_element = size_info[1]
+    #                 natoms += num_element
+    #         if max_natoms < natoms:
+    #             max_natoms = natoms
+    #     return max_natoms
 
     def __len__(self):
         return self.data_length

@@ -156,6 +156,7 @@ extern "C" int calculate_sf(double** cell, double** cart, double** scale, int* p
                     
                     for (int j=0; j < natoms; ++j) {
                         // what does this mean?
+                        // only consider atom in the current bin (not other atoms in the cell that's not in this bin)
                         if (bin_i[j][3] != bin_num)
                             continue;
                         

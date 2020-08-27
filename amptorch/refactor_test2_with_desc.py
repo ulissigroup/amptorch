@@ -28,9 +28,24 @@ elements = ["H","O"]
 unique_atoms = [6, 8]
 
 
-Gs = {"G2": {"etas": np.logspace(np.log10(0.05), np.log10(5.0), num=4), "rs_s": [0] * 4},\
-      "G4": {"etas": [0.005], "zetas": [1.0], "gammas": [-1.0, 1.0]},\
-      "cutoff": 6.5}
+Gs = {
+        "O": {
+            "G2": {"etas": np.logspace(np.log10(0.05), np.log10(5.0), num=5), "rs_s": [0] * 4},\
+            "G4": {"etas": [0.005], "zetas": [1.0], "gammas": [-1.0, 1.0]},\
+            "cutoff": 6.5
+        },
+        "Fe": {
+            "G2": {"etas": np.logspace(np.log10(0.05), np.log10(5.0), num=6), "rs_s": [0] * 4},\
+            "G4": {"etas": [0.005], "zetas": [1.0], "gammas": [-1.0, 1.0]},\
+            "cutoff": 6.5
+        },
+        "default": {
+            "G2": {"etas": np.logspace(np.log10(0.05), np.log10(5.0), num=4), "rs_s": [0] * 4},\
+            "G4": {"etas": [0.005], "zetas": [1.0], "gammas": [-1.0, 1.0]},\
+            "cutoff": 6.5
+        }
+        
+    }
 
 descriptor = BPSymmetryFunction(Gs = Gs, elements = elements)
 
