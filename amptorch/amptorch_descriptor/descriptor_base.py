@@ -285,7 +285,7 @@ class AMPTorchDescriptorBase(ABC):
                 descriptor_prime_val_list = []
                 for element in fp_prime_val_dict.keys():
                     descriptor_prime_row_list.append(self._fp_prime_element_row_index_to_image_row_index(   fp_prime_row_dict[element], \
-                                                                                                            image_fp_array[index_arr_dict[element], \
+                                                                                                            index_arr_dict[element], \
                                                                                                             num_desc_dict[element], \
                                                                                                             num_desc_max))
                     descriptor_prime_col_list.append(fp_prime_col_dict[element])
