@@ -174,7 +174,7 @@ class AMPTorchDescriptorBase(ABC):
                 num_desc_max = np.max(num_desc_list)
                 image_fp_array = np.zeros((num_atoms, num_desc_max))
                 for element in fp_dict.keys():
-                    image_fp_array[index_arr_dict[element], :num_desc_dict[element]] = fp
+                    image_fp_array[index_arr_dict[element], :num_desc_dict[element]] = fp_dict[element]
 
                 image_dict["descriptors"] = image_fp_array
 
@@ -272,7 +272,7 @@ class AMPTorchDescriptorBase(ABC):
             num_desc_max = np.max(num_desc_list)
             image_fp_array = np.zeros((num_atoms, num_desc_max))
             for element in fp_dict.keys():
-                image_fp_array[index_arr_dict[element], :num_desc_dict[element]] = fp
+                image_fp_array[index_arr_dict[element], :num_desc_dict[element]] = fp_dict[element]
 
             image_dict["descriptors"] = image_fp_array
 
