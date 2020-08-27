@@ -22,10 +22,14 @@ from ase.io import read
 # elements = ["H","O","Fe"]
 # unique_atoms = [29, 6, 8]
 
+medium = Trajectory('./medium/md.traj')
 small = read('./small/water.extxyz', index=':')
-trajectories = [small]
-elements = ["H","O"]
-unique_atoms = [6, 8]
+# trajectories = [small]
+# elements = ["H","O"]
+# unique_atoms = [6, 8]
+trajectories = [small, medium]
+elements = ["H","O","Fe"]
+unique_atoms = [6, 8, 29]
 
 
 Gs = {
