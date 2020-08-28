@@ -244,7 +244,7 @@ class AMPTorchDescriptorBase(ABC):
             for element in self.elements:
                 if element in snapshot.get_chemical_symbols():
 
-                    index_arr = symbol_arr == element
+                    index_arr = np.arange(num_atoms)[symbol_arr == element]
                     index_arr_dict[element] = index_arr
 
                     if calculate_derivatives:
@@ -312,7 +312,7 @@ class AMPTorchDescriptorBase(ABC):
 
     def _fp_prime_element_row_index_to_image_row_index(self, original_rows, index_arr, num_desc, num_desc_max):
 
-        atom_indices_for_specific_element, desc_indices = np.divmod(original_rows)
+        atom_indices_for_specific_element, desc_indices = np.divmod(original_rows, num_desc)
 
         # mapping index with in specific element to index in the whole image
         # a = np.array([1,1,1,1,0,0,0,0,2,2,2,2])
