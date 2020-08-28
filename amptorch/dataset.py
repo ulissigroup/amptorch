@@ -68,6 +68,7 @@ class AMPTorchDataset(Dataset):
             potential_energy = image_data["energy"]
             natoms = image_data["num_atoms"]
             image_fingerprint = image_data["descriptors"]
+            atomic_numbers = image_data["atomic_numbers"]
 
             image_fingerprint = torch.tensor(image_fingerprint)
             atomic_numbers = torch.tensor(atomic_numbers)
@@ -98,6 +99,12 @@ class AMPTorchDataset(Dataset):
 
         self.data_length = len(data_list)
         self.data = data_list
+
+    def __len__(self):
+        return self.data_length
+
+    def __getitem__(self, index):
+        return self.data[index]
 
     # def _prepare_data(self, match_max_natoms = True):
 
@@ -185,11 +192,7 @@ class AMPTorchDataset(Dataset):
     #             max_natoms = natoms
     #     return max_natoms
 
-    def __len__(self):
-        return self.data_length
-
-    def __getitem__(self, index):
-        return self.data[index]
+    
 
 
 # Adapted from https://github.com/pytorch/pytorch/issues/31942

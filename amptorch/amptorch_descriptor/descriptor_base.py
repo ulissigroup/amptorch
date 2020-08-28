@@ -117,7 +117,6 @@ class AMPTorchDescriptorBase(ABC):
                         # print(symbol_arr)
                         # print(element)
                         index_arr = np.arange(num_atoms)[symbol_arr == element]
-                        # print(index_arr)
                         index_arr_dict[element] = index_arr
                         
                         try:
