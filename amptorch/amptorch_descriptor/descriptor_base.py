@@ -89,7 +89,7 @@ class AMPTorchDescriptorBase(ABC):
                     image_dict["energy"] = snapshot.get_potential_energy()
                     image_dict["forces"] = snapshot.get_forces()
                 
-                symbol_arr = snapshot.get_chemical_symbols()
+                symbol_arr = np.array(snapshot.get_chemical_symbols())
                 image_dict["atomic_numbers"] = list_symbols_to_indices(symbol_arr)
                 num_atoms = len(symbol_arr)
                 image_dict["num_atoms"] = num_atoms
