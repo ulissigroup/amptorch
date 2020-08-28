@@ -103,7 +103,7 @@ class BPSymmetryFunction(AMPTorchDescriptorBase):
     def save_descriptor_setup(self, filename):
         with open(filename, 'w') as out_file:
             for element in self.descriptor_setup.keys():
-                out_file.write("===========\nElement: {}\n".format(element))
+                out_file.write("===========\nElement: {} \t num_desc: {}\n".format(element, len(self.descriptor_setup[element])))
                 for desc in self.descriptor_setup[element]:
                     out_file.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(int(desc[0]), int(desc[1]), int(desc[2]), desc[3], desc[4], desc[5], desc[6]))
 
