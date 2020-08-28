@@ -116,7 +116,7 @@ class AMPTorchDescriptorBase(ABC):
                         # image_dict[element] = {}
 
                         index_arr = symbol_arr == element
-                        index_arr_dict[element] = index_arr
+                        index_arr_dict[element] = np.arange(num_atoms)[index_arr]
                         
                         try:
                             current_element_grp = current_snapshot_grp[element]
