@@ -114,10 +114,10 @@ class AMPTorchDescriptorBase(ABC):
                         # # image_dict["descriptors"][element] = {}
                         # # image_dict["descriptor_primes"][element] = {}
                         # image_dict[element] = {}
-                        print(symbol_arr)
-                        print(element)
+                        # print(symbol_arr)
+                        # print(element)
                         index_arr = np.arange(num_atoms)[symbol_arr == element]
-                        print(index_arr)
+                        # print(index_arr)
                         index_arr_dict[element] = index_arr
                         
                         try:
@@ -176,12 +176,13 @@ class AMPTorchDescriptorBase(ABC):
                 num_desc_max = np.max(num_desc_list)
                 image_fp_array = np.zeros((num_atoms, num_desc_max))
                 for element in fp_dict.keys():
-                    print(element)
-                    print(fp_dict[element].shape)
-                    print(index_arr_dict[element])
-                    print(num_desc_dict[element])
+                    # print(element)
+                    # print(fp_dict[element].shape)
+                    # print(index_arr_dict[element])
+                    # print(num_desc_dict[element])
                     image_fp_array[index_arr_dict[element], :num_desc_dict[element]] = fp_dict[element]
 
+                print("fp size: {}".format(image_fp_array.shape))
                 image_dict["descriptors"] = image_fp_array
 
 
