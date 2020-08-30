@@ -1,7 +1,8 @@
+import sys
 from torch.utils.data import Dataset
-from .amptorch_descriptor.descriptor_base import AMPTorchDescriptorBase
-from .amptorch_descriptor.descriptor_calculator import DescriptorCalculator
-from .amptorch_descriptor.constants import ATOM_INDEX_TO_SYMBOL_DICT, ATOM_SYMBOL_TO_INDEX_DICT
+from .descriptor.base_descriptor import BaseDescriptor
+from .descriptor.descriptor_calculator import DescriptorCalculator
+from .descriptor.constants import ATOM_INDEX_TO_SYMBOL_DICT, ATOM_SYMBOL_TO_INDEX_DICT
 from ase import Atoms
 from torch_geometric.data import Data, Batch
 from scipy.sparse import coo_matrix, vstack
@@ -9,23 +10,24 @@ import torch
 import numpy as np
 import itertools
 
+
 class AMPTorchDataset(Dataset):
     def __init__(
         self,
         trajs,
         descriptor,
-        automatic_calculation = True,
-        force_calculation = True,
+        automatic_calculation=True,
+        force_calculation=True,
         # calculate_descriptor_primes = True,
-        sparse_prime = True,
-        store_descriptors = True,
-        PCA_transform = False,
-        PCA_ncomponents = 10,
-        scaling = True,
-        training_data = False,
-        result_dir = "./_results_/",
-        parallel = False,
-        cores = 1,
+        sparse_prime=True,
+        store_descriptors=True,
+        PCA_transform=False,
+        PCA_ncomponents=10,
+        scaling=True,
+        training_data=False,
+        result_dir="./_results_/",
+        parallel=False,
+        cores=1,
     ):
 
         self.force_calculation = force_calculation
@@ -34,8 +36,8 @@ class AMPTorchDataset(Dataset):
         self.scaling = scaling
 
         self.descriptor_calculator = DescriptorCalculator(
-            trajs = trajs,
-            descriptor = descriptor,
+            trajs=trajs,
+            descriptor=descriptor,
             automatic_calculation=False,
             calculate_descriptor_primes=self.force_calculation,
             sparse_prime=sparse_prime,
@@ -43,9 +45,9 @@ class AMPTorchDataset(Dataset):
             training_data=training_data,
             result_dir=result_dir,
             parallel=parallel,
-            cores=cores
+            cores=cores,
         )
-        
+
         if automatic_calculation:
             self.process()
 
@@ -53,15 +55,16 @@ class AMPTorchDataset(Dataset):
         self.descriptor_calculator.prepare_descriptors()
 
         if self.PCA_transform:
-            self.descriptor_calculator.calculate_PCA(n_components = self.PCA_ncomponents)
+            self.descriptor_calculator.calculate_PCA(n_components=self.PCA_ncomponents)
         if self.scaling:
             self.descriptor_calculator.calculate_scaling()
 
+        sys.exit()
         self._prepare_data()
 
     def _prepare_data(self):
         data_list = []
-        raw_data = self.descriptor_calculator._get_calculated_descriptors() 
+        raw_data = self.descriptor_calculator._get_calculated_descriptors()
         element_list = self.descriptor_calculator.element_list
 
         for idx, image_data in enumerate(raw_data):
@@ -83,18 +86,20 @@ class AMPTorchDataset(Dataset):
             if self.force_calculation:
                 forces = image_data["forces"]
                 fp_prime_value = image_data["descriptor_primes"]["val"]
-                fp_prime_row   = image_data["descriptor_primes"]["row"]
-                fp_prime_col   = image_data["descriptor_primes"]["col"]
-                fp_prime_size  = image_data["descriptor_primes"]["size"]
+                fp_prime_row = image_data["descriptor_primes"]["row"]
+                fp_prime_col = image_data["descriptor_primes"]["col"]
+                fp_prime_size = image_data["descriptor_primes"]["size"]
 
                 indices = np.vstack((fp_prime_row, fp_prime_col))
                 torch_indices = torch.LongTensor(indices)
                 torch_values = torch.FloatTensor(fp_prime_value)
-                fp_primes_torch_sparse = torch.sparse.FloatTensor(torch_indices, torch_values, torch.Size(fp_prime_size))
+                fp_primes_torch_sparse = torch.sparse.FloatTensor(
+                    torch_indices, torch_values, torch.Size(fp_prime_size)
+                )
 
                 data.forces = torch.FloatTensor(forces)
                 data.fprimes = fp_primes_torch_sparse
-            
+
             data_list.append(data)
 
         self.data_length = len(data_list)
@@ -109,7 +114,7 @@ class AMPTorchDataset(Dataset):
     # def _prepare_data(self, match_max_natoms = True):
 
     #     data_list = []
-    #     raw_data = self.descriptor_calculator._get_calculated_descriptors() 
+    #     raw_data = self.descriptor_calculator._get_calculated_descriptors()
     #     element_list = self.descriptor_calculator.element_list
 
     #     for idx, image_data in enumerate(raw_data):
@@ -126,7 +131,6 @@ class AMPTorchDataset(Dataset):
     #                 atomic_numbers += [atomic_number] * num_element
     #                 natoms += num_element
     #                 image_fp_list.append(image_data[element]["descriptors"])
-
 
     #         image_fingerprint = torch.tensor(
     #             np.vstack(image_fp_list)
@@ -156,9 +160,7 @@ class AMPTorchDataset(Dataset):
 
     #                     image_forces_list.append(forces)
     #                     image_fp_primes_list.append(element_fp_prime_matrix)
-                
-                    
-                    
+
     #             image_fp_primes = vstack(image_fp_primes_list)
     #             # scipy_sparse_fp_prime.data, scipy_sparse_fp_prime.row, scipy_sparse_fp_prime.col, np.array(fp_prime.shape)
     #             indices = np.vstack((image_fp_primes.row, image_fp_primes.col))
@@ -173,7 +175,7 @@ class AMPTorchDataset(Dataset):
 
     #             # data.forces = torch.FloatTensor(image_forces)
     #             # data.fprimes = fingerprintprimes
-            
+
     #         data_list.append(data)
 
     #     self.data_length = len(data_list)
@@ -191,8 +193,6 @@ class AMPTorchDataset(Dataset):
     #         if max_natoms < natoms:
     #             max_natoms = natoms
     #     return max_natoms
-
-    
 
 
 # Adapted from https://github.com/pytorch/pytorch/issues/31942
@@ -222,7 +222,11 @@ def sparse_block_diag(arrs):
         # print(list(itertools.product(np.arange(r, r+rr.numpy()), np.arange(c, c+cc.numpy()))))
         i += [
             torch.LongTensor(
-                list(itertools.product(np.arange(r, r+rr.numpy()), np.arange(c, c+cc.numpy())))
+                list(
+                    itertools.product(
+                        np.arange(r, r + rr.numpy()), np.arange(c, c + cc.numpy())
+                    )
+                )
                 # list(itertools.product(np.arange(r, r+rr.numpy()).astype(int), np.arange(c, c+cc.numpy()).astype(int)))
                 # list(itertools.product(np.arange(r, r+rr).astype(int), np.arange(c, c+cc).astype(int)))
             ).t()

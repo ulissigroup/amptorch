@@ -1,60 +1,54 @@
+import sys
 import numpy as np
 
-from amptorch.dataset import (
-    AMPTorchDataset,
-    collate_amp
-)
+from amptorch.dataset import AMPTorchDataset, collate_amp
 from amptorch.model_geometric import BPNN
 
 
-# from torch_geometric.data import DataLoader
 from torch.utils.data import DataLoader
-
-import numpy as np
-from amptorch.amptorch_descriptor.BP_symmetry_function import BPSymmetryFunction
-from amptorch.amptorch_descriptor.Atomistic_MCSH import AtomisticMCSH
-from amptorch.amptorch_descriptor.descriptor_calculator import DescriptorCalculator
+from amptorch.descriptor.Gaussian import Gaussian
+# from amptorch.descriptor.MCSH import AtomisticMCSH
+from amptorch.descriptor.descriptor_calculator import DescriptorCalculator
 from ase.io.trajectory import Trajectory
 from ase.io import read
+from ase import Atoms
+from ase.calculators.emt import EMT
 
-# large = Trajectory('./large/iron_data.traj')
-# trajectories = [large]
-# elements = ["H","O","Fe"]
-# unique_atoms = [29, 6, 8]
 
-medium = Trajectory('./medium/md.traj')
-small = read('./small/water.extxyz', index=':')
-# trajectories = [small]
-# elements = ["H","O"]
-# unique_atoms = [6, 8]
-trajectories = [small, medium]
-elements = ["H","O","Fe"]
-unique_atoms = [6, 8, 29]
+distances = np.linspace(2, 5, 10)
+images = []
+for l in distances:
+    image = Atoms(
+        "CuCO",
+        [
+            (-l * np.sin(0.65), l * np.cos(0.65), 0),
+            (0, 0, 0),
+            (l * np.sin(0.65), l * np.cos(0.65), 0),
+        ],
+    )
+    image.set_cell([10, 10, 10])
+    image.wrap(pbc=True)
+    image.set_calculator(EMT())
+    images.append(image)
 
 
 Gs = {
-        "O": {
-            "G2": {"etas": np.logspace(np.log10(0.05), np.log10(5.0), num=5), "rs_s": [0] * 4},\
-            "G4": {"etas": [0.005], "zetas": [1.0], "gammas": [-1.0, 1.0]},\
-            "cutoff": 6.5
+    "default": {
+        "G2": {
+            "etas": np.logspace(np.log10(0.05), np.log10(5.0), num=4),
+            "rs_s": [0] * 4,
         },
-        "Fe": {
-            "G2": {"etas": np.logspace(np.log10(0.05), np.log10(5.0), num=6), "rs_s": [0] * 4},\
-            "G4": {"etas": [0.005], "zetas": [1.0], "gammas": [-1.0, 1.0]},\
-            "cutoff": 6.5
-        },
-        "default": {
-            "G2": {"etas": np.logspace(np.log10(0.05), np.log10(5.0), num=4), "rs_s": [0] * 4},\
-            "G4": {"etas": [0.005], "zetas": [1.0], "gammas": [-1.0, 1.0]},\
-            "cutoff": 6.5
-        }
-        
-    }
+        "G4": {"etas": [0.005], "zetas": [1.0], "gammas": [-1.0, 1.0]},
+        "cutoff": 6.5,
+    },
+}
 
-descriptor = BPSymmetryFunction(Gs = Gs, elements = elements)
+elements = image.get_chemical_symbols()
 
+descriptor = Gaussian(Gs=Gs, elements=elements)
 
-dataset = AMPTorchDataset(trajectories, descriptor, training_data = True)
+dataset = AMPTorchDataset(images, descriptor, training_data=True)
+sys.exit()
 
 
 print(len(dataset))

@@ -1,5 +1,5 @@
 # from torch.utils.data import Dataset
-from .descriptor_base import AMPTorchDescriptorBase
+from .base_descriptor import BaseDescriptor
 from ase import Atoms
 import pickle
 from scipy.sparse import coo_matrix, vstack
@@ -20,7 +20,7 @@ class DescriptorCalculator:
         parallel = False,
         cores = 1,
     ):
-        assert isinstance(descriptor, AMPTorchDescriptorBase)
+        assert isinstance(descriptor, BaseDescriptor)
 
         self.trajs = trajs
         self.descriptor = descriptor
