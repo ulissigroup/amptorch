@@ -56,7 +56,7 @@ setup(
     install_requires=install_requires,
     setup_requires=setup_requires,
     cffi_modules=[
-        "amptorch/amptorch_descriptor/BP_symmetry_function/libsymf_builder.py:ffibuilder",
-        "amptorch/amptorch_descriptor/Atomistic_MCSH/libmcsh_builder.py:ffibuilder",
+        "amptorch/descriptor/Gaussian/libsymf_builder.py:ffibuilder",
+        "amptorch/descriptor/MCSH/libmcsh_builder.py:ffibuilder",
     ],
 )
