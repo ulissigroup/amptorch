@@ -27,3 +27,8 @@ datasets/*
 .ipynb_checkpoints
 */checkpoints/*
 stored-primes/
+
+
+#compiled_file
+amptorch/descriptor/Gaussian/_libsymf.abi3.so
+amptorch/descriptor/MCSH/_libmcsh.abi3.so
