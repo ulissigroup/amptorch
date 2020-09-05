@@ -9,38 +9,28 @@ class DescriptorCalculator:
         self,
         images,
         descriptor,
-        automatic_calculation=True,
-        calculate_descriptor_primes=True,
-        sparse_prime=True,
-        store_descriptors=True,
-        training_data=False,
-        parallel=False,
+        calc_derivatives=True,
+        save_fps=True,
         cores=1,
     ):
-        assert isinstance(descriptor, BaseDescriptor)
+        assert isinstance(descriptor, BaseDescriptor), "Descriptor must be instance of BaseDescriptor!"
 
         self.images = images
         self.descriptor = descriptor
-        self.automatic_calculation = automatic_calculation
-        self.calculate_descriptor_primes = calculate_descriptor_primes
-        self.sparse_prime = sparse_prime
-        self.store_descriptors = store_descriptors
-        self.training_data = training_data
+        self.calc_derivatives = calc_derivatives
+        self.save_fps = save_fps
+        self.cores = cores
 
         self.element_list = self.descriptor._get_element_list()
         self.descriptors_ready = False
 
-        if self.automatic_calculation:
-            self.prepare_descriptors()
-
     def prepare_descriptors(self):
         self.calculated_decsriptor_list = self.descriptor.prepare_fingerprints(
             self.images,
-            parallel=None,
+            calc_derivatives=self.calc_derivatives,
+            save_fps=self.save_fps,
+            cores=self.cores,
             log=None,
-            calculate_derivatives=self.calculate_descriptor_primes,
-            save=self.store_descriptors,
-            get_training_data=self.training_data,
         )
 
         self.descriptors_ready = True
