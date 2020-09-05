@@ -7,7 +7,6 @@ from ..base_descriptor import BaseDescriptor
 from ..util import (
     _gen_2Darray_for_ffi,
     list_symbols_to_indices,
-    list_indices_to_symbols,
 )
 from ..constants import ATOM_INDEX_TO_SYMBOL_DICT, ATOM_SYMBOL_TO_INDEX_DICT
 
@@ -47,7 +46,8 @@ class Gaussian(BaseDescriptor):
             element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
             self.params_set[element_index] = dict()
             params_i = np.asarray(
-                self.descriptor_setup[element][:, :3].copy(), dtype=np.intc, order="C"
+                self.descriptor_setup[element][:, :3].copy(),
+                dtype=np.intc, order="C"
             )
             params_d = np.asarray(
                 self.descriptor_setup[element][:, 3:].copy(),
@@ -69,7 +69,9 @@ class Gaussian(BaseDescriptor):
                 ),
                 axis=1,
             )
-            self.params_set[element_index]["num"] = len(self.descriptor_setup[element])
+            self.params_set[element_index]["num"] = len(
+                self.descriptor_setup[element]
+            )
 
         return
 
@@ -79,37 +81,31 @@ class Gaussian(BaseDescriptor):
         if "G2" in Gs:
             descriptor_setup += [
                 [2, element1, 0, cutoff, eta, rs, 0.0]
-                for element1 in element_indices
                 for eta in Gs["G2"]["etas"]
                 for rs in Gs["G2"]["rs_s"]
+                for element1 in element_indices
             ]
 
-        element_unique_combination_list = self._get_combination_list(element_indices)
         if "G4" in Gs:
             descriptor_setup += [
-                [4, element1, element2, cutoff, eta, zeta, gamma]
-                for element1, element2 in element_unique_combination_list
+                [4, element_indices[i], element_indices[j], cutoff, eta, zeta, gamma]
                 for eta in Gs["G4"]["etas"]
                 for zeta in Gs["G4"]["zetas"]
                 for gamma in Gs["G4"]["gammas"]
+                for i in range(len(element_indices))
+                for j in range(i, len(element_indices))
             ]
 
         if "G5" in Gs:
             descriptor_setup += [
-                [5, element1, element2, cutoff, eta, zeta, gamma]
-                for element1, element2 in element_unique_combination_list
+                [5, element_indices[i], element_indices[j], cutoff, eta, zeta, gamma]
                 for eta in Gs["G4"]["etas"]
                 for zeta in Gs["G4"]["zetas"]
                 for gamma in Gs["G4"]["gammas"]
+                for i in range(len(element_indices))
+                for j in range(i, len(element_indices))
             ]
         return np.array(descriptor_setup)
-
-    def _get_combination_list(self, li):
-        result = []
-        for i in range(len(li)):
-            for j in range(i, len(li)):
-                result.append((li[i], li[j]))
-        return result
 
     def get_descriptor_setup_hash(self):
         string = ""
@@ -144,7 +140,11 @@ class Gaussian(BaseDescriptor):
                     )
 
     def calculate_fingerprints(
-        self, atoms, element, log=None, calculate_derivatives=True
+        self,
+        atoms,
+        element,
+        calc_derivatives,
+        log
     ):
         element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
 
@@ -176,13 +176,19 @@ class Gaussian(BaseDescriptor):
         cell_p = _gen_2Darray_for_ffi(cell, ffi)
         pbc_p = ffi.cast("int *", pbc.ctypes.data)
 
-        cal_atoms = np.asarray(type_idx[element_index], dtype=np.intc, order="C")
+        cal_atoms = np.asarray(
+            type_idx[element_index], dtype=np.intc, order="C"
+        )
         cal_num = len(cal_atoms)
-        cal_atoms_p = ffi.cast("int *", cal_atoms.ctypes.data)
+        cal_atoms_p = ffi.cast(
+            "int *", cal_atoms.ctypes.data
+        )
 
-        size_info = np.array([atom_num, cal_num, self.params_set[element_index]["num"]])
+        size_info = np.array(
+            [atom_num, cal_num, self.params_set[element_index]["num"]]
+        )
 
-        if calculate_derivatives:
+        if calc_derivatives:
             x = np.zeros(
                 [cal_num, self.params_set[element_index]["num"]],
                 dtype=np.float64,
@@ -213,17 +219,10 @@ class Gaussian(BaseDescriptor):
                 dx_p,
             )
             if errno == 1:
-                print("ERROR: descriptor not IMPLEMENTED!!")
+                raise NotImplementedError("Descriptor not implemented!")
             fp = np.array(x)
             fp_prime = np.array(dx)
             scipy_sparse_fp_prime = sparse.coo_matrix(fp_prime)
-            print(
-                "density: {}%".format(
-                    100
-                    * len(scipy_sparse_fp_prime.data)
-                    / (fp_prime.shape[0] * fp_prime.shape[1])
-                )
-            )
 
             return (
                 size_info,
@@ -258,7 +257,7 @@ class Gaussian(BaseDescriptor):
             )
 
             if errno == 1:
-                print("ERROR: descriptor not IMPLEMENTED!!")
+                raise NotImplementedError("Descriptor not implemented!")
             fp = np.array(x)
 
             return size_info, fp, None, None, None, None
