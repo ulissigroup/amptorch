@@ -1,7 +1,6 @@
-from .base_descriptor import BaseDescriptor
-from ase import Atoms
-from scipy.sparse import coo_matrix, vstack
 import numpy as np
+
+from .base_descriptor import BaseDescriptor
 
 
 class DescriptorCalculator:
@@ -11,29 +10,36 @@ class DescriptorCalculator:
         descriptor,
         calc_derivatives=True,
         save_fps=True,
+        verbose=True,
         cores=1,
     ):
-        assert isinstance(descriptor, BaseDescriptor), "Descriptor must be instance of BaseDescriptor!"
+        assert isinstance(
+            descriptor, BaseDescriptor
+        ), "Descriptor must be instance of BaseDescriptor!"
 
         self.images = images
         self.descriptor = descriptor
         self.calc_derivatives = calc_derivatives
         self.save_fps = save_fps
         self.cores = cores
+        self.verbose = verbose
 
         self.element_list = self.descriptor._get_element_list()
         self.descriptors_ready = False
 
     def prepare_descriptors(self):
-        self.calculated_decsriptor_list = self.descriptor.prepare_fingerprints(
+        self.calculated_descriptor_list = self.descriptor.prepare_fingerprints(
             self.images,
             calc_derivatives=self.calc_derivatives,
             save_fps=self.save_fps,
             cores=self.cores,
+            verbose=self.verbose,
             log=None,
         )
 
         self.descriptors_ready = True
+
+        return self.calculated_descriptor_list
 
     def get_descriptors(self, separate_atomtypes=True):
         if not self.descriptors_ready:
@@ -69,9 +75,6 @@ class DescriptorCalculator:
                         descriptors.append(temp)
                 result.append(descriptors)
             return result
-
-    def _get_calculated_descriptors(self):
-        return self.calculated_decsriptor_list
 
     # TODO
     def calculate_PCA(

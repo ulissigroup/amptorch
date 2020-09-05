@@ -1,10 +1,11 @@
-from abc import ABC, abstractmethod
-import numpy as np
-import h5py
-
 import os
-import time
-from .util import get_hash, list_symbols_to_indices, list_indices_to_symbols
+from abc import ABC, abstractmethod
+
+import h5py
+import numpy as np
+from tqdm import tqdm
+
+from .util import get_hash, list_symbols_to_indices
 
 
 class BaseDescriptor(ABC):
@@ -37,13 +38,20 @@ class BaseDescriptor(ABC):
         # prepare self.params_set
         pass
 
-    def prepare_fingerprints(self, images, calc_derivatives, save_fps, cores, log):
+    def prepare_fingerprints(
+        self, images, calc_derivatives, save_fps, verbose, cores, log
+    ):
         images_descriptor_list = []
 
         # if save is true, create directories if not exist
         self._setup_fingerprint_database(save_fps=save_fps)
 
-        for image in images:
+        for image in tqdm(
+            images,
+            total=len(images),
+            desc="Computing fingerprints",
+            disable=not verbose,
+        ):
             image_hash = get_hash(image)
             image_db_filename = "{}/{}.h5".format(self.desc_fp_database_dir, image_hash)
 
@@ -108,7 +116,7 @@ class BaseDescriptor(ABC):
 
                     try:
                         current_element_grp = current_snapshot_grp[element]
-                    except:
+                    except Exception:
                         current_element_grp = current_snapshot_grp.create_group(element)
 
                     if calc_derivatives:
@@ -173,7 +181,7 @@ class BaseDescriptor(ABC):
                         try:
                             size_info = np.array(current_element_grp["size_info"])
                             fps = np.array(current_element_grp["fps"])
-                        except:
+                        except Exception:
                             size_info, fps, _, _, _, _ = self.calculate_fingerprints(
                                 image, element, calc_derivatives=calc_derivatives
                             )
