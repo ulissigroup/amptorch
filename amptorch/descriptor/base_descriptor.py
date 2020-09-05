@@ -203,7 +203,6 @@ class BaseDescriptor(ABC):
                     index_arr_dict[element], : num_desc_dict[element]
                 ] = fp_dict[element]
 
-            print("fp size: {}".format(image_fp_array.shape))
             image_dict["descriptors"] = image_fp_array
             image_dict["num_descriptors"] = num_desc_dict
 

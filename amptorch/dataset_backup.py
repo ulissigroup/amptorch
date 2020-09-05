@@ -1,22 +1,20 @@
 import copy
+import itertools
 import os
+
+import ase
 import numpy as np
 import torch
-from torch.utils.data import Dataset
-import itertools
-import ase
-from amptorch.gaussian import make_symmetry_functions
-from amptorch.data_utils import Normalize
-from amptorch.utils import (
-    make_amp_descriptors_simple_nn,
-    calculate_fingerprints_range,
-    hash_images,
-)
-from amp.utilities import hash_images as amp_hash
 from amp.utilities import get_hash as get_amp_hash
-
-from torch_geometric.data import Data, Batch
+from amp.utilities import hash_images as amp_hash
+from torch.utils.data import Dataset
+from torch_geometric.data import Batch, Data
 from tqdm import tqdm
+
+from amptorch.data_utils import Normalize
+from amptorch.gaussian import make_symmetry_functions
+from amptorch.utils import (calculate_fingerprints_range, hash_images,
+                            make_amp_descriptors_simple_nn)
 
 __author__ = "Muhammed Shuaibi"
 __email__ = "mshuaibi@andrew.cmu.edu"
@@ -65,9 +63,7 @@ class AtomsDataset(Dataset):
         )
 
         print("Fingerprints Calculated!")
-        self.fprange = calculate_fingerprints_range(
-            self.descriptor, self.hashed_images
-        )
+        self.fprange = calculate_fingerprints_range(self.descriptor, self.hashed_images)
 
         # perform preprocessing
         self.dataset = self.process()
@@ -85,16 +81,16 @@ class AtomsDataset(Dataset):
 
             # scale fingerprints
             image_fingerprint = self.descriptor.fingerprints[hash_name]
-            for i, (atom, afp) in enumerate(image_fingerprint):
-                _afp = copy.copy(afp)
-                fprange_atom = np.array(self.fprange[atom])
-                for _ in range(np.shape(_afp)[0]):
-                    if (fprange_atom[_][1] - fprange_atom[_][0]) > (10.0 ** (-8.0)):
-                        _afp[_] = -1 + 2.0 * (
-                            (_afp[_] - fprange_atom[_][0])
-                            / (fprange_atom[_][1] - fprange_atom[_][0])
-                        )
-                image_fingerprint[i] = (atom, _afp)
+            # for i, (atom, afp) in enumerate(image_fingerprint):
+            # _afp = copy.copy(afp)
+            # fprange_atom = np.array(self.fprange[atom])
+            # for _ in range(np.shape(_afp)[0]):
+            # if (fprange_atom[_][1] - fprange_atom[_][0]) > (10.0 ** (-8.0)):
+            # _afp[_] = -1 + 2.0 * (
+            # (_afp[_] - fprange_atom[_][0])
+            # / (fprange_atom[_][1] - fprange_atom[_][0])
+            # )
+            # image_fingerprint[i] = (atom, _afp)
 
             # convert amp structure
             fp_length = len(image_fingerprint[0][1])
@@ -121,16 +117,16 @@ class AtomsDataset(Dataset):
                     apply_constraint=False
                 )
                 # scale fingerprintprimes
-                image_primes = self.descriptor.fingerprintprimes[hash_name]
-                _image_primes = copy.copy(image_primes)
-                for _, key in enumerate(list(image_primes.keys())):
-                    base_atom = key[3]
-                    fprange_atom = np.array(self.fprange[base_atom])
-                    fprange_dif = fprange_atom[:, 1] - fprange_atom[:, 0]
-                    fprange_dif[fprange_dif < 10.0 ** (-8.0)] = 2
-                    fprime = np.array(image_primes[key])
-                    fprime = 2 * fprime / fprange_dif
-                    _image_primes[key] = fprime
+                _image_primes = self.descriptor.fingerprintprimes[hash_name]
+                # _image_primes = copy.copy(image_primes)
+                # for _, key in enumerate(list(image_primes.keys())):
+                # base_atom = key[3]
+                # fprange_atom = np.array(self.fprange[base_atom])
+                # fprange_dif = fprange_atom[:, 1] - fprange_atom[:, 0]
+                # fprange_dif[fprange_dif < 10.0 ** (-8.0)] = 2
+                # fprime = np.array(image_primes[key])
+                # fprime = 2 * fprime / fprange_dif
+                # _image_primes[key] = fprime
 
                 image_prime_values = list(_image_primes.values())
                 image_prime_keys = list(_image_primes.keys())
@@ -151,8 +147,8 @@ class AtomsDataset(Dataset):
 
             data_list.append(data)
             # write dataset as *.pt file for future use
-        normalizer = Normalize(data_list)
-        data_list = normalizer.norm(data_list)
+        # normalizer = Normalize(data_list)
+        # data_list = normalizer.norm(data_list)
         return data_list
 
     def unique(self):
@@ -185,7 +181,7 @@ def sparse_block_diag(arrs):
     for k, (rr, cc) in enumerate(shapes):
         i += [
             torch.LongTensor(
-                list(itertools.product(np.arange(r, r+rr), np.arange(c, c+cc)))
+                list(itertools.product(np.arange(r, r + rr), np.arange(c, c + cc)))
             ).t()
         ]
         v += [arrs[k].flatten()]

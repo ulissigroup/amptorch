@@ -1,25 +1,23 @@
-import itertools
-
 import numpy as np
 import torch
 from torch.utils.data import Dataset
 from torch_geometric.data import Batch, Data
 
-from .descriptor.descriptor_calculator import DescriptorCalculator
+from amptorch.data_utils import sparse_block_diag
+from amptorch.descriptor.descriptor_calculator import DescriptorCalculator
 
 
 class AtomsDataset(Dataset):
     def __init__(
         self, images, descriptor, forcetraining=True, save_fps=True, cores=1,
     ):
-
         self.images = images
         self.forcetraining = forcetraining
 
         self.descriptor_calculator = DescriptorCalculator(
             images=images,
             descriptor=descriptor,
-            calc_derviatives=forcetraining,
+            calc_derivatives=forcetraining,
             save_fps=save_fps,
             cores=cores,
         )
@@ -38,8 +36,8 @@ class AtomsDataset(Dataset):
             natoms = len(image)
             image_fingerprint = image_data["descriptors"]
 
-            image_fingerprint = torch.tensor(image_fingerprint)
-            atomic_numbers = torch.tensor(atomic_numbers)
+            image_fingerprint = torch.FloatTensor(image_fingerprint)
+            atomic_numbers = torch.LongTensor(atomic_numbers)
             image_idx = torch.full((1, natoms), idx, dtype=torch.int64).view(-1)
 
             data = Data(
@@ -73,54 +71,15 @@ class AtomsDataset(Dataset):
         return len(self.data_list)
 
     def __getitem__(self, index):
-        return self.data[index]
+        return self.data_list[index]
 
 
-# Adapted from https://github.com/pytorch/pytorch/issues/31942
-def sparse_block_diag(arrs):
-    bad_args = [
-        k
-        for k in range(len(arrs))
-        if not (isinstance(arrs[k], torch.Tensor) and arrs[k].ndim == 2)
-    ]
-    if bad_args:
-        raise ValueError(
-            "arguments in the following positions must be 2-dimension tensor: %s"
-            % bad_args
-        )
-
-    shapes = torch.tensor([a.shape for a in arrs])
-
-    i = []
-    v = []
-    r, c = 0, 0
-    for k, (rr, cc) in enumerate(shapes):
-        i += [
-            torch.LongTensor(
-                list(
-                    itertools.product(
-                        np.arange(r, r + rr.numpy()), np.arange(c, c + cc.numpy())
-                    )
-                )
-            ).t()
-        ]
-        v += [arrs[k].to_dense().flatten()]
-        r += rr.numpy()
-        c += cc.numpy()
-    out = torch.sparse.DoubleTensor(
-        torch.cat(i, dim=1), torch.cat(v), torch.sum(shapes, dim=0).tolist()
-    )
-    return out
-
-
-def collate_amp(data_list):
+def data_collater(data_list):
     mtxs = []
     for data in data_list:
         mtxs.append(data.fprimes)
         data.fprimes = None
     batch = Batch.from_data_list(data_list)
-    for i, data in enumerate(data_list):
-        data.fprimes = mtxs[i]
     block_matrix = sparse_block_diag(mtxs)
     batch.fprimes = block_matrix
     return batch, (batch.energy, batch.forces)

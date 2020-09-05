@@ -1,14 +1,12 @@
-import numpy as np
 import hashlib
+
+import numpy as np
 from scipy import sparse
-from ase.calculators.calculator import Parameters
-from ._libsymf import lib, ffi
+
 from ..base_descriptor import BaseDescriptor
-from ..util import (
-    _gen_2Darray_for_ffi,
-    list_symbols_to_indices,
-)
-from ..constants import ATOM_INDEX_TO_SYMBOL_DICT, ATOM_SYMBOL_TO_INDEX_DICT
+from ..constants import ATOM_SYMBOL_TO_INDEX_DICT
+from ..util import _gen_2Darray_for_ffi, list_symbols_to_indices
+from ._libsymf import ffi, lib
 
 
 class Gaussian(BaseDescriptor):
@@ -38,16 +36,16 @@ class Gaussian(BaseDescriptor):
                     self.Gs["default"], self.element_indices
                 )
             else:
-                print("ERROR symmetry function for element {} NOT defined")
-                raise NotImplementedError
+                raise NotImplementedError(
+                    "Symmetry function parameters not defined properly"
+                )
 
         self.params_set = dict()
         for element in self.elements:
             element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
             self.params_set[element_index] = dict()
             params_i = np.asarray(
-                self.descriptor_setup[element][:, :3].copy(),
-                dtype=np.intc, order="C"
+                self.descriptor_setup[element][:, :3].copy(), dtype=np.intc, order="C"
             )
             params_d = np.asarray(
                 self.descriptor_setup[element][:, 3:].copy(),
@@ -69,9 +67,7 @@ class Gaussian(BaseDescriptor):
                 ),
                 axis=1,
             )
-            self.params_set[element_index]["num"] = len(
-                self.descriptor_setup[element]
-            )
+            self.params_set[element_index]["num"] = len(self.descriptor_setup[element])
 
         return
 
@@ -81,7 +77,7 @@ class Gaussian(BaseDescriptor):
         if "G2" in Gs:
             descriptor_setup += [
                 [2, element1, 0, cutoff, eta, rs, 0.0]
-                for eta in Gs["G2"]["etas"]
+                for eta in np.array(Gs["G2"]["etas"]) / Gs["cutoff"] ** 2
                 for rs in Gs["G2"]["rs_s"]
                 for element1 in element_indices
             ]
@@ -89,7 +85,7 @@ class Gaussian(BaseDescriptor):
         if "G4" in Gs:
             descriptor_setup += [
                 [4, element_indices[i], element_indices[j], cutoff, eta, zeta, gamma]
-                for eta in Gs["G4"]["etas"]
+                for eta in np.array(Gs["G4"]["etas"]) / Gs["cutoff"] ** 2
                 for zeta in Gs["G4"]["zetas"]
                 for gamma in Gs["G4"]["gammas"]
                 for i in range(len(element_indices))
@@ -139,13 +135,7 @@ class Gaussian(BaseDescriptor):
                         )
                     )
 
-    def calculate_fingerprints(
-        self,
-        atoms,
-        element,
-        calc_derivatives,
-        log
-    ):
+    def calculate_fingerprints(self, atoms, element, calc_derivatives, log):
         element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
 
         symbols = np.array(atoms.get_chemical_symbols())
@@ -176,17 +166,11 @@ class Gaussian(BaseDescriptor):
         cell_p = _gen_2Darray_for_ffi(cell, ffi)
         pbc_p = ffi.cast("int *", pbc.ctypes.data)
 
-        cal_atoms = np.asarray(
-            type_idx[element_index], dtype=np.intc, order="C"
-        )
+        cal_atoms = np.asarray(type_idx[element_index], dtype=np.intc, order="C")
         cal_num = len(cal_atoms)
-        cal_atoms_p = ffi.cast(
-            "int *", cal_atoms.ctypes.data
-        )
+        cal_atoms_p = ffi.cast("int *", cal_atoms.ctypes.data)
 
-        size_info = np.array(
-            [atom_num, cal_num, self.params_set[element_index]["num"]]
-        )
+        size_info = np.array([atom_num, cal_num, self.params_set[element_index]["num"]])
 
         if calc_derivatives:
             x = np.zeros(
