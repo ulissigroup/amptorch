@@ -9,7 +9,7 @@ from subprocess import check_output
 install_requires = [
     "torch",
     "spglib",
-    # "scikit-learn==0.21.3",
+    "scikit-learn",
     "skorch==0.6.0",
     "scipy",
     "pandas",
@@ -56,7 +56,7 @@ setup(
     install_requires=install_requires,
     setup_requires=setup_requires,
     cffi_modules=[
-        "amptorch/amptorch_descriptor/BP_symmetry_function/libsymf_builder.py:ffibuilder",
-        "amptorch/amptorch_descriptor/Atomistic_MCSH/libmcsh_builder.py:ffibuilder",
+        "amptorch/descriptor/Gaussian/libsymf_builder.py:ffibuilder",
+        "amptorch/descriptor/MCSH/libmcsh_builder.py:ffibuilder",
     ],
 )

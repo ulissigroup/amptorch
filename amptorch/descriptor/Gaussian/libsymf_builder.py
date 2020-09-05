@@ -13,14 +13,14 @@ ffibuilder.cdef(
                             double**);"""
 )
 ffibuilder.set_source(
-    "amptorch.amptorch_descriptor.BP_symmetry_function._libsymf",
+    "amptorch.descriptor.Gaussian._libsymf",
     '#include "calculate_sf.h"',
     sources=[
-        "amptorch/amptorch_descriptor/BP_symmetry_function/calculate_sf.cpp",
-        "amptorch/amptorch_descriptor/BP_symmetry_function/symmetry_functions.cpp",
+        "amptorch/descriptor/Gaussian/calculate_sf.cpp",
+        "amptorch/descriptor/Gaussian/symmetry_functions.cpp",
     ],
     source_extension=".cpp",
-    include_dirs=["amptorch/amptorch_descriptor/BP_symmetry_function/"],
+    include_dirs=["amptorch/descriptor/Gaussian/"],
 )
 
 if __name__ == "__main__":

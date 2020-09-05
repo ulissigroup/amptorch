@@ -84,11 +84,11 @@ class Gaussian(BaseDescriptor):
                 for rs in Gs["G2"]["rs_s"]
             ]
 
+        element_unique_combination_list = self._get_combination_list(element_indices)
         if "G4" in Gs:
             descriptor_setup += [
                 [4, element1, element2, cutoff, eta, zeta, gamma]
-                for element1 in element_indices
-                for element2 in element_indices
+                for element1, element2 in element_unique_combination_list
                 for eta in Gs["G4"]["etas"]
                 for zeta in Gs["G4"]["zetas"]
                 for gamma in Gs["G4"]["gammas"]
@@ -97,13 +97,19 @@ class Gaussian(BaseDescriptor):
         if "G5" in Gs:
             descriptor_setup += [
                 [5, element1, element2, cutoff, eta, zeta, gamma]
-                for element1 in element_indices
-                for element2 in element_indices
+                for element1, element2 in element_unique_combination_list
                 for eta in Gs["G4"]["etas"]
                 for zeta in Gs["G4"]["zetas"]
                 for gamma in Gs["G4"]["gammas"]
             ]
         return np.array(descriptor_setup)
+
+    def _get_combination_list(self, li):
+        result = []
+        for i in range(len(li)):
+            for j in range(i, len(li)):
+                result.append((li[i], li[j]))
+        return result
 
     def get_descriptor_setup_hash(self):
         string = ""

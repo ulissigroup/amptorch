@@ -9,14 +9,14 @@ ffibuilder.cdef(
     """
 )
 ffibuilder.set_source(
-    "amptorch.amptorch_descriptor.Atomistic_MCSH._libmcsh",
+    "amptorch.descriptor.MCSH._libmcsh",
     '#include "calculate_atomistic_mcsh.h"',
     sources=[
-        "amptorch/amptorch_descriptor/Atomistic_MCSH/calculate_atomistic_mcsh.cpp",
-        "amptorch/amptorch_descriptor/Atomistic_MCSH/atomistic_mcsh.cpp"
+        "amptorch/descriptor/MCSH/calculate_atomistic_mcsh.cpp",
+        "amptorch/descriptor/MCSH/atomistic_mcsh.cpp"
     ],
     source_extension=".cpp",
-    include_dirs=["amptorch/amptorch_descriptor/Atomistic_MCSH/"],
+    include_dirs=["amptorch/descriptor/MCSH/"],
 )
 
 if __name__ == "__main__":
