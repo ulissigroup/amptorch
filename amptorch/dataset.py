@@ -3,7 +3,7 @@ import torch
 from torch.utils.data import Dataset
 from torch_geometric.data import Batch, Data
 
-from amptorch.data_utils import sparse_block_diag
+from amptorch.data_utils import Normalize, sparse_block_diag
 from amptorch.descriptor.descriptor_calculator import DescriptorCalculator
 
 
@@ -65,7 +65,14 @@ class AtomsDataset(Dataset):
 
             data_list.append(data)
 
+        normalizer = Normalize(data_list)
+        data_list = normalizer.norm(data_list)
+
         return data_list
+
+    @property
+    def input_dim(self):
+        return self.data_list[0].fingerprint.shape[1]
 
     def __len__(self):
         return len(self.data_list)
@@ -80,6 +87,8 @@ def data_collater(data_list):
         mtxs.append(data.fprimes)
         data.fprimes = None
     batch = Batch.from_data_list(data_list)
+    for i, data in enumerate(data_list):
+        data.fprimes = mtxs[i]
     block_matrix = sparse_block_diag(mtxs)
     batch.fprimes = block_matrix
     return batch, (batch.energy, batch.forces)
