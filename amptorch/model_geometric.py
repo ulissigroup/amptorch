@@ -73,12 +73,13 @@ class BPNN(nn.Module):
         fingerprints = batch.fingerprint.float()
         fingerprints.requires_grad = True
         image_idx = batch.image_idx
+        sorted_image_idx = torch.unique_consecutive(image_idx)
         mask = self.element_mask(atomic_numbers)
         o = torch.sum(
             mask * torch.cat([net(fingerprints) for net in self.elementwise_models], 1),
             dim=1,
         )
-        energy = scatter(o, image_idx)
+        energy = scatter(o, image_idx, dim=0)[sorted_image_idx]
 
         if self.forcetraining:
             gradients = grad(

@@ -65,8 +65,8 @@ class AtomsDataset(Dataset):
 
             data_list.append(data)
 
-        normalizer = Normalize(data_list)
-        data_list = normalizer.norm(data_list)
+        self.normalizer = Normalize(data_list)
+        data_list = self.normalizer.norm(data_list)
 
         return data_list
 

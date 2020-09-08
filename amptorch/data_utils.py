@@ -1,5 +1,3 @@
-import itertools
-
 import torch
 
 
@@ -7,66 +5,68 @@ class Normalize:
     """Normalizes an input tensor and later reverts it.
     Adapted from https://github.com/Open-Catalyst-Project/baselines"""
 
+    # TODO: clean normalization
     def __init__(self, data_list):
         if len(data_list) > 1:
             energies = torch.tensor([data.energy for data in data_list])
-            self.mean = torch.mean(energies, dim=0)
-            self.std = torch.std(energies, dim=0)
+            fingerprints = torch.cat([data.fingerprint for data in data_list], dim=0)
+
+            self.feature_mean = torch.mean(fingerprints, dim=0)
+            self.feature_std = torch.std(fingerprints, dim=0)
+            self.feature_std[self.feature_std == 0] = 10e-8
+
+            self.target_mean = torch.mean(energies, dim=0)
+            self.target_std = torch.std(energies, dim=0)
+            self.target_std[self.target_std == 0] = 10e-8
         else:
-            self.mean = data_list[0].energy
-            self.std = 1
+            self.feature_mean = torch.mean(fingerprints, dim=0)
+            self.feature_std = 1
+
+            self.target_mean = data_list[0].energy
+            self.target_std = 1
 
     def norm(self, data_list, energy=True):
-        if energy:
-            for data in data_list:
-                data.energy = (data.energy - self.mean) / self.std
-        else:
-            for data in data_list:
-                data.force = data.force / self.std
+        for data in data_list:
+            data.energy = (data.energy - self.target_mean) / self.target_std
+            data.forces /= self.target_std
+            data.fingerprint = (data.fingerprint - self.feature_mean) / self.feature_std
+
+            scaling_idx = data.fprimes.coalesce().indices()[0] % (
+                data.fingerprint.shape[1] - 1
+            )
+            scalings = self.feature_std[scaling_idx]
+            _values = data.fprimes._values() / scalings
+            _indices = data.fprimes._indices()
+            _size = data.fprimes.size()
+            data.fprimes = torch.sparse.FloatTensor(_indices, _values, _size)
 
         return data_list
 
     def denorm(self, data_list, energy=True):
-        if energy:
-            for data in data_list:
-                data.energy = (data.energy * self.std) + self.mean
-        else:
-            for data in data_list:
-                data.force = data.force * self.std
+        for data in data_list:
+            data.energy = (data.energy * self.target_std) + self.target_mean
+            data.force = data.force * self.target_std
 
         return data_list
 
 
-# Adapted from https://github.com/pytorch/pytorch/issues/31942
 def sparse_block_diag(arrs):
-    bad_args = [
-        k
-        for k in range(len(arrs))
-        if not (isinstance(arrs[k], torch.Tensor) and arrs[k].ndim == 2)
-    ]
-    if bad_args:
-        raise ValueError(
-            "arguments in the following positions must be 2-dimension tensor: %s"
-            % bad_args
-        )
-
-    shapes = torch.tensor([a.shape for a in arrs])
-
-    i = []
+    # TODO CUDA support
+    r = []
+    c = []
     v = []
-    r, c = 0, 0
-    for k, (rr, cc) in enumerate(shapes):
-        i += [
-            torch.LongTensor(
-                list(
-                    itertools.product(torch.arange(r, r + rr), torch.arange(c, c + cc))
-                )
-            ).t()
-        ]
-        v += [arrs[k].to_dense().flatten()]
-        r += rr
-        c += cc
-    out = torch.sparse.DoubleTensor(
-        torch.cat(i, dim=1), torch.cat(v), torch.sum(shapes, dim=0).tolist()
-    )
+    dim_1, dim_2 = 0, 0
+    for k, mtx in enumerate(arrs):
+        r += [mtx._indices()[0] + dim_1]
+        c += [mtx._indices()[1] + dim_2]
+        v += [mtx._values()]
+        dim_1 += mtx.shape[0]
+        dim_2 += mtx.shape[1]
+    r = torch.cat(r, dim=0)
+    c = torch.cat(c, dim=0)
+    _indices = torch.stack([r, c])
+    _values = torch.cat(v)
+    _shapes = [dim_1, dim_2]
+    out = torch.sparse.DoubleTensor(_indices, _values, _shapes,)
+
     return out
