@@ -18,50 +18,19 @@ def to_tensor(X, device, accept_sparse=False):
 
 
 def energy_score(net, X, y):
-    mse_loss = MSELoss(reduction="sum")
+    mse_loss = MSELoss()
     energy_pred, _ = net.forward(X)
-    device = energy_pred.device
-    if not hasattr(X, "scalings"):
-        X = X.dataset
-    scale = X.scalings[-1]
-    num_atoms = torch.FloatTensor(np.concatenate(y[1::3])).reshape(-1, 1).to(device)
-    dataset_size = len(energy_pred)
-    energy_targets_per_atom = (
-        torch.tensor(np.concatenate(y[0::3])).to(device).reshape(-1, 1)
-    )
-    energy_targets_per_atom = scale.denorm(energy_targets_per_atom)
-    energy_preds_per_atom = torch.div(energy_pred, num_atoms)
-    energy_preds_per_atom = scale.denorm(energy_preds_per_atom)
-    energy_loss = mse_loss(energy_preds_per_atom, energy_targets_per_atom)
-    energy_loss /= dataset_size
-    energy_rmse = torch.sqrt(energy_loss)
-    return energy_rmse
+    energy_target = torch.FloatTensor(y[0])
+    energy_loss = mse_loss(energy_pred, energy_target)
+    return energy_loss
 
 
 def forces_score(net, X, y):
-    mse_loss = MSELoss(reduction="none")
+    mse_loss = MSELoss()
     _, force_pred = net.forward(X)
-    if force_pred.nelement() == 0:
-        raise Exception("Force training disabled. Disable force scoring!")
-    device = force_pred.device
-    if not hasattr(X, "scalings"):
-        X = X.dataset
-    scale = X.scalings[-1]
-    num_atoms = torch.FloatTensor(np.concatenate(y[1::3])).reshape(-1, 1).to(device)
-    force_targets_per_atom = torch.tensor(np.concatenate(y[2::3])).to(device)
-    force_targets_per_atom = scale.denorm(force_targets_per_atom)
-    device = force_pred.device
-    dataset_size = len(num_atoms)
-    num_atoms_extended = torch.cat([idx.repeat(int(idx)) for idx in num_atoms]).reshape(
-        -1, 1
-    )
-    force_pred_per_atom = scale.denorm(torch.div(force_pred, num_atoms_extended))
-    force_targets = force_targets_per_atom * num_atoms_extended
-    force_pred = force_pred_per_atom * num_atoms_extended
-    force_mse = mse_loss(force_pred, force_targets)
-    force_mse /= 3 * dataset_size * num_atoms_extended
-    force_rmse = torch.sqrt(force_mse.sum())
-    return force_rmse
+    force_target = torch.FloatTensor(y[1])
+    force_loss = mse_loss(force_pred, force_target)
+    return force_loss
 
 
 class train_end_load_best_loss(skorch.callbacks.base.Callback):

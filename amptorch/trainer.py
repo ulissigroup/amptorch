@@ -31,6 +31,7 @@ class AtomsTrainer:
         self.load_model()
         self.load_criterion()
         self.load_optimizer()
+        self.load_logger()
         self.load_extras()
         self.load_skorch()
 
@@ -138,13 +139,25 @@ class AtomsTrainer:
                 scheduler, **self.config["optim"]["scheduler_params"]
             )
             callbacks.append(scheduler)
+        if self.config["cmd"]["logger"]:
+            from skorch.callbacks import WandbLogger
+
+            callbacks.append(WandbLogger(self.wandb_run))
         self.callbacks = callbacks
 
     def load_criterion(self):
         self.criterion = CustomMSELoss
 
     def load_optimizer(self):
-        self.optimizer = torch.optim.LBFGS
+        self.optimizer = torch.optim.Adam
+
+    def load_logger(self):
+        if self.config["cmd"]["logger"]:
+            import wandb
+
+            self.wandb_run = wandb.init()
+            # log config file
+            self.wandb_run.config.update(self.config)
 
     def load_skorch(self):
         skorch.net.to_tensor = to_tensor
@@ -164,7 +177,7 @@ class AtomsTrainer:
             iterator_valid__shuffle=False,
             device=self.device,
             train_split=self.val_split,
-            # callbacks=self.callbacks,
+            callbacks=self.callbacks,
             verbose=self.config["cmd"].get("verbose", True),
         )
         print("Loading skorch trainer")

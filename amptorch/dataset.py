@@ -31,7 +31,6 @@ class AtomsDataset(Dataset):
         for idx, image in enumerate(self.images):
             image_data = descriptor_data[idx]
             energy = image.get_potential_energy(apply_constraint=False)
-            forces = image.get_forces(apply_constraint=False)
             atomic_numbers = image.get_atomic_numbers()
             natoms = len(image)
             image_fingerprint = image_data["descriptors"]
@@ -48,6 +47,7 @@ class AtomsDataset(Dataset):
                 natoms=natoms,
             )
             if self.forcetraining:
+                forces = image.get_forces(apply_constraint=False)
                 fp_prime_val = image_data["descriptor_primes"]["val"]
                 fp_prime_row = image_data["descriptor_primes"]["row"]
                 fp_prime_col = image_data["descriptor_primes"]["col"]

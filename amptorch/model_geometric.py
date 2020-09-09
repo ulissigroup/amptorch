@@ -69,28 +69,32 @@ class BPNN(nn.Module):
         self.element_mask = ElementMask(elements)
 
     def forward(self, batch):
-        atomic_numbers = batch.atomic_numbers
-        fingerprints = batch.fingerprint.float()
-        fingerprints.requires_grad = True
-        image_idx = batch.image_idx
-        sorted_image_idx = torch.unique_consecutive(image_idx)
-        mask = self.element_mask(atomic_numbers)
-        o = torch.sum(
-            mask * torch.cat([net(fingerprints) for net in self.elementwise_models], 1),
-            dim=1,
-        )
-        energy = scatter(o, image_idx, dim=0)[sorted_image_idx]
+        with torch.enable_grad():
+            atomic_numbers = batch.atomic_numbers
+            fingerprints = batch.fingerprint.float()
+            fingerprints.requires_grad = True
+            image_idx = batch.image_idx
+            sorted_image_idx = torch.unique_consecutive(image_idx)
+            mask = self.element_mask(atomic_numbers)
+            o = torch.sum(
+                mask
+                * torch.cat([net(fingerprints) for net in self.elementwise_models], 1),
+                dim=1,
+            )
+            energy = scatter(o, image_idx, dim=0)[sorted_image_idx]
 
-        if self.forcetraining:
-            gradients = grad(
-                energy,
-                fingerprints,
-                grad_outputs=torch.ones_like(energy),
-                create_graph=True,
-            )[0].view(1, -1)
+            if self.forcetraining:
+                gradients = grad(
+                    energy,
+                    fingerprints,
+                    grad_outputs=torch.ones_like(energy),
+                    create_graph=True,
+                )[0].view(1, -1)
 
-            forces = -1 * torch.sparse.mm(batch.fprimes.t(), gradients.t()).view(-1, 3)
-        return energy, forces
+                forces = -1 * torch.sparse.mm(batch.fprimes.t(), gradients.t()).view(
+                    -1, 3
+                )
+            return energy, forces
 
     @property
     def num_params(self):
