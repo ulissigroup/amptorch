@@ -1,17 +1,8 @@
 import ase.io
 import numpy as np
-from amp.descriptor.gaussian import Gaussian as Gnew
-from amp.utilities import hash_images as amp_hash
 from ase import Atoms
 from ase.calculators.emt import EMT
 
-from amptorch.dataset import AtomsDataset as NewDataset
-from amptorch.dataset import data_collater
-from amptorch.dataset_backup import AtomsDataset as OldDataset
-from amptorch.dataset_backup import collate_amp as old_collater
-from amptorch.descriptor.descriptor_calculator import DescriptorCalculator
-from amptorch.descriptor.Gaussian import Gaussian
-from amptorch.model_geometric import BPNN
 from amptorch.trainer import AtomsTrainer
 
 distances = np.linspace(2, 5, 10)
@@ -71,3 +62,13 @@ config = {
 
 trainer = AtomsTrainer(config)
 trainer.train()
+
+# predicting
+test_dataset = {
+        "raw_data": images[:2],
+        "val_split": 0,
+        "elements": elements,
+        "fp_params": Gs,
+        "save_fps": True,
+    }
+predicted = trainer.predict(test_dataset)

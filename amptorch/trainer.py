@@ -6,6 +6,7 @@ import ase.io
 import numpy as np
 import skorch.net
 import torch
+import warnings
 from skorch import NeuralNetRegressor
 from skorch.callbacks import Checkpoint, EpochScoring, LRScheduler
 from skorch.dataset import CVSplit
@@ -18,6 +19,8 @@ from amptorch.skorch_model.utils import (energy_score, forces_score,
                                          target_extractor, to_tensor,
                                          train_end_load_best_loss)
 
+from ase.calculators.singlepoint import SinglePointCalculator as sp
+from torch.utils.data import DataLoader
 
 class AtomsTrainer:
     def __init__(self, config):
@@ -39,6 +42,7 @@ class AtomsTrainer:
         self.device = torch.device(self.config["optim"].get("device", "cpu"))
         self.debug = self.config["cmd"].get("debug", False)
         os.chdir(self.config["cmd"].get("run_dir", "./"))
+        os.makedirs("./checkpoints", exist_ok=True)
 
     def load_rng_seed(self):
         seed = self.config["cmd"].get("seed", 0)
@@ -55,26 +59,37 @@ class AtomsTrainer:
         )
         elements = np.unique(elements)
         return elements
-
-    def load_dataset(self):
-        training_images = self.config["dataset"]["raw_data"]
+    
+    def get_images(self, config_raw_data):
         # TODO: Scalability when dataset to large to fit into memory
-        if isinstance(training_images, str):
-            training_images = ase.io.read(training_images, ":")
-        self.elements = self.config["dataset"].get(
-            "elements", self.get_unique_elements(training_images)
+        if isinstance(config_raw_data, str):
+            config_raw_data = ase.io.read(config_raw_data, ":")
+        return config_raw_data
+    
+    def get_AtomsDataset(self, config_dataset, images=None):
+        """
+        If given images, they will be used instead of the images in config_dataset.
+        """
+        if images is None:
+            images = self.get_images(config_dataset["raw_data"])
+        elements = config_dataset.get(
+            "elements", self.get_unique_elements(images)
         )
 
         # TODO: Allow for alternative fingerprinting schemes
-        fp_params = self.config["dataset"]["fp_params"]
-        descriptor = Gaussian(Gs=fp_params, elements=self.elements)
+        fp_params = config_dataset["fp_params"]
+        descriptor = Gaussian(Gs=fp_params, elements=elements)
 
-        self.train_dataset = AtomsDataset(
-            images=training_images,
+        dataset = AtomsDataset(
+            images=images,
             descriptor=descriptor,
             forcetraining=self.config["model"].get("forcetraining", True),
-            save_fps=self.config["dataset"].get("save_fps", True),
+            save_fps=config_dataset.get("save_fps", True),
         )
+        return elements, dataset
+    
+    def load_dataset(self):
+        self.elements, self.train_dataset = self.get_AtomsDataset(self.config["dataset"])
         self.input_dim = self.train_dataset.input_dim
         self.val_split = self.config["dataset"].get("val_split", 0)
         print("Loading dataset: {} images".format(len(self.train_dataset)))
@@ -94,7 +109,7 @@ class AtomsTrainer:
             self.identifier = timestamp + "-{}".format(self.identifier)
         else:
             self.identifier = timestamp
-        load_best_loss = train_end_load_best_loss(self.config["cmd"]["identifier"])
+        load_best_loss = train_end_load_best_loss(self.identifier)
         if int(self.val_split * len(self.train_dataset)) == 0:
             self.val_split = 0
             scoring_on_train = True
@@ -122,14 +137,14 @@ class AtomsTrainer:
             callbacks.append(
                 Checkpoint(
                     monitor="forces_score_best",
-                    fn_prefix="./checkpoints/{}".format(self.identifier),
+                    fn_prefix="checkpoints/{}_".format(self.identifier),
                 )
             )
         else:
             callbacks.append(
                 Checkpoint(
                     monitor="energy_score_best",
-                    fn_prefix="./checkpoints/{}".format(self.identifier),
+                    fn_prefix="checkpoints/{}_".format(self.identifier),
                 )
             )
         callbacks.append(load_best_loss)
@@ -185,8 +200,49 @@ class AtomsTrainer:
     def train(self):
         self.net.fit(self.train_dataset, None)
 
-    def predict(self):
-        pass
+    def predict(self, test_data):
+        """
+        Takes in test_data in the same form as self.config["dataset"].
+        """
+        test_images = self.get_images(test_data["raw_data"])
+        
+        if len(test_images) < 1:
+            warnings.warn("Empty test data images", stacklevel=2)
+            return test_images
+        
+        test_images = [image.copy() for image in test_images]
+        test_images_copy = [image.copy() for image in test_images]
+        
+        image_shape = test_images[0].get_positions().shape
+        for test_image in test_images:
+            test_image.set_calculator(sp(atoms=test_image, energy=0.0, 
+                                         forces=np.zeros(image_shape, dtype=np.float64)))
+        unique_atoms, test_dataset = self.get_AtomsDataset(test_data, images=test_images)
+        
+        dataloader = DataLoader(test_dataset, len(test_dataset), 
+                                collate_fn=data_collater, shuffle=False)
+        
+        self.net.module.eval()
+        for inputs in dataloader:
+            #for element in unique_atoms:
+            #    inputs[0][element][0] = inputs[0][element][0].requires_grad_(True)
+            energy, forces = self.net.module(inputs[0])
+            energy = energy.detach().numpy()
+            forces = forces.detach().numpy()
+            forces = np.split(forces, len(test_images_copy))
+            for i in range(len(test_images_copy)):
+                test_images_copy[i].set_calculator(sp(atoms=test_images_copy[i], 
+                                                      energy=energy[i], forces=forces[i]))          
+    
+        _, predicted_dataset = self.get_AtomsDataset(test_data, images=test_images_copy)
+        data_list_norm = predicted_dataset.normalizer.denorm(predicted_dataset.data_list)
+        data_list = predicted_dataset.normalizer.denorm(data_list_norm)
+        for i, data in enumerate(data_list):
+            energy = data.energy.detach().numpy()
+            forces = data.forces.detach().numpy()
+            test_images_copy[i].set_calculator(sp(atoms=test_images_copy[i], 
+                                                  energy=energy, forces=forces))
+        return test_images_copy
 
     def load_pretrained(self, checkpoint_path=None):
         self.net.initialize()

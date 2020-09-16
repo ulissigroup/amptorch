@@ -45,7 +45,7 @@ class Normalize:
     def denorm(self, data_list, energy=True):
         for data in data_list:
             data.energy = (data.energy * self.target_std) + self.target_mean
-            data.force = data.force * self.target_std
+            data.forces = data.forces * self.target_std
 
         return data_list
 
