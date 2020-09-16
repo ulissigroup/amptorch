@@ -1,8 +1,7 @@
-import numpy as np
 import skorch
 import torch
 from skorch.utils import to_numpy
-from torch.nn import L1Loss, MSELoss
+from torch.nn import MSELoss
 
 
 def target_extractor(y):
@@ -38,7 +37,7 @@ class train_end_load_best_loss(skorch.callbacks.base.Callback):
         self.filename = filename
 
     def on_train_end(self, net, X, y):
-        net.load_params("./results/checkpoints/{}_params.pt".format(self.filename))
+        net.load_params("./checkpoints/{}_params.pt".format(self.filename))
 
 
 def make_force_header(log):

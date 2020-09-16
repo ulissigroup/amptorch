@@ -39,6 +39,7 @@ class AtomsTrainer:
         self.device = torch.device(self.config["optim"].get("device", "cpu"))
         self.debug = self.config["cmd"].get("debug", False)
         os.chdir(self.config["cmd"].get("run_dir", "./"))
+        os.makedirs("checkpoints", exist_ok=True)
 
     def load_rng_seed(self):
         seed = self.config["cmd"].get("seed", 0)
@@ -94,7 +95,7 @@ class AtomsTrainer:
             self.identifier = timestamp + "-{}".format(self.identifier)
         else:
             self.identifier = timestamp
-        load_best_loss = train_end_load_best_loss(self.config["cmd"]["identifier"])
+        load_best_loss = train_end_load_best_loss(self.identifier)
         if int(self.val_split * len(self.train_dataset)) == 0:
             self.val_split = 0
             scoring_on_train = True
@@ -122,14 +123,14 @@ class AtomsTrainer:
             callbacks.append(
                 Checkpoint(
                     monitor="forces_score_best",
-                    fn_prefix="./checkpoints/{}".format(self.identifier),
+                    fn_prefix="checkpoints/{}_".format(self.identifier),
                 )
             )
         else:
             callbacks.append(
                 Checkpoint(
                     monitor="energy_score_best",
-                    fn_prefix="./checkpoints/{}".format(self.identifier),
+                    fn_prefix="checkpoints/{}_".format(self.identifier),
                 )
             )
         callbacks.append(load_best_loss)
