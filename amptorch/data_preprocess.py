@@ -112,12 +112,8 @@ class AtomsDataset(Dataset):
         # cutoff = Gs["cutoff"]
         # create simple_nn fingerprints
         if descriptor == SNN_Gaussian:
-<<<<<<< HEAD
             print('SSN Gaussian: %d images' % len(self.atom_images))
             self.hashed_images = hash_images(self.atom_images, Gs=Gs, log=logger or None)
-=======
-            self.hashed_images = hash_images(self.atom_images, Gs=Gs)
->>>>>>> ulissi/master
             make_amp_descriptors_simple_nn(
                 self.atom_images, Gs, self.elements, cores=cores, label=label
             )
