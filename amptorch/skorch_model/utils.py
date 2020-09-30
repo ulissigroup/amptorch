@@ -1,8 +1,7 @@
-import numpy as np
 import skorch
 import torch
 from skorch.utils import to_numpy
-from torch.nn import L1Loss, MSELoss
+from torch.nn import MSELoss
 
 
 def target_extractor(y):

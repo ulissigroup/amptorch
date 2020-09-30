@@ -1,7 +1,8 @@
 from torch.utils.data import Dataset
 from torch_geometric.data import Batch
 
-from amptorch.preprocessing import AtomsToData, Normalize, sparse_block_diag
+from amptorch.preprocessing import (AtomsToData, FeatureScaler, TargetScaler,
+                                    sparse_block_diag)
 
 
 class AtomsDataset(Dataset):
@@ -21,14 +22,12 @@ class AtomsDataset(Dataset):
         self.data_list = self.process()
 
     def process(self):
-
         data_list = self.a2d.convert_all(self.images)
 
-        # Normalize fingerprints
-        # Normalize targets
-        # TODO: clean up normalization schemes
-        self.normalizer = Normalize(data_list)
-        data_list = self.normalizer.norm(data_list)
+        self.feature_scaler = FeatureScaler(data_list)
+        self.target_scaler = TargetScaler(data_list)
+        self.feature_scaler.norm(data_list)
+        self.target_scaler.norm(data_list)
 
         return data_list
 
@@ -43,7 +42,7 @@ class AtomsDataset(Dataset):
         return self.data_list[index]
 
 
-def data_collater(data_list):
+def data_collater(data_list, train=True):
     mtxs = []
     for data in data_list:
         mtxs.append(data.fprimes)
@@ -53,4 +52,7 @@ def data_collater(data_list):
         data.fprimes = mtxs[i]
     block_matrix = sparse_block_diag(mtxs)
     batch.fprimes = block_matrix
-    return batch, (batch.energy, batch.forces)
+    if train:
+        return batch, (batch.energy, batch.forces)
+    else:
+        return batch
