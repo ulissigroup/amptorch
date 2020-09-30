@@ -21,9 +21,6 @@ for l in distances:
     image.set_calculator(EMT())
     images.append(image)
 
-images = ase.io.read(
-    "/home/mshuaibi/Documents/amptorch/datasets/COCu_ber_50ps_300K.traj", ":1000"
-)
 
 Gs = {
     "default": {
@@ -35,14 +32,13 @@ Gs = {
 
 elements = ["Cu", "C", "O"]
 config = {
-    "model": {"forcetraining": True, "num_layers": 3, "num_nodes": 5,},
+    "model": {"forcetraining": True, "num_layers": 3, "num_nodes": 5},
     "optim": {
         "device": "cpu",
         "force_coefficient": 0.04,
         "lr": 1e-2,
-        # "batch_size": len(images),
         "batch_size": 32,
-        "epochs": 1,
+        "epochs": 100,
     },
     "dataset": {
         "raw_data": images,
@@ -57,18 +53,16 @@ config = {
         "seed": 1,
         "identifier": "test",
         "verbose": True,
+        "logger": False,
     },
 }
 
 trainer = AtomsTrainer(config)
 trainer.train()
 
-# predicting
-test_dataset = {
-        "raw_data": images[:2],
-        "val_split": 0,
-        "elements": elements,
-        "fp_params": Gs,
-        "save_fps": True,
-    }
-predicted = trainer.predict(test_dataset)
+predictions = trainer.predict(images[:10])
+
+true_energies = np.array([image.get_potential_energy() for image in images])
+pred_energies = np.array(predictions["energy"])
+
+print("Energy MAE:", np.mean(np.abs(true_energies - pred_energies)))

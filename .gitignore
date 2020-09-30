@@ -17,18 +17,18 @@ __pycache__/
 *.pickle
 *.png
 *.json
+*.eggs
+*.egg-info
 
-amp_benchmark/
-amptorch/sigopt/
-amptorch/bench/*
-amptorch/md_work/*
 datasets/*
 
+*/wandb/
 .ipynb_checkpoints
+*/processed/*
 */checkpoints/*
-stored-primes/
+*/results/*
 
-
-#compiled_file
+#build/compiled_files
+*build/
 amptorch/descriptor/Gaussian/_libsymf.abi3.so
 amptorch/descriptor/MCSH/_libmcsh.abi3.so
