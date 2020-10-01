@@ -28,13 +28,22 @@ class EnsembleCalc(Calculator):
         Calculator.__init__(self)
         self.trained_calcs = trained_calcs
         self.training_params = training_params
-
-    def calculate_stats(self, energies, forces):
+        
+    median_list = [100]
+    def calculate_stats(self, energies, forces,energy_list = median_list):
         median_idx = np.argsort(energies)[len(energies) // 2]
         energy_median = energies[median_idx]
+        prev_e_mean = energy_list[-1] #previous median energy
+        energy_list.append(energy_median)        
+        print('previous median',prev_e_mean)
+  #     print('difference',prev_e_mean-energy_median)
+        print(energies)
         energy_var = np.var(energies)
+        std_idx = np.argwhere(np.absolute(energies-energy_median) < 0.3*energy_median)
+ #      print('std',std_idx)
         forces_median = forces[median_idx]
         max_forces_var = np.max(np.var(forces, axis=0))
+        print(max_forces_var)
         return energy_median, forces_median, max_forces_var
 
     def fingerprint_args(self, images):
@@ -54,7 +63,6 @@ class EnsembleCalc(Calculator):
 
     def calculate(self, atoms, properties, system_changes):
         Calculator.calculate(self, atoms, properties, system_changes)
-
         energies = []
         forces = []
 
@@ -65,7 +73,8 @@ class EnsembleCalc(Calculator):
         energies = np.array(energies)
         forces = np.array(forces)
         energy_pred, force_pred, uncertainty = self.calculate_stats(energies, forces)
-
+        
         self.results["energy"] = energy_pred
         self.results["forces"] = force_pred
         atoms.info["uncertainty"] = np.array([uncertainty])
+        
