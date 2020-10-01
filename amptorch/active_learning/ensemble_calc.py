@@ -30,20 +30,12 @@ class EnsembleCalc(Calculator):
         self.training_params = training_params
         
     median_list = [100]
-    def calculate_stats(self, energies, forces,energy_list = median_list):
+    def calculate_stats(self, energies, forces):
         median_idx = np.argsort(energies)[len(energies) // 2]
         energy_median = energies[median_idx]
-        prev_e_mean = energy_list[-1] #previous median energy
-        energy_list.append(energy_median)        
-        print('previous median',prev_e_mean)
-  #     print('difference',prev_e_mean-energy_median)
-        print(energies)
         energy_var = np.var(energies)
-        std_idx = np.argwhere(np.absolute(energies-energy_median) < 0.3*energy_median)
- #      print('std',std_idx)
         forces_median = forces[median_idx]
         max_forces_var = np.max(np.var(forces, axis=0))
-        print(max_forces_var)
         return energy_median, forces_median, max_forces_var
 
     def fingerprint_args(self, images):
