@@ -61,7 +61,7 @@ class MDsimulate:
         dyn.run(self.count)
 
     def get_trajectory(self, filename):
-        trajectory = ase.io.Trajectory(filename + ".traj", ":")
+        trajectory = ase.io.Trajectory(filename + ".traj")
         return trajectory
 
 
@@ -79,5 +79,5 @@ class Relaxation:
         dyn.run(fmax=self.fmax, steps=self.steps)
 
     def get_trajectory(self, filename):
-        trajectory = ase.io.read(filename + ".traj", ":")
+        trajectory = ase.io.Trajectory(filename + ".traj")
         return trajectory
