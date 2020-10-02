@@ -28,7 +28,8 @@ class EnsembleCalc(Calculator):
         Calculator.__init__(self)
         self.trained_calcs = trained_calcs
         self.training_params = training_params
-
+        
+    median_list = [100]
     def calculate_stats(self, energies, forces):
         median_idx = np.argsort(energies)[len(energies) // 2]
         energy_median = energies[median_idx]
@@ -54,7 +55,6 @@ class EnsembleCalc(Calculator):
 
     def calculate(self, atoms, properties, system_changes):
         Calculator.calculate(self, atoms, properties, system_changes)
-
         energies = []
         forces = []
 
@@ -65,7 +65,8 @@ class EnsembleCalc(Calculator):
         energies = np.array(energies)
         forces = np.array(forces)
         energy_pred, force_pred, uncertainty = self.calculate_stats(energies, forces)
-
+        
         self.results["energy"] = energy_pred
         self.results["forces"] = force_pred
         atoms.info["uncertainty"] = np.array([uncertainty])
+        
