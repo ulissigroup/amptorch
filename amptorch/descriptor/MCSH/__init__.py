@@ -134,9 +134,7 @@ class AtomisticMCSH(BaseDescriptor):
 
     # def calculate_fingerprints(self, atoms, element, log=None, calculate_derivatives=True):
     def calculate_fingerprints(self, atoms, element, calc_derivatives, log):
-        # params_set = self.params_set
-        # print("starting atoms {}".format(atoms) )
-        # print("starting element {}".format(element) )
+
         element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
 
         symbols = np.array(atoms.get_chemical_symbols())

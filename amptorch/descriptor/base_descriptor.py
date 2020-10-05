@@ -172,6 +172,8 @@ class BaseDescriptor(ABC):
                         num_desc_dict[element] = size_info[2]
                         fp_dict[element] = fps
 
+                        print(fps)
+
                         fp_prime_val_dict[element] = fp_primes_val
                         fp_prime_row_dict[element] = fp_primes_row
                         fp_prime_col_dict[element] = fp_primes_col
