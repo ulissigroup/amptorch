@@ -15,6 +15,8 @@ class AtomsDataset(Dataset):
         cores=1,
     ):
         self.images = images
+        self.forcetraining = forcetraining
+
         self.a2d = AtomsToData(
             descriptor=descriptor,
             r_energy=True,
@@ -29,8 +31,8 @@ class AtomsDataset(Dataset):
     def process(self):
         data_list = self.a2d.convert_all(self.images)
 
-        self.feature_scaler = FeatureScaler(data_list)
-        self.target_scaler = TargetScaler(data_list)
+        self.feature_scaler = FeatureScaler(data_list, self.forcetraining)
+        self.target_scaler = TargetScaler(data_list, self.forcetraining)
         self.feature_scaler.norm(data_list)
         self.target_scaler.norm(data_list)
 
@@ -47,17 +49,26 @@ class AtomsDataset(Dataset):
         return self.data_list[index]
 
 
-def data_collater(data_list, train=True):
-    mtxs = []
-    for data in data_list:
-        mtxs.append(data.fprimes)
-        data.fprimes = None
-    batch = Batch.from_data_list(data_list)
-    for i, data in enumerate(data_list):
-        data.fprimes = mtxs[i]
-    block_matrix = sparse_block_diag(mtxs)
-    batch.fprimes = block_matrix
-    if train:
-        return batch, (batch.energy, batch.forces)
-    else:
-        return batch
+class DataCollater:
+    def __init__(self, train=True, forcetraining=True):
+        self.train = train
+        self.forcetraining = forcetraining
+
+    def __call__(self, data_list):
+        if self.forcetraining:
+            mtxs = []
+            for data in data_list:
+                mtxs.append(data.fprimes)
+                data.fprimes = None
+            batch = Batch.from_data_list(data_list)
+            for i, data in enumerate(data_list):
+                data.fprimes = mtxs[i]
+            block_matrix = sparse_block_diag(mtxs)
+            batch.fprimes = block_matrix
+        else:
+            batch = Batch.from_data_list(data_list)
+
+        if self.train:
+            return batch, (batch.energy, batch.forces)
+        else:
+            return batch

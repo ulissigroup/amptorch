@@ -11,7 +11,7 @@ from skorch import NeuralNetRegressor
 from skorch.callbacks import Checkpoint, EpochScoring, LRScheduler
 from skorch.dataset import CVSplit
 
-from amptorch.dataset import AtomsDataset, data_collater
+from amptorch.dataset import AtomsDataset, DataCollater
 from amptorch.descriptor.Gaussian import Gaussian
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.model import BPNN, CustomMSELoss
@@ -78,11 +78,12 @@ class AtomsTrainer:
         # TODO: Allow for alternative fingerprinting schemes
         fp_params = self.config["dataset"]["fp_params"]
         self.descriptor = Gaussian(Gs=fp_params, elements=self.elements)
+        self.forcetraining = self.config["model"].get("get_forces", True)
 
         self.train_dataset = AtomsDataset(
             images=training_images,
             descriptor=self.descriptor,
-            forcetraining=self.config["model"].get("get_forces", True),
+            forcetraining=self.forcetraining,
             save_fps=self.config["dataset"].get("save_fps", True),
         )
 
@@ -146,7 +147,7 @@ class AtomsTrainer:
                 scheduler, **self.config["optim"]["scheduler_params"]
             )
             callbacks.append(scheduler)
-        if self.config["cmd"]["logger"]:
+        if self.config["cmd"].get("logger", False):
             from skorch.callbacks import WandbLogger
 
             callbacks.append(WandbLogger(self.wandb_run, save_model=False))
@@ -159,7 +160,7 @@ class AtomsTrainer:
         self.optimizer = torch.optim.Adam
 
     def load_logger(self):
-        if self.config["cmd"]["logger"]:
+        if self.config["cmd"].get("logger", False):
             import wandb
 
             self.wandb_run = wandb.init(
@@ -170,19 +171,22 @@ class AtomsTrainer:
 
     def load_skorch(self):
         skorch.net.to_tensor = to_tensor
+
+        collate_fn = DataCollater(train=True, forcetraining=self.forcetraining)
+
         self.net = NeuralNetRegressor(
             module=self.model,
             criterion=self.criterion,
             criterion__force_coefficient=self.config["optim"].get(
-                "force_coefficient", 0.04
+                "force_coefficient", 0
             ),
             optimizer=self.optimizer,
             lr=self.config["optim"].get("lr", 1e-1),
             batch_size=self.config["optim"].get("batch_size", 32),
             max_epochs=self.config["optim"].get("epochs", 100),
-            iterator_train__collate_fn=data_collater,
+            iterator_train__collate_fn=collate_fn,
             iterator_train__shuffle=True,
-            iterator_valid__collate_fn=data_collater,
+            iterator_valid__collate_fn=collate_fn,
             iterator_valid__shuffle=False,
             device=self.device,
             train_split=self.val_split,
@@ -205,7 +209,7 @@ class AtomsTrainer:
             r_energy=False,
             r_forces=False,
             save_fps=True,
-            fprimes=True,
+            fprimes=self.forcetraining,
             cores=1,
         )
 
@@ -213,10 +217,11 @@ class AtomsTrainer:
         self.feature_scaler.norm(data_list)
 
         self.net.module.eval()
+        collate_fn = DataCollater(train=False, forcetraining=self.forcetraining)
 
         predictions = {"energy": [], "forces": []}
         for data in data_list:
-            collated = data_collater([data], train=False)
+            collated = collate_fn([data])
             energy, forces = self.net.module(collated)
 
             energy = self.target_scaler.denorm(energy, pred="energy").detach().tolist()
