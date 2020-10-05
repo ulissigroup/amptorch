@@ -14,11 +14,10 @@ from skorch.dataset import CVSplit
 from amptorch.dataset import AtomsDataset, data_collater
 from amptorch.descriptor.Gaussian import Gaussian
 from amptorch.descriptor.util import list_symbols_to_indices
-from amptorch.model_geometric import BPNN, CustomMSELoss
+from amptorch.model import BPNN, CustomMSELoss
 from amptorch.preprocessing import AtomsToData
-from amptorch.skorch_model.utils import (energy_score, forces_score,
-                                         target_extractor, to_tensor,
-                                         train_end_load_best_loss)
+from amptorch.utils import (energy_score, forces_score, target_extractor,
+                            to_tensor, train_end_load_best_loss)
 
 
 class AtomsTrainer:
@@ -38,10 +37,18 @@ class AtomsTrainer:
         self.load_skorch()
 
     def load_config(self):
+        self.timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        self.identifier = self.config["cmd"].get("identifier", False)
+        if self.identifier:
+            self.identifier = self.timestamp + "-{}".format(self.identifier)
+        else:
+            self.identifier = self.timestamp
+
         self.device = torch.device(self.config["optim"].get("device", "cpu"))
         self.debug = self.config["cmd"].get("debug", False)
         os.chdir(self.config["cmd"].get("run_dir", "./"))
-        os.makedirs("checkpoints", exist_ok=True)
+        if not self.debug:
+            os.makedirs(os.path.join("checkpoints", self.identifier), exist_ok=True)
 
     def load_rng_seed(self):
         seed = self.config["cmd"].get("seed", 0)
@@ -94,12 +101,6 @@ class AtomsTrainer:
 
     def load_extras(self):
         callbacks = []
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        self.identifier = self.config["cmd"].get("identifier", False)
-        if self.identifier:
-            self.identifier = timestamp + "-{}".format(self.identifier)
-        else:
-            self.identifier = timestamp
         load_best_loss = train_end_load_best_loss(self.identifier)
         if int(self.val_split * len(self.train_dataset)) == 0:
             self.val_split = 0
@@ -128,14 +129,14 @@ class AtomsTrainer:
             callbacks.append(
                 Checkpoint(
                     monitor="forces_score_best",
-                    fn_prefix="checkpoints/{}_".format(self.identifier),
+                    fn_prefix="checkpoints/{}/".format(self.identifier),
                 )
             )
         else:
             callbacks.append(
                 Checkpoint(
                     monitor="energy_score_best",
-                    fn_prefix="checkpoints/{}_".format(self.identifier),
+                    fn_prefix="checkpoints/{}/".format(self.identifier),
                 )
             )
         callbacks.append(load_best_loss)
@@ -161,9 +162,11 @@ class AtomsTrainer:
         if self.config["cmd"]["logger"]:
             import wandb
 
-            self.wandb_run = wandb.init()
-            # log config file
-            self.wandb_run.config.update(self.config)
+            self.wandb_run = wandb.init(
+                name=self.identifier,
+                config=self.config,
+                id=self.timestamp,
+            )
 
     def load_skorch(self):
         skorch.net.to_tensor = to_tensor
