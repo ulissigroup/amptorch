@@ -1,9 +1,7 @@
-import sys
 import skorch
-from skorch.utils import to_numpy
 import torch
-from torch.nn import MSELoss, L1Loss
-import numpy as np
+from skorch.utils import to_numpy
+from torch.nn import MSELoss
 
 
 def target_extractor(y):
@@ -13,121 +11,38 @@ def target_extractor(y):
         else (to_numpy(y[0]), to_numpy(y[1]), to_numpy(y[2]))
     )
 
+
+def to_tensor(X, device, accept_sparse=False):
+    return X
+
+
 def energy_score(net, X, y):
-    mse_loss = MSELoss(reduction="sum")
+    mse_loss = MSELoss()
     energy_pred, _ = net.forward(X)
-    device = energy_pred.device
-    if not hasattr(X, "scalings"):
+    if isinstance(X, torch.utils.data.Subset):
         X = X.dataset
-    scale = X.scalings[-1]
-    num_atoms = torch.FloatTensor(np.concatenate(y[1::3])).reshape(-1, 1).to(device)
-    dataset_size = len(energy_pred)
-    energy_targets_per_atom = torch.tensor(np.concatenate(y[0::3])).to(device).reshape(-1, 1)
-    energy_targets_per_atom = scale.denorm(energy_targets_per_atom)
-    energy_preds_per_atom = torch.div(energy_pred, num_atoms)
-    energy_preds_per_atom = scale.denorm(energy_preds_per_atom)
-    energy_loss = mse_loss(energy_preds_per_atom, energy_targets_per_atom)
-    energy_loss /= dataset_size
-    energy_rmse = torch.sqrt(energy_loss)
-    return energy_rmse
+    energy_pred = X.target_scaler.denorm(energy_pred, pred="energy")
+    energy_target = X.target_scaler.denorm(torch.FloatTensor(y[0]), pred="energy")
+    energy_loss = mse_loss(energy_pred, energy_target)
+
+    return energy_loss
+
 
 def forces_score(net, X, y):
-    mse_loss = MSELoss(reduction='none')
+    mse_loss = MSELoss()
     _, force_pred = net.forward(X)
-    if force_pred.nelement() == 0:
-        raise Exception("Force training disabled. Disable force scoring!")
-    device = force_pred.device
-    if not hasattr(X, "scalings"):
+    if isinstance(X, torch.utils.data.Subset):
         X = X.dataset
-    scale = X.scalings[-1]
-    num_atoms = torch.FloatTensor(np.concatenate(y[1::3])).reshape(-1, 1).to(device)
-    force_targets_per_atom = torch.tensor(np.concatenate(y[2::3])).to(device)
-    force_targets_per_atom = scale.denorm(force_targets_per_atom)
-    device = force_pred.device
-    dataset_size = len(num_atoms)
-    num_atoms_extended = torch.cat([idx.repeat(int(idx)) for idx in num_atoms]).reshape(-1, 1)
-    force_pred_per_atom = scale.denorm(torch.div(force_pred, num_atoms_extended))
-    force_targets = force_targets_per_atom*num_atoms_extended
-    force_pred = force_pred_per_atom*num_atoms_extended
-    force_mse = mse_loss(force_pred, force_targets)
-    force_mse /= 3 * dataset_size * num_atoms_extended
-    force_rmse = torch.sqrt(force_mse.sum())
-    return force_rmse
+    force_pred = X.target_scaler.denorm(force_pred, pred="forces")
+    force_target = X.target_scaler.denorm(torch.FloatTensor(y[1]), pred="forces")
+    force_loss = mse_loss(force_pred, force_target)
+
+    return force_loss
+
 
 class train_end_load_best_loss(skorch.callbacks.base.Callback):
     def __init__(self, filename):
         self.filename = filename
 
     def on_train_end(self, net, X, y):
-        net.load_params("./results/checkpoints/{}_params.pt".format(self.filename))
-
-def make_force_header(log):
-    header = "%5s %12s %12s %12s %7s"
-    log(header % ("Epoch", "EnergyRMSE", "ForceRMSE", "TrainLoss", "Dur"))
-    log(header % ("=" * 5, "=" * 12, "=" * 12, "=" * 12, "=" * 7))
-
-
-def make_energy_header(log):
-    header = "%5s %12s %12s %7s"
-    log(header % ("Epoch", "EnergyRMSE", "TrainLoss", "Dur"))
-    log(header % ("=" * 5, "=" * 12, "=" * 12, "=" * 7))
-
-
-def make_val_force_header(log):
-    header = "%5s %12s %12s %12s %12s %7s"
-    log(header % ("Epoch", "EnergyRMSE", "ForceRMSE", "TrainLoss", "ValidLoss", "Dur"))
-    log(header % ("=" * 5, "=" * 12, "=" * 12, "=" * 12, "=" * 12, "=" * 7))
-
-
-def make_val_energy_header(log):
-    header = "%5s %12s %12s %12s %7s"
-    log(header % ("Epoch", "EnergyRMSE", "TrainLoss", "ValidLoss", "Dur"))
-    log(header % ("=" * 5, "=" * 12, "=" * 12, "=" * 12, "=" * 7))
-
-
-def log_results(model, log):
-    log("Training initiated...")
-    if model.train_split != 0:
-        if model.criterion__force_coefficient != 0:
-            make_val_force_header(log)
-            for epoch, ermse, frmse, tloss, vloss, dur in model.history[
-                :,
-                (
-                    "epoch",
-                    "energy_score",
-                    "forces_score",
-                    "train_loss",
-                    "valid_loss",
-                    "dur",
-                ),
-            ]:
-                log(
-                    "%5i %12.4f %12.4f %12.4f %12.4f %7.4f"
-                    % (epoch, ermse, frmse, tloss, vloss, dur)
-                )
-        else:
-            make_val_energy_header(log)
-            for epoch, ermse, tloss, vloss, dur in model.history[
-                :, ("epoch", "energy_score", "train_loss", "valid_loss", "dur")
-            ]:
-                log(
-                    "%5i %12.4f %12.4f %12.4f %7.4f" % (epoch, ermse, tloss, vloss, dur)
-                )
-    else:
-        if model.criterion__force_coefficient != 0:
-            make_force_header(log)
-            for epoch, ermse, frmse, tloss, dur in model.history[
-                :, ("epoch", "energy_score", "forces_score", "train_loss", "dur")
-            ]:
-                log(
-                    "%5i %12.4f %12.4f %12.4f %7.4f" % (epoch, ermse, frmse, tloss, dur)
-                )
-        else:
-            make_energy_header(log)
-            for epoch, ermse, tloss, dur in model.history[
-                :, ("epoch", "energy_score", "train_loss", "dur")
-            ]:
-                log("%5i %12.4f %12.4f %7.4f" % (epoch, ermse, tloss, dur))
-    log("...Training Complete!\n")
-
-
+        net.load_params("./checkpoints/{}_params.pt".format(self.filename))
