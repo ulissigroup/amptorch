@@ -104,6 +104,10 @@ class BPNN(nn.Module):
                 forces = -1 * torch.sparse.mm(batch.fprimes.t(), gradients.t()).view(
                     -1, 3
                 )
+
+            else:
+                forces = torch.tensor([])
+
             return energy, forces
 
     @property
