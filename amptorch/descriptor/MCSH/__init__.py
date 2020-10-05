@@ -1,13 +1,23 @@
+# import numpy as np
+# from scipy import sparse
+# from ase.calculators.calculator import Parameters
+# from ._libmcsh import lib, ffi
+# from ..base_descriptor import AMPTorchDescriptorBase
+# from ..util import _gen_2Darray_for_ffi, list_symbols_to_indices, list_indices_to_symbols
+# from ..constants import ATOM_INDEX_TO_SYMBOL_DICT, ATOM_SYMBOL_TO_INDEX_DICT
+
+
+import hashlib
+
 import numpy as np
 from scipy import sparse
-from ase.calculators.calculator import Parameters
-from ._libmcsh import lib, ffi
-from ..base_descriptor import AMPTorchDescriptorBase
-from ..util import _gen_2Darray_for_ffi, list_symbols_to_indices, list_indices_to_symbols
-from ..constants import ATOM_INDEX_TO_SYMBOL_DICT, ATOM_SYMBOL_TO_INDEX_DICT
 
+from ..base_descriptor import BaseDescriptor
+from ..constants import ATOM_SYMBOL_TO_INDEX_DICT
+from ..util import _gen_2Darray_for_ffi, list_symbols_to_indices
+from ._libmcsh import ffi, lib
 
-class AtomisticMCSH(AMPTorchDescriptorBase):
+class AtomisticMCSH(BaseDescriptor):
 
     def __init__(
         self,

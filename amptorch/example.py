@@ -32,6 +32,27 @@ Gs = {
     },
 }
 
+MCSHs = {   "MCSHs": {   
+                        "0": {"groups": [1], "sigmas": [0.1, 0.2, 0.3]},
+                        "1": {"groups": [1], "sigmas": [0.1, 0.2, 0.3]},
+                        "2": {"groups": [1,2], "sigmas": [0.1, 0.2, 0.3]},
+                        "3": {"groups": [1,2,3], "sigmas": [0.1, 0.2, 0.3]},
+                        "4": {"groups": [1,2,3,4], "sigmas": [0.1, 0.2, 0.3]},
+                        # "5": {"groups": [1,2,3,4,5], "sigmas": [0.1, 0.2, 0.3]},
+                        # "6": {"groups": [1,2,3,4,5,6,7], "sigmas": [0.1, 0.2, 0.3]},
+                        # "7": {"groups": [1,2,3,4,5,6,7,8], "sigmas": [0.1, 0.2, 0.3]},
+                        # "8": {"groups": [1,2,3,4,5,6,7,8,9,10], "sigmas": [0.1, 0.2, 0.3]},
+                        # "9": {"groups": [1,2,3,4,5,6,7,8,9,10,11,12], "sigmas": [0.1, 0.2, 0.3]}
+                  },
+            "atom_gaussians": {
+                        "H": "./MCSH_potential/H_pseudodensity_6.g",
+                        "O": "./MCSH_potential/O_pseudodensity_6.g",
+                        "Fe": "./MCSH_potential/Pt_pseudodensity_8.g"
+                  },
+            "cutoff": 6
+}
+
+
 elements = ["Cu", "C", "O"]
 config = {
     "model": {"get_forces": True, "num_layers": 3, "num_nodes": 5},
@@ -46,6 +67,7 @@ config = {
         "raw_data": images,
         "val_split": 0,
         "elements": elements,
+        "fp_scheme": "mcsh",
         "fp_params": Gs,
         "save_fps": True,
     },
