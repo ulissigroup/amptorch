@@ -1,27 +1,28 @@
 language: python
-env:
-  - export PYTHONPATH=/amptorch:$PYTHONPATH      
-os:
-  - linux
-rvm:
-  - 3.6
-addons:
-  apt:
-    packages:
-    - gfortran
+python:
+  - "3.6"
 install:
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+      wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+    else
+      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - source "$HOME/miniconda/etc/profile.d/conda.sh"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda info -a
+
+  - conda env create -q -f env_cpu.yml
+  - conda activate amptorch
   - pip install python-coveralls
   - pip install coverage
-  - pip install 'scikit-learn==0.21.3'
-  - pip install 'skorch==0.6.0'
-  - pip install git+https://github.com/mshuaibii/SIMPLE-NN
-  - pip install git+https://bitbucket.org/andrewpeterson/amp.git
-  - pip install spglib
-  - pip install torch
-  - pip install ase
-  - pip install scipy
-  - pip install .
+  - pip install -e .
+
 script:
-  - coverage run ./amptorch/tests/test_script.py 
-after_success:
-  - coveralls
+  #- coverage run ./amptorch/tests/test_script.py
+  - python ./amptorch/tests/test_script.py
+
+#after_success:
+  #- coveralls
