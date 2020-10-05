@@ -7,7 +7,12 @@ from amptorch.preprocessing import (AtomsToData, FeatureScaler, TargetScaler,
 
 class AtomsDataset(Dataset):
     def __init__(
-        self, images, descriptor, forcetraining=True, save_fps=True, cores=1,
+        self,
+        images,
+        descriptor,
+        forcetraining=True,
+        save_fps=True,
+        cores=1,
     ):
         self.images = images
         self.a2d = AtomsToData(
@@ -22,7 +27,6 @@ class AtomsDataset(Dataset):
         self.data_list = self.process()
 
     def process(self):
-
         data_list = self.a2d.convert_all(self.images)
 
         self.feature_scaler = FeatureScaler(data_list)
@@ -43,7 +47,7 @@ class AtomsDataset(Dataset):
         return self.data_list[index]
 
 
-def data_collater(data_list):
+def data_collater(data_list, train=True):
     mtxs = []
     for data in data_list:
         mtxs.append(data.fprimes)
@@ -53,4 +57,7 @@ def data_collater(data_list):
         data.fprimes = mtxs[i]
     block_matrix = sparse_block_diag(mtxs)
     batch.fprimes = block_matrix
-    return batch, (batch.energy, batch.forces)
+    if train:
+        return batch, (batch.energy, batch.forces)
+    else:
+        return batch

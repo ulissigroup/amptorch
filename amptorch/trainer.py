@@ -1,6 +1,7 @@
 import datetime
 import os
 import random
+import warnings
 
 import ase.io
 import numpy as np
@@ -14,6 +15,7 @@ from amptorch.dataset import AtomsDataset, data_collater
 from amptorch.descriptor.Gaussian import Gaussian
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.model_geometric import BPNN, CustomMSELoss
+from amptorch.preprocessing import AtomsToData
 from amptorch.skorch_model.utils import (energy_score, forces_score,
                                          target_extractor, to_tensor,
                                          train_end_load_best_loss)
@@ -68,12 +70,12 @@ class AtomsTrainer:
 
         # TODO: Allow for alternative fingerprinting schemes
         fp_params = self.config["dataset"]["fp_params"]
-        descriptor = Gaussian(Gs=fp_params, elements=self.elements)
+        self.descriptor = Gaussian(Gs=fp_params, elements=self.elements)
 
         self.train_dataset = AtomsDataset(
             images=training_images,
-            descriptor=descriptor,
-            forcetraining=self.config["model"].get("forcetraining", True),
+            descriptor=self.descriptor,
+            forcetraining=self.config["model"].get("get_forces", True),
             save_fps=self.config["dataset"].get("save_fps", True),
         )
 
@@ -114,7 +116,7 @@ class AtomsTrainer:
                 target_extractor=target_extractor,
             )
         )
-        if self.config["model"]["forcetraining"]:
+        if self.config["model"]["get_forces"]:
             callbacks.append(
                 EpochScoring(
                     forces_score,
@@ -146,7 +148,7 @@ class AtomsTrainer:
         if self.config["cmd"]["logger"]:
             from skorch.callbacks import WandbLogger
 
-            callbacks.append(WandbLogger(self.wandb_run))
+            callbacks.append(WandbLogger(self.wandb_run, save_model=False))
         self.callbacks = callbacks
 
     def load_criterion(self):
@@ -189,12 +191,42 @@ class AtomsTrainer:
     def train(self):
         self.net.fit(self.train_dataset, None)
 
-    def predict(self):
-        pass
+    def predict(self, images, batch_size=32):
+        print("### Making predictions")
+        if len(images) < 1:
+            warnings.warn("No images found!", stacklevel=2)
+            return images
+
+        a2d = AtomsToData(
+            descriptor=self.descriptor,
+            r_energy=False,
+            r_forces=False,
+            save_fps=True,
+            fprimes=True,
+            cores=1,
+        )
+
+        data_list = a2d.convert_all(images)
+        self.feature_scaler.norm(data_list)
+
+        self.net.module.eval()
+
+        predictions = {"energy": [], "forces": []}
+        for data in data_list:
+            collated = data_collater([data], train=False)
+            energy, forces = self.net.module(collated)
+
+            energy = self.target_scaler.denorm(energy, pred="energy").detach().tolist()
+            forces = self.target_scaler.denorm(forces, pred="forces").detach().numpy()
+
+            predictions["energy"].extend(energy)
+            predictions["forces"].append(forces)
+
+        return predictions
 
     def load_pretrained(self, checkpoint_path=None):
         self.net.initialize()
         try:
             self.net.load_params(f_params=checkpoint_path)
-        except:
-            raise Exception("Unable to load checkpoint!")
+        except NotImplementedError:
+            print("Unable to load checkpoint!")
