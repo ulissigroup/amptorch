@@ -132,7 +132,8 @@ class AtomisticMCSH(BaseDescriptor):
                 out_file.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(int(desc[0]), int(desc[1]), desc[2], desc[3], desc[4], desc[5], desc[6]))
 
 
-    def calculate_fingerprints(self, atoms, element, log=None, calculate_derivatives=True):
+    # def calculate_fingerprints(self, atoms, element, log=None, calculate_derivatives=True):
+    def calculate_fingerprints(self, atoms, element, calc_derivatives, log):
         # params_set = self.params_set
         # print("starting atoms {}".format(atoms) )
         # print("starting element {}".format(element) )
