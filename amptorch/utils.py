@@ -9,7 +9,7 @@ import shutil
 import numpy as np
 from ase import io
 from ase.db import connect
-from simple_nn.features.symmetry_function import Symmetry_function
+# from simple_nn.features.symmetry_function import Symmetry_function
 
 def hash_images(images, Gs=None, log=None, ordered=False):
     """ Converts input images -- which may be a list, a trajectory file, or

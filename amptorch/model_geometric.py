@@ -1,16 +1,8 @@
 import torch
 import torch.nn as nn
-from torch.nn import Tanh
 from torch.autograd import grad
+from torch.nn import Tanh
 from torch_scatter import scatter
-
-try:
-    from torch_sparse import spmm
-
-    spmm_exists = True
-except:
-    spmm_exists = False
-    pass
 
 
 class MLP(nn.Module):
@@ -50,67 +42,67 @@ class ElementMask(nn.Module):
 class BPNN(nn.Module):
     def __init__(
         self,
-        unique_atoms,
-        architecture,
-        device,
-        forcetraining,
+        elements,
+        input_dim,
+        num_nodes,
+        num_layers,
+        get_forces=True,
         activation=Tanh,
-        require_grd=True,
     ):
         super(BPNN, self).__init__()
-        self.device = device
-        self.req_grad = require_grd
-        self.forcetraining = forcetraining
-        self.architecture = architecture
+        self.get_forces = get_forces
         self.activation_fn = activation
 
-        input_length = architecture[0]
-        n_layers = architecture[1]
-        n_hidden_size = architecture[2]
-        n_elements = len(unique_atoms)
+        n_elements = len(elements)
         self.elementwise_models = nn.ModuleList()
         for element in range(n_elements):
             self.elementwise_models.append(
                 MLP(
-                    n_input_nodes=input_length,
-                    n_layers=n_layers,
-                    n_hidden_size=n_hidden_size,
+                    n_input_nodes=input_dim,
+                    n_layers=num_layers,
+                    n_hidden_size=num_nodes,
                     activation=activation,
                 )
             )
 
-        self.element_mask = ElementMask(unique_atoms)
+        self.element_mask = ElementMask(elements)
 
     def forward(self, batch):
-        atomic_numbers = batch.atomic_numbers
-        fingerprints = batch.fingerprint.float()
-        fingerprints.requires_grad = True
-        image_idx = batch.image_idx
-        mask = self.element_mask(atomic_numbers)
-        o = torch.sum(
-            mask * torch.cat([net(fingerprints) for net in self.elementwise_models], 1), dim=1
-        )
-        energy = scatter(o, image_idx)
+        with torch.enable_grad():
+            atomic_numbers = batch.atomic_numbers
+            fingerprints = batch.fingerprint.float()
+            fingerprints.requires_grad = True
+            image_idx = batch.image_idx
+            sorted_image_idx = torch.unique_consecutive(image_idx)
+            mask = self.element_mask(atomic_numbers)
+            o = torch.sum(
+                mask
+                * torch.cat(
+                    [net(fingerprints) for net in self.elementwise_models], dim=1
+                ),
+                dim=1,
+            )
+            energy = scatter(o, image_idx, dim=0)[sorted_image_idx]
 
-        if self.forcetraining:
-            gradients = grad(
-                energy,
-                fingerprints,
-                grad_outputs=torch.ones_like(energy),
-                create_graph=True,
-            )[0].view(1, -1)
+            if self.get_forces:
+                gradients = grad(
+                    energy,
+                    fingerprints,
+                    grad_outputs=torch.ones_like(energy),
+                    create_graph=True,
+                )[0].view(1, -1)
 
-            forces = -1 * torch.sparse.mm(batch.fprimes.t(), gradients.t()).view(-1, 3)
-        return energy, forces
+                forces = -1 * torch.sparse.mm(batch.fprimes.t(), gradients.t()).view(
+                    -1, 3
+                )
+            return energy, forces
+
+    @property
+    def num_params(self):
+        return sum(p.numel() for p in self.parameters())
 
 
 class CustomMSELoss(nn.Module):
-    """Custom loss function to be optimized by the regression. Includes aotmic
-    energy and force contributions.
-
-    Eq. (26) in A. Khorshidi, A.A. Peterson /
-    Computer Physics Communications 207 (2016) 310-324"""
-
     def __init__(self, force_coefficient=0):
         super(CustomMSELoss, self).__init__()
         self.alpha = force_coefficient
