@@ -55,7 +55,7 @@ config = {
         "seed": 1,
         "identifier": "test",
         "verbose": True,
-        "logger": False,
+        "logger": True,
     },
 }
 
