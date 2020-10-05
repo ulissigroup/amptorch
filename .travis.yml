@@ -20,8 +20,9 @@ install:
   - pip install coverage
   - pip install -e .
 
-#script:
+script:
   #- coverage run ./amptorch/tests/test_script.py
+  - python ./amptorch/tests/test_script.py
 
 #after_success:
   #- coveralls
