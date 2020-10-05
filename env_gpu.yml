@@ -1,0 +1,25 @@
+name: amptorch
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - ase=3.19*
+  - matplotlib=3.3*
+  - pip
+  - pre-commit=2.2*
+  - python=3.6.*
+  - pytorch=1.6.0
+  - tqdm=4.45.*
+  - cudatoolkit=10.2
+  - h5py
+  - pip:
+    - cffi
+    - wandb
+    - skorch==0.9.*
+    - torch-geometric==1.6.1
+    - -f https://pytorch-geometric.com/whl/torch-1.6.0.html
+    - torch-cluster==latest+cu102
+    - torch-scatter==latest+cu102
+    - torch-sparse==latest+cu102
+    - torch-spline-conv==latest+cu102
