@@ -63,11 +63,13 @@ class TargetScaler:
             data.forces /= self.target_std
         return data_list
 
-    def denorm(self, data_list):
-        for data in data_list:
-            data.energy = (data.energy * self.target_std) + self.target_mean
-            data.forces = data.forces * self.target_std
-        return data_list
+    def denorm(self, tensor, pred="energy"):
+        if pred == "energy":
+            tensor = (tensor * self.target_std) + self.target_mean
+        elif pred == "forces":
+            tensor = tensor * self.target_std
+
+        return tensor
 
 
 def sparse_block_diag(arrs):

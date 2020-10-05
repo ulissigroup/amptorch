@@ -1,27 +1,25 @@
 import datetime
 import os
 import random
+import warnings
 
 import ase.io
 import numpy as np
 import skorch.net
 import torch
-import warnings
 from skorch import NeuralNetRegressor
 from skorch.callbacks import Checkpoint, EpochScoring, LRScheduler
 from skorch.dataset import CVSplit
 
 from amptorch.dataset import AtomsDataset, data_collater
-from amptorch.preprocessing import AtomsToData
 from amptorch.descriptor.Gaussian import Gaussian
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.model_geometric import BPNN, CustomMSELoss
+from amptorch.preprocessing import AtomsToData
 from amptorch.skorch_model.utils import (energy_score, forces_score,
                                          target_extractor, to_tensor,
                                          train_end_load_best_loss)
 
-from ase.calculators.singlepoint import SinglePointCalculator as sp
-from torch.utils.data import DataLoader
 
 class AtomsTrainer:
     def __init__(self, config):
@@ -77,7 +75,7 @@ class AtomsTrainer:
         self.train_dataset = AtomsDataset(
             images=training_images,
             descriptor=self.descriptor,
-            forcetraining=self.config["model"].get("forcetraining", True),
+            forcetraining=self.config["model"].get("get_forces", True),
             save_fps=self.config["dataset"].get("save_fps", True),
         )
 
@@ -118,7 +116,7 @@ class AtomsTrainer:
                 target_extractor=target_extractor,
             )
         )
-        if self.config["model"]["forcetraining"]:
+        if self.config["model"]["get_forces"]:
             callbacks.append(
                 EpochScoring(
                     forces_score,
@@ -205,25 +203,22 @@ class AtomsTrainer:
             r_forces=False,
             save_fps=True,
             fprimes=True,
-            cores=1
+            cores=1,
         )
 
         data_list = a2d.convert_all(images)
         self.feature_scaler.norm(data_list)
 
         self.net.module.eval()
+
+        predictions = {"energy": [], "forces": []}
         for data in data_list:
             collated = data_collater([data], train=False)
             energy, forces = self.net.module(collated)
-            data.energy = energy
-            data.forces = forces
 
-        data_list = self.target_scaler.denorm(data_list)
+            energy = self.target_scaler.denorm(energy, pred="energy").detach().tolist()
+            forces = self.target_scaler.denorm(forces, pred="forces").detach().numpy()
 
-        predictions = {"energy": [], "forces": []}
-        for i, data in enumerate(data_list):
-            energy = data.energy.detach().tolist()
-            forces = data.forces.detach().numpy()
             predictions["energy"].extend(energy)
             predictions["forces"].append(forces)
 
@@ -233,5 +228,5 @@ class AtomsTrainer:
         self.net.initialize()
         try:
             self.net.load_params(f_params=checkpoint_path)
-        except:
-            raise Exception("Unable to load checkpoint!")
+        except NotImplementedError:
+            print("Unable to load checkpoint!")

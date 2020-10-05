@@ -3,7 +3,6 @@ import torch.nn as nn
 from torch.autograd import grad
 from torch.nn import Tanh
 from torch_scatter import scatter
-from torch_sparse import spmm
 
 
 class MLP(nn.Module):
@@ -47,11 +46,11 @@ class BPNN(nn.Module):
         input_dim,
         num_nodes,
         num_layers,
-        forcetraining=True,
+        get_forces=True,
         activation=Tanh,
     ):
         super(BPNN, self).__init__()
-        self.forcetraining = forcetraining
+        self.get_forces = get_forces
         self.activation_fn = activation
 
         n_elements = len(elements)
@@ -78,12 +77,14 @@ class BPNN(nn.Module):
             mask = self.element_mask(atomic_numbers)
             o = torch.sum(
                 mask
-                * torch.cat([net(fingerprints) for net in self.elementwise_models], 1),
+                * torch.cat(
+                    [net(fingerprints) for net in self.elementwise_models], dim=1
+                ),
                 dim=1,
             )
             energy = scatter(o, image_idx, dim=0)[sorted_image_idx]
 
-            if self.forcetraining:
+            if self.get_forces:
                 gradients = grad(
                     energy,
                     fingerprints,

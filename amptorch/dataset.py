@@ -7,7 +7,12 @@ from amptorch.preprocessing import (AtomsToData, FeatureScaler, TargetScaler,
 
 class AtomsDataset(Dataset):
     def __init__(
-        self, images, descriptor, forcetraining=True, save_fps=True, cores=1,
+        self,
+        images,
+        descriptor,
+        forcetraining=True,
+        save_fps=True,
+        cores=1,
     ):
         self.images = images
         self.a2d = AtomsToData(
