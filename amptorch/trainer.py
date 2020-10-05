@@ -13,7 +13,7 @@ from skorch.dataset import CVSplit
 
 from amptorch.dataset import AtomsDataset, data_collater
 from amptorch.descriptor.Gaussian import Gaussian
-from amptorch.descriptor.MCSH import Gaussian
+from amptorch.descriptor.MCSH import AtomisticMCSH
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.model import BPNN, CustomMSELoss
 from amptorch.preprocessing import AtomsToData
