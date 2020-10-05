@@ -173,7 +173,7 @@ class BaseDescriptor(ABC):
                         fp_dict[element] = fps
 
                         print(fps)
-                        print(fp_prime_val)
+                        print(fp_primes_val)
 
                         fp_prime_val_dict[element] = fp_primes_val
                         fp_prime_row_dict[element] = fp_primes_row
