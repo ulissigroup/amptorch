@@ -55,8 +55,7 @@ class AtomisticMCSH(BaseDescriptor):
             with open(filename, 'r') as fil:
                 for line in fil:
                     tmp = line.split()
-                    # params += [float(tmp[0]), float(tmp[1])]
-                    params += [float(tmp[1]), float(tmp[0])]
+                    params += [float(tmp[0]), float(tmp[1])]
                     # count += 1
             element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
             params = np.asarray(params, dtype=np.float64, order='C')
