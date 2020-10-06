@@ -202,7 +202,7 @@ class AtomisticMCSH(BaseDescriptor):
         fp_prime = np.array(dx)
 
         print(fp)
-        print(fp_prime)
+        # print(fp_prime)
 
         # if "prime_threshold" in self.params_set:
         #     threshold = self.params_set["prime_threshold"]
