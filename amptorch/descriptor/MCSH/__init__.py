@@ -201,11 +201,14 @@ class AtomisticMCSH(BaseDescriptor):
 
         fp_prime = np.array(dx)
 
-        if "prime_threshold" in self.params_set:
-            threshold = self.params_set["prime_threshold"]
-            super_threshold_indices = np.abs(fp_prime) < threshold
-            print("threshhold: {} \tnum points set to zero:{} \t outof: {}".format(threshold, np.sum(super_threshold_indices), fp_prime.shape[0] * fp_prime.shape[1]))
-            fp_prime[super_threshold_indices] = 0.0
+        print(fp)
+        print(fp_prime)
+
+        # if "prime_threshold" in self.params_set:
+        #     threshold = self.params_set["prime_threshold"]
+        #     super_threshold_indices = np.abs(fp_prime) < threshold
+        #     print("threshhold: {} \tnum points set to zero:{} \t outof: {}".format(threshold, np.sum(super_threshold_indices), fp_prime.shape[0] * fp_prime.shape[1]))
+        #     fp_prime[super_threshold_indices] = 0.0
 
         scipy_sparse_fp_prime = sparse.coo_matrix(fp_prime)
         # print(fp)
