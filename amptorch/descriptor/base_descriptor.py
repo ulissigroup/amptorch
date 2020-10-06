@@ -294,7 +294,10 @@ class BaseDescriptor(ABC):
                 else:
 
                     size_info, fps, _, _, _, _ = self.calculate_fingerprints(
-                        image, element, calc_derivatives=calc_derivatives
+                        image,
+                        element,
+                        calc_derivatives=calc_derivatives,
+                        log=log,
                     )
 
                     num_desc_list.append(size_info[2])
