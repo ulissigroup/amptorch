@@ -195,10 +195,9 @@ class AtomisticMCSH(BaseDescriptor):
                     x_p, dx_p)
         
         if errno == 1:
-            print("ERROR: descriptor not IMPLEMENTED!!")
+            raise NotImplementedError("Descriptor not implemented!")
         # print(errno)
         fp = np.array(x)
-
         fp_prime = np.array(dx)
 
         print(fp)
@@ -217,7 +216,14 @@ class AtomisticMCSH(BaseDescriptor):
         # print(np.min(np.abs(scipy_sparse_fp_prime.data)))
         print("density: {}% \n\n----------------------".format(100*len(scipy_sparse_fp_prime.data) / (fp_prime.shape[0] * fp_prime.shape[1])))
 
-        return size_info, fp, scipy_sparse_fp_prime.data, scipy_sparse_fp_prime.row, scipy_sparse_fp_prime.col, np.array(fp_prime.shape)
+        return (
+                size_info,
+                fp,
+                scipy_sparse_fp_prime.data,
+                scipy_sparse_fp_prime.row,
+                scipy_sparse_fp_prime.col,
+                np.array(fp_prime.shape),
+            )
         
         # else:
         #     x = np.zeros([cal_num, self.params_set[element_index]['num']], dtype=np.float64, order='C')
