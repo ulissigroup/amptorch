@@ -68,7 +68,7 @@ class BaseDescriptor(ABC):
 
             # if not save, compute fps on-the-fly
             else:
-                temp_descriptor_list = self._prepare_fingerprints_single_traj_nodb(
+                temp_descriptor_list = self._compute_fingerprints_nodb(
                     image,
                     image_db_filename,
                     calc_derivatives=calc_derivatives,
@@ -242,17 +242,18 @@ class BaseDescriptor(ABC):
 
         return descriptor_list
 
-    def _prepare_fingerprints_single_traj_nodb(
+    def _compute_fingerprints_nodb(
         self, image, image_db_filename, calc_derivatives, save_fps, cores, log
     ):
         descriptor_list = []
 
         image_dict = {}
 
-        symbol_arr = image.get_chemical_symbols()
+        symbol_arr = np.array(image.get_chemical_symbols())
         image_dict["atomic_numbers"] = list_symbols_to_indices(symbol_arr)
         num_atoms = len(symbol_arr)
         image_dict["num_atoms"] = num_atoms
+
 
         num_desc_list = []
         index_arr_dict = {}
@@ -266,9 +267,9 @@ class BaseDescriptor(ABC):
 
         for element in self.elements:
             if element in image.get_chemical_symbols():
-
                 index_arr = np.arange(num_atoms)[symbol_arr == element]
                 index_arr_dict[element] = index_arr
+
 
                 if calc_derivatives:
                     (
@@ -279,12 +280,22 @@ class BaseDescriptor(ABC):
                         fp_primes_col,
                         fp_primes_size,
                     ) = self.calculate_fingerprints(
-                        image, element, calc_derivatives=calc_derivatives, log=log
+                        image,
+                        element,
+                        calc_derivatives=calc_derivatives,
+                        log=log,
                     )
+
+
 
                     num_desc_list.append(size_info[2])
                     num_desc_dict[element] = size_info[2]
                     fp_dict[element] = fps
+
+                    print(len(fps[0]))
+                    print(fps)
+                    print(fp_primes_size)
+                    print(fp_primes_val)
 
                     fp_prime_val_dict[element] = fp_primes_val
                     fp_prime_row_dict[element] = fp_primes_row
@@ -300,19 +311,16 @@ class BaseDescriptor(ABC):
                         log=log,
                     )
 
+
                     num_desc_list.append(size_info[2])
                     num_desc_dict[element] = size_info[2]
                     fp_dict[element] = fps
 
             else:
-                print("element not in current snapshot: {}".format(element))
+                print("element not in current image: {}".format(element))
 
         num_desc_max = np.max(num_desc_list)
         image_fp_array = np.zeros((num_atoms, num_desc_max))
-        # for element in fp_dict.keys():
-        #     image_fp_array[index_arr_dict[element], : num_desc_dict[element]] = fp_dict[
-        #         element
-        #     ]
         for element in fp_dict.keys():
             image_fp_array[
                 index_arr_dict[element], : num_desc_dict[element]
@@ -346,6 +354,109 @@ class BaseDescriptor(ABC):
             image_dict["descriptor_primes"] = descriptor_prime_dict
 
         descriptor_list.append(image_dict)
+
+
+
+
+        # image_dict = {}
+
+        # symbol_arr = image.get_chemical_symbols()
+        # image_dict["atomic_numbers"] = list_symbols_to_indices(symbol_arr)
+        # num_atoms = len(symbol_arr)
+        # image_dict["num_atoms"] = num_atoms
+
+        # num_desc_list = []
+        # index_arr_dict = {}
+        # num_desc_dict = {}
+        # fp_dict = {}
+
+        # fp_prime_val_dict = {}
+        # fp_prime_row_dict = {}
+        # fp_prime_col_dict = {}
+        # fp_prime_size_dict = {}
+
+        # for element in self.elements:
+        #     if element in image.get_chemical_symbols():
+
+        #         index_arr = np.arange(num_atoms)[symbol_arr == element]
+        #         index_arr_dict[element] = index_arr
+
+        #         if calc_derivatives:
+        #             (
+        #                 size_info,
+        #                 fps,
+        #                 fp_primes_val,
+        #                 fp_primes_row,
+        #                 fp_primes_col,
+        #                 fp_primes_size,
+        #             ) = self.calculate_fingerprints(
+        #                 image, element, calc_derivatives=calc_derivatives, log=log
+        #             )
+
+        #             num_desc_list.append(size_info[2])
+        #             num_desc_dict[element] = size_info[2]
+        #             fp_dict[element] = fps
+
+        #             fp_prime_val_dict[element] = fp_primes_val
+        #             fp_prime_row_dict[element] = fp_primes_row
+        #             fp_prime_col_dict[element] = fp_primes_col
+        #             fp_prime_size_dict[element] = fp_primes_size
+
+        #         else:
+
+        #             size_info, fps, _, _, _, _ = self.calculate_fingerprints(
+        #                 image,
+        #                 element,
+        #                 calc_derivatives=calc_derivatives,
+        #                 log=log,
+        #             )
+
+        #             num_desc_list.append(size_info[2])
+        #             num_desc_dict[element] = size_info[2]
+        #             fp_dict[element] = fps
+
+        #     else:
+        #         print("element not in current snapshot: {}".format(element))
+
+        # num_desc_max = np.max(num_desc_list)
+        # image_fp_array = np.zeros((num_atoms, num_desc_max))
+        # # for element in fp_dict.keys():
+        # #     image_fp_array[index_arr_dict[element], : num_desc_dict[element]] = fp_dict[
+        # #         element
+        # #     ]
+        # for element in fp_dict.keys():
+        #     image_fp_array[
+        #         index_arr_dict[element], : num_desc_dict[element]
+        #     ] = fp_dict[element]
+
+        # image_dict["descriptors"] = image_fp_array
+        # image_dict["num_descriptors"] = num_desc_dict
+
+        # if calc_derivatives:
+        #     descriptor_prime_dict = {}
+        #     descriptor_prime_dict["size"] = np.array(
+        #         [num_desc_max * num_atoms, 3 * num_atoms]
+        #     )
+        #     descriptor_prime_row_list = []
+        #     descriptor_prime_col_list = []
+        #     descriptor_prime_val_list = []
+        #     for element in fp_prime_val_dict.keys():
+        #         descriptor_prime_row_list.append(
+        #             self._fp_prime_element_row_index_to_image_row_index(
+        #                 fp_prime_row_dict[element],
+        #                 index_arr_dict[element],
+        #                 num_desc_dict[element],
+        #                 num_desc_max,
+        #             )
+        #         )
+        #         descriptor_prime_col_list.append(fp_prime_col_dict[element])
+        #         descriptor_prime_val_list.append(fp_prime_val_dict[element])
+        #     descriptor_prime_dict["row"] = np.concatenate(descriptor_prime_row_list)
+        #     descriptor_prime_dict["col"] = np.concatenate(descriptor_prime_col_list)
+        #     descriptor_prime_dict["val"] = np.concatenate(descriptor_prime_val_list)
+        #     image_dict["descriptor_primes"] = descriptor_prime_dict
+
+        # descriptor_list.append(image_dict)
 
         return descriptor_list
 
