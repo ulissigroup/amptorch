@@ -169,16 +169,16 @@ class AtomisticMCSH(BaseDescriptor):
 
         cal_atoms = np.asarray(type_idx[element_index], dtype=np.intc, order='C')
         cal_num = len(cal_atoms)
-        print("calculate atom length: {}".format(cal_num))
+        print("calculate atom length: {}\ttotal:{}".format(cal_num, atom_num))
         cal_atoms_p = ffi.cast("int *", cal_atoms.ctypes.data)
 
-        # print(self.params_set['i'])
-        # print(self.params_set['d'])
-        # print(self.params_set['gaussian_params'])
-        # print(self.params_set['ngaussians'])
-        # print(self.params_set['element_index_to_order'])
-        # print(self.params_set['num'])
-        # print(atom_indices)
+        print(self.params_set['i'])
+        print(self.params_set['d'])
+        print(self.params_set['gaussian_params'])
+        print(self.params_set['ngaussians'])
+        print(self.params_set['element_index_to_order'])
+        print(self.params_set['num'])
+        print(atom_indices)
 
         size_info = np.array([atom_num, cal_num, self.params_set['num']])
 
