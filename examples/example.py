@@ -2,6 +2,7 @@ import numpy as np
 from ase import Atoms
 from ase.calculators.emt import EMT
 
+from amptorch.ase_utils import AMPtorch
 from amptorch.trainer import AtomsTrainer
 
 distances = np.linspace(2, 5, 10)
@@ -55,7 +56,7 @@ config = {
         "seed": 1,
         "identifier": "test",
         "verbose": True,
-        "logger": True,
+        # "logger": True,
     },
 }
 
@@ -68,3 +69,6 @@ true_energies = np.array([image.get_potential_energy() for image in images])
 pred_energies = np.array(predictions["energy"])
 
 print("Energy MSE:", np.mean((true_energies - pred_energies) ** 2))
+
+image.set_calculator(AMPtorch(trainer))
+image.get_potential_energy()
