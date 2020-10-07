@@ -154,7 +154,9 @@ class BaseDescriptor(ABC):
                                 current_element_grp.create_dataset(
                                     "size_info", data=size_info
                                 )
-                                current_element_grp.create_dataset("fps", data=fps)
+                                current_element_grp.create_dataset(
+                                    "fps", data=fps
+                                )
                                 current_element_grp.create_dataset(
                                     "fp_primes_val", data=fp_primes_val
                                 )
@@ -195,7 +197,12 @@ class BaseDescriptor(ABC):
                             )
 
                             if save_fps:
-                                current_element_grp.create_dataset("fps", data=fps)
+                                current_element_grp.create_dataset(
+                                    "size_info", data=size_info
+                                )
+                                current_element_grp.create_dataset(
+                                    "fps", data=fps
+                                )
 
                         num_desc_list.append(size_info[2])
                         num_desc_dict[element] = size_info[2]
