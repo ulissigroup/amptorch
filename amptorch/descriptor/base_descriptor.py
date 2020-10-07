@@ -68,7 +68,7 @@ class BaseDescriptor(ABC):
 
             # if not save, compute fps on-the-fly
             else:
-                temp_descriptor_list = self._prepare_fingerprints_single_traj_nodb(
+                temp_descriptor_list = self._compute_fingerprints_nodb(
                     image,
                     image_db_filename,
                     calc_derivatives=calc_derivatives,
@@ -154,7 +154,9 @@ class BaseDescriptor(ABC):
                                 current_element_grp.create_dataset(
                                     "size_info", data=size_info
                                 )
-                                current_element_grp.create_dataset("fps", data=fps)
+                                current_element_grp.create_dataset(
+                                    "fps", data=fps
+                                )
                                 current_element_grp.create_dataset(
                                     "fp_primes_val", data=fp_primes_val
                                 )
@@ -172,6 +174,11 @@ class BaseDescriptor(ABC):
                         num_desc_dict[element] = size_info[2]
                         fp_dict[element] = fps
 
+                        # print(len(fps[0]))
+                        # print(fps)
+                        # print(fp_primes_size)
+                        # print(fp_primes_val)
+
                         fp_prime_val_dict[element] = fp_primes_val
                         fp_prime_row_dict[element] = fp_primes_row
                         fp_prime_col_dict[element] = fp_primes_col
@@ -183,11 +190,19 @@ class BaseDescriptor(ABC):
                             fps = np.array(current_element_grp["fps"])
                         except Exception:
                             size_info, fps, _, _, _, _ = self.calculate_fingerprints(
-                                image, element, calc_derivatives=calc_derivatives
+                                image,
+                                element,
+                                calc_derivatives=calc_derivatives,
+                                log=log,
                             )
 
                             if save_fps:
-                                current_element_grp.create_dataset("fps", data=fps)
+                                current_element_grp.create_dataset(
+                                    "size_info", data=size_info
+                                )
+                                current_element_grp.create_dataset(
+                                    "fps", data=fps
+                                )
 
                         num_desc_list.append(size_info[2])
                         num_desc_dict[element] = size_info[2]
@@ -234,14 +249,14 @@ class BaseDescriptor(ABC):
 
         return descriptor_list
 
-    def _prepare_fingerprints_single_traj_nodb(
+    def _compute_fingerprints_nodb(
         self, image, image_db_filename, calc_derivatives, save_fps, cores, log
     ):
         descriptor_list = []
 
         image_dict = {}
 
-        symbol_arr = image.get_chemical_symbols()
+        symbol_arr = np.array(image.get_chemical_symbols())
         image_dict["atomic_numbers"] = list_symbols_to_indices(symbol_arr)
         num_atoms = len(symbol_arr)
         image_dict["num_atoms"] = num_atoms
@@ -258,7 +273,6 @@ class BaseDescriptor(ABC):
 
         for element in self.elements:
             if element in image.get_chemical_symbols():
-
                 index_arr = np.arange(num_atoms)[symbol_arr == element]
                 index_arr_dict[element] = index_arr
 
@@ -271,12 +285,20 @@ class BaseDescriptor(ABC):
                         fp_primes_col,
                         fp_primes_size,
                     ) = self.calculate_fingerprints(
-                        image, element, calc_derivatives=calc_derivatives, log=log
+                        image,
+                        element,
+                        calc_derivatives=calc_derivatives,
+                        log=log,
                     )
 
                     num_desc_list.append(size_info[2])
                     num_desc_dict[element] = size_info[2]
                     fp_dict[element] = fps
+
+                    # print(len(fps[0]))
+                    # print(fps)
+                    # print(fp_primes_size)
+                    # print(fp_primes_val)
 
                     fp_prime_val_dict[element] = fp_primes_val
                     fp_prime_row_dict[element] = fp_primes_row
@@ -286,7 +308,10 @@ class BaseDescriptor(ABC):
                 else:
 
                     size_info, fps, _, _, _, _ = self.calculate_fingerprints(
-                        image, element, calc_derivatives=calc_derivatives
+                        image,
+                        element,
+                        calc_derivatives=calc_derivatives,
+                        log=log,
                     )
 
                     num_desc_list.append(size_info[2])
@@ -294,14 +319,14 @@ class BaseDescriptor(ABC):
                     fp_dict[element] = fps
 
             else:
-                print("element not in current snapshot: {}".format(element))
+                print("element not in current image: {}".format(element))
 
         num_desc_max = np.max(num_desc_list)
         image_fp_array = np.zeros((num_atoms, num_desc_max))
         for element in fp_dict.keys():
-            image_fp_array[index_arr_dict[element], : num_desc_dict[element]] = fp_dict[
-                element
-            ]
+            image_fp_array[
+                index_arr_dict[element], : num_desc_dict[element]
+            ] = fp_dict[element]
 
         image_dict["descriptors"] = image_fp_array
         image_dict["num_descriptors"] = num_desc_dict
@@ -331,7 +356,6 @@ class BaseDescriptor(ABC):
             image_dict["descriptor_primes"] = descriptor_prime_dict
 
         descriptor_list.append(image_dict)
-
         return descriptor_list
 
     def _fp_prime_element_row_index_to_image_row_index(
