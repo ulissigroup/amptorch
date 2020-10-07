@@ -205,7 +205,7 @@ class AtomisticMCSH(BaseDescriptor):
         # print(fp.shape)
         # print(np.sum(super_threshold_indices))
         # print(np.min(np.abs(scipy_sparse_fp_prime.data)))
-        print("density: {}% \n\n----------------------".format(100*len(scipy_sparse_fp_prime.data) / (fp_prime.shape[0] * fp_prime.shape[1])))
+        # print("density: {}% \n\n----------------------".format(100*len(scipy_sparse_fp_prime.data) / (fp_prime.shape[0] * fp_prime.shape[1])))
 
         return (
                 size_info,
