@@ -254,7 +254,6 @@ class BaseDescriptor(ABC):
         num_atoms = len(symbol_arr)
         image_dict["num_atoms"] = num_atoms
 
-
         num_desc_list = []
         index_arr_dict = {}
         num_desc_dict = {}

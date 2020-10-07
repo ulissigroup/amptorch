@@ -10,9 +10,6 @@ class TestMethods(unittest.TestCase):
     def debug_travis(self):
         test_travis()
 
-    def test_active_learning(self):
-        test_bootstrap()
-        #TODO write remaining
 
 if __name__ == "__main__":
     unittest.main(warnings="ignore")

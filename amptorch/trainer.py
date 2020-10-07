@@ -210,7 +210,6 @@ class AtomsTrainer:
         self.net.fit(self.train_dataset, None)
 
     def predict(self, images, batch_size=32):
-        print("### Making predictions")
         if len(images) < 1:
             warnings.warn("No images found!", stacklevel=2)
             return images
@@ -224,7 +223,7 @@ class AtomsTrainer:
             cores=1,
         )
 
-        data_list = a2d.convert_all(images)
+        data_list = a2d.convert_all(images, disable_tqdm=True)
         self.feature_scaler.norm(data_list)
 
         self.net.module.eval()

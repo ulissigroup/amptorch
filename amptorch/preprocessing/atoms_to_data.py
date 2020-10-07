@@ -34,7 +34,9 @@ class AtomsToData:
         self.cores = cores
 
     def convert(
-        self, atoms, idx,
+        self,
+        atoms,
+        idx,
     ):
         natoms = len(atoms)
         image_data = self.descriptor_data[idx]
@@ -75,7 +77,9 @@ class AtomsToData:
         return data
 
     def convert_all(
-        self, atoms_collection, disable_tqdm=False,
+        self,
+        atoms_collection,
+        disable_tqdm=False,
     ):
         """Convert all atoms objects in a list or in an ase.db to graphs.
 
@@ -105,6 +109,7 @@ class AtomsToData:
             calc_derivatives=self.fprimes,
             save_fps=self.save_fps,
             cores=self.cores,
+            verbose=not disable_tqdm,
         )
         self.descriptor_data = descriptor_calculator.prepare_descriptors()
 

@@ -1,10 +1,13 @@
-import skorch
+import numpy as np
 import torch
-from skorch.utils import to_numpy
 from torch.nn import MSELoss
+
+import skorch
+from skorch.utils import to_numpy
 
 
 def target_extractor(y):
+    # TODO better remove need for numpy call here before GPU support
     return (
         (to_numpy(y[0]), to_numpy(y[1]))
         if len(y) == 2
@@ -22,7 +25,9 @@ def energy_score(net, X, y):
     if isinstance(X, torch.utils.data.Subset):
         X = X.dataset
     energy_pred = X.target_scaler.denorm(energy_pred, pred="energy")
-    energy_target = X.target_scaler.denorm(torch.FloatTensor(y[0]), pred="energy")
+    energy_target = X.target_scaler.denorm(
+        torch.FloatTensor(np.concatenate(y[::2])), pred="energy"
+    )
     energy_loss = mse_loss(energy_pred, energy_target)
 
     return energy_loss
@@ -34,7 +39,9 @@ def forces_score(net, X, y):
     if isinstance(X, torch.utils.data.Subset):
         X = X.dataset
     force_pred = X.target_scaler.denorm(force_pred, pred="forces")
-    force_target = X.target_scaler.denorm(torch.FloatTensor(y[1]), pred="forces")
+    force_target = X.target_scaler.denorm(
+        torch.FloatTensor(np.concatenate(y[1::2])), pred="forces"
+    )
     force_loss = mse_loss(force_pred, force_target)
 
     return force_loss
