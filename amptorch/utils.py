@@ -1,11 +1,13 @@
-import skorch
-import torch
 import numpy as np
-from skorch.utils import to_numpy
+import torch
 from torch.nn import MSELoss
+
+import skorch
+from skorch.utils import to_numpy
 
 
 def target_extractor(y):
+    # TODO better remove need for numpy call here before GPU support
     return (
         (to_numpy(y[0]), to_numpy(y[1]))
         if len(y) == 2
