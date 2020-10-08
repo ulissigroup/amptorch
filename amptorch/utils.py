@@ -30,7 +30,7 @@ def energy_score(net, X, y):
     )
     energy_loss = mse_loss(energy_pred, energy_target)
 
-    return energy_loss
+    return energy_loss.item()
 
 
 def forces_score(net, X, y):
@@ -44,7 +44,7 @@ def forces_score(net, X, y):
     )
     force_loss = mse_loss(force_pred, force_target)
 
-    return force_loss
+    return force_loss.item()
 
 
 class train_end_load_best_loss(skorch.callbacks.base.Callback):
