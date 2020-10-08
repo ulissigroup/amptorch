@@ -84,7 +84,7 @@ class AtomsTrainer:
         
         self.train_dataset = AtomsDataset(
             images=training_images,
-            descriptor_setup= ( fp_scheme, fp_params),
+            descriptor_setup= ( self.fp_scheme, self.fp_params),
             forcetraining=self.forcetraining,
             save_fps=self.config["dataset"].get("save_fps", True),
         )
