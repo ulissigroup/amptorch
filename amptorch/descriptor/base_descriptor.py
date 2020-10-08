@@ -301,7 +301,7 @@ class BaseDescriptor(ABC):
                         image,
                         element,
                         calc_derivatives=calc_derivatives,
-                        log=log,
+                        log=log
                     )
 
                     num_desc_list.append(size_info[2])

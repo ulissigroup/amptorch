@@ -29,7 +29,7 @@ class AtomsDataset(Dataset):
         self.a2d = AtomsToData(
             descriptor=self.descriptor,
             r_energy=True,
-            r_forces=True,
+            r_forces=self.forcetraining,
             save_fps=save_fps,
             fprimes=forcetraining,
             cores=cores,
