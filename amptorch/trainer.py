@@ -13,6 +13,7 @@ from skorch.dataset import CVSplit
 
 from amptorch.dataset import AtomsDataset, DataCollater
 from amptorch.descriptor.Gaussian import Gaussian
+from amptorch.descriptor.MCSH import AtomisticMCSH
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.model import BPNN, CustomMSELoss
 from amptorch.preprocessing import AtomsToData
@@ -76,13 +77,14 @@ class AtomsTrainer:
         )
 
         # TODO: Allow for alternative fingerprinting schemes
-        fp_params = self.config["dataset"]["fp_params"]
-        self.descriptor = Gaussian(Gs=fp_params, elements=self.elements)
-        self.forcetraining = self.config["model"].get("get_forces", True)
 
+        self.forcetraining = self.config["model"].get("get_forces", True)
+        self.fp_scheme = self.config["dataset"].get("fp_scheme", "gaussian").lower()
+        self.fp_params = self.config["dataset"]["fp_params"]
+        
         self.train_dataset = AtomsDataset(
             images=training_images,
-            descriptor=self.descriptor,
+            descriptor_setup= ( fp_scheme, fp_params),
             forcetraining=self.forcetraining,
             save_fps=self.config["dataset"].get("save_fps", True),
         )

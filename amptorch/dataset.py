@@ -3,13 +3,14 @@ from torch_geometric.data import Batch
 
 from amptorch.preprocessing import (AtomsToData, FeatureScaler, TargetScaler,
                                     sparse_block_diag)
-
+from amptorch.descriptor.Gaussian import Gaussian
+from amptorch.descriptor.MCSH import AtomisticMCSH
 
 class AtomsDataset(Dataset):
     def __init__(
         self,
         images,
-        descriptor,
+        descriptor_setup,
         forcetraining=True,
         save_fps=True,
         cores=1,
@@ -17,8 +18,16 @@ class AtomsDataset(Dataset):
         self.images = images
         self.forcetraining = forcetraining
 
+        fp_scheme, fp_params = descriptor_setup
+        if fp_scheme == "gaussian":
+            self.descriptor = Gaussian(Gs=fp_params, elements=self.elements)
+        elif fp_scheme == "mcsh":
+            self.descriptor = AtomisticMCSH(MCSHs=fp_params, elements=self.elements)
+        else:
+            raise NotImplementedError
+
         self.a2d = AtomsToData(
-            descriptor=descriptor,
+            descriptor=self.descriptor,
             r_energy=True,
             r_forces=self.forcetraining,
             save_fps=save_fps,

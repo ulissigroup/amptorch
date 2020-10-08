@@ -1,13 +1,14 @@
+import hashlib
+
 import numpy as np
 from scipy import sparse
-from ase.calculators.calculator import Parameters
-from ._libmcsh import lib, ffi
-from ..base_descriptor import AMPTorchDescriptorBase
-from ..util import _gen_2Darray_for_ffi, list_symbols_to_indices, list_indices_to_symbols
-from ..constants import ATOM_INDEX_TO_SYMBOL_DICT, ATOM_SYMBOL_TO_INDEX_DICT
 
+from ..base_descriptor import BaseDescriptor
+from ..constants import ATOM_SYMBOL_TO_INDEX_DICT
+from ..util import _gen_2Darray_for_ffi, list_symbols_to_indices
+from ._libmcsh import ffi, lib
 
-class AtomisticMCSH(AMPTorchDescriptorBase):
+class AtomisticMCSH(BaseDescriptor):
 
     def __init__(
         self,
@@ -122,10 +123,8 @@ class AtomisticMCSH(AMPTorchDescriptorBase):
                 out_file.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(int(desc[0]), int(desc[1]), desc[2], desc[3], desc[4], desc[5], desc[6]))
 
 
-    def calculate_fingerprints(self, atoms, element, log=None, calculate_derivatives=True):
-        # params_set = self.params_set
-        # print("starting atoms {}".format(atoms) )
-        # print("starting element {}".format(element) )
+    def calculate_fingerprints(self, atoms, element, calc_derivatives, log):
+
         element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
 
         symbols = np.array(atoms.get_chemical_symbols())
@@ -144,7 +143,6 @@ class AtomisticMCSH(AMPTorchDescriptorBase):
             # if not, it could generate bug in training process for force training
             type_idx[atom_index] = np.arange(atom_num)[tmp]
         
-        # print("type index: {}".format(type_idx))
 
         atom_indices_p = ffi.cast("int *", atom_indices.ctypes.data)
 
@@ -160,6 +158,7 @@ class AtomisticMCSH(AMPTorchDescriptorBase):
 
         cal_atoms = np.asarray(type_idx[element_index], dtype=np.intc, order='C')
         cal_num = len(cal_atoms)
+        # print("calculate atom length: {}\ttotal:{}".format(cal_num, atom_num))
         cal_atoms_p = ffi.cast("int *", cal_atoms.ctypes.data)
 
         # print(self.params_set['i'])
@@ -185,26 +184,31 @@ class AtomisticMCSH(AMPTorchDescriptorBase):
                     x_p, dx_p)
         
         if errno == 1:
-            print("ERROR: descriptor not IMPLEMENTED!!")
-        # print(errno)
+            raise NotImplementedError("Descriptor not implemented!")
         fp = np.array(x)
-
         fp_prime = np.array(dx)
 
-        if "prime_threshold" in self.params_set:
-            threshold = self.params_set["prime_threshold"]
-            super_threshold_indices = np.abs(fp_prime) < threshold
-            print("threshhold: {} \tnum points set to zero:{} \t outof: {}".format(threshold, np.sum(super_threshold_indices), fp_prime.shape[0] * fp_prime.shape[1]))
-            fp_prime[super_threshold_indices] = 0.0
+        # if "prime_threshold" in self.params_set:
+        #     threshold = self.params_set["prime_threshold"]
+        #     super_threshold_indices = np.abs(fp_prime) < threshold
+        #     print("threshhold: {} \tnum points set to zero:{} \t outof: {}".format(threshold, np.sum(super_threshold_indices), fp_prime.shape[0] * fp_prime.shape[1]))
+        #     fp_prime[super_threshold_indices] = 0.0
 
         scipy_sparse_fp_prime = sparse.coo_matrix(fp_prime)
         # print(fp)
         # print(fp.shape)
         # print(np.sum(super_threshold_indices))
-        print(np.min(np.abs(scipy_sparse_fp_prime.data)))
-        print("density: {}% \n\n----------------------".format(100*len(scipy_sparse_fp_prime.data) / (fp_prime.shape[0] * fp_prime.shape[1])))
+        # print(np.min(np.abs(scipy_sparse_fp_prime.data)))
+        # print("density: {}% \n\n----------------------".format(100*len(scipy_sparse_fp_prime.data) / (fp_prime.shape[0] * fp_prime.shape[1])))
 
-        return size_info, fp, scipy_sparse_fp_prime.data, scipy_sparse_fp_prime.row, scipy_sparse_fp_prime.col, np.array(fp_prime.shape)
+        return (
+                size_info,
+                fp,
+                scipy_sparse_fp_prime.data,
+                scipy_sparse_fp_prime.row,
+                scipy_sparse_fp_prime.col,
+                np.array(fp_prime.shape),
+            )
         
         # else:
         #     x = np.zeros([cal_num, self.params_set[element_index]['num']], dtype=np.float64, order='C')
