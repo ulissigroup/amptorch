@@ -5,20 +5,23 @@ import warnings
 
 import ase.io
 import numpy as np
-import skorch.net
 import torch
-from skorch import NeuralNetRegressor
-from skorch.callbacks import Checkpoint, EpochScoring, LRScheduler
-from skorch.dataset import CVSplit
 
+import skorch.net
 from amptorch.dataset import AtomsDataset, DataCollater
+<<<<<<< HEAD
 from amptorch.descriptor.Gaussian import Gaussian
 from amptorch.descriptor.MCSH import AtomisticMCSH
+=======
+>>>>>>> c61e32113e68e322214bdb04ed4abd4d0bd674df
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.model import BPNN, CustomMSELoss
 from amptorch.preprocessing import AtomsToData
 from amptorch.utils import (energy_score, forces_score, target_extractor,
                             to_tensor, train_end_load_best_loss)
+from skorch import NeuralNetRegressor
+from skorch.callbacks import Checkpoint, EpochScoring, LRScheduler
+from skorch.dataset import CVSplit
 
 
 class AtomsTrainer:
