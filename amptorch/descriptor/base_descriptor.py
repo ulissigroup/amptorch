@@ -174,11 +174,6 @@ class BaseDescriptor(ABC):
                         num_desc_dict[element] = size_info[2]
                         fp_dict[element] = fps
 
-                        # print(len(fps[0]))
-                        # print(fps)
-                        # print(fp_primes_size)
-                        # print(fp_primes_val)
-
                         fp_prime_val_dict[element] = fp_primes_val
                         fp_prime_row_dict[element] = fp_primes_row
                         fp_prime_col_dict[element] = fp_primes_col
@@ -294,11 +289,6 @@ class BaseDescriptor(ABC):
                     num_desc_list.append(size_info[2])
                     num_desc_dict[element] = size_info[2]
                     fp_dict[element] = fps
-
-                    # print(len(fps[0]))
-                    # print(fps)
-                    # print(fp_primes_size)
-                    # print(fp_primes_val)
 
                     fp_prime_val_dict[element] = fp_primes_val
                     fp_prime_row_dict[element] = fp_primes_row

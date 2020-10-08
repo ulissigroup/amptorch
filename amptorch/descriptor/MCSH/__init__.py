@@ -123,7 +123,6 @@ class AtomisticMCSH(BaseDescriptor):
                 out_file.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(int(desc[0]), int(desc[1]), desc[2], desc[3], desc[4], desc[5], desc[6]))
 
 
-    # def calculate_fingerprints(self, atoms, element, log=None, calculate_derivatives=True):
     def calculate_fingerprints(self, atoms, element, calc_derivatives, log):
 
         element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
@@ -144,7 +143,6 @@ class AtomisticMCSH(BaseDescriptor):
             # if not, it could generate bug in training process for force training
             type_idx[atom_index] = np.arange(atom_num)[tmp]
         
-        # print("type index: {}".format(type_idx))
 
         atom_indices_p = ffi.cast("int *", atom_indices.ctypes.data)
 
@@ -187,12 +185,8 @@ class AtomisticMCSH(BaseDescriptor):
         
         if errno == 1:
             raise NotImplementedError("Descriptor not implemented!")
-        # print(errno)
         fp = np.array(x)
         fp_prime = np.array(dx)
-
-        # print(fp)
-        # print(fp_prime)
 
         # if "prime_threshold" in self.params_set:
         #     threshold = self.params_set["prime_threshold"]
