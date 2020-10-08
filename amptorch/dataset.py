@@ -1,10 +1,11 @@
 from torch.utils.data import Dataset
 from torch_geometric.data import Batch
 
-from amptorch.preprocessing import (AtomsToData, FeatureScaler, TargetScaler,
-                                    sparse_block_diag)
 from amptorch.descriptor.Gaussian import Gaussian
 from amptorch.descriptor.MCSH import AtomisticMCSH
+from amptorch.preprocessing import (AtomsToData, FeatureScaler, TargetScaler,
+                                    sparse_block_diag)
+
 
 class AtomsDataset(Dataset):
     def __init__(
@@ -78,6 +79,9 @@ class DataCollater:
             batch = Batch.from_data_list(data_list)
 
         if self.train:
-            return batch, (batch.energy, batch.forces)
+            if self.forcetraining:
+                return batch, (batch.energy, batch.forces)
+            else:
+                return batch, (batch.energy,)
         else:
             return batch
