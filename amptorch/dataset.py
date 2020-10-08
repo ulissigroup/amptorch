@@ -18,11 +18,11 @@ class AtomsDataset(Dataset):
         self.images = images
         self.forcetraining = forcetraining
 
-        fp_scheme, fp_params = descriptor_setup
+        fp_scheme, fp_params, elements = descriptor_setup
         if fp_scheme == "gaussian":
-            self.descriptor = Gaussian(Gs=fp_params, elements=self.elements)
+            self.descriptor = Gaussian(Gs=fp_params, elements=elements)
         elif fp_scheme == "mcsh":
-            self.descriptor = AtomisticMCSH(MCSHs=fp_params, elements=self.elements)
+            self.descriptor = AtomisticMCSH(MCSHs=fp_params, elements=elements)
         else:
             raise NotImplementedError
 
