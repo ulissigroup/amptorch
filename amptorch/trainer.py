@@ -77,23 +77,14 @@ class AtomsTrainer:
         )
 
         # TODO: Allow for alternative fingerprinting schemes
-        IMPLEMENTED_FP_SCHEMES = ["gaussian", "mcsh"]
-        fp_scheme = self.config["dataset"].get("fp_scheme", "gaussian").lower()
-        
-        if fp_scheme == "gaussian":
-            fp_params = self.config["dataset"]["fp_params"]
-            self.descriptor = Gaussian(Gs=fp_params, elements=self.elements)
-        elif fp_scheme == "mcsh":
-            fp_params = self.config["dataset"]["fp_params"]
-            self.descriptor = AtomisticMCSH(MCSHs=fp_params, elements=self.elements)
-        else:
-            raise NotImplementedError
 
         self.forcetraining = self.config["model"].get("get_forces", True)
+        self.fp_scheme = self.config["dataset"].get("fp_scheme", "gaussian").lower()
+        self.fp_params = self.config["dataset"]["fp_params"]
         
         self.train_dataset = AtomsDataset(
             images=training_images,
-            descriptor=self.descriptor,
+            descriptor_setup= ( fp_scheme, fp_params),
             forcetraining=self.forcetraining,
             save_fps=self.config["dataset"].get("save_fps", True),
         )
