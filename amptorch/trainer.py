@@ -12,11 +12,6 @@ from skorch.callbacks import Checkpoint, EpochScoring, LRScheduler
 from skorch.dataset import CVSplit
 
 from amptorch.dataset import AtomsDataset, DataCollater
-<<<<<<< HEAD
-from amptorch.descriptor.Gaussian import Gaussian
-from amptorch.descriptor.MCSH import AtomisticMCSH
-=======
->>>>>>> c61e32113e68e322214bdb04ed4abd4d0bd674df
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.model import BPNN, CustomMSELoss
 from amptorch.preprocessing import AtomsToData
