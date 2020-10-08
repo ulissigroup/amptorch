@@ -5,18 +5,18 @@ import warnings
 
 import ase.io
 import numpy as np
-import torch
-
 import skorch.net
+import torch
+from skorch import NeuralNetRegressor
+from skorch.callbacks import Checkpoint, EpochScoring, LRScheduler
+from skorch.dataset import CVSplit
+
 from amptorch.dataset import AtomsDataset, DataCollater
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.model import BPNN, CustomMSELoss
 from amptorch.preprocessing import AtomsToData
 from amptorch.utils import (energy_score, forces_score, target_extractor,
                             to_tensor, train_end_load_best_loss)
-from skorch import NeuralNetRegressor
-from skorch.callbacks import Checkpoint, EpochScoring, LRScheduler
-from skorch.dataset import CVSplit
 
 
 class AtomsTrainer:
@@ -74,15 +74,13 @@ class AtomsTrainer:
             "elements", self.get_unique_elements(training_images)
         )
 
-        # TODO: Allow for alternative fingerprinting schemes
-
         self.forcetraining = self.config["model"].get("get_forces", True)
         self.fp_scheme = self.config["dataset"].get("fp_scheme", "gaussian").lower()
         self.fp_params = self.config["dataset"]["fp_params"]
 
         self.train_dataset = AtomsDataset(
             images=training_images,
-            descriptor_setup=(self.fp_scheme, self.fp_params),
+            descriptor_setup=(self.fp_scheme, self.fp_params, self.elements),
             forcetraining=self.forcetraining,
             save_fps=self.config["dataset"].get("save_fps", True),
         )
@@ -204,7 +202,7 @@ class AtomsTrainer:
             return images
 
         a2d = AtomsToData(
-            descriptor=self.descriptor,
+            descriptor=self.train_dataset.descriptor,
             r_energy=False,
             r_forces=False,
             save_fps=True,

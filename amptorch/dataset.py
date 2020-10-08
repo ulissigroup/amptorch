@@ -1,10 +1,11 @@
 from torch.utils.data import Dataset
 from torch_geometric.data import Batch
 
-from amptorch.preprocessing import (AtomsToData, FeatureScaler, TargetScaler,
-                                    sparse_block_diag)
 from amptorch.descriptor.Gaussian import Gaussian
 from amptorch.descriptor.MCSH import AtomisticMCSH
+from amptorch.preprocessing import (AtomsToData, FeatureScaler, TargetScaler,
+                                    sparse_block_diag)
+
 
 class AtomsDataset(Dataset):
     def __init__(
@@ -18,11 +19,11 @@ class AtomsDataset(Dataset):
         self.images = images
         self.forcetraining = forcetraining
 
-        fp_scheme, fp_params = descriptor_setup
+        fp_scheme, fp_params, elements = descriptor_setup
         if fp_scheme == "gaussian":
-            self.descriptor = Gaussian(Gs=fp_params, elements=self.elements)
+            self.descriptor = Gaussian(Gs=fp_params, elements=elements)
         elif fp_scheme == "mcsh":
-            self.descriptor = AtomisticMCSH(MCSHs=fp_params, elements=self.elements)
+            self.descriptor = AtomisticMCSH(MCSHs=fp_params, elements=elements)
         else:
             raise NotImplementedError
 
@@ -78,6 +79,9 @@ class DataCollater:
             batch = Batch.from_data_list(data_list)
 
         if self.train:
-            return batch, (batch.energy, batch.forces)
+            if self.forcetraining:
+                return batch, (batch.energy, batch.forces)
+            else:
+                return batch, (batch.energy,)
         else:
             return batch

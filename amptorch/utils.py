@@ -1,18 +1,16 @@
 import numpy as np
-import torch
-from torch.nn import MSELoss
-
 import skorch
+import torch
 from skorch.utils import to_numpy
+from torch.nn import MSELoss
 
 
 def target_extractor(y):
     # TODO better remove need for numpy call here before GPU support
-    return (
-        (to_numpy(y[0]), to_numpy(y[1]))
-        if len(y) == 2
-        else (to_numpy(y[0]), to_numpy(y[1]), to_numpy(y[2]))
-    )
+    if len(y) == 2:
+        return (to_numpy(y[0]), to_numpy(y[1]))
+    elif len(y) == 1:
+        return (to_numpy(y[0]), None)
 
 
 def to_tensor(X, device, accept_sparse=False):
