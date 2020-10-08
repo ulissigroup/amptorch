@@ -126,14 +126,14 @@ class CustomMSELoss(nn.Module):
         energy_target = target[0]
         MSE_loss = nn.MSELoss()
         energy_loss = MSE_loss(energy_pred, energy_target)
+        force_pred = prediction[1]
+        if force_pred.nelement() == 0:
+            self.alpha = 0
 
         if self.alpha > 0:
-            force_pred = prediction[1]
             force_target = target[1]
-            if force_pred.nelement() == 0:
-                raise Exception("Force training disabled. Set force_coefficient to 0")
             force_loss = MSE_loss(force_pred, force_target)
-            loss = 0.5 * (energy_loss + force_loss)
+            loss = 0.5 * (energy_loss + self.alpha * force_loss)
         else:
             loss = 0.5 * energy_loss
         return loss
