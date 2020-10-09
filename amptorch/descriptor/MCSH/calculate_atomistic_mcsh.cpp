@@ -228,9 +228,9 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                     dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3 + 1] += dMdy;
                     dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3 + 2] += dMdz;
 
-                    dmcsh[ii*nmcsh + s][i*3]     -= dMdx;
-                    dmcsh[ii*nmcsh + s][i*3 + 1] -= dMdy;
-                    dmcsh[ii*nmcsh + s][i*3 + 2] -= dMdz;
+                    dmcsh[ii*nmcsh + m][i*3]     -= dMdx;
+                    dmcsh[ii*nmcsh + m][i*3 + 1] -= dMdy;
+                    dmcsh[ii*nmcsh + m][i*3 + 2] -= dMdz;
                 }
                 M = M * weight;
                 mcsh[ii][m] += M;
@@ -276,9 +276,9 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                     dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3 + 1] += dMdy;
                     dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3 + 2] += dMdz;
 
-                    dmcsh[ii*nmcsh + s][i*3]     -= dMdx;
-                    dmcsh[ii*nmcsh + s][i*3 + 1] -= dMdy;
-                    dmcsh[ii*nmcsh + s][i*3 + 2] -= dMdz;
+                    dmcsh[ii*nmcsh + m][i*3]     -= dMdx;
+                    dmcsh[ii*nmcsh + m][i*3 + 1] -= dMdy;
+                    dmcsh[ii*nmcsh + m][i*3 + 2] -= dMdz;
                 }
                 M = M * weight;
                 mcsh[ii][m] += M;
@@ -350,9 +350,9 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                     dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3 + 1] += dMdy;
                     dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3 + 2] += dMdz;
 
-                    dmcsh[ii*nmcsh + s][i*3]     -= dMdx;
-                    dmcsh[ii*nmcsh + s][i*3 + 1] -= dMdy;
-                    dmcsh[ii*nmcsh + s][i*3 + 2] -= dMdz;
+                    dmcsh[ii*nmcsh + m][i*3]     -= dMdx;
+                    dmcsh[ii*nmcsh + m][i*3 + 1] -= dMdy;
+                    dmcsh[ii*nmcsh + m][i*3 + 2] -= dMdz;
                 }
                 M = M * weight;
                 mcsh[ii][m] += M;
