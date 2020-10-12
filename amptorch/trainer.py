@@ -5,18 +5,18 @@ import warnings
 
 import ase.io
 import numpy as np
-import skorch.net
 import torch
-from skorch import NeuralNetRegressor
-from skorch.callbacks import Checkpoint, EpochScoring, LRScheduler
-from skorch.dataset import CVSplit
 
+import skorch.net
 from amptorch.dataset import AtomsDataset, DataCollater
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.model import BPNN, CustomMSELoss
 from amptorch.preprocessing import AtomsToData
 from amptorch.utils import (energy_score, forces_score, target_extractor,
                             to_tensor, train_end_load_best_loss)
+from skorch import NeuralNetRegressor
+from skorch.callbacks import Checkpoint, EpochScoring, LRScheduler
+from skorch.dataset import CVSplit
 
 
 class AtomsTrainer:
@@ -152,10 +152,10 @@ class AtomsTrainer:
         self.callbacks = callbacks
 
     def load_criterion(self):
-        self.criterion = CustomMSELoss
+        self.criterion = self.config["optim"].get("loss_fn", CustomMSELoss)
 
     def load_optimizer(self):
-        self.optimizer = torch.optim.Adam
+        self.optimizer = self.config["optim"].get("optimizer", torch.optim.Adam)
 
     def load_logger(self):
         if self.config["cmd"].get("logger", False):
