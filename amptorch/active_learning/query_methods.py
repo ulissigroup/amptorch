@@ -65,7 +65,7 @@ def final_query(_, sample_candidates, samples_to_retrain, parent_calc):
             stacklevel=2,
         )
         samples_to_retrain = len(sample_candidates) - 1
-    query_idx = random.sample(range(1, len(sample_candidates)-1), samples_to_retrain)
+    query_idx = random.sample(range(1, len(sample_candidates) - 1), samples_to_retrain)
     query_idx.append(-1)
     images_to_query = [sample_candidates[idx] for idx in query_idx]
     queried_images = compute_query(images_to_query, parent_calc)

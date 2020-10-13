@@ -66,11 +66,8 @@ if __name__ == "__main__":
         "verbose": 1,
         "filename": "relax_example",
         "file_dir": "./",
-        "scheduler": {
-            "policy": None,
-            "params": None,
-            }
-        }
+        "scheduler": {"policy": None, "params": None},
+    }
 
     # Define AL calculator
     learner = AtomisticActiveLearner(
@@ -88,7 +85,7 @@ if __name__ == "__main__":
 
     # Calculate true relaxation
     al_iterations = learner.iteration - 1
-    file_path = training_params["file_dir"]+training_params["filename"]
+    file_path = training_params["file_dir"] + training_params["filename"]
     true_relax = Relaxation(slab, BFGS)
     true_relax.run(EMT(), "true_relax")
     parent_calc_traj = true_relax.get_trajectory("true_relax")

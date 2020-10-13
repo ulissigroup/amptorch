@@ -4,6 +4,8 @@ from torch.multiprocessing import Pool
 
 import torch
 
+torch.multprocessing.set_sharing_strategy("file_system")
+
 from skorch import NeuralNetRegressor
 from skorch.dataset import CVSplit
 from skorch.callbacks import Checkpoint, EpochScoring, LRScheduler
@@ -148,7 +150,7 @@ def model_trainer(images, training_params):
                 fn_prefix="./results/checkpoints/{}_".format(filename),
             ),
             load_best_valid_loss,
-            LRScheduler
+            LRScheduler,
         ]
 
     net = NeuralNetRegressor(
