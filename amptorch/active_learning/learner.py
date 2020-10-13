@@ -29,6 +29,7 @@ from amptorch.model import BPNN, CustomMSELoss
 from amptorch.delta_models.morse import morse_potential
 from amptorch.active_learning.al_utils import write_to_db
 from amptorch.active_learning.trainer import train_calcs
+from amptorch.active_learning.ensemble_calc import make_fps
 from amptorch.active_learning.bootstrap import bootstrap_ensemble
 from amptorch.active_learning.query_methods import termination_criteria
 
@@ -71,6 +72,9 @@ class AtomisticActiveLearner:
             self.training_data, self.parent_dataset = bootstrap_ensemble(
                 self.training_data, n_ensembles=ensemble
             )
+
+            # make initial fingerprints - daemonic processes cannot do this
+            make_fps(training_data, training_params["Gs"])
         else:
             self.parent_dataset = self.training_data
 

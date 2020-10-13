@@ -37,27 +37,12 @@ class EnsembleCalc(Calculator):
         max_forces_var = np.max(np.var(forces, axis=0))
         return energy_median, forces_median, max_forces_var
 
-    def fingerprint_args(self, images):
-        elements = np.array([atom.symbol for atoms in images for atom in atoms])
-        _, idx = np.unique(elements, return_index=True)
-        elements = list(elements[np.sort(idx)])
-        Gs = self.training_params["Gs"]
-        return elements, Gs
-
-    def make_fps(self, atoms):
-        if isinstance(atoms, list):
-            pass
-        else:
-            atoms = [atoms]
-        elements, Gs = self.fingerprint_args(atoms)
-        make_amp_descriptors_simple_nn(atoms, Gs, elements, cores=1, label="oal")
-
     def calculate(self, atoms, properties, system_changes):
         Calculator.calculate(self, atoms, properties, system_changes)
         energies = []
         forces = []
 
-        self.make_fps(atoms)
+        make_fps(atoms, self.training_params["Gs"])
         for calc in self.trained_calcs:
             energies.append(calc.get_potential_energy(atoms))
             forces.append(calc.get_forces(atoms))
@@ -68,3 +53,17 @@ class EnsembleCalc(Calculator):
         self.results["energy"] = energy_pred
         self.results["forces"] = force_pred
         atoms.info["uncertainty"] = np.array([uncertainty])
+
+
+def make_fps(images, Gs):
+    if isinstance(images, list):
+        pass
+    else:
+        images = [images]
+    elements = np.array([atom.symbol for atoms in images for atom in atoms])
+    _, idx = np.unique(elements, return_index=True)
+    elements = list(elements[np.sort(idx)])
+
+    make_amp_descriptors_simple_nn(
+        images, Gs, elements, cores=1, label="ensemble"
+    )
