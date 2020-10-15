@@ -267,7 +267,7 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                     }
                 }
                 M = sqrt(sum_miu1*sum_miu1 + sum_miu2*sum_miu2 + sum_miu3*sum_miu3);
-                int dMdx, dMdy, dMdz;
+                double dMdx, dMdy, dMdz;
                 for (int j = 0; j < nneigh; ++j) {
                     dMdx = (1/M) * (sum_miu1 * sum_dmiu1_dxj[j] + sum_miu2 * sum_dmiu2_dxj[j] + sum_miu3 * sum_dmiu3_dxj[j]) * weight;
                     dMdy = (1/M) * (sum_miu1 * sum_dmiu1_dyj[j] + sum_miu2 * sum_dmiu2_dyj[j] + sum_miu3 * sum_dmiu3_dyj[j]) * weight;
@@ -332,7 +332,7 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                 }
                 M = sqrt(sum_miu1*sum_miu1 + sum_miu2*sum_miu2 + sum_miu3*sum_miu3 +
                          sum_miu4*sum_miu4 + sum_miu5*sum_miu5 + sum_miu6*sum_miu6);
-                int dMdx, dMdy, dMdz;
+                double dMdx, dMdy, dMdz;
                 for (int j = 0; j < nneigh; ++j) {
                     dMdx = (1/M) * (sum_miu1 * sum_dmiu1_dxj[j] + sum_miu2 * sum_dmiu2_dxj[j] + 
                                     sum_miu3 * sum_dmiu3_dxj[j] + sum_miu4 * sum_dmiu4_dxj[j] + 
