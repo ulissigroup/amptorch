@@ -40,6 +40,7 @@ class FeatureScaler:
                 print("=====================================")
                 print(data.fprimes)
                 print(torch.max(torch.abs(data.fprimes._values())))
+                print((self.feature_max - self.feature_min))
                 
                 # print(self.feature_max[idx_to_scale_prime][nonzero_idx])
                 # print(self.feature_min[idx_to_scale_prime][nonzero_idx])
