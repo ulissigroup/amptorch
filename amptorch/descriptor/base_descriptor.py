@@ -180,7 +180,7 @@ class BaseDescriptor(ABC):
                         fp_prime_size_dict[element] = fp_primes_size
 
                         print(fp_primes_size)
-                        print(max(fp_primes_val))
+                        print(fp_primes_val)
 
                     else:
                         try:
@@ -300,7 +300,7 @@ class BaseDescriptor(ABC):
                     fp_prime_size_dict[element] = fp_primes_size
 
                     print(fp_primes_size)
-                    print(max(fp_primes_val))
+                    print(fp_primes_val)
 
                 else:
 
