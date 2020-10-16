@@ -223,9 +223,9 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                         dMdy += deriv[1];
                         dMdz += deriv[2];
                     }
-                    dMdx = dMdx * weight;
-                    dMdy = dMdy * weight;
-                    dMdz = dMdz * weight;
+                    // dMdx = dMdx * weight;
+                    // dMdy = dMdy * weight;
+                    // dMdz = dMdz * weight;
                     dMdx = 2.0 * M * dMdx * weight;
                     dMdy = 2.0 * M * dMdy * weight;
                     dMdz = 2.0 * M * dMdz * weight;
@@ -237,8 +237,8 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                     dmcsh[ii*nmcsh + m][i*3 + 1] -= dMdy;
                     dmcsh[ii*nmcsh + m][i*3 + 2] -= dMdz;
                 }
-                M = M * weight;
-                // M = M * M * weight;
+                // M = M * weight;
+                M = M * M * weight;
                 mcsh[ii][m] += M;
             }
 

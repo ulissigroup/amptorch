@@ -22,17 +22,6 @@ double calc_gamma(double alpha, double beta){
     return alpha + beta;
 }
 
-double dx0dx(){
-    return 1.0;
-}
-
-double dy0dy(){
-    return 1.0;
-}
-
-double dz0dz(){
-    return 1.0;
-}
 
 void calc_MCSH_0_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
 {   
@@ -41,9 +30,9 @@ void calc_MCSH_0_1(double x0, double y0, double z0, double r0_sqr, double A, dou
     double C2 = calc_C2(alpha, beta);
     double m_0_1 = C1 * exp( C2 * r0_sqr);
 
-    deriv[0] = dx0dx() * m_0_1 * (2.0 * C2 * x0);
-    deriv[1] = dy0dy() * m_0_1 * (2.0 * C2 * y0);
-    deriv[2] = dz0dz() * m_0_1 * (2.0 * C2 * z0);
+    deriv[0] = m_0_1 * (2.0 * C2 * x0);
+    deriv[1] = m_0_1 * (2.0 * C2 * y0);
+    deriv[2] = m_0_1 * (2.0 * C2 * z0);
 
     value[0] = m_0_1;
 }
@@ -77,19 +66,19 @@ void calc_MCSH_1_1(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * miu_1_1_1 * const_2_C2_y;
-    deriv[2] = dz0dz() * miu_1_1_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = miu_1_1_1 * const_2_C2_y;
+    deriv[2] = miu_1_1_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * miu_1_1_2 * const_2_C2_x;
-    deriv[4] = dy0dy() * temp * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * miu_1_1_2 * const_2_C2_z;
+    deriv[3] = miu_1_1_2 * const_2_C2_x;
+    deriv[4] = temp * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = miu_1_1_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * miu_1_1_3 * const_2_C2_x;
-    deriv[7] = dy0dy() * miu_1_1_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * (temp_dz + const_2_C2_z * temp_z);
+    deriv[6] = miu_1_1_3 * const_2_C2_x;
+    deriv[7] = miu_1_1_3 * const_2_C2_y;
+    deriv[8] = temp * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_1_1_1;
     value[1] = miu_1_1_2;
@@ -137,19 +126,19 @@ void calc_MCSH_2_1(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * miu_2_1_1 * const_2_C2_y;
-    deriv[2] = dz0dz() * miu_2_1_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = miu_2_1_1 * const_2_C2_y;
+    deriv[2] = miu_2_1_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * miu_2_1_2 * const_2_C2_x;
-    deriv[4] = dy0dy() * temp * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * miu_2_1_2 * const_2_C2_z;
+    deriv[3] = miu_2_1_2 * const_2_C2_x;
+    deriv[4] = temp * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = miu_2_1_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * miu_2_1_3 * const_2_C2_x;
-    deriv[7] = dy0dy() * miu_2_1_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * (temp_dz + const_2_C2_z * temp_z);
+    deriv[6] = miu_2_1_3 * const_2_C2_x;
+    deriv[7] = miu_2_1_3 * const_2_C2_y;
+    deriv[8] = temp * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_2_1_1;
     value[1] = miu_2_1_2;
@@ -183,19 +172,19 @@ void calc_MCSH_2_2(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * y0 * const_1_p_2_C2_x2;
-    deriv[1] = dy0dy() * temp * x0 * const_1_p_2_C2_y2; 
-    deriv[2] = dz0dz() * miu_2_2_1 * const_2_C2_z;
+    deriv[0] = temp * y0 * const_1_p_2_C2_x2;
+    deriv[1] = temp * x0 * const_1_p_2_C2_y2; 
+    deriv[2] = miu_2_2_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * z0 * const_1_p_2_C2_x2;
-    deriv[4] = dy0dy() * miu_2_2_2 * const_2_C2_y; 
-    deriv[5] = dz0dz() * temp * x0 * const_1_p_2_C2_z2;
+    deriv[3] = temp * z0 * const_1_p_2_C2_x2;
+    deriv[4] = miu_2_2_2 * const_2_C2_y; 
+    deriv[5] = temp * x0 * const_1_p_2_C2_z2;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * miu_2_2_3 * const_2_C2_x;
-    deriv[7] = dy0dy() * temp * z0 * const_1_p_2_C2_y2;
-    deriv[8] = dz0dz() * temp * y0 * const_1_p_2_C2_z2;
+    deriv[6] = miu_2_2_3 * const_2_C2_x;
+    deriv[7] = temp * z0 * const_1_p_2_C2_y2;
+    deriv[8] = temp * y0 * const_1_p_2_C2_z2;
 
     value[0] = miu_2_2_1;
     value[1] = miu_2_2_2;
@@ -245,19 +234,19 @@ void calc_MCSH_3_1(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * miu_3_1_1 * const_2_C2_y;
-    deriv[2] = dz0dz() * miu_3_1_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = miu_3_1_1 * const_2_C2_y;
+    deriv[2] = miu_3_1_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * miu_3_1_2 * const_2_C2_x;
-    deriv[4] = dy0dy() * temp * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * miu_3_1_2 * const_2_C2_z;
+    deriv[3] = miu_3_1_2 * const_2_C2_x;
+    deriv[4] = temp * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = miu_3_1_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * miu_3_1_3 * const_2_C2_x;
-    deriv[7] = dy0dy() * miu_3_1_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * (temp_dz + const_2_C2_z * temp_z);
+    deriv[6] = miu_3_1_3 * const_2_C2_x;
+    deriv[7] = miu_3_1_3 * const_2_C2_y;
+    deriv[8] = temp * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_3_1_1;
     value[1] = miu_3_1_2;
@@ -313,34 +302,34 @@ void calc_MCSH_3_2(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_y0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * temp * lambda * temp_x * const_1_p_2_C2_y2;
-    deriv[2] = dz0dz() * miu_3_2_1 * const_2_C2_z;
+    deriv[0] = temp * lambda_y0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = temp * lambda * temp_x * const_1_p_2_C2_y2;
+    deriv[2] = miu_3_2_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda * temp_y * const_1_p_2_C2_x2;
-    deriv[4] = dy0dy() * temp * lambda_x0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * miu_3_2_2 * const_2_C2_z;
+    deriv[3] = temp * lambda * temp_y * const_1_p_2_C2_x2;
+    deriv[4] = temp * lambda_x0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = miu_3_2_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[7] = dy0dy() * miu_3_2_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * lambda * temp_x * const_1_p_2_C2_z2;
+    deriv[6] = temp * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[7] = miu_3_2_3 * const_2_C2_y;
+    deriv[8] = temp * lambda * temp_x * const_1_p_2_C2_z2;
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * lambda * temp_z * const_1_p_2_C2_x2;
-    deriv[10] = dy0dy() * miu_3_2_4 * const_2_C2_y;
-    deriv[11] = dz0dz() * temp * lambda_x0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[9] = temp * lambda * temp_z * const_1_p_2_C2_x2;
+    deriv[10] = miu_3_2_4 * const_2_C2_y;
+    deriv[11] = temp * lambda_x0 * (temp_dz + const_2_C2_z * temp_z);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * miu_3_2_5 * const_2_C2_x;
-    deriv[13] = dy0dy() * temp * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[14] = dz0dz() * temp * lambda * temp_y * const_1_p_2_C2_z2;
+    deriv[12] = miu_3_2_5 * const_2_C2_x;
+    deriv[13] = temp * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[14] = temp * lambda * temp_y * const_1_p_2_C2_z2;
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * miu_3_2_6 * const_2_C2_x;
-    deriv[16] = dy0dy() * temp * lambda * temp_z * const_1_p_2_C2_y2;
-    deriv[17] = dz0dz() * temp * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[15] = miu_3_2_6 * const_2_C2_x;
+    deriv[16] = temp * lambda * temp_z * const_1_p_2_C2_y2;
+    deriv[17] = temp * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_3_2_1;
     value[1] = miu_3_2_2;
@@ -360,9 +349,9 @@ void calc_MCSH_3_3(double x0, double y0, double z0, double r0_sqr, double A, dou
     double temp =  C1 * exp( C2 * r0_sqr) * lambda * lambda * lambda * 15.0;
     double m_3_3 = temp * x0 * y0 * z0;
 
-    deriv[0] = dx0dx() * temp * y0 * z0 * (1.0 + 2.0*C2*x0*x0);
-    deriv[1] = dy0dy() * temp * x0 * z0 * (1.0 + 2.0*C2*y0*y0);
-    deriv[2] = dz0dz() * temp * x0 * y0 * (1.0 + 2.0*C2*z0*z0);
+    deriv[0] = temp * y0 * z0 * (1.0 + 2.0*C2*x0*x0);
+    deriv[1] = temp * x0 * z0 * (1.0 + 2.0*C2*y0*y0);
+    deriv[2] = temp * x0 * y0 * (1.0 + 2.0*C2*z0*z0);
 
     value[0] = m_3_3;
 }
@@ -415,19 +404,19 @@ void calc_MCSH_4_1(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * miu_4_1_1 * const_2_C2_y;
-    deriv[2] = dz0dz() * miu_4_1_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = miu_4_1_1 * const_2_C2_y;
+    deriv[2] = miu_4_1_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * miu_4_1_2 * const_2_C2_x;
-    deriv[4] = dy0dy() * temp * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * miu_4_1_2 * const_2_C2_z;
+    deriv[3] = miu_4_1_2 * const_2_C2_x;
+    deriv[4] = temp * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = miu_4_1_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * miu_4_1_3 * const_2_C2_x;
-    deriv[7] = dy0dy() * miu_4_1_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * (temp_dz + const_2_C2_z * temp_z);
+    deriv[6] = miu_4_1_3 * const_2_C2_x;
+    deriv[7] = miu_4_1_3 * const_2_C2_y;
+    deriv[8] = temp * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_4_1_1;
     value[1] = miu_4_1_2;
@@ -488,34 +477,34 @@ void calc_MCSH_4_2(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_y0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * temp * lambda * temp_x * const_1_p_2_C2_y2;
-    deriv[2] = dz0dz() * miu_4_2_1 * const_2_C2_z;
+    deriv[0] = temp * lambda_y0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = temp * lambda * temp_x * const_1_p_2_C2_y2;
+    deriv[2] = miu_4_2_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda * temp_y * const_1_p_2_C2_x2;
-    deriv[4] = dy0dy() * temp * lambda_x0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * miu_4_2_2 * const_2_C2_z;
+    deriv[3] = temp * lambda * temp_y * const_1_p_2_C2_x2;
+    deriv[4] = temp * lambda_x0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = miu_4_2_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[7] = dy0dy() * miu_4_2_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * lambda * temp_x * const_1_p_2_C2_z2;
+    deriv[6] = temp * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[7] = miu_4_2_3 * const_2_C2_y;
+    deriv[8] = temp * lambda * temp_x * const_1_p_2_C2_z2;
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * lambda * temp_z * const_1_p_2_C2_x2;
-    deriv[10] = dy0dy() * miu_4_2_4 * const_2_C2_y;
-    deriv[11] = dz0dz() * temp * lambda_x0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[9] = temp * lambda * temp_z * const_1_p_2_C2_x2;
+    deriv[10] = miu_4_2_4 * const_2_C2_y;
+    deriv[11] = temp * lambda_x0 * (temp_dz + const_2_C2_z * temp_z);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * miu_4_2_5 * const_2_C2_x;
-    deriv[13] = dy0dy() * temp * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[14] = dz0dz() * temp * lambda * temp_y * const_1_p_2_C2_z2;
+    deriv[12] = miu_4_2_5 * const_2_C2_x;
+    deriv[13] = temp * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[14] = temp * lambda * temp_y * const_1_p_2_C2_z2;
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * miu_4_2_6 * const_2_C2_x;
-    deriv[16] = dy0dy() * temp * lambda * temp_z * const_1_p_2_C2_y2;
-    deriv[17] = dz0dz() * temp * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[15] = miu_4_2_6 * const_2_C2_x;
+    deriv[16] = temp * lambda * temp_z * const_1_p_2_C2_y2;
+    deriv[17] = temp * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_4_2_1;
     value[1] = miu_4_2_2;
@@ -593,19 +582,19 @@ void calc_MCSH_4_3(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * miu_4_3_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = miu_4_3_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * miu_4_3_2 * const_2_C2_y;
-    deriv[5] = dz0dz() * temp * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
+    deriv[3] = temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = miu_4_3_2 * const_2_C2_y;
+    deriv[5] = temp * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * miu_4_3_3 * const_2_C2_x;
-    deriv[7] = dy0dy() * temp * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
-    deriv[8] = dz0dz() * temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = miu_4_3_3 * const_2_C2_x;
+    deriv[7] = temp * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
+    deriv[8] = temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     value[0] = miu_4_3_1;
     value[1] = miu_4_3_2;
@@ -659,19 +648,19 @@ void calc_MCSH_4_4(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_y0 * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * temp * lambda_z0 * temp_x * lambda * const_1_p_2_C2_y2;
-    deriv[2] = dz0dz() * temp * lambda_y0 * temp_x * lambda * const_1_p_2_C2_z2;
+    deriv[0] = temp * lambda_y0 * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = temp * lambda_z0 * temp_x * lambda * const_1_p_2_C2_y2;
+    deriv[2] = temp * lambda_y0 * temp_x * lambda * const_1_p_2_C2_z2;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda_z0 * temp_y * lambda * const_1_p_2_C2_x2;
-    deriv[4] = dy0dy() * temp * lambda_x0 * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * temp * lambda_x0 * temp_y * lambda * const_1_p_2_C2_z2;
+    deriv[3] = temp * lambda_z0 * temp_y * lambda * const_1_p_2_C2_x2;
+    deriv[4] = temp * lambda_x0 * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = temp * lambda_x0 * temp_y * lambda * const_1_p_2_C2_z2;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_y0 * temp_z * lambda * const_1_p_2_C2_x2;
-    deriv[7] = dy0dy() * temp * lambda_x0 * temp_z * lambda * const_1_p_2_C2_y2;
-    deriv[8] = dz0dz() * temp * lambda_x0 * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[6] = temp * lambda_y0 * temp_z * lambda * const_1_p_2_C2_x2;
+    deriv[7] = temp * lambda_x0 * temp_z * lambda * const_1_p_2_C2_y2;
+    deriv[8] = temp * lambda_x0 * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_4_4_1;
     value[1] = miu_4_4_2;
@@ -732,19 +721,19 @@ void calc_MCSH_5_1(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * miu_5_1_1 * const_2_C2_y;
-    deriv[2] = dz0dz() * miu_5_1_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = miu_5_1_1 * const_2_C2_y;
+    deriv[2] = miu_5_1_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * miu_5_1_2 * const_2_C2_x;
-    deriv[4] = dy0dy() * temp * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * miu_5_1_2 * const_2_C2_z;
+    deriv[3] = miu_5_1_2 * const_2_C2_x;
+    deriv[4] = temp * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = miu_5_1_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * miu_5_1_3 * const_2_C2_x;
-    deriv[7] = dy0dy() * miu_5_1_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * (temp_dz + const_2_C2_z * temp_z);
+    deriv[6] = miu_5_1_3 * const_2_C2_x;
+    deriv[7] = miu_5_1_3 * const_2_C2_y;
+    deriv[8] = temp * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_5_1_1;
     value[1] = miu_5_1_2;
@@ -812,34 +801,34 @@ void calc_MCSH_5_2(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_y0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * temp * lambda * temp_x * const_1_p_2_C2_y2;
-    deriv[2] = dz0dz() * miu_5_2_1 * const_2_C2_z;
+    deriv[0] = temp * lambda_y0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = temp * lambda * temp_x * const_1_p_2_C2_y2;
+    deriv[2] = miu_5_2_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda * temp_y * const_1_p_2_C2_x2;
-    deriv[4] = dy0dy() * temp * lambda_x0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * miu_5_2_2 * const_2_C2_z;
+    deriv[3] = temp * lambda * temp_y * const_1_p_2_C2_x2;
+    deriv[4] = temp * lambda_x0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = miu_5_2_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[7] = dy0dy() * miu_5_2_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * lambda * temp_x * const_1_p_2_C2_z2;
+    deriv[6] = temp * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[7] = miu_5_2_3 * const_2_C2_y;
+    deriv[8] = temp * lambda * temp_x * const_1_p_2_C2_z2;
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * lambda * temp_z * const_1_p_2_C2_x2;
-    deriv[10] = dy0dy() * miu_5_2_4 * const_2_C2_y;
-    deriv[11] = dz0dz() * temp * lambda_x0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[9] = temp * lambda * temp_z * const_1_p_2_C2_x2;
+    deriv[10] = miu_5_2_4 * const_2_C2_y;
+    deriv[11] = temp * lambda_x0 * (temp_dz + const_2_C2_z * temp_z);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * miu_5_2_5 * const_2_C2_x;
-    deriv[13] = dy0dy() * temp * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[14] = dz0dz() * temp * lambda * temp_y * const_1_p_2_C2_z2;
+    deriv[12] = miu_5_2_5 * const_2_C2_x;
+    deriv[13] = temp * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[14] = temp * lambda * temp_y * const_1_p_2_C2_z2;
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * miu_5_2_6 * const_2_C2_x;
-    deriv[16] = dy0dy() * temp * lambda * temp_z * const_1_p_2_C2_y2;
-    deriv[17] = dz0dz() * temp * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[15] = miu_5_2_6 * const_2_C2_x;
+    deriv[16] = temp * lambda * temp_z * const_1_p_2_C2_y2;
+    deriv[17] = temp * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_5_2_1;
     value[1] = miu_5_2_2;
@@ -951,34 +940,34 @@ void calc_MCSH_5_3(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * miu_5_3_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = miu_5_3_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * miu_5_3_2 * const_2_C2_z;
+    deriv[3] = temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = miu_5_3_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * miu_5_3_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = miu_5_3_3 * const_2_C2_y;
+    deriv[8] = temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
-    deriv[10] = dy0dy() * miu_5_3_4 * const_2_C2_y;
-    deriv[11] = dz0dz() * temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
+    deriv[9] = temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
+    deriv[10] = miu_5_3_4 * const_2_C2_y;
+    deriv[11] = temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * miu_5_3_5 * const_2_C2_x;
-    deriv[13] = dy0dy() * temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
-    deriv[14] = dz0dz() * temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
+    deriv[12] = miu_5_3_5 * const_2_C2_x;
+    deriv[13] = temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
+    deriv[14] = temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * miu_5_3_6 * const_2_C2_x;
-    deriv[16] = dy0dy() * temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
-    deriv[17] = dz0dz() * temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
+    deriv[15] = miu_5_3_6 * const_2_C2_x;
+    deriv[16] = temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
+    deriv[17] = temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
 
     value[0] = miu_5_3_1;
     value[1] = miu_5_3_2;
@@ -1039,19 +1028,19 @@ void calc_MCSH_5_4(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_y0 * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * temp * lambda_z0 * temp_x * lambda * const_1_p_2_C2_y2;
-    deriv[2] = dz0dz() * temp * lambda_y0 * temp_x * lambda * const_1_p_2_C2_z2;
+    deriv[0] = temp * lambda_y0 * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = temp * lambda_z0 * temp_x * lambda * const_1_p_2_C2_y2;
+    deriv[2] = temp * lambda_y0 * temp_x * lambda * const_1_p_2_C2_z2;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda_z0 * temp_y * lambda * const_1_p_2_C2_x2;
-    deriv[4] = dy0dy() * temp * lambda_x0 * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * temp * lambda_x0 * temp_y * lambda * const_1_p_2_C2_z2;
+    deriv[3] = temp * lambda_z0 * temp_y * lambda * const_1_p_2_C2_x2;
+    deriv[4] = temp * lambda_x0 * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = temp * lambda_x0 * temp_y * lambda * const_1_p_2_C2_z2;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_y0 * temp_z * lambda * const_1_p_2_C2_x2;
-    deriv[7] = dy0dy() * temp * lambda_x0 * temp_z * lambda * const_1_p_2_C2_y2;
-    deriv[8] = dz0dz() * temp * lambda_x0 * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[6] = temp * lambda_y0 * temp_z * lambda * const_1_p_2_C2_x2;
+    deriv[7] = temp * lambda_x0 * temp_z * lambda * const_1_p_2_C2_y2;
+    deriv[8] = temp * lambda_x0 * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_5_4_1;
     value[1] = miu_5_4_2;
@@ -1118,19 +1107,19 @@ void calc_MCSH_5_5(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_z0 * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * lambda_z0 * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * temp * temp_miu1 * lambda * const_1_p_2_C2_z2;
+    deriv[0] = temp * lambda_z0 * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * lambda_z0 * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = temp * temp_miu1 * lambda * const_1_p_2_C2_z2;
 
     // dmiu3 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda_y0 * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * temp_miu2 * lambda * const_1_p_2_C2_y2;
-    deriv[5] = dz0dz() * temp * lambda_y0 * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
+    deriv[3] = temp * lambda_y0 * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * temp_miu2 * lambda * const_1_p_2_C2_y2;
+    deriv[5] = temp * lambda_y0 * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
 
     // dmiu5 dx/dy/dz
-    deriv[6] = dx0dx() * temp * temp_miu3 * lambda * const_1_p_2_C2_x2;
-    deriv[7] = dy0dy() * temp * lambda_x0 * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
-    deriv[8] = dz0dz() * temp * lambda_x0 * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * temp_miu3 * lambda * const_1_p_2_C2_x2;
+    deriv[7] = temp * lambda_x0 * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
+    deriv[8] = temp * lambda_x0 * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     value[0] = miu_5_5_1;
     value[1] = miu_5_5_2;
@@ -1198,19 +1187,19 @@ void calc_MCSH_6_1(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * miu_6_1_1 * const_2_C2_y;
-    deriv[2] = dz0dz() * miu_6_1_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = miu_6_1_1 * const_2_C2_y;
+    deriv[2] = miu_6_1_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * miu_6_1_2 * const_2_C2_x;
-    deriv[4] = dy0dy() * temp * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * miu_6_1_2 * const_2_C2_z;
+    deriv[3] = miu_6_1_2 * const_2_C2_x;
+    deriv[4] = temp * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = miu_6_1_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * miu_6_1_3 * const_2_C2_x;
-    deriv[7] = dy0dy() * miu_6_1_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * (temp_dz + const_2_C2_z * temp_z);
+    deriv[6] = miu_6_1_3 * const_2_C2_x;
+    deriv[7] = miu_6_1_3 * const_2_C2_y;
+    deriv[8] = temp * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_6_1_1;
     value[1] = miu_6_1_2;
@@ -1280,34 +1269,34 @@ void calc_MCSH_6_2(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_y0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * temp * lambda * temp_x * const_1_p_2_C2_y2;
-    deriv[2] = dz0dz() * miu_6_2_1 * const_2_C2_z;
+    deriv[0] = temp * lambda_y0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = temp * lambda * temp_x * const_1_p_2_C2_y2;
+    deriv[2] = miu_6_2_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda * temp_y * const_1_p_2_C2_x2;
-    deriv[4] = dy0dy() * temp * lambda_x0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * miu_6_2_2 * const_2_C2_z;
+    deriv[3] = temp * lambda * temp_y * const_1_p_2_C2_x2;
+    deriv[4] = temp * lambda_x0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = miu_6_2_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[7] = dy0dy() * miu_6_2_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * lambda * temp_x * const_1_p_2_C2_z2;
+    deriv[6] = temp * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[7] = miu_6_2_3 * const_2_C2_y;
+    deriv[8] = temp * lambda * temp_x * const_1_p_2_C2_z2;
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * lambda * temp_z * const_1_p_2_C2_x2;
-    deriv[10] = dy0dy() * miu_6_2_4 * const_2_C2_y;
-    deriv[11] = dz0dz() * temp * lambda_x0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[9] = temp * lambda * temp_z * const_1_p_2_C2_x2;
+    deriv[10] = miu_6_2_4 * const_2_C2_y;
+    deriv[11] = temp * lambda_x0 * (temp_dz + const_2_C2_z * temp_z);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * miu_6_2_5 * const_2_C2_x;
-    deriv[13] = dy0dy() * temp * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[14] = dz0dz() * temp * lambda * temp_y * const_1_p_2_C2_z2;
+    deriv[12] = miu_6_2_5 * const_2_C2_x;
+    deriv[13] = temp * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[14] = temp * lambda * temp_y * const_1_p_2_C2_z2;
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * miu_6_2_6 * const_2_C2_x;
-    deriv[16] = dy0dy() * temp * lambda * temp_z * const_1_p_2_C2_y2;
-    deriv[17] = dz0dz() * temp * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[15] = miu_6_2_6 * const_2_C2_x;
+    deriv[16] = temp * lambda * temp_z * const_1_p_2_C2_y2;
+    deriv[17] = temp * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_6_2_1;
     value[1] = miu_6_2_2;
@@ -1417,34 +1406,34 @@ void calc_MCSH_6_3(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * miu_6_3_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = miu_6_3_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * miu_6_3_2 * const_2_C2_z;
+    deriv[3] = temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = miu_6_3_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * miu_6_3_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = miu_6_3_3 * const_2_C2_y;
+    deriv[8] = temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
-    deriv[10] = dy0dy() * miu_6_3_4 * const_2_C2_y;
-    deriv[11] = dz0dz() * temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
+    deriv[9] = temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
+    deriv[10] = miu_6_3_4 * const_2_C2_y;
+    deriv[11] = temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * miu_6_3_5 * const_2_C2_x;
-    deriv[13] = dy0dy() * temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
-    deriv[14] = dz0dz() * temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
+    deriv[12] = miu_6_3_5 * const_2_C2_x;
+    deriv[13] = temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
+    deriv[14] = temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * miu_6_3_6 * const_2_C2_x;
-    deriv[16] = dy0dy() * temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
-    deriv[17] = dz0dz() * temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
+    deriv[15] = miu_6_3_6 * const_2_C2_x;
+    deriv[16] = temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
+    deriv[17] = temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
 
     value[0] = miu_6_3_1;
     value[1] = miu_6_3_2;
@@ -1511,19 +1500,19 @@ void calc_MCSH_6_4(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_y0 * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * temp * lambda_z0 * temp_x * lambda * const_1_p_2_C2_y2;
-    deriv[2] = dz0dz() * temp * lambda_y0 * temp_x * lambda * const_1_p_2_C2_z2;
+    deriv[0] = temp * lambda_y0 * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = temp * lambda_z0 * temp_x * lambda * const_1_p_2_C2_y2;
+    deriv[2] = temp * lambda_y0 * temp_x * lambda * const_1_p_2_C2_z2;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda_z0 * temp_y * lambda * const_1_p_2_C2_x2;
-    deriv[4] = dy0dy() * temp * lambda_x0 * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * temp * lambda_x0 * temp_y * lambda * const_1_p_2_C2_z2;
+    deriv[3] = temp * lambda_z0 * temp_y * lambda * const_1_p_2_C2_x2;
+    deriv[4] = temp * lambda_x0 * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = temp * lambda_x0 * temp_y * lambda * const_1_p_2_C2_z2;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_y0 * temp_z * lambda * const_1_p_2_C2_x2;
-    deriv[7] = dy0dy() * temp * lambda_x0 * temp_z * lambda * const_1_p_2_C2_y2;
-    deriv[8] = dz0dz() * temp * lambda_x0 * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[6] = temp * lambda_y0 * temp_z * lambda * const_1_p_2_C2_x2;
+    deriv[7] = temp * lambda_x0 * temp_z * lambda * const_1_p_2_C2_y2;
+    deriv[8] = temp * lambda_x0 * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_6_4_1;
     value[1] = miu_6_4_2;
@@ -1587,19 +1576,19 @@ void calc_MCSH_6_5(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * miu_6_5_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = miu_6_5_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * miu_6_5_2 * const_2_C2_y;
-    deriv[5] = dz0dz() * temp * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
+    deriv[3] = temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = miu_6_5_2 * const_2_C2_y;
+    deriv[5] = temp * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * miu_6_5_3 * const_2_C2_x;
-    deriv[7] = dy0dy() * temp * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
-    deriv[8] = dz0dz() * temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = miu_6_5_3 * const_2_C2_x;
+    deriv[7] = temp * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
+    deriv[8] = temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     value[0] = miu_6_5_1;
     value[1] = miu_6_5_2;
@@ -1709,34 +1698,34 @@ void calc_MCSH_6_6(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_z0 * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * lambda_z0 * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * temp * temp_miu1 * lambda * const_1_p_2_C2_z2;
+    deriv[0] = temp * lambda_z0 * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * lambda_z0 * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = temp * temp_miu1 * lambda * const_1_p_2_C2_z2;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda_z0 * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * lambda_z0 * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * temp * temp_miu2 * lambda * const_1_p_2_C2_z2;
+    deriv[3] = temp * lambda_z0 * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * lambda_z0 * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = temp * temp_miu2 * lambda * const_1_p_2_C2_z2;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_y0 * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * temp * temp_miu3 * lambda * const_1_p_2_C2_y2;
-    deriv[8] = dz0dz() * temp * lambda_y0 * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * lambda_y0 * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = temp * temp_miu3 * lambda * const_1_p_2_C2_y2;
+    deriv[8] = temp * lambda_y0 * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * lambda_y0 * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
-    deriv[10] = dy0dy() * temp * temp_miu4 * lambda * const_1_p_2_C2_y2;
-    deriv[11] = dz0dz() * temp * lambda_y0 * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
+    deriv[9] = temp * lambda_y0 * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
+    deriv[10] = temp * temp_miu4 * lambda * const_1_p_2_C2_y2;
+    deriv[11] = temp * lambda_y0 * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * temp * temp_miu5 * lambda * const_1_p_2_C2_x2;
-    deriv[13] = dy0dy() * temp * lambda_x0 * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
-    deriv[14] = dz0dz() * temp * lambda_x0 * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
+    deriv[12] = temp * temp_miu5 * lambda * const_1_p_2_C2_x2;
+    deriv[13] = temp * lambda_x0 * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
+    deriv[14] = temp * lambda_x0 * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * temp * temp_miu6 * lambda * const_1_p_2_C2_x2;
-    deriv[16] = dy0dy() * temp * lambda_x0 * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
-    deriv[17] = dz0dz() * temp * lambda_x0 * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
+    deriv[15] = temp * temp_miu6 * lambda * const_1_p_2_C2_x2;
+    deriv[16] = temp * lambda_x0 * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
+    deriv[17] = temp * lambda_x0 * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
 
     value[0] = miu_6_6_1;
     value[1] = miu_6_6_2;
@@ -1791,9 +1780,9 @@ void calc_MCSH_6_7(double x0, double y0, double z0, double r0_sqr, double A, dou
     double temp =  C1 * exp( C2 * r0_sqr);
     double m_6_7 = temp * sum_ts;
 
-    deriv[0] = dx0dx() * temp * (2.0 * C2 * x0 * sum_ts + sum_dtdx);
-    deriv[1] = dy0dy() * temp * (2.0 * C2 * y0 * sum_ts + sum_dtdy);
-    deriv[2] = dz0dz() * temp * (2.0 * C2 * z0 * sum_ts + sum_dtdz);
+    deriv[0] = temp * (2.0 * C2 * x0 * sum_ts + sum_dtdx);
+    deriv[1] = temp * (2.0 * C2 * y0 * sum_ts + sum_dtdy);
+    deriv[2] = temp * (2.0 * C2 * z0 * sum_ts + sum_dtdz);
 
     value[0] = m_6_7;
 }
@@ -1861,19 +1850,19 @@ void calc_MCSH_7_1(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * miu_7_1_1 * const_2_C2_y;
-    deriv[2] = dz0dz() * miu_7_1_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = miu_7_1_1 * const_2_C2_y;
+    deriv[2] = miu_7_1_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * miu_7_1_2 * const_2_C2_x;
-    deriv[4] = dy0dy() * temp * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * miu_7_1_2 * const_2_C2_z;
+    deriv[3] = miu_7_1_2 * const_2_C2_x;
+    deriv[4] = temp * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = miu_7_1_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * miu_7_1_3 * const_2_C2_x;
-    deriv[7] = dy0dy() * miu_7_1_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * (temp_dz + const_2_C2_z * temp_z);
+    deriv[6] = miu_7_1_3 * const_2_C2_x;
+    deriv[7] = miu_7_1_3 * const_2_C2_y;
+    deriv[8] = temp * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_7_1_1;
     value[1] = miu_7_1_2;
@@ -1948,34 +1937,34 @@ void calc_MCSH_7_2(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_y0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * temp * lambda * temp_x * const_1_p_2_C2_y2;
-    deriv[2] = dz0dz() * miu_7_2_1 * const_2_C2_z;
+    deriv[0] = temp * lambda_y0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = temp * lambda * temp_x * const_1_p_2_C2_y2;
+    deriv[2] = miu_7_2_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda * temp_y * const_1_p_2_C2_x2;
-    deriv[4] = dy0dy() * temp * lambda_x0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * miu_7_2_2 * const_2_C2_z;
+    deriv[3] = temp * lambda * temp_y * const_1_p_2_C2_x2;
+    deriv[4] = temp * lambda_x0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = miu_7_2_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[7] = dy0dy() * miu_7_2_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * lambda * temp_x * const_1_p_2_C2_z2;
+    deriv[6] = temp * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[7] = miu_7_2_3 * const_2_C2_y;
+    deriv[8] = temp * lambda * temp_x * const_1_p_2_C2_z2;
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * lambda * temp_z * const_1_p_2_C2_x2;
-    deriv[10] = dy0dy() * miu_7_2_4 * const_2_C2_y;
-    deriv[11] = dz0dz() * temp * lambda_x0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[9] = temp * lambda * temp_z * const_1_p_2_C2_x2;
+    deriv[10] = miu_7_2_4 * const_2_C2_y;
+    deriv[11] = temp * lambda_x0 * (temp_dz + const_2_C2_z * temp_z);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * miu_7_2_5 * const_2_C2_x;
-    deriv[13] = dy0dy() * temp * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[14] = dz0dz() * temp * lambda * temp_y * const_1_p_2_C2_z2;
+    deriv[12] = miu_7_2_5 * const_2_C2_x;
+    deriv[13] = temp * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[14] = temp * lambda * temp_y * const_1_p_2_C2_z2;
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * miu_7_2_6 * const_2_C2_x;
-    deriv[16] = dy0dy() * temp * lambda * temp_z * const_1_p_2_C2_y2;
-    deriv[17] = dz0dz() * temp * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[15] = miu_7_2_6 * const_2_C2_x;
+    deriv[16] = temp * lambda * temp_z * const_1_p_2_C2_y2;
+    deriv[17] = temp * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_7_2_1;
     value[1] = miu_7_2_2;
@@ -2099,34 +2088,34 @@ void calc_MCSH_7_3(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * miu_7_3_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = miu_7_3_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * miu_7_3_2 * const_2_C2_z;
+    deriv[3] = temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = miu_7_3_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * miu_7_3_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = miu_7_3_3 * const_2_C2_y;
+    deriv[8] = temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
-    deriv[10] = dy0dy() * miu_7_3_4 * const_2_C2_y;
-    deriv[11] = dz0dz() * temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
+    deriv[9] = temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
+    deriv[10] = miu_7_3_4 * const_2_C2_y;
+    deriv[11] = temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * miu_7_3_5 * const_2_C2_x;
-    deriv[13] = dy0dy() * temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
-    deriv[14] = dz0dz() * temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
+    deriv[12] = miu_7_3_5 * const_2_C2_x;
+    deriv[13] = temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
+    deriv[14] = temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * miu_7_3_6 * const_2_C2_x;
-    deriv[16] = dy0dy() * temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
-    deriv[17] = dz0dz() * temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
+    deriv[15] = miu_7_3_6 * const_2_C2_x;
+    deriv[16] = temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
+    deriv[17] = temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
 
     value[0] = miu_7_3_1;
     value[1] = miu_7_3_2;
@@ -2197,19 +2186,19 @@ void calc_MCSH_7_4(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_y0 * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * temp * lambda_z0 * temp_x * lambda * const_1_p_2_C2_y2;
-    deriv[2] = dz0dz() * temp * lambda_y0 * temp_x * lambda * const_1_p_2_C2_z2;
+    deriv[0] = temp * lambda_y0 * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = temp * lambda_z0 * temp_x * lambda * const_1_p_2_C2_y2;
+    deriv[2] = temp * lambda_y0 * temp_x * lambda * const_1_p_2_C2_z2;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda_z0 * temp_y * lambda * const_1_p_2_C2_x2;
-    deriv[4] = dy0dy() * temp * lambda_x0 * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * temp * lambda_x0 * temp_y * lambda * const_1_p_2_C2_z2;
+    deriv[3] = temp * lambda_z0 * temp_y * lambda * const_1_p_2_C2_x2;
+    deriv[4] = temp * lambda_x0 * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = temp * lambda_x0 * temp_y * lambda * const_1_p_2_C2_z2;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_y0 * temp_z * lambda * const_1_p_2_C2_x2;
-    deriv[7] = dy0dy() * temp * lambda_x0 * temp_z * lambda * const_1_p_2_C2_y2;
-    deriv[8] = dz0dz() * temp * lambda_x0 * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[6] = temp * lambda_y0 * temp_z * lambda * const_1_p_2_C2_x2;
+    deriv[7] = temp * lambda_x0 * temp_z * lambda * const_1_p_2_C2_y2;
+    deriv[8] = temp * lambda_x0 * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_7_4_1;
     value[1] = miu_7_4_2;
@@ -2326,34 +2315,34 @@ void calc_MCSH_7_5(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * miu_7_5_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = miu_7_5_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * miu_7_5_2 * const_2_C2_z;
+    deriv[3] = temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = miu_7_5_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * miu_7_5_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = miu_7_5_3 * const_2_C2_y;
+    deriv[8] = temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
-    deriv[10] = dy0dy() * miu_7_5_4 * const_2_C2_y;
-    deriv[11] = dz0dz() * temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
+    deriv[9] = temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
+    deriv[10] = miu_7_5_4 * const_2_C2_y;
+    deriv[11] = temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * miu_7_5_5 * const_2_C2_x;
-    deriv[13] = dy0dy() * temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
-    deriv[14] = dz0dz() * temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
+    deriv[12] = miu_7_5_5 * const_2_C2_x;
+    deriv[13] = temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
+    deriv[14] = temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * miu_7_5_6 * const_2_C2_x;
-    deriv[16] = dy0dy() * temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
-    deriv[17] = dz0dz() * temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
+    deriv[15] = miu_7_5_6 * const_2_C2_x;
+    deriv[16] = temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
+    deriv[17] = temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
 
     value[0] = miu_7_5_1;
     value[1] = miu_7_5_2;
@@ -2470,34 +2459,34 @@ void calc_MCSH_7_6(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_z0 * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * lambda_z0 * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * temp * temp_miu1 * lambda * const_1_p_2_C2_z2;
+    deriv[0] = temp * lambda_z0 * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * lambda_z0 * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = temp * temp_miu1 * lambda * const_1_p_2_C2_z2;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda_z0 * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * lambda_z0 * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * temp * temp_miu2 * lambda * const_1_p_2_C2_z2;
+    deriv[3] = temp * lambda_z0 * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * lambda_z0 * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = temp * temp_miu2 * lambda * const_1_p_2_C2_z2;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_y0 * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * temp * temp_miu3 * lambda * const_1_p_2_C2_y2;
-    deriv[8] = dz0dz() * temp * lambda_y0 * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * lambda_y0 * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = temp * temp_miu3 * lambda * const_1_p_2_C2_y2;
+    deriv[8] = temp * lambda_y0 * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * lambda_y0 * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
-    deriv[10] = dy0dy() * temp * temp_miu4 * lambda * const_1_p_2_C2_y2;
-    deriv[11] = dz0dz() * temp * lambda_y0 * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
+    deriv[9] = temp * lambda_y0 * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
+    deriv[10] = temp * temp_miu4 * lambda * const_1_p_2_C2_y2;
+    deriv[11] = temp * lambda_y0 * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * temp * temp_miu5 * lambda * const_1_p_2_C2_x2;
-    deriv[13] = dy0dy() * temp * lambda_x0 * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
-    deriv[14] = dz0dz() * temp * lambda_x0 * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
+    deriv[12] = temp * temp_miu5 * lambda * const_1_p_2_C2_x2;
+    deriv[13] = temp * lambda_x0 * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
+    deriv[14] = temp * lambda_x0 * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * temp * temp_miu6 * lambda * const_1_p_2_C2_x2;
-    deriv[16] = dy0dy() * temp * lambda_x0 * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
-    deriv[17] = dz0dz() * temp * lambda_x0 * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
+    deriv[15] = temp * temp_miu6 * lambda * const_1_p_2_C2_x2;
+    deriv[16] = temp * lambda_x0 * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
+    deriv[17] = temp * lambda_x0 * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
 
     value[0] = miu_7_6_1;
     value[1] = miu_7_6_2;
@@ -2586,19 +2575,19 @@ void calc_MCSH_7_7(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_z0 * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * lambda_z0 * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * temp * temp_miu1 * lambda * const_1_p_2_C2_z2;
+    deriv[0] = temp * lambda_z0 * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * lambda_z0 * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = temp * temp_miu1 * lambda * const_1_p_2_C2_z2;
 
     // dmiu3 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda_y0 * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * temp_miu2 * lambda * const_1_p_2_C2_y2;
-    deriv[5] = dz0dz() * temp * lambda_y0 * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
+    deriv[3] = temp * lambda_y0 * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * temp_miu2 * lambda * const_1_p_2_C2_y2;
+    deriv[5] = temp * lambda_y0 * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
 
     // dmiu5 dx/dy/dz
-    deriv[6] = dx0dx() * temp * temp_miu3 * lambda * const_1_p_2_C2_x2;
-    deriv[7] = dy0dy() * temp * lambda_x0 * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
-    deriv[8] = dz0dz() * temp * lambda_x0 * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * temp_miu3 * lambda * const_1_p_2_C2_x2;
+    deriv[7] = temp * lambda_x0 * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
+    deriv[8] = temp * lambda_x0 * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     value[0] = miu_7_7_1;
     value[1] = miu_7_7_2;
@@ -2698,19 +2687,19 @@ void calc_MCSH_7_8(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * temp * (temp_dmiu1_dz + const_2_C2_z * temp_miu1);
+    deriv[0] = temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = temp * (temp_dmiu1_dz + const_2_C2_z * temp_miu1);
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * temp * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
+    deriv[3] = temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = temp * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * temp * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
-    deriv[8] = dz0dz() * temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = temp * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
+    deriv[8] = temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     value[0] = miu_7_8_1;
     value[1] = miu_7_8_2;
@@ -2787,19 +2776,19 @@ void calc_MCSH_8_1(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * miu_8_1_1 * const_2_C2_y;
-    deriv[2] = dz0dz() * miu_8_1_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = miu_8_1_1 * const_2_C2_y;
+    deriv[2] = miu_8_1_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * miu_8_1_2 * const_2_C2_x;
-    deriv[4] = dy0dy() * temp * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * miu_8_1_2 * const_2_C2_z;
+    deriv[3] = miu_8_1_2 * const_2_C2_x;
+    deriv[4] = temp * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = miu_8_1_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * miu_8_1_3 * const_2_C2_x;
-    deriv[7] = dy0dy() * miu_8_1_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * (temp_dz + const_2_C2_z * temp_z);
+    deriv[6] = miu_8_1_3 * const_2_C2_x;
+    deriv[7] = miu_8_1_3 * const_2_C2_y;
+    deriv[8] = temp * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_8_1_1;
     value[1] = miu_8_1_2;
@@ -2879,34 +2868,34 @@ void calc_MCSH_8_2(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_y0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * temp * lambda * temp_x * const_1_p_2_C2_y2;
-    deriv[2] = dz0dz() * miu_8_2_1 * const_2_C2_z;
+    deriv[0] = temp * lambda_y0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = temp * lambda * temp_x * const_1_p_2_C2_y2;
+    deriv[2] = miu_8_2_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda * temp_y * const_1_p_2_C2_x2;
-    deriv[4] = dy0dy() * temp * lambda_x0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * miu_8_2_2 * const_2_C2_z;
+    deriv[3] = temp * lambda * temp_y * const_1_p_2_C2_x2;
+    deriv[4] = temp * lambda_x0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = miu_8_2_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[7] = dy0dy() * miu_8_2_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * lambda * temp_x * const_1_p_2_C2_z2;
+    deriv[6] = temp * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[7] = miu_8_2_3 * const_2_C2_y;
+    deriv[8] = temp * lambda * temp_x * const_1_p_2_C2_z2;
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * lambda * temp_z * const_1_p_2_C2_x2;
-    deriv[10] = dy0dy() * miu_8_2_4 * const_2_C2_y;
-    deriv[11] = dz0dz() * temp * lambda_x0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[9] = temp * lambda * temp_z * const_1_p_2_C2_x2;
+    deriv[10] = miu_8_2_4 * const_2_C2_y;
+    deriv[11] = temp * lambda_x0 * (temp_dz + const_2_C2_z * temp_z);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * miu_8_2_5 * const_2_C2_x;
-    deriv[13] = dy0dy() * temp * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[14] = dz0dz() * temp * lambda * temp_y * const_1_p_2_C2_z2;
+    deriv[12] = miu_8_2_5 * const_2_C2_x;
+    deriv[13] = temp * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[14] = temp * lambda * temp_y * const_1_p_2_C2_z2;
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * miu_8_2_6 * const_2_C2_x;
-    deriv[16] = dy0dy() * temp * lambda * temp_z * const_1_p_2_C2_y2;
-    deriv[17] = dz0dz() * temp * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[15] = miu_8_2_6 * const_2_C2_x;
+    deriv[16] = temp * lambda * temp_z * const_1_p_2_C2_y2;
+    deriv[17] = temp * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_8_2_1;
     value[1] = miu_8_2_2;
@@ -3034,34 +3023,34 @@ void calc_MCSH_8_3(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * miu_8_3_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = miu_8_3_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * miu_8_3_2 * const_2_C2_z;
+    deriv[3] = temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = miu_8_3_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * miu_8_3_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = miu_8_3_3 * const_2_C2_y;
+    deriv[8] = temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
-    deriv[10] = dy0dy() * miu_8_3_4 * const_2_C2_y;
-    deriv[11] = dz0dz() * temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
+    deriv[9] = temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
+    deriv[10] = miu_8_3_4 * const_2_C2_y;
+    deriv[11] = temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * miu_8_3_5 * const_2_C2_x;
-    deriv[13] = dy0dy() * temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
-    deriv[14] = dz0dz() * temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
+    deriv[12] = miu_8_3_5 * const_2_C2_x;
+    deriv[13] = temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
+    deriv[14] = temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * miu_8_3_6 * const_2_C2_x;
-    deriv[16] = dy0dy() * temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
-    deriv[17] = dz0dz() * temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
+    deriv[15] = miu_8_3_6 * const_2_C2_x;
+    deriv[16] = temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
+    deriv[17] = temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
 
     value[0] = miu_8_3_1;
     value[1] = miu_8_3_2;
@@ -3137,19 +3126,19 @@ void calc_MCSH_8_4(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_y0 * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * temp * lambda_z0 * temp_x * lambda * const_1_p_2_C2_y2;
-    deriv[2] = dz0dz() * temp * lambda_y0 * temp_x * lambda * const_1_p_2_C2_z2;
+    deriv[0] = temp * lambda_y0 * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = temp * lambda_z0 * temp_x * lambda * const_1_p_2_C2_y2;
+    deriv[2] = temp * lambda_y0 * temp_x * lambda * const_1_p_2_C2_z2;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda_z0 * temp_y * lambda * const_1_p_2_C2_x2;
-    deriv[4] = dy0dy() * temp * lambda_x0 * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * temp * lambda_x0 * temp_y * lambda * const_1_p_2_C2_z2;
+    deriv[3] = temp * lambda_z0 * temp_y * lambda * const_1_p_2_C2_x2;
+    deriv[4] = temp * lambda_x0 * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = temp * lambda_x0 * temp_y * lambda * const_1_p_2_C2_z2;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_y0 * temp_z * lambda * const_1_p_2_C2_x2;
-    deriv[7] = dy0dy() * temp * lambda_x0 * temp_z * lambda * const_1_p_2_C2_y2;
-    deriv[8] = dz0dz() * temp * lambda_x0 * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[6] = temp * lambda_y0 * temp_z * lambda * const_1_p_2_C2_x2;
+    deriv[7] = temp * lambda_x0 * temp_z * lambda * const_1_p_2_C2_y2;
+    deriv[8] = temp * lambda_x0 * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_8_4_1;
     value[1] = miu_8_4_2;
@@ -3263,34 +3252,34 @@ void calc_MCSH_8_5(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * miu_8_5_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = miu_8_5_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * miu_8_5_2 * const_2_C2_z;
+    deriv[3] = temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = miu_8_5_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * miu_8_5_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = miu_8_5_3 * const_2_C2_y;
+    deriv[8] = temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
-    deriv[10] = dy0dy() * miu_8_5_4 * const_2_C2_y;
-    deriv[11] = dz0dz() * temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
+    deriv[9] = temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
+    deriv[10] = miu_8_5_4 * const_2_C2_y;
+    deriv[11] = temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * miu_8_5_5 * const_2_C2_x;
-    deriv[13] = dy0dy() * temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
-    deriv[14] = dz0dz() * temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
+    deriv[12] = miu_8_5_5 * const_2_C2_x;
+    deriv[13] = temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
+    deriv[14] = temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * miu_8_5_6 * const_2_C2_x;
-    deriv[16] = dy0dy() * temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
-    deriv[17] = dz0dz() * temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
+    deriv[15] = miu_8_5_6 * const_2_C2_x;
+    deriv[16] = temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
+    deriv[17] = temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
 
     value[0] = miu_8_5_1;
     value[1] = miu_8_5_2;
@@ -3423,34 +3412,34 @@ void calc_MCSH_8_6(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_z0 * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * lambda_z0 * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * temp * temp_miu1 * lambda * const_1_p_2_C2_z2;
+    deriv[0] = temp * lambda_z0 * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * lambda_z0 * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = temp * temp_miu1 * lambda * const_1_p_2_C2_z2;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda_z0 * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * lambda_z0 * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * temp * temp_miu2 * lambda * const_1_p_2_C2_z2;
+    deriv[3] = temp * lambda_z0 * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * lambda_z0 * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = temp * temp_miu2 * lambda * const_1_p_2_C2_z2;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_y0 * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * temp * temp_miu3 * lambda * const_1_p_2_C2_y2;
-    deriv[8] = dz0dz() * temp * lambda_y0 * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * lambda_y0 * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = temp * temp_miu3 * lambda * const_1_p_2_C2_y2;
+    deriv[8] = temp * lambda_y0 * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * lambda_y0 * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
-    deriv[10] = dy0dy() * temp * temp_miu4 * lambda * const_1_p_2_C2_y2;
-    deriv[11] = dz0dz() * temp * lambda_y0 * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
+    deriv[9] = temp * lambda_y0 * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
+    deriv[10] = temp * temp_miu4 * lambda * const_1_p_2_C2_y2;
+    deriv[11] = temp * lambda_y0 * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * temp * temp_miu5 * lambda * const_1_p_2_C2_x2;
-    deriv[13] = dy0dy() * temp * lambda_x0 * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
-    deriv[14] = dz0dz() * temp * lambda_x0 * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
+    deriv[12] = temp * temp_miu5 * lambda * const_1_p_2_C2_x2;
+    deriv[13] = temp * lambda_x0 * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
+    deriv[14] = temp * lambda_x0 * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * temp * temp_miu6 * lambda * const_1_p_2_C2_x2;
-    deriv[16] = dy0dy() * temp * lambda_x0 * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
-    deriv[17] = dz0dz() * temp * lambda_x0 * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
+    deriv[15] = temp * temp_miu6 * lambda * const_1_p_2_C2_x2;
+    deriv[16] = temp * lambda_x0 * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
+    deriv[17] = temp * lambda_x0 * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
 
     value[0] = miu_8_6_1;
     value[1] = miu_8_6_2;
@@ -3554,19 +3543,19 @@ void calc_MCSH_8_7(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * miu_8_7_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = miu_8_7_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * miu_8_7_2 * const_2_C2_y;
-    deriv[5] = dz0dz() * temp * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
+    deriv[3] = temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = miu_8_7_2 * const_2_C2_y;
+    deriv[5] = temp * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * miu_8_7_3 * const_2_C2_x;
-    deriv[7] = dy0dy() * temp * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
-    deriv[8] = dz0dz() * temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = miu_8_7_3 * const_2_C2_x;
+    deriv[7] = temp * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
+    deriv[8] = temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     value[0] = miu_8_7_1;
     value[1] = miu_8_7_2;
@@ -3691,34 +3680,34 @@ void calc_MCSH_8_8(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_z0 * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * lambda_z0 * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * temp * temp_miu1 * lambda * const_1_p_2_C2_z2;
+    deriv[0] = temp * lambda_z0 * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * lambda_z0 * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = temp * temp_miu1 * lambda * const_1_p_2_C2_z2;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda_z0 * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * lambda_z0 * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * temp * temp_miu2 * lambda * const_1_p_2_C2_z2;
+    deriv[3] = temp * lambda_z0 * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * lambda_z0 * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = temp * temp_miu2 * lambda * const_1_p_2_C2_z2;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_y0 * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * temp * temp_miu3 * lambda * const_1_p_2_C2_y2;
-    deriv[8] = dz0dz() * temp * lambda_y0 * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * lambda_y0 * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = temp * temp_miu3 * lambda * const_1_p_2_C2_y2;
+    deriv[8] = temp * lambda_y0 * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * lambda_y0 * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
-    deriv[10] = dy0dy() * temp * temp_miu4 * lambda * const_1_p_2_C2_y2;
-    deriv[11] = dz0dz() * temp * lambda_y0 * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
+    deriv[9] = temp * lambda_y0 * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
+    deriv[10] = temp * temp_miu4 * lambda * const_1_p_2_C2_y2;
+    deriv[11] = temp * lambda_y0 * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * temp * temp_miu5 * lambda * const_1_p_2_C2_x2;
-    deriv[13] = dy0dy() * temp * lambda_x0 * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
-    deriv[14] = dz0dz() * temp * lambda_x0 * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
+    deriv[12] = temp * temp_miu5 * lambda * const_1_p_2_C2_x2;
+    deriv[13] = temp * lambda_x0 * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
+    deriv[14] = temp * lambda_x0 * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * temp * temp_miu6 * lambda * const_1_p_2_C2_x2;
-    deriv[16] = dy0dy() * temp * lambda_x0 * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
-    deriv[17] = dz0dz() * temp * lambda_x0 * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
+    deriv[15] = temp * temp_miu6 * lambda * const_1_p_2_C2_x2;
+    deriv[16] = temp * lambda_x0 * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
+    deriv[17] = temp * lambda_x0 * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
 
     value[0] = miu_8_8_1;
     value[1] = miu_8_8_2;
@@ -3826,19 +3815,19 @@ void calc_MCSH_8_9(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * temp * (temp_dmiu1_dz + const_2_C2_z * temp_miu1);
+    deriv[0] = temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = temp * (temp_dmiu1_dz + const_2_C2_z * temp_miu1);
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * temp * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
+    deriv[3] = temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = temp * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * temp * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
-    deriv[8] = dz0dz() * temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = temp * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
+    deriv[8] = temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     value[0] = miu_8_9_1;
     value[1] = miu_8_9_2;
@@ -3948,19 +3937,19 @@ void calc_MCSH_8_10(double x0, double y0, double z0, double r0_sqr, double A, do
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * temp * (temp_dmiu1_dz + const_2_C2_z * temp_miu1);
+    deriv[0] = temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = temp * (temp_dmiu1_dz + const_2_C2_z * temp_miu1);
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * temp * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
+    deriv[3] = temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = temp * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * temp * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
-    deriv[8] = dz0dz() * temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = temp * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
+    deriv[8] = temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     value[0] = miu_8_10_1;
     value[1] = miu_8_10_2;
@@ -4041,19 +4030,19 @@ void calc_MCSH_9_1(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * miu_9_1_1 * const_2_C2_y;
-    deriv[2] = dz0dz() * miu_9_1_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = miu_9_1_1 * const_2_C2_y;
+    deriv[2] = miu_9_1_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * miu_9_1_2 * const_2_C2_x;
-    deriv[4] = dy0dy() * temp * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * miu_9_1_2 * const_2_C2_z;
+    deriv[3] = miu_9_1_2 * const_2_C2_x;
+    deriv[4] = temp * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = miu_9_1_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * miu_9_1_3 * const_2_C2_x;
-    deriv[7] = dy0dy() * miu_9_1_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * (temp_dz + const_2_C2_z * temp_z);
+    deriv[6] = miu_9_1_3 * const_2_C2_x;
+    deriv[7] = miu_9_1_3 * const_2_C2_y;
+    deriv[8] = temp * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_9_1_1;
     value[1] = miu_9_1_2;
@@ -4138,34 +4127,34 @@ void calc_MCSH_9_2(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_y0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * temp * lambda * temp_x * const_1_p_2_C2_y2;
-    deriv[2] = dz0dz() * miu_9_2_1 * const_2_C2_z;
+    deriv[0] = temp * lambda_y0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = temp * lambda * temp_x * const_1_p_2_C2_y2;
+    deriv[2] = miu_9_2_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda * temp_y * const_1_p_2_C2_x2;
-    deriv[4] = dy0dy() * temp * lambda_x0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * miu_9_2_2 * const_2_C2_z;
+    deriv[3] = temp * lambda * temp_y * const_1_p_2_C2_x2;
+    deriv[4] = temp * lambda_x0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = miu_9_2_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[7] = dy0dy() * miu_9_2_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * lambda * temp_x * const_1_p_2_C2_z2;
+    deriv[6] = temp * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[7] = miu_9_2_3 * const_2_C2_y;
+    deriv[8] = temp * lambda * temp_x * const_1_p_2_C2_z2;
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * lambda * temp_z * const_1_p_2_C2_x2;
-    deriv[10] = dy0dy() * miu_9_2_4 * const_2_C2_y;
-    deriv[11] = dz0dz() * temp * lambda_x0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[9] = temp * lambda * temp_z * const_1_p_2_C2_x2;
+    deriv[10] = miu_9_2_4 * const_2_C2_y;
+    deriv[11] = temp * lambda_x0 * (temp_dz + const_2_C2_z * temp_z);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * miu_9_2_5 * const_2_C2_x;
-    deriv[13] = dy0dy() * temp * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[14] = dz0dz() * temp * lambda * temp_y * const_1_p_2_C2_z2;
+    deriv[12] = miu_9_2_5 * const_2_C2_x;
+    deriv[13] = temp * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[14] = temp * lambda * temp_y * const_1_p_2_C2_z2;
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * miu_9_2_6 * const_2_C2_x;
-    deriv[16] = dy0dy() * temp * lambda * temp_z * const_1_p_2_C2_y2;
-    deriv[17] = dz0dz() * temp * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[15] = miu_9_2_6 * const_2_C2_x;
+    deriv[16] = temp * lambda * temp_z * const_1_p_2_C2_y2;
+    deriv[17] = temp * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_9_2_1;
     value[1] = miu_9_2_2;
@@ -4306,34 +4295,34 @@ void calc_MCSH_9_3(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * miu_9_3_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = miu_9_3_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * miu_9_3_2 * const_2_C2_z;
+    deriv[3] = temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = miu_9_3_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * miu_9_3_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = miu_9_3_3 * const_2_C2_y;
+    deriv[8] = temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
-    deriv[10] = dy0dy() * miu_9_3_4 * const_2_C2_y;
-    deriv[11] = dz0dz() * temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
+    deriv[9] = temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
+    deriv[10] = miu_9_3_4 * const_2_C2_y;
+    deriv[11] = temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * miu_9_3_5 * const_2_C2_x;
-    deriv[13] = dy0dy() * temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
-    deriv[14] = dz0dz() * temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
+    deriv[12] = miu_9_3_5 * const_2_C2_x;
+    deriv[13] = temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
+    deriv[14] = temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * miu_9_3_6 * const_2_C2_x;
-    deriv[16] = dy0dy() * temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
-    deriv[17] = dz0dz() * temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
+    deriv[15] = miu_9_3_6 * const_2_C2_x;
+    deriv[16] = temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
+    deriv[17] = temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
 
     value[0] = miu_9_3_1;
     value[1] = miu_9_3_2;
@@ -4412,19 +4401,19 @@ void calc_MCSH_9_4(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_y0 * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
-    deriv[1] = dy0dy() * temp * lambda_z0 * temp_x * lambda * const_1_p_2_C2_y2;
-    deriv[2] = dz0dz() * temp * lambda_y0 * temp_x * lambda * const_1_p_2_C2_z2;
+    deriv[0] = temp * lambda_y0 * lambda_z0 * (temp_dx + const_2_C2_x * temp_x);
+    deriv[1] = temp * lambda_z0 * temp_x * lambda * const_1_p_2_C2_y2;
+    deriv[2] = temp * lambda_y0 * temp_x * lambda * const_1_p_2_C2_z2;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda_z0 * temp_y * lambda * const_1_p_2_C2_x2;
-    deriv[4] = dy0dy() * temp * lambda_x0 * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
-    deriv[5] = dz0dz() * temp * lambda_x0 * temp_y * lambda * const_1_p_2_C2_z2;
+    deriv[3] = temp * lambda_z0 * temp_y * lambda * const_1_p_2_C2_x2;
+    deriv[4] = temp * lambda_x0 * lambda_z0 * (temp_dy + const_2_C2_y * temp_y);
+    deriv[5] = temp * lambda_x0 * temp_y * lambda * const_1_p_2_C2_z2;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_y0 * temp_z * lambda * const_1_p_2_C2_x2;
-    deriv[7] = dy0dy() * temp * lambda_x0 * temp_z * lambda * const_1_p_2_C2_y2;
-    deriv[8] = dz0dz() * temp * lambda_x0 * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
+    deriv[6] = temp * lambda_y0 * temp_z * lambda * const_1_p_2_C2_x2;
+    deriv[7] = temp * lambda_x0 * temp_z * lambda * const_1_p_2_C2_y2;
+    deriv[8] = temp * lambda_x0 * lambda_y0 * (temp_dz + const_2_C2_z * temp_z);
 
     value[0] = miu_9_4_1;
     value[1] = miu_9_4_2;
@@ -4559,34 +4548,34 @@ void calc_MCSH_9_5(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * miu_9_5_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = miu_9_5_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * miu_9_5_2 * const_2_C2_z;
+    deriv[3] = temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = miu_9_5_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * miu_9_5_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = miu_9_5_3 * const_2_C2_y;
+    deriv[8] = temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
-    deriv[10] = dy0dy() * miu_9_5_4 * const_2_C2_y;
-    deriv[11] = dz0dz() * temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
+    deriv[9] = temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
+    deriv[10] = miu_9_5_4 * const_2_C2_y;
+    deriv[11] = temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * miu_9_5_5 * const_2_C2_x;
-    deriv[13] = dy0dy() * temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
-    deriv[14] = dz0dz() * temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
+    deriv[12] = miu_9_5_5 * const_2_C2_x;
+    deriv[13] = temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
+    deriv[14] = temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * miu_9_5_6 * const_2_C2_x;
-    deriv[16] = dy0dy() * temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
-    deriv[17] = dz0dz() * temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
+    deriv[15] = miu_9_5_6 * const_2_C2_x;
+    deriv[16] = temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
+    deriv[17] = temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
 
     value[0] = miu_9_5_1;
     value[1] = miu_9_5_2;
@@ -4722,34 +4711,34 @@ void calc_MCSH_9_6(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_z0 * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * lambda_z0 * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * temp * temp_miu1 * lambda * const_1_p_2_C2_z2;
+    deriv[0] = temp * lambda_z0 * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * lambda_z0 * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = temp * temp_miu1 * lambda * const_1_p_2_C2_z2;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda_z0 * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * lambda_z0 * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * temp * temp_miu2 * lambda * const_1_p_2_C2_z2;
+    deriv[3] = temp * lambda_z0 * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * lambda_z0 * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = temp * temp_miu2 * lambda * const_1_p_2_C2_z2;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_y0 * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * temp * temp_miu3 * lambda * const_1_p_2_C2_y2;
-    deriv[8] = dz0dz() * temp * lambda_y0 * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * lambda_y0 * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = temp * temp_miu3 * lambda * const_1_p_2_C2_y2;
+    deriv[8] = temp * lambda_y0 * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * lambda_y0 * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
-    deriv[10] = dy0dy() * temp * temp_miu4 * lambda * const_1_p_2_C2_y2;
-    deriv[11] = dz0dz() * temp * lambda_y0 * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
+    deriv[9] = temp * lambda_y0 * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
+    deriv[10] = temp * temp_miu4 * lambda * const_1_p_2_C2_y2;
+    deriv[11] = temp * lambda_y0 * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * temp * temp_miu5 * lambda * const_1_p_2_C2_x2;
-    deriv[13] = dy0dy() * temp * lambda_x0 * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
-    deriv[14] = dz0dz() * temp * lambda_x0 * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
+    deriv[12] = temp * temp_miu5 * lambda * const_1_p_2_C2_x2;
+    deriv[13] = temp * lambda_x0 * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
+    deriv[14] = temp * lambda_x0 * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * temp * temp_miu6 * lambda * const_1_p_2_C2_x2;
-    deriv[16] = dy0dy() * temp * lambda_x0 * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
-    deriv[17] = dz0dz() * temp * lambda_x0 * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
+    deriv[15] = temp * temp_miu6 * lambda * const_1_p_2_C2_x2;
+    deriv[16] = temp * lambda_x0 * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
+    deriv[17] = temp * lambda_x0 * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
 
     value[0] = miu_9_6_1;
     value[1] = miu_9_6_2;
@@ -4893,34 +4882,34 @@ void calc_MCSH_9_7(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * miu_9_7_1 * const_2_C2_z;
+    deriv[0] = temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = miu_9_7_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * miu_9_7_2 * const_2_C2_z;
+    deriv[3] = temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = miu_9_7_2 * const_2_C2_z;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * miu_9_7_3 * const_2_C2_y;
-    deriv[8] = dz0dz() * temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = miu_9_7_3 * const_2_C2_y;
+    deriv[8] = temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
-    deriv[10] = dy0dy() * miu_9_7_4 * const_2_C2_y;
-    deriv[11] = dz0dz() * temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
+    deriv[9] = temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
+    deriv[10] = miu_9_7_4 * const_2_C2_y;
+    deriv[11] = temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * miu_9_7_5 * const_2_C2_x;
-    deriv[13] = dy0dy() * temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
-    deriv[14] = dz0dz() * temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
+    deriv[12] = miu_9_7_5 * const_2_C2_x;
+    deriv[13] = temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
+    deriv[14] = temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * miu_9_7_6 * const_2_C2_x;
-    deriv[16] = dy0dy() * temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
-    deriv[17] = dz0dz() * temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
+    deriv[15] = miu_9_7_6 * const_2_C2_x;
+    deriv[16] = temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
+    deriv[17] = temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
 
     value[0] = miu_9_7_1;
     value[1] = miu_9_7_2;
@@ -5044,34 +5033,34 @@ void calc_MCSH_9_8(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_z0 * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * lambda_z0 * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * temp * temp_miu1 * lambda * const_1_p_2_C2_z2;
+    deriv[0] = temp * lambda_z0 * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * lambda_z0 * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = temp * temp_miu1 * lambda * const_1_p_2_C2_z2;
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda_z0 * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * lambda_z0 * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * temp * temp_miu2 * lambda * const_1_p_2_C2_z2;
+    deriv[3] = temp * lambda_z0 * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * lambda_z0 * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = temp * temp_miu2 * lambda * const_1_p_2_C2_z2;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * lambda_y0 * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * temp * temp_miu3 * lambda * const_1_p_2_C2_y2;
-    deriv[8] = dz0dz() * temp * lambda_y0 * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * lambda_y0 * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = temp * temp_miu3 * lambda * const_1_p_2_C2_y2;
+    deriv[8] = temp * lambda_y0 * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * lambda_y0 * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
-    deriv[10] = dy0dy() * temp * temp_miu4 * lambda * const_1_p_2_C2_y2;
-    deriv[11] = dz0dz() * temp * lambda_y0 * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
+    deriv[9] = temp * lambda_y0 * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
+    deriv[10] = temp * temp_miu4 * lambda * const_1_p_2_C2_y2;
+    deriv[11] = temp * lambda_y0 * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * temp * temp_miu5 * lambda * const_1_p_2_C2_x2;
-    deriv[13] = dy0dy() * temp * lambda_x0 * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
-    deriv[14] = dz0dz() * temp * lambda_x0 * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
+    deriv[12] = temp * temp_miu5 * lambda * const_1_p_2_C2_x2;
+    deriv[13] = temp * lambda_x0 * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
+    deriv[14] = temp * lambda_x0 * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * temp * temp_miu6 * lambda * const_1_p_2_C2_x2;
-    deriv[16] = dy0dy() * temp * lambda_x0 * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
-    deriv[17] = dz0dz() * temp * lambda_x0 * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
+    deriv[15] = temp * temp_miu6 * lambda * const_1_p_2_C2_x2;
+    deriv[16] = temp * lambda_x0 * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
+    deriv[17] = temp * lambda_x0 * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
 
     value[0] = miu_9_8_1;
     value[1] = miu_9_8_2;
@@ -5192,19 +5181,19 @@ void calc_MCSH_9_9(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * temp * (temp_dmiu1_dz + const_2_C2_z * temp_miu1);
+    deriv[0] = temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = temp * (temp_dmiu1_dz + const_2_C2_z * temp_miu1);
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * temp * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
+    deriv[3] = temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = temp * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * temp * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
-    deriv[8] = dz0dz() * temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = temp * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
+    deriv[8] = temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     value[0] = miu_9_9_1;
     value[1] = miu_9_9_2;
@@ -5310,19 +5299,19 @@ void calc_MCSH_9_10(double x0, double y0, double z0, double r0_sqr, double A, do
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * lambda_z0 * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * lambda_z0 * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * temp * temp_miu1 * lambda * const_1_p_2_C2_z2;
+    deriv[0] = temp * lambda_z0 * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * lambda_z0 * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = temp * temp_miu1 * lambda * const_1_p_2_C2_z2;
 
     // dmiu3 dx/dy/dz
-    deriv[3] = dx0dx() * temp * lambda_y0 * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * temp_miu2 * lambda * const_1_p_2_C2_y2;
-    deriv[5] = dz0dz() * temp * lambda_y0 * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
+    deriv[3] = temp * lambda_y0 * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * temp_miu2 * lambda * const_1_p_2_C2_y2;
+    deriv[5] = temp * lambda_y0 * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
 
     // dmiu5 dx/dy/dz
-    deriv[6] = dx0dx() * temp * temp_miu3 * lambda * const_1_p_2_C2_x2;
-    deriv[7] = dy0dy() * temp * lambda_x0 * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
-    deriv[8] = dz0dz() * temp * lambda_x0 * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * temp_miu3 * lambda * const_1_p_2_C2_x2;
+    deriv[7] = temp * lambda_x0 * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
+    deriv[8] = temp * lambda_x0 * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     value[0] = miu_9_10_1;
     value[1] = miu_9_10_2;
@@ -5465,34 +5454,34 @@ void calc_MCSH_9_11(double x0, double y0, double z0, double r0_sqr, double A, do
     double const_2_C2_z = 2.0 * C2 * z0;
 
     // dmiu1 dx/dy/dz
-    deriv[0] = dx0dx() * temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
-    deriv[1] = dy0dy() * temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
-    deriv[2] = dz0dz() * temp * (temp_dmiu1_dz + const_2_C2_z * temp_miu1);
+    deriv[0] = temp * (temp_dmiu1_dx + const_2_C2_x * temp_miu1);
+    deriv[1] = temp * (temp_dmiu1_dy + const_2_C2_y * temp_miu1);
+    deriv[2] = temp * (temp_dmiu1_dz + const_2_C2_z * temp_miu1);
 
     // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
-    deriv[4] = dy0dy() * temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
-    deriv[5] = dz0dz() * temp * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
+    deriv[3] = temp * (temp_dmiu2_dx + const_2_C2_x * temp_miu2);
+    deriv[4] = temp * (temp_dmiu2_dy + const_2_C2_y * temp_miu2);
+    deriv[5] = temp * (temp_dmiu2_dz + const_2_C2_z * temp_miu2);
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
-    deriv[7] = dy0dy() * temp * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
-    deriv[8] = dz0dz() * temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
+    deriv[6] = temp * (temp_dmiu3_dx + const_2_C2_x * temp_miu3);
+    deriv[7] = temp * (temp_dmiu3_dy + const_2_C2_y * temp_miu3);
+    deriv[8] = temp * (temp_dmiu3_dz + const_2_C2_z * temp_miu3);
 
     // dmiu4 dx/dy/dz
-    deriv[9] = dx0dx() * temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
-    deriv[10] = dy0dy() * temp * (temp_dmiu4_dy + const_2_C2_y * temp_miu4);
-    deriv[11] = dz0dz() * temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
+    deriv[9] = temp * (temp_dmiu4_dx + const_2_C2_x * temp_miu4);
+    deriv[10] = temp * (temp_dmiu4_dy + const_2_C2_y * temp_miu4);
+    deriv[11] = temp * (temp_dmiu4_dz + const_2_C2_z * temp_miu4);
 
     // dmiu5 dx/dy/dz
-    deriv[12] = dx0dx() * temp * (temp_dmiu5_dx + const_2_C2_x * temp_miu5);
-    deriv[13] = dy0dy() * temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
-    deriv[14] = dz0dz() * temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
+    deriv[12] = temp * (temp_dmiu5_dx + const_2_C2_x * temp_miu5);
+    deriv[13] = temp * (temp_dmiu5_dy + const_2_C2_y * temp_miu5);
+    deriv[14] = temp * (temp_dmiu5_dz + const_2_C2_z * temp_miu5);
 
     // dmiu6 dx/dy/dz
-    deriv[15] = dx0dx() * temp * (temp_dmiu6_dx + const_2_C2_x * temp_miu6);
-    deriv[16] = dy0dy() * temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
-    deriv[17] = dz0dz() * temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
+    deriv[15] = temp * (temp_dmiu6_dx + const_2_C2_x * temp_miu6);
+    deriv[16] = temp * (temp_dmiu6_dy + const_2_C2_y * temp_miu6);
+    deriv[17] = temp * (temp_dmiu6_dz + const_2_C2_z * temp_miu6);
 
     value[0] = miu_9_11_1;
     value[1] = miu_9_11_2;
@@ -5547,19 +5536,19 @@ void calc_MCSH_9_12(double x0, double y0, double z0, double r0_sqr, double A, do
 
     double sum_ts = t1 + t2 + t3 + t4 + t5 + t6 + t7 + t8;
 
-    double sum_dtdx = temp_dx_3 * (34459425.0 * temp_y_3 * temp_z_3 - 6081075.0 * temp_y_3 * lambda_z0 - 6081075 * lambda_y0 * temp_z_3 + 1216215.0 * lambda_y0 * lambda_z0)
-                       + lambda * (-6081075.0 * temp_y_3 * temp_z_3 + 1216215.0 * temp_y_3 * lambda_z0 + 1216215 * lambda_y0 * temp_z_3 - 280665.0 * lambda_y0 * lambda_z0);
-    double sum_dtdy = temp_dy_3 * (34459425.0 * temp_x_3 * temp_z_3 - 6081075.0 * temp_x_3 * lambda_z0 - 6081075 * lambda_x0 * temp_z_3 + 1216215.0 * lambda_x0 * lambda_z0)
-                       + lambda * (-6081075.0 * temp_x_3 * temp_z_3 + 1216215.0 * temp_x_3 * lambda_z0 + 1216215 * lambda_x0 * temp_z_3 - 280665.0 * lambda_x0 * lambda_z0);
-    double sum_dtdz = temp_dz_3 * (34459425.0 * temp_x_3 * temp_y_3 - 6081075.0 * temp_x_3 * lambda_y0 - 6081075 * lambda_x0 * temp_y_3 + 1216215.0 * lambda_x0 * lambda_y0)
-                       + lambda * (-6081075.0 * temp_x_3 * temp_y_3 + 1216215.0 * temp_x_3 * lambda_y0 + 1216215 * lambda_x0 * temp_y_3 - 280665.0 * lambda_x0 * lambda_y0);
+    double sum_dtdx = temp_dx_3 * (34459425.0 * temp_y_3 * temp_z_3 - 6081075.0 * temp_y_3 * lambda_z0 - 6081075.0 * lambda_y0 * temp_z_3 + 1216215.0 * lambda_y0 * lambda_z0)
+                       + lambda * (-6081075.0 * temp_y_3 * temp_z_3 + 1216215.0 * temp_y_3 * lambda_z0 + 1216215.0 * lambda_y0 * temp_z_3 - 280665.0 * lambda_y0 * lambda_z0);
+    double sum_dtdy = temp_dy_3 * (34459425.0 * temp_x_3 * temp_z_3 - 6081075.0 * temp_x_3 * lambda_z0 - 6081075.0 * lambda_x0 * temp_z_3 + 1216215.0 * lambda_x0 * lambda_z0)
+                       + lambda * (-6081075.0 * temp_x_3 * temp_z_3 + 1216215.0 * temp_x_3 * lambda_z0 + 1216215.0 * lambda_x0 * temp_z_3 - 280665.0 * lambda_x0 * lambda_z0);
+    double sum_dtdz = temp_dz_3 * (34459425.0 * temp_x_3 * temp_y_3 - 6081075.0 * temp_x_3 * lambda_y0 - 6081075.0 * lambda_x0 * temp_y_3 + 1216215.0 * lambda_x0 * lambda_y0)
+                       + lambda * (-6081075.0 * temp_x_3 * temp_y_3 + 1216215.0 * temp_x_3 * lambda_y0 + 1216215.0 * lambda_x0 * temp_y_3 - 280665.0 * lambda_x0 * lambda_y0);
 
 
     double m_9_12 = temp * sum_ts;
 
-    deriv[0] = dx0dx() * temp * (2.0 * C2 * x0 * sum_ts + sum_dtdx);
-    deriv[1] = dy0dy() * temp * (2.0 * C2 * y0 * sum_ts + sum_dtdy);
-    deriv[2] = dz0dz() * temp * (2.0 * C2 * z0 * sum_ts + sum_dtdz);
+    deriv[0] = temp * (2.0 * C2 * x0 * sum_ts + sum_dtdx);
+    deriv[1] = temp * (2.0 * C2 * y0 * sum_ts + sum_dtdy);
+    deriv[2] = temp * (2.0 * C2 * z0 * sum_ts + sum_dtdz);
 
     value[0] = m_9_12;
 }
