@@ -38,7 +38,8 @@ class FeatureScaler:
                 print("=====================================")
                 print(data.fprimes)
                 
-
+                print(self.feature_max[idx_to_scale_prime][nonzero_idx])
+                print(self.feature_min[idx_to_scale_prime][nonzero_idx])
                 data.fprimes._values()[nonzero_idx] *= 2 / (
                     self.feature_max[idx_to_scale_prime][nonzero_idx]
                     - self.feature_min[idx_to_scale_prime][nonzero_idx]
