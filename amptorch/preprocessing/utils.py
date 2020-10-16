@@ -38,16 +38,18 @@ class FeatureScaler:
                 nonzero_idx = torch.where((self.feature_max - self.feature_min) > threshold)[0]
 
                 print("=====================================")
-                print(data.fprimes)
+                # print(data.fprimes)
+                print(torch.max(torch.abs(data.fprimes)))
                 
-                print(self.feature_max[idx_to_scale_prime][nonzero_idx])
-                print(self.feature_min[idx_to_scale_prime][nonzero_idx])
+                # print(self.feature_max[idx_to_scale_prime][nonzero_idx])
+                # print(self.feature_min[idx_to_scale_prime][nonzero_idx])
                 data.fprimes._values()[nonzero_idx] *= 2 / (
                     self.feature_max[idx_to_scale_prime][nonzero_idx]
                     - self.feature_min[idx_to_scale_prime][nonzero_idx]
                 )
                 print("*************************************")
-                print(data.fprimes)
+                # print(data.fprimes)
+                print(torch.max(torch.abs(data.fprimes)))
                 _values = data.fprimes._values()
                 _indices = data.fprimes._indices()
                 _size = data.fprimes.size()
