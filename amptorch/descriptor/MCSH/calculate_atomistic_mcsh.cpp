@@ -241,9 +241,12 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
             if (mcsh_type == 2){
                 double sum_miu1 = 0, sum_miu2 = 0, sum_miu3 = 0;
 
-                double sum_dmiu1_dxj[nneigh], sum_dmiu1_dyj[nneigh], sum_dmiu1_dzj[nneigh];
-                double sum_dmiu2_dxj[nneigh], sum_dmiu2_dyj[nneigh], sum_dmiu2_dzj[nneigh];
-                double sum_dmiu3_dxj[nneigh], sum_dmiu3_dyj[nneigh], sum_dmiu3_dzj[nneigh];
+                // double sum_dmiu1_dxj[nneigh], sum_dmiu1_dyj[nneigh], sum_dmiu1_dzj[nneigh];
+                // double sum_dmiu2_dxj[nneigh], sum_dmiu2_dyj[nneigh], sum_dmiu2_dzj[nneigh];
+                // double sum_dmiu3_dxj[nneigh], sum_dmiu3_dyj[nneigh], sum_dmiu3_dzj[nneigh];
+                double sum_dmiu1_dxj[20], sum_dmiu1_dyj[20], sum_dmiu1_dzj[20];
+                double sum_dmiu2_dxj[20], sum_dmiu2_dyj[20], sum_dmiu2_dzj[20];
+                double sum_dmiu3_dxj[20], sum_dmiu3_dyj[20], sum_dmiu3_dzj[20];
                 double miu[3], deriv[9];
                 for (int j = 0; j < nneigh; ++j) {
                     int neigh_atom_element_index = nei_list_i[j*2];
