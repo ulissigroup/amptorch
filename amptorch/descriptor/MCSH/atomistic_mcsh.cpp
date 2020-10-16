@@ -23,15 +23,15 @@ double calc_gamma(double alpha, double beta){
 }
 
 double dx0dx(){
-    return -1;
+    return 1;
 }
 
 double dy0dy(){
-    return -1;
+    return 1;
 }
 
 double dz0dz(){
-    return -1;
+    return 1;
 }
 
 void calc_MCSH_0_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
