@@ -30,6 +30,8 @@ class FeatureScaler:
                 idx_to_scale_prime = data.fprimes._indices()[0] % (
                     data.fingerprint.shape[1] - 1
                 )
+                print("----------")
+                print(data.fingerprint.shape)
                 # nonzero_idx = torch.where(
                 #     self.feature_max[idx_to_scale_prime]
                 #     - self.feature_min[idx_to_scale_prime]
