@@ -203,7 +203,7 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
 
             // params_d: sigma, weight, A, beta, cutoff
             double A = params_d[m][2], beta = params_d[m][3];
-            double weight = 1.0 
+            double weight = 1.0;
             //weight = params_d[m][1]; 
             double M = 0;
             if (mcsh_type == 1){
