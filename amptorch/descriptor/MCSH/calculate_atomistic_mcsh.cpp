@@ -278,9 +278,12 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                     // dMdx = (1.0/M) * (sum_miu1 * sum_dmiu1_dxj[j] + sum_miu2 * sum_dmiu2_dxj[j] + sum_miu3 * sum_dmiu3_dxj[j]) * weight;
                     // dMdy = (1.0/M) * (sum_miu1 * sum_dmiu1_dyj[j] + sum_miu2 * sum_dmiu2_dyj[j] + sum_miu3 * sum_dmiu3_dyj[j]) * weight;
                     // dMdz = (1.0/M) * (sum_miu1 * sum_dmiu1_dzj[j] + sum_miu2 * sum_dmiu2_dzj[j] + sum_miu3 * sum_dmiu3_dzj[j]) * weight;
-                    dMdx = 2.0 * (sum_miu1 * sum_dmiu1_dxj[j] + sum_miu2 * sum_dmiu2_dxj[j] + sum_miu3 * sum_dmiu3_dxj[j]) * weight;
-                    dMdy = 2.0 * (sum_miu1 * sum_dmiu1_dyj[j] + sum_miu2 * sum_dmiu2_dyj[j] + sum_miu3 * sum_dmiu3_dyj[j]) * weight;
-                    dMdz = 2.0 * (sum_miu1 * sum_dmiu1_dzj[j] + sum_miu2 * sum_dmiu2_dzj[j] + sum_miu3 * sum_dmiu3_dzj[j]) * weight;
+                    // dMdx = 2.0 * (sum_miu1 * sum_dmiu1_dxj[j] + sum_miu2 * sum_dmiu2_dxj[j] + sum_miu3 * sum_dmiu3_dxj[j]) * weight;
+                    // dMdy = 2.0 * (sum_miu1 * sum_dmiu1_dyj[j] + sum_miu2 * sum_dmiu2_dyj[j] + sum_miu3 * sum_dmiu3_dyj[j]) * weight;
+                    // dMdz = 2.0 * (sum_miu1 * sum_dmiu1_dzj[j] + sum_miu2 * sum_dmiu2_dzj[j] + sum_miu3 * sum_dmiu3_dzj[j]) * weight;
+                    dMdx = 2.0;
+                    dMdy = 2.0;
+                    dMdz = 2.0;
                     dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3] += dMdx;
                     dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3 + 1] += dMdy;
                     dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3 + 2] += dMdz;
