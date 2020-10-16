@@ -18,7 +18,7 @@ class FeatureScaler:
             self.feature_mean = torch.mean(fingerprints, dim=0)
             self.feature_std = 1
 
-    def norm(self, data_list, threshold = 1e1):
+    def norm(self, data_list, threshold = 1e-8):
         for data in data_list:
             idx_to_scale = torch.where((self.feature_max - self.feature_min) > threshold)[0]
             data.fingerprint[:, idx_to_scale] = -1 + 2 * (
@@ -37,12 +37,14 @@ class FeatureScaler:
                 #     - self.feature_min[idx_to_scale_prime]
                 # )[0]
 
-                nonzero_idx = torch.where((self.feature_max - self.feature_min) > threshold)[0]
+                nonzero_idx = torch.where(
+                    (self.feature_max[idx_to_scale_prime] - self.feature_min[idx_to_scale_prime]) > threshold
+                )[0]
 
                 print("=====================================")
-                print(data.fprimes)
+                # print(data.fprimes)
                 print(torch.max(torch.abs(data.fprimes._values())))
-                print((self.feature_max - self.feature_min))
+                # print((self.feature_max - self.feature_min))
                 
                 # print(self.feature_max[idx_to_scale_prime][nonzero_idx])
                 # print(self.feature_min[idx_to_scale_prime][nonzero_idx])
@@ -51,7 +53,7 @@ class FeatureScaler:
                     - self.feature_min[idx_to_scale_prime][nonzero_idx]
                 )
                 print("*************************************")
-                print(data.fprimes)
+                # print(data.fprimes)
                 print(torch.max(torch.abs(data.fprimes._values())))
                 _values = data.fprimes._values()
                 _indices = data.fprimes._indices()
