@@ -249,29 +249,29 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                 // double sum_dmiu3_dxj[20], sum_dmiu3_dyj[20], sum_dmiu3_dzj[20];
 
 
-                double* sum_dmiu1_dxj = NULL, sum_dmiu1_dyj = NULL, sum_dmiu1_dzj = NULL;   // Pointer to int, initialize to nothing.
-                double* sum_dmiu2_dxj = NULL, sum_dmiu2_dyj = NULL, sum_dmiu2_dzj = NULL;   // Pointer to int, initialize to nothing.
-                double* sum_dmiu3_dxj = NULL, sum_dmiu3_dyj = NULL, sum_dmiu3_dzj = NULL;   // Pointer to int, initialize to nothing.
+                // double* sum_dmiu1_dxj = NULL, sum_dmiu1_dyj = NULL, sum_dmiu1_dzj = NULL;   // Pointer to int, initialize to nothing.
+                // double* sum_dmiu2_dxj = NULL, sum_dmiu2_dyj = NULL, sum_dmiu2_dzj = NULL;   // Pointer to int, initialize to nothing.
+                // double* sum_dmiu3_dxj = NULL, sum_dmiu3_dyj = NULL, sum_dmiu3_dzj = NULL;   // Pointer to int, initialize to nothing.
 
-                sum_dmiu1_dxj = new double[nneigh];  // Allocate n ints and save ptr in a.
-                sum_dmiu2_dxj = new double[nneigh];  // Allocate n ints and save ptr in a.
-                sum_dmiu3_dxj = new double[nneigh];  // Allocate n ints and save ptr in a.
-                sum_dmiu1_dyj = new double[nneigh];  // Allocate n ints and save ptr in a.
-                sum_dmiu2_dyj = new double[nneigh];  // Allocate n ints and save ptr in a.
-                sum_dmiu3_dyj = new double[nneigh];  // Allocate n ints and save ptr in a.
-                sum_dmiu1_dzj = new double[nneigh];  // Allocate n ints and save ptr in a.
-                sum_dmiu2_dzj = new double[nneigh];  // Allocate n ints and save ptr in a.
-                sum_dmiu3_dzj = new double[nneigh];  // Allocate n ints and save ptr in a.
-                for (int j=0; j<n; j++) {
+                double* sum_dmiu1_dxj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu2_dxj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu3_dxj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu1_dyj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu2_dyj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu3_dyj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu1_dzj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu2_dzj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu3_dzj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                for (int j=0; j<nneigh; j++) {
                     sum_dmiu1_dxj[j] = 0;    // Initialize all elements to zero.
-                    sum_dmiu1_dxj[j] = 0;    // Initialize all elements to zero.
-                    sum_dmiu1_dxj[j] = 0;    // Initialize all elements to zero.
-                    sum_dmiu1_dxj[j] = 0;    // Initialize all elements to zero.
-                    sum_dmiu1_dxj[j] = 0;    // Initialize all elements to zero.
-                    sum_dmiu1_dxj[j] = 0;    // Initialize all elements to zero.
-                    sum_dmiu1_dxj[j] = 0;    // Initialize all elements to zero.
-                    sum_dmiu1_dxj[j] = 0;    // Initialize all elements to zero.
-                    sum_dmiu1_dxj[j] = 0;    // Initialize all elements to zero.  
+                    sum_dmiu2_dxj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu3_dxj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu1_dyj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu2_dyj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu3_dyj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu1_dzj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu2_dzj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu3_dzj[j] = 0;    // Initialize all elements to zero.  
                 }
                 
 
