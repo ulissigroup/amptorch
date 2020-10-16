@@ -91,50 +91,10 @@ void calc_MCSH_1_1(double x0, double y0, double z0, double r0_sqr, double A, dou
     deriv[7] = dy0dy() * miu_1_1_3 * const_2_C2_y;
     deriv[8] = dz0dz() * temp * (temp_dz + const_2_C2_z * temp_z);
 
-    // // dmiu1 dx/dy/dz
-    // deriv[0] = 1.0;
-    // deriv[1] = 1.0;
-    // deriv[2] = 1.0;
-
-    // // dmiu2 dx/dy/dz
-    // deriv[3] = 1.0;
-    // deriv[4] = 1.0;
-    // deriv[5] = 1.0;
-
-    // // dmiu3 dx/dy/dz
-    // deriv[6] = 1.0;
-    // deriv[7] = 1.0;
-    // deriv[8] = 1.0;
-
     value[0] = miu_1_1_1;
     value[1] = miu_1_1_2;
     value[2] = miu_1_1_3;
 
-
-    // double temp = C1 * lambda * exp( C2 * r0_sqr);
-
-    // double miu_1_1_1 = temp * x0;
-    // double miu_1_1_2 = temp * y0;
-    // double miu_1_1_3 = temp * z0;
-
-    // // dmiu1 dx/dy/dz
-    // deriv[0] = dx0dx() * temp * (1.0 + 2.0 * C2 * x0 * x0);
-    // deriv[1] = dy0dy() * miu_1_1_1 * (2.0 * C2 * y0);
-    // deriv[2] = dz0dz() * miu_1_1_1 * (2.0 * C2 * z0);
-
-    // // dmiu2 dx/dy/dz
-    // deriv[3] = dx0dx() * miu_1_1_2 * (2.0 * C2 * x0);
-    // deriv[4] = dy0dy() * temp * (1.0 + 2.0 * C2 * y0 * y0);
-    // deriv[5] = dz0dz() * miu_1_1_2 * (.0 * C2 * z0);
-
-    // // dmiu3 dx/dy/dz
-    // deriv[6] = dx0dx() * miu_1_1_3 * (2.0 * C2 * x0);
-    // deriv[7] = dy0dy() * miu_1_1_3 * (2.0 * C2 * y0);
-    // deriv[8] = dz0dz() * temp * (1.0 + 2.0 * C2 * z0 * z0);
-
-    // value[0] = miu_1_1_1;
-    // value[1] = miu_1_1_2;
-    // value[2] = miu_1_1_3;
 }
 
 void calc_MCSH_2_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)

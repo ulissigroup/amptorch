@@ -241,18 +241,6 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
             if (mcsh_type == 2){
                 double sum_miu1 = 0, sum_miu2 = 0, sum_miu3 = 0;
 
-                // double sum_dmiu1_dxj[nneigh], sum_dmiu1_dyj[nneigh], sum_dmiu1_dzj[nneigh];
-                // double sum_dmiu2_dxj[nneigh], sum_dmiu2_dyj[nneigh], sum_dmiu2_dzj[nneigh];
-                // double sum_dmiu3_dxj[nneigh], sum_dmiu3_dyj[nneigh], sum_dmiu3_dzj[nneigh];
-                // double sum_dmiu1_dxj[20], sum_dmiu1_dyj[20], sum_dmiu1_dzj[20];
-                // double sum_dmiu2_dxj[20], sum_dmiu2_dyj[20], sum_dmiu2_dzj[20];
-                // double sum_dmiu3_dxj[20], sum_dmiu3_dyj[20], sum_dmiu3_dzj[20];
-
-
-                // double* sum_dmiu1_dxj = NULL, sum_dmiu1_dyj = NULL, sum_dmiu1_dzj = NULL;   // Pointer to int, initialize to nothing.
-                // double* sum_dmiu2_dxj = NULL, sum_dmiu2_dyj = NULL, sum_dmiu2_dzj = NULL;   // Pointer to int, initialize to nothing.
-                // double* sum_dmiu3_dxj = NULL, sum_dmiu3_dyj = NULL, sum_dmiu3_dzj = NULL;   // Pointer to int, initialize to nothing.
-
                 double* sum_dmiu1_dxj = new double[nneigh];  // Allocate n ints and save ptr in a.
                 double* sum_dmiu2_dxj = new double[nneigh];  // Allocate n ints and save ptr in a.
                 double* sum_dmiu3_dxj = new double[nneigh];  // Allocate n ints and save ptr in a.
@@ -273,8 +261,6 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                     sum_dmiu2_dzj[j] = 0;    // Initialize all elements to zero.
                     sum_dmiu3_dzj[j] = 0;    // Initialize all elements to zero.  
                 }
-                
-
 
                 double miu[3], deriv[9];
                 for (int j = 0; j < nneigh; ++j) {
@@ -343,6 +329,45 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                 double sum_dmiu5_dxj[nneigh], sum_dmiu5_dyj[nneigh], sum_dmiu5_dzj[nneigh];
                 double sum_dmiu6_dxj[nneigh], sum_dmiu6_dyj[nneigh], sum_dmiu6_dzj[nneigh];
 
+                double* sum_dmiu1_dxj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu2_dxj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu3_dxj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu4_dxj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu5_dxj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu6_dxj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu1_dyj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu2_dyj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu3_dyj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu4_dyj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu5_dyj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu6_dyj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu1_dzj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu2_dzj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu3_dzj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu4_dzj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu5_dzj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                double* sum_dmiu6_dzj = new double[nneigh];  // Allocate n ints and save ptr in a.
+                for (int j=0; j<nneigh; j++) {
+                    sum_dmiu1_dxj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu2_dxj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu3_dxj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu4_dxj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu5_dxj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu6_dxj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu1_dyj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu2_dyj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu3_dyj[j] = 0;    // Initialize all elements to zero. 
+                    sum_dmiu4_dyj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu5_dyj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu6_dyj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu1_dzj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu2_dzj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu3_dzj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu4_dzj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu5_dzj[j] = 0;    // Initialize all elements to zero.
+                    sum_dmiu6_dzj[j] = 0;    // Initialize all elements to zero. 
+                }
+
                 double miu[6], deriv[18];
                 for (int j = 0; j < nneigh; ++j) {
                     int neigh_atom_element_index = nei_list_i[j*2];
@@ -405,6 +430,25 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                 }
                 M = M * weight;
                 mcsh[ii][m] += M;
+
+                delete [] sum_dmiu1_dxj;
+                delete [] sum_dmiu2_dxj; 
+                delete [] sum_dmiu3_dxj; 
+                delete [] sum_dmiu4_dxj; 
+                delete [] sum_dmiu5_dxj; 
+                delete [] sum_dmiu6_dxj; 
+                delete [] sum_dmiu1_dyj; 
+                delete [] sum_dmiu2_dyj; 
+                delete [] sum_dmiu3_dyj; 
+                delete [] sum_dmiu4_dyj;
+                delete [] sum_dmiu5_dyj; 
+                delete [] sum_dmiu6_dyj; 
+                delete [] sum_dmiu1_dzj; 
+                delete [] sum_dmiu2_dzj; 
+                delete [] sum_dmiu3_dzj; 
+                delete [] sum_dmiu4_dzj; 
+                delete [] sum_dmiu5_dzj; 
+                delete [] sum_dmiu6_dzj; 
             }
         }
         delete[] nei_list_d;
