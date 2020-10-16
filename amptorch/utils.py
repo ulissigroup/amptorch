@@ -33,7 +33,11 @@ def energy_score(net, X, y):
 
 def forces_score(net, X, y):
     mse_loss = MSELoss()
+
+    
     _, force_pred = net.forward(X)
+    print("=====================================")
+    print(force_pred)
     if isinstance(X, torch.utils.data.Subset):
         X = X.dataset
     force_pred = X.target_scaler.denorm(force_pred, pred="forces")
