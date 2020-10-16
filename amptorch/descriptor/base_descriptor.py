@@ -204,6 +204,7 @@ class BaseDescriptor(ABC):
                         fp_dict[element] = fps
 
                 else:
+                    pass
                     # print("element not in current image: {}".format(element))
 
             num_desc_max = np.max(num_desc_list)
@@ -309,6 +310,7 @@ class BaseDescriptor(ABC):
                     fp_dict[element] = fps
 
             else:
+                pass
                 # print("element not in current image: {}".format(element))
 
         num_desc_max = np.max(num_desc_list)
