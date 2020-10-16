@@ -179,6 +179,7 @@ class BaseDescriptor(ABC):
                         fp_prime_col_dict[element] = fp_primes_col
                         fp_prime_size_dict[element] = fp_primes_size
 
+                        print(fp)
                         print(fp_primes_size)
                         print(fp_primes_val)
 
@@ -299,6 +300,7 @@ class BaseDescriptor(ABC):
                     fp_prime_col_dict[element] = fp_primes_col
                     fp_prime_size_dict[element] = fp_primes_size
 
+                    print(fp)
                     print(fp_primes_size)
                     print(fp_primes_val)
 
