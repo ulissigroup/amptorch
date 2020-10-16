@@ -18,7 +18,7 @@ class FeatureScaler:
             self.feature_mean = torch.mean(fingerprints, dim=0)
             self.feature_std = 1
 
-    def norm(self, data_list, threshold = 1e-8):
+    def norm(self, data_list, threshold = 1e-2):
         for data in data_list:
             idx_to_scale = torch.where((self.feature_max - self.feature_min) > threshold)[0]
             data.fingerprint[:, idx_to_scale] = -1 + 2 * (
