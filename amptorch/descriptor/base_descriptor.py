@@ -179,6 +179,10 @@ class BaseDescriptor(ABC):
                         fp_prime_col_dict[element] = fp_primes_col
                         fp_prime_size_dict[element] = fp_primes_size
 
+                        print(fps)
+                        print(fp_primes_size)
+                        print(fp_primes_val)
+
                     else:
                         try:
                             size_info = np.array(current_element_grp["size_info"])
@@ -295,6 +299,10 @@ class BaseDescriptor(ABC):
                     fp_prime_row_dict[element] = fp_primes_row
                     fp_prime_col_dict[element] = fp_primes_col
                     fp_prime_size_dict[element] = fp_primes_size
+
+                    print(fps)
+                    print(fp_primes_size)
+                    print(fp_primes_val)
 
                 else:
 
