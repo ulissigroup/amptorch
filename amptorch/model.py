@@ -105,6 +105,11 @@ class BPNN(nn.Module):
                     -1, 3
                 )
 
+                print("=====================================")
+                print(gradients)
+                print("*************************************")
+                print(batch.fprimes.t())
+
             else:
                 forces = torch.tensor([])
 

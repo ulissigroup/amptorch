@@ -36,10 +36,10 @@ def forces_score(net, X, y):
 
     
     _, force_pred = net.forward(X)
-    print("=====================================")
-    print(force_pred)
-    print("*************************************")
-    print(torch.FloatTensor(np.concatenate(y[1::2])))
+    # print("=====================================")
+    # print(force_pred)
+    # print("*************************************")
+    # print(torch.FloatTensor(np.concatenate(y[1::2])))
     if isinstance(X, torch.utils.data.Subset):
         X = X.dataset
     force_pred = X.target_scaler.denorm(force_pred, pred="forces")
