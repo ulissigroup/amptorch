@@ -85,8 +85,8 @@ class AtomsTrainer:
             save_fps=self.config["dataset"].get("save_fps", True),
         )
 
-        # self.feature_scaler = self.train_dataset.feature_scaler
-        # self.target_scaler = self.train_dataset.target_scaler
+        self.feature_scaler = self.train_dataset.feature_scaler
+        self.target_scaler = self.train_dataset.target_scaler
         self.input_dim = self.train_dataset.input_dim
         self.val_split = self.config["dataset"].get("val_split", 0)
         print("Loading dataset: {} images".format(len(self.train_dataset)))
