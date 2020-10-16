@@ -30,31 +30,16 @@ class FeatureScaler:
                 idx_to_scale_prime = data.fprimes._indices()[0] % (
                     data.fingerprint.shape[1] - 1
                 )
-                print("----------")
-                print(data.fingerprint.shape)
-                # nonzero_idx = torch.where(
-                #     self.feature_max[idx_to_scale_prime]
-                #     - self.feature_min[idx_to_scale_prime]
-                # )[0]
 
                 nonzero_idx = torch.where(
                     (self.feature_max[idx_to_scale_prime] - self.feature_min[idx_to_scale_prime]) > threshold
                 )[0]
 
-                print("=====================================")
-                # print(data.fprimes)
-                print(torch.max(torch.abs(data.fprimes._values())))
-                # print((self.feature_max - self.feature_min))
-                
-                # print(self.feature_max[idx_to_scale_prime][nonzero_idx])
-                # print(self.feature_min[idx_to_scale_prime][nonzero_idx])
                 data.fprimes._values()[nonzero_idx] *= 2 / (
                     self.feature_max[idx_to_scale_prime][nonzero_idx]
                     - self.feature_min[idx_to_scale_prime][nonzero_idx]
                 )
-                print("*************************************")
-                # print(data.fprimes)
-                print(torch.max(torch.abs(data.fprimes._values())))
+
                 _values = data.fprimes._values()
                 _indices = data.fprimes._indices()
                 _size = data.fprimes.size()
