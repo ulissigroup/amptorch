@@ -34,10 +34,17 @@ class FeatureScaler:
                     self.feature_max[idx_to_scale_prime]
                     - self.feature_min[idx_to_scale_prime]
                 )[0]
+
+                print("=====================================")
+                print(data.fprimes)
+                
+
                 data.fprimes._values()[nonzero_idx] *= 2 / (
                     self.feature_max[idx_to_scale_prime][nonzero_idx]
                     - self.feature_min[idx_to_scale_prime][nonzero_idx]
                 )
+                print("*************************************")
+                print(data.fprimes)
                 _values = data.fprimes._values()
                 _indices = data.fprimes._indices()
                 _size = data.fprimes.size()
