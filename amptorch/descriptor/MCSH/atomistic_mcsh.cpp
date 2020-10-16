@@ -210,7 +210,7 @@ void calc_MCSH_2_2(double x0, double y0, double z0, double r0_sqr, double A, dou
     // dmiu1 dx/dy/dz
     deriv[0] = dx0dx() * temp * y0 * const_1_p_2_C2_x2;
     deriv[1] = dy0dy() * temp * x0 * const_1_p_2_C2_y2; 
-    deriv[2] = dz0dz() * miu_2_2_1 * const_2_C2_x;
+    deriv[2] = dz0dz() * miu_2_2_1 * const_2_C2_z;
 
     // dmiu2 dx/dy/dz
     deriv[3] = dx0dx() * temp * z0 * const_1_p_2_C2_x2;
@@ -218,7 +218,7 @@ void calc_MCSH_2_2(double x0, double y0, double z0, double r0_sqr, double A, dou
     deriv[5] = dz0dz() * temp * x0 * const_1_p_2_C2_z2;
 
     // dmiu3 dx/dy/dz
-    deriv[6] = dx0dx() * miu_2_2_3 * const_2_C2_z;
+    deriv[6] = dx0dx() * miu_2_2_3 * const_2_C2_x;
     deriv[7] = dy0dy() * temp * z0 * const_1_p_2_C2_y2;
     deriv[8] = dz0dz() * temp * y0 * const_1_p_2_C2_z2;
 
