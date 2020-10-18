@@ -19,31 +19,31 @@ class FeatureScaler:
             self.feature_std = 1
 
     def norm(self, data_list, threshold = 1e-6):
-        # for data in data_list:
-        #     idx_to_scale = torch.where((self.feature_max - self.feature_min) > threshold)[0]
-        #     data.fingerprint[:, idx_to_scale] = -1 + 2 * (
-        #         (data.fingerprint[:, idx_to_scale] - self.feature_min[idx_to_scale])
-        #         / (self.feature_max[idx_to_scale] - self.feature_min[idx_to_scale])
-        #     )
+        for data in data_list:
+            idx_to_scale = torch.where((self.feature_max - self.feature_min) > threshold)[0]
+            data.fingerprint[:, idx_to_scale] = -1 + 2 * (
+                (data.fingerprint[:, idx_to_scale] - self.feature_min[idx_to_scale])
+                / (self.feature_max[idx_to_scale] - self.feature_min[idx_to_scale])
+            )
 
-        #     if self.forcetraining:
-        #         idx_to_scale_prime = data.fprimes._indices()[0] % (
-        #             data.fingerprint.shape[1] - 1
-        #         )
+            if self.forcetraining:
+                idx_to_scale_prime = data.fprimes._indices()[0] % (
+                    data.fingerprint.shape[1] - 1
+                )
 
-        #         nonzero_idx = torch.where(
-        #             (self.feature_max[idx_to_scale_prime] - self.feature_min[idx_to_scale_prime]) > threshold
-        #         )[0]
+                nonzero_idx = torch.where(
+                    (self.feature_max[idx_to_scale_prime] - self.feature_min[idx_to_scale_prime]) > threshold
+                )[0]
 
-        #         data.fprimes._values()[nonzero_idx] *= 2 / (
-        #             self.feature_max[idx_to_scale_prime][nonzero_idx]
-        #             - self.feature_min[idx_to_scale_prime][nonzero_idx]
-        #         )
+                data.fprimes._values()[nonzero_idx] *= 2 / (
+                    self.feature_max[idx_to_scale_prime][nonzero_idx]
+                    - self.feature_min[idx_to_scale_prime][nonzero_idx]
+                )
 
-        #         _values = data.fprimes._values()
-        #         _indices = data.fprimes._indices()
-        #         _size = data.fprimes.size()
-        #         data.fprimes = torch.sparse.FloatTensor(_indices, _values, _size)
+                _values = data.fprimes._values()
+                _indices = data.fprimes._indices()
+                _size = data.fprimes.size()
+                data.fprimes = torch.sparse.FloatTensor(_indices, _values, _size)
 
         return data_list
 
