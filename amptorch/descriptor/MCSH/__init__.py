@@ -104,7 +104,7 @@ class AtomisticMCSH(BaseDescriptor):
         if "prime_threshold" in self.MCSHs:
             self.params_set["prime_threshold"] = float(self.MCSHs["prime_threshold"])
 
-        self.params_set["norm"] = self.MCSHs["norm"].get("norm", False)
+        self.params_set["norm"] = self.MCSHs.get("norm", False)
 
         return
     
