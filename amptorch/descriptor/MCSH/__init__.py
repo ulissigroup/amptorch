@@ -230,14 +230,14 @@ class AtomisticMCSH(BaseDescriptor):
             x_p = _gen_2Darray_for_ffi(x, ffi)
 
             if self.params_set['norm']:
-                errno = lib.calculate_atomistic_mcsh_norm_noderiv(cell_p, cart_p, scale_p, pbc_p,\
+                errno = lib.calculate_atomistic_mcsh_norm(cell_p, cart_p, scale_p, pbc_p,\
                             atom_indices_p, atom_num, cal_atoms_p, cal_num, \
-                            self.params_set['ip'], self.params_set['dp'], self.params_set['num'], self.params_set['gaussian_params_p'], self.params_set['ngaussians_p'],\
+                            self.params_set['ip'], self.params_set['dp'], self.params_set['num'], self.params_set['gaussian_params_p'], self.params_set['ngaussians_p'], self.params_set['element_index_to_order_p'],\
                             x_p)
             else:
                 errno = lib.calculate_atomistic_mcsh_noderiv(cell_p, cart_p, scale_p, pbc_p,\
                             atom_indices_p, atom_num, cal_atoms_p, cal_num, \
-                            self.params_set['ip'], self.params_set['dp'], self.params_set['num'], self.params_set['gaussian_params_p'], self.params_set['ngaussians_p'],\
+                            self.params_set['ip'], self.params_set['dp'], self.params_set['num'], self.params_set['gaussian_params_p'], self.params_set['ngaussians_p'], self.params_set['element_index_to_order_p'],\
                             x_p)
 
             if errno == 1:
