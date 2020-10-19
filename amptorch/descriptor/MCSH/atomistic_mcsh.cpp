@@ -5720,11 +5720,6 @@ void calc_MCSH_3_1_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
     double miu_3_1_2 = temp * temp_y;
     double miu_3_1_3 = temp * temp_z;
 
-    //deriv consts
-    double const_2_C2_x = 2.0 * C2 * x0;
-    double const_2_C2_y = 2.0 * C2 * y0;
-    double const_2_C2_z = 2.0 * C2 * z0;
-
     value[0] = miu_3_1_1;
     value[1] = miu_3_1_2;
     value[2] = miu_3_1_3;
@@ -5783,7 +5778,7 @@ void calc_MCSH_3_3_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
     value[0] = m_3_3;
 }
 
-void calc_MCSH_4_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *valu, double *deriv)
+void calc_MCSH_4_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value)
 {   
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
@@ -5820,7 +5815,6 @@ void calc_MCSH_4_1_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
     double miu_4_1_1 = temp * temp_x;
     double miu_4_1_2 = temp * temp_y;
     double miu_4_1_3 = temp * temp_z;
-
 
     value[0] = miu_4_1_1;
     value[1] = miu_4_1_2;
@@ -6057,10 +6051,6 @@ void calc_MCSH_5_3_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
     double C2 = calc_C2(alpha, beta);
     
     double lambda = calc_lambda(alpha, beta);
-    double lambda_sqr = lambda * lambda;
-    // double x0_sqr = x0*x0;
-    // double y0_sqr = y0*y0;
-    // double z0_sqr = z0*z0;
 
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
@@ -6307,7 +6297,6 @@ void calc_MCSH_6_3_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
     double C2 = calc_C2(alpha, beta);
     
     double lambda = calc_lambda(alpha, beta);
-    double lambda_sqr = lambda * lambda;
 
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
@@ -6525,7 +6514,6 @@ void calc_MCSH_6_7_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
     double C2 = calc_C2(alpha, beta);
     
     double lambda = calc_lambda(alpha, beta);
-    double lambda_sqr = lambda * lambda;
 
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
@@ -6679,7 +6667,6 @@ void calc_MCSH_7_3_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
     double C2 = calc_C2(alpha, beta);
     
     double lambda = calc_lambda(alpha, beta);
-    double lambda_sqr = lambda * lambda;
 
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
@@ -6804,7 +6791,6 @@ void calc_MCSH_7_5_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
     double C2 = calc_C2(alpha, beta);
     
     double lambda = calc_lambda(alpha, beta);
-    double lambda_sqr = lambda * lambda;
 
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
@@ -6993,7 +6979,6 @@ void calc_MCSH_7_8_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
     double C2 = calc_C2(alpha, beta);
     
     double lambda = calc_lambda(alpha, beta);
-    double lambda_sqr = lambda * lambda;
 
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
@@ -7176,7 +7161,6 @@ void calc_MCSH_8_3_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
     double C2 = calc_C2(alpha, beta);
     
     double lambda = calc_lambda(alpha, beta);
-    double lambda_sqr = lambda * lambda;
 
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
@@ -7460,7 +7444,6 @@ void calc_MCSH_8_7_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
     double C2 = calc_C2(alpha, beta);
     
     double lambda = calc_lambda(alpha, beta);
-    double lambda_sqr = lambda * lambda;
 
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
@@ -7594,7 +7577,6 @@ void calc_MCSH_8_9_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
     double C2 = calc_C2(alpha, beta);
     
     double lambda = calc_lambda(alpha, beta);
-    double lambda_sqr = lambda * lambda;
 
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
@@ -7657,7 +7639,6 @@ void calc_MCSH_8_10_noderiv(double x0, double y0, double z0, double r0_sqr, doub
     double C2 = calc_C2(alpha, beta);
     
     double lambda = calc_lambda(alpha, beta);
-    double lambda_sqr = lambda * lambda;
 
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
@@ -7852,7 +7833,6 @@ void calc_MCSH_9_3_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
     double C2 = calc_C2(alpha, beta);
     
     double lambda = calc_lambda(alpha, beta);
-    double lambda_sqr = lambda * lambda;
 
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
@@ -7999,7 +7979,6 @@ void calc_MCSH_9_5_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
     double C2 = calc_C2(alpha, beta);
     
     double lambda = calc_lambda(alpha, beta);
-    double lambda_sqr = lambda * lambda;
 
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
@@ -8323,7 +8302,6 @@ void calc_MCSH_9_9_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
     double C2 = calc_C2(alpha, beta);
     
     double lambda = calc_lambda(alpha, beta);
-    double lambda_sqr = lambda * lambda;
 
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
