@@ -85,7 +85,7 @@ double G5(double Rij, double Rik, double powtwo, \
 }
 
 
-double G2_noderiv(double Rij, double *precal, double *par) {
+double G2_noderiv(double Rij, double *precal, double *par, double &deriv) {
     // par[0] = cutoff_dist
     // par[1] = eta
     // par[2] = R_s
@@ -95,7 +95,7 @@ double G2_noderiv(double Rij, double *precal, double *par) {
 }
 
 double G4_noderiv(double Rij, double Rik, double Rjk, double powtwo, \
-          double *precal, double *par) {
+          double *precal, double *par, double *deriv) {
     // cosv: cos(theta)
     // par[0] = cutoff_dist
     // par[1] = eta
@@ -110,7 +110,7 @@ double G4_noderiv(double Rij, double Rik, double Rjk, double powtwo, \
 }
 
 double G5_noderiv(double Rij, double Rik, double powtwo, \
-          double *precal, double *par) {
+          double *precal, double *par, double *deriv) {
     // cosv: cos(theta)
     // par[0] = cutoff_dist
     // par[1] = eta
