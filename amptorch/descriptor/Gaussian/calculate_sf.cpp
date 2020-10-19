@@ -336,7 +336,7 @@ extern "C" int calculate_sf(double** cell, double** cart, double** scale, int* p
 
 
 
-extern "C" int calculate_sf_no_deriv(double** cell, double** cart, double** scale, int* pbc_bools,
+extern "C" int calculate_sf_noderiv(double** cell, double** cart, double** scale, int* pbc_bools,
                             int* atom_i, int natoms, int* cal_atoms, int cal_num, 
                             int** params_i, double** params_d, int nsyms,
                             double** symf) {
