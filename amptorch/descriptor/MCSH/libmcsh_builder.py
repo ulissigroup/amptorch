@@ -15,12 +15,12 @@ ffibuilder.cdef(
         int calculate_atomistic_mcsh_noderiv(double **, double **, double **, int*,
                                     int *, int, int*, int,
                                     int**, double **, int, double **, int*, int*, 
-                                    double**, double**);
+                                    double**);
         
         int calculate_atomistic_mcsh_norm_noderiv(double **, double **, double **, int*,
                                     int *, int, int*, int,
                                     int**, double **, int, double **, int*, int*, 
-                                    double**, double**);
+                                    double**);
     """
 )
 ffibuilder.set_source(
