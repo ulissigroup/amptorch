@@ -29,6 +29,7 @@ class AtomisticMCSH(BaseDescriptor):
     def prepare_descriptor_parameters(self):
         descriptor_setup = []
         cutoff = self.MCSHs["cutoff"]
+        
         for i in range(20):
             if str(i) in self.MCSHs["MCSHs"].keys():
                 descriptor_setup += [
@@ -103,6 +104,8 @@ class AtomisticMCSH(BaseDescriptor):
         if "prime_threshold" in self.MCSHs:
             self.params_set["prime_threshold"] = float(self.MCSHs["prime_threshold"])
 
+        self.params_set["norm"] = self.MCSHs["norm"].get("norm", False)
+
         return
     
     
@@ -171,60 +174,76 @@ class AtomisticMCSH(BaseDescriptor):
 
         size_info = np.array([atom_num, cal_num, self.params_set['num']])
 
-        # if calculate_derivatives:
-        x = np.zeros([cal_num, self.params_set['num']], dtype=np.float64, order='C')
-        dx = np.zeros([cal_num * self.params_set['num'], atom_num * 3], dtype=np.float64, order='C')
+        if calculate_derivatives:
+            x = np.zeros([cal_num, self.params_set['num']], dtype=np.float64, order='C')
+            dx = np.zeros([cal_num * self.params_set['num'], atom_num * 3], dtype=np.float64, order='C')
 
-        x_p = _gen_2Darray_for_ffi(x, ffi)
-        dx_p = _gen_2Darray_for_ffi(dx, ffi)
+            x_p = _gen_2Darray_for_ffi(x, ffi)
+            dx_p = _gen_2Darray_for_ffi(dx, ffi)
 
-        errno = lib.calculate_atomistic_mcsh(cell_p, cart_p, scale_p, pbc_p,\
-                    atom_indices_p, atom_num, cal_atoms_p, cal_num, \
-                    self.params_set['ip'], self.params_set['dp'], self.params_set['num'], self.params_set['gaussian_params_p'], self.params_set['ngaussians_p'], self.params_set['element_index_to_order_p'],\
-                    x_p, dx_p)
+            if self.params_set['norm']:
+                errno = lib.calculate_atomistic_mcsh_norm(cell_p, cart_p, scale_p, pbc_p,\
+                            atom_indices_p, atom_num, cal_atoms_p, cal_num, \
+                            self.params_set['ip'], self.params_set['dp'], self.params_set['num'], self.params_set['gaussian_params_p'], self.params_set['ngaussians_p'], self.params_set['element_index_to_order_p'],\
+                            x_p, dx_p)
+            else:
+                errno = lib.calculate_atomistic_mcsh(cell_p, cart_p, scale_p, pbc_p,\
+                            atom_indices_p, atom_num, cal_atoms_p, cal_num, \
+                            self.params_set['ip'], self.params_set['dp'], self.params_set['num'], self.params_set['gaussian_params_p'], self.params_set['ngaussians_p'], self.params_set['element_index_to_order_p'],\
+                            x_p, dx_p)
+            
+            if errno == 1:
+                raise NotImplementedError("Descriptor not implemented!")
+            fp = np.array(x)
+            fp_prime = np.array(dx)
+
+            # if "prime_threshold" in self.params_set:
+            #     threshold = self.params_set["prime_threshold"]
+            #     super_threshold_indices = np.abs(fp_prime) < threshold
+            #     print("threshhold: {} \tnum points set to zero:{} \t outof: {}".format(threshold, np.sum(super_threshold_indices), fp_prime.shape[0] * fp_prime.shape[1]))
+            #     fp_prime[super_threshold_indices] = 0.0
+
+            # threshold = 1e-9
+            # super_threshold_indices_prime = np.abs(fp_prime) < threshold
+            # print("threshhold: {} \tnum points set to zero:{} \t outof: {}".format(threshold, np.sum(super_threshold_indices_prime), fp_prime.shape[0] * fp_prime.shape[1]))
+            # fp_prime[super_threshold_indices_prime] = 0.0
+
+            scipy_sparse_fp_prime = sparse.coo_matrix(fp_prime)
+            # print(fp)
+            # print(fp.shape)
+            # print(np.sum(super_threshold_indices))
+            # print(np.min(np.abs(scipy_sparse_fp_prime.data)))
+            # print("density: {}% \n\n----------------------".format(100*len(scipy_sparse_fp_prime.data) / (fp_prime.shape[0] * fp_prime.shape[1])))
+
+            return (
+                    size_info,
+                    fp,
+                    scipy_sparse_fp_prime.data,
+                    scipy_sparse_fp_prime.row,
+                    scipy_sparse_fp_prime.col,
+                    np.array(fp_prime.shape),
+                )
         
-        if errno == 1:
-            raise NotImplementedError("Descriptor not implemented!")
-        fp = np.array(x)
-        fp_prime = np.array(dx)
+        else:
+            x = np.zeros([cal_num, self.params_set['num']], dtype=np.float64, order='C')
 
-        # if "prime_threshold" in self.params_set:
-        #     threshold = self.params_set["prime_threshold"]
-        #     super_threshold_indices = np.abs(fp_prime) < threshold
-        #     print("threshhold: {} \tnum points set to zero:{} \t outof: {}".format(threshold, np.sum(super_threshold_indices), fp_prime.shape[0] * fp_prime.shape[1]))
-        #     fp_prime[super_threshold_indices] = 0.0
+            x_p = _gen_2Darray_for_ffi(x, ffi)
 
-        # threshold = 1e-9
-        # super_threshold_indices_prime = np.abs(fp_prime) < threshold
-        # print("threshhold: {} \tnum points set to zero:{} \t outof: {}".format(threshold, np.sum(super_threshold_indices_prime), fp_prime.shape[0] * fp_prime.shape[1]))
-        # fp_prime[super_threshold_indices_prime] = 0.0
+            if self.params_set['norm']:
+                errno = lib.calculate_atomistic_mcsh_norm_noderiv(cell_p, cart_p, scale_p, pbc_p,\
+                            atom_indices_p, atom_num, cal_atoms_p, cal_num, \
+                            self.params_set['ip'], self.params_set['dp'], self.params_set['num'], self.params_set['gaussian_params_p'], self.params_set['ngaussians_p'],\
+                            x_p)
+            else:
+                errno = lib.calculate_atomistic_mcsh_noderiv(cell_p, cart_p, scale_p, pbc_p,\
+                            atom_indices_p, atom_num, cal_atoms_p, cal_num, \
+                            self.params_set['ip'], self.params_set['dp'], self.params_set['num'], self.params_set['gaussian_params_p'], self.params_set['ngaussians_p'],\
+                            x_p)
 
-        scipy_sparse_fp_prime = sparse.coo_matrix(fp_prime)
-        # print(fp)
-        # print(fp.shape)
-        # print(np.sum(super_threshold_indices))
-        # print(np.min(np.abs(scipy_sparse_fp_prime.data)))
-        # print("density: {}% \n\n----------------------".format(100*len(scipy_sparse_fp_prime.data) / (fp_prime.shape[0] * fp_prime.shape[1])))
-
-        return (
-                size_info,
-                fp,
-                scipy_sparse_fp_prime.data,
-                scipy_sparse_fp_prime.row,
-                scipy_sparse_fp_prime.col,
-                np.array(fp_prime.shape),
-            )
-        
-        # else:
-        #     x = np.zeros([cal_num, self.params_set[element_index]['num']], dtype=np.float64, order='C')
-        #     x_p = _gen_2Darray_for_ffi(x, ffi)
-
-        #     errno = lib.calculate_atomistic_mcsh(cell_p, cart_p, scale_p, pbc_p,\
-        #                 atom_indices_p, atom_num, cal_atoms_p, cal_num, \
-        #                 self.params_set['ip'], self.params_set['dp'], self.params_set['num'], self.params_set['gaussian_params_p'], self.params_set['ngaussians_p'],\
-        #                 x_p, dx_p)
+            if errno == 1:
+                raise NotImplementedError("Descriptor not implemented!")
                     
-        #     fp = np.array(x)
+            fp = np.array(x)
 
-        #     return size_info, fp, None, None, None, None
+            return size_info, fp, None, None, None, None
 

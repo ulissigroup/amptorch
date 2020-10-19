@@ -538,7 +538,7 @@ extern "C" int calculate_sf_no_deriv(double** cell, double** cart, double** scal
                     precal[0] = cutf(rRij / params_d[s][0]);
                     precal[1] = dcutf(rRij, params_d[s][0]);
 
-                    symf[ii][s] += G2(rRij, precal, params_d[s], dradtmp); // FIXME: index
+                    symf[ii][s] += G2_noderiv(rRij, precal, params_d[s], dradtmp); // FIXME: index
                     tmpd[0] = dradtmp*vecij[0];
                     tmpd[1] = dradtmp*vecij[1];
                     tmpd[2] = dradtmp*vecij[2];
@@ -583,7 +583,7 @@ extern "C" int calculate_sf_no_deriv(double** cell, double** cart, double** scal
                         precal[4] = cutf(rRjk / params_d[s][0]);
                         precal[5] = dcutf(rRjk, params_d[s][0]);
 
-                        symf[ii][s] += G4(rRij, rRik, rRjk, powtwo[s], precal, params_d[s], dangtmp);
+                        symf[ii][s] += G4_noderiv(rRij, rRik, rRjk, powtwo[s], precal, params_d[s], dangtmp);
 
                         tmpd[0] = dangtmp[0]*vecij[0];
                         tmpd[1] = dangtmp[0]*vecij[1];
@@ -604,7 +604,7 @@ extern "C" int calculate_sf_no_deriv(double** cell, double** cart, double** scal
                         precal[2] = cutf(rRik / params_d[s][0]);
                         precal[3] = dcutf(rRik, params_d[s][0]);
 
-                        symf[ii][s] += G5(rRij, rRik, powtwo[s], precal, params_d[s], dangtmp);
+                        symf[ii][s] += G5_noderiv(rRij, rRik, powtwo[s], precal, params_d[s], dangtmp);
 
                         tmpd[0] = dangtmp[0]*vecij[0];
                         tmpd[1] = dangtmp[0]*vecij[1];
