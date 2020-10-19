@@ -174,7 +174,7 @@ class AtomisticMCSH(BaseDescriptor):
 
         size_info = np.array([atom_num, cal_num, self.params_set['num']])
 
-        if calculate_derivatives:
+        if calc_derivatives:
             x = np.zeros([cal_num, self.params_set['num']], dtype=np.float64, order='C')
             dx = np.zeros([cal_num * self.params_set['num'], atom_num * 3], dtype=np.float64, order='C')
 
