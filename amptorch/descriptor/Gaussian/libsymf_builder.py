@@ -7,7 +7,7 @@ ffibuilder.cdef(
                         int**, double **, int,
                         double**, double**);
         
-        int calculate_sf_no_deriv(double **, double **, double **, int*, 
+        int calculate_sf_noderiv(double **, double **, double **, int*, 
                             int *, int, int*, int,
                             int**, double **, int, 
                             double**);"""
