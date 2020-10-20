@@ -13,7 +13,7 @@ extern "C" int calculate_sf(double **, double **, double **, int*,
                             int**, double **, int, 
                             double**, double**);
 
-extern "C" int calculate_sf_no_deriv(double **, double **, double **, int*, 
+extern "C" int calculate_sf_noderiv(double **, double **, double **, int*, 
                             int *, int, int*, int,
                             int**, double **, int, 
                             double**);

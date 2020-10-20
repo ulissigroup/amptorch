@@ -77,7 +77,7 @@ class AtomsTrainer:
         self.forcetraining = self.config["model"].get("get_forces", True)
         self.fp_scheme = self.config["dataset"].get("fp_scheme", "gaussian").lower()
         self.fp_params = self.config["dataset"]["fp_params"]
-
+        
         self.train_dataset = AtomsDataset(
             images=training_images,
             descriptor_setup=(self.fp_scheme, self.fp_params, self.elements),
