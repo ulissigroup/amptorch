@@ -225,7 +225,7 @@ class Gaussian(BaseDescriptor):
             )
             x_p = _gen_2Darray_for_ffi(x, ffi)
 
-            errno = lib.calculate_sf_no_deriv(
+            errno = lib.calculate_sf_noderiv(
                 cell_p,
                 cart_p,
                 scale_p,
