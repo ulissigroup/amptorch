@@ -25,7 +25,6 @@ class FeatureScaler:
                 (data.fingerprint[:, idx_to_scale] - self.feature_min[idx_to_scale])
                 / (self.feature_max[idx_to_scale] - self.feature_min[idx_to_scale])
             )
-
             if self.forcetraining:
                 idx_to_scale_prime = data.fprimes._indices()[0] % (
                     data.fingerprint.shape[1] - 1
@@ -44,7 +43,6 @@ class FeatureScaler:
                 _indices = data.fprimes._indices()
                 _size = data.fprimes.size()
                 data.fprimes = torch.sparse.FloatTensor(_indices, _values, _size)
-
         return data_list
 
 
