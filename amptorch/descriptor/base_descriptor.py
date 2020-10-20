@@ -204,7 +204,8 @@ class BaseDescriptor(ABC):
                         fp_dict[element] = fps
 
                 else:
-                    print("element not in current image: {}".format(element))
+                    pass
+                    # print("element not in current image: {}".format(element))
 
             num_desc_max = np.max(num_desc_list)
             image_fp_array = np.zeros((num_atoms, num_desc_max))
@@ -309,7 +310,8 @@ class BaseDescriptor(ABC):
                     fp_dict[element] = fps
 
             else:
-                print("element not in current image: {}".format(element))
+                pass
+                # print("element not in current image: {}".format(element))
 
         num_desc_max = np.max(num_desc_list)
         image_fp_array = np.zeros((num_atoms, num_desc_max))
