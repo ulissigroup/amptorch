@@ -1,8 +1,10 @@
 import numpy as np
 import torch
-from skorch.callbacks import EpochScoring, Checkpoint
-from amptorch.utils import target_extractor
 from torch.nn import L1Loss, MSELoss
+
+from amptorch.utils import target_extractor
+from skorch.callbacks import Checkpoint, EpochScoring
+
 
 def mae_energy_score(net, X, y):
     mae_loss = L1Loss()
@@ -17,6 +19,7 @@ def mae_energy_score(net, X, y):
 
     return energy_loss.item()
 
+
 def mae_forces_score(net, X, y):
     mae_loss = L1Loss()
     _, force_pred = net.forward(X)
@@ -29,6 +32,7 @@ def mae_forces_score(net, X, y):
     force_loss = mae_loss(force_pred, force_target)
 
     return force_loss.item()
+
 
 def mse_energy_score(net, X, y):
     mse_loss = MSELoss()
@@ -43,6 +47,7 @@ def mse_energy_score(net, X, y):
 
     return energy_loss.item()
 
+
 def mse_forces_score(net, X, y):
     mse_loss = MSELoss()
     _, force_pred = net.forward(X)
@@ -56,12 +61,13 @@ def mse_forces_score(net, X, y):
 
     return force_loss.item()
 
+
 def evaluator(
-        val_split,
-        metric,
-        identifier,
-        forcetraining,
-    ):
+    val_split,
+    metric,
+    identifier,
+    forcetraining,
+):
 
     callbacks = []
     isval = val_split != 0
@@ -118,7 +124,7 @@ def evaluator(
             callbacks.append(
                 EpochScoring(
                     forces_score,
-                    on_train=True,
+                    on_train=False,
                     use_caching=True,
                     name="val_forces_{}".format(metric),
                     target_extractor=target_extractor,
