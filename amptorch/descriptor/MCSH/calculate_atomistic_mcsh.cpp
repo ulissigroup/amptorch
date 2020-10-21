@@ -289,7 +289,7 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                 // M = sqrt(sum_miu1*sum_miu1 + sum_miu2*sum_miu2 + sum_miu3*sum_miu3);
                 M = sum_miu1*sum_miu1 + sum_miu2*sum_miu2 + sum_miu3*sum_miu3;
                 double dMdx, dMdy, dMdz;
-                if (abs(M) <= 1e-8) {
+                if (fabs(M) <= 1e-8) {
                     M = 0;
                 }
                 else {
@@ -402,7 +402,7 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                 M = sqrt(sum_miu1*sum_miu1 + sum_miu2*sum_miu2 + sum_miu3*sum_miu3 +
                          sum_miu4*sum_miu4 + sum_miu5*sum_miu5 + sum_miu6*sum_miu6);
                 double dMdx, dMdy, dMdz;
-                if (abs(M) <= 1e-8) {
+                if (fabs(M) <= 1e-8) {
                     M = 0;
                 }
                 else {
@@ -728,7 +728,7 @@ extern "C" int calculate_atomistic_mcsh_noderiv(double** cell, double** cart, do
 
 
 
-extern "C" int calculate_atomistic_mcsh_norm(double** cell, double** cart, double** scale, int* pbc_bools,
+extern "C" int calculate_atomistic_mcsh_square(double** cell, double** cart, double** scale, int* pbc_bools,
                                         int* atom_i, int natoms, int* cal_atoms, int cal_num,
                                         int** params_i, double** params_d, int nmcsh, double** atom_gaussian, int* ngaussians, int* element_index_to_order,
                                         double** mcsh, double** dmcsh) {
@@ -1175,7 +1175,7 @@ extern "C" int calculate_atomistic_mcsh_norm(double** cell, double** cart, doubl
 
 
 
-extern "C" int calculate_atomistic_mcsh_norm_noderiv(double** cell, double** cart, double** scale, int* pbc_bools,
+extern "C" int calculate_atomistic_mcsh_square_noderiv(double** cell, double** cart, double** scale, int* pbc_bools,
                                         int* atom_i, int natoms, int* cal_atoms, int cal_num,
                                         int** params_i, double** params_d, int nmcsh, double** atom_gaussian, int* ngaussians, int* element_index_to_order,
                                         double** mcsh) {

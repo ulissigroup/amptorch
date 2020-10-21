@@ -7,7 +7,7 @@ ffibuilder.cdef(
                                     int**, double **, int, double **, int*, int*, 
                                     double**, double**);
         
-        int calculate_atomistic_mcsh_norm(double **, double **, double **, int*,
+        int calculate_atomistic_mcsh_square(double **, double **, double **, int*,
                                     int *, int, int*, int,
                                     int**, double **, int, double **, int*, int*, 
                                     double**, double**);
@@ -17,7 +17,7 @@ ffibuilder.cdef(
                                     int**, double **, int, double **, int*, int*, 
                                     double**);
         
-        int calculate_atomistic_mcsh_norm_noderiv(double **, double **, double **, int*,
+        int calculate_atomistic_mcsh_square_noderiv(double **, double **, double **, int*,
                                     int *, int, int*, int,
                                     int**, double **, int, double **, int*, int*, 
                                     double**);

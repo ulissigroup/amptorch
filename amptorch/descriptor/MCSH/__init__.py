@@ -104,7 +104,7 @@ class AtomisticMCSH(BaseDescriptor):
         if "prime_threshold" in self.MCSHs:
             self.params_set["prime_threshold"] = float(self.MCSHs["prime_threshold"])
 
-        self.params_set["norm"] = self.MCSHs.get("norm", False)
+        self.params_set["square"] = self.MCSHs.get("square", False)
 
         return
     
@@ -181,8 +181,8 @@ class AtomisticMCSH(BaseDescriptor):
             x_p = _gen_2Darray_for_ffi(x, ffi)
             dx_p = _gen_2Darray_for_ffi(dx, ffi)
 
-            if self.params_set['norm']:
-                errno = lib.calculate_atomistic_mcsh_norm(cell_p, cart_p, scale_p, pbc_p,\
+            if self.params_set['square']:
+                errno = lib.calculate_atomistic_mcsh_square(cell_p, cart_p, scale_p, pbc_p,\
                             atom_indices_p, atom_num, cal_atoms_p, cal_num, \
                             self.params_set['ip'], self.params_set['dp'], self.params_set['num'], self.params_set['gaussian_params_p'], self.params_set['ngaussians_p'], self.params_set['element_index_to_order_p'],\
                             x_p, dx_p)
@@ -229,8 +229,8 @@ class AtomisticMCSH(BaseDescriptor):
 
             x_p = _gen_2Darray_for_ffi(x, ffi)
 
-            if self.params_set['norm']:
-                errno = lib.calculate_atomistic_mcsh_norm(cell_p, cart_p, scale_p, pbc_p,\
+            if self.params_set['square']:
+                errno = lib.calculate_atomistic_mcsh_square(cell_p, cart_p, scale_p, pbc_p,\
                             atom_indices_p, atom_num, cal_atoms_p, cal_num, \
                             self.params_set['ip'], self.params_set['dp'], self.params_set['num'], self.params_set['gaussian_params_p'], self.params_set['ngaussians_p'], self.params_set['element_index_to_order_p'],\
                             x_p)
