@@ -10,10 +10,14 @@ import torch
 import skorch.net
 from amptorch.dataset import AtomsDataset, DataCollater
 from amptorch.descriptor.util import list_symbols_to_indices
-from amptorch.model import BPNN, CustomMSELoss
+from amptorch.model import BPNN, CustomLoss
 from amptorch.preprocessing import AtomsToData
-from amptorch.utils import (energy_score, forces_score, target_extractor,
-                            to_tensor, train_end_load_best_loss)
+from amptorch.utils import (
+    target_extractor,
+    to_tensor,
+    train_end_load_best_loss
+)
+from amptorch.metrics import evaluator
 from skorch import NeuralNetRegressor
 from skorch.callbacks import Checkpoint, EpochScoring, LRScheduler
 from skorch.dataset import CVSplit
@@ -77,7 +81,7 @@ class AtomsTrainer:
         self.forcetraining = self.config["model"].get("get_forces", True)
         self.fp_scheme = self.config["dataset"].get("fp_scheme", "gaussian").lower()
         self.fp_params = self.config["dataset"]["fp_params"]
-        
+
         self.train_dataset = AtomsDataset(
             images=training_images,
             descriptor_setup=(self.fp_scheme, self.fp_params, self.elements),
@@ -101,43 +105,16 @@ class AtomsTrainer:
     def load_extras(self):
         callbacks = []
         load_best_loss = train_end_load_best_loss(self.identifier)
-        if int(self.val_split * len(self.train_dataset)) == 0:
-            self.val_split = 0
-            scoring_on_train = True
-        else:
-            self.val_split = CVSplit(cv=self.val_split)
-            scoring_on_train = False
+        self.split = CVSplit(cv=self.val_split) if self.val_split != 0 else 0
 
-        callbacks.append(
-            EpochScoring(
-                energy_score,
-                on_train=scoring_on_train,
-                use_caching=True,
-                target_extractor=target_extractor,
-            )
+        metrics = evaluator(
+            self.val_split,
+            self.config["optim"].get("metric", "mae"),
+            self.identifier,
+            self.forcetraining,
         )
-        if self.config["model"]["get_forces"]:
-            callbacks.append(
-                EpochScoring(
-                    forces_score,
-                    on_train=scoring_on_train,
-                    use_caching=True,
-                    target_extractor=target_extractor,
-                )
-            )
-            callbacks.append(
-                Checkpoint(
-                    monitor="forces_score_best",
-                    fn_prefix="checkpoints/{}/".format(self.identifier),
-                )
-            )
-        else:
-            callbacks.append(
-                Checkpoint(
-                    monitor="energy_score_best",
-                    fn_prefix="checkpoints/{}/".format(self.identifier),
-                )
-            )
+        callbacks.extend(metrics)
+
         callbacks.append(load_best_loss)
         scheduler = self.config["optim"].get("scheduler", None)
         if scheduler:
@@ -152,7 +129,7 @@ class AtomsTrainer:
         self.callbacks = callbacks
 
     def load_criterion(self):
-        self.criterion = self.config["optim"].get("loss_fn", CustomMSELoss)
+        self.criterion = self.config["optim"].get("loss_fn", CustomLoss)
 
     def load_optimizer(self):
         self.optimizer = self.config["optim"].get("optimizer", torch.optim.Adam)
@@ -178,6 +155,7 @@ class AtomsTrainer:
             criterion__force_coefficient=self.config["optim"].get(
                 "force_coefficient", 0
             ),
+            criterion__loss=self.config["optim"].get("loss", "mse"),
             optimizer=self.optimizer,
             lr=self.config["optim"].get("lr", 1e-1),
             batch_size=self.config["optim"].get("batch_size", 32),
@@ -187,7 +165,7 @@ class AtomsTrainer:
             iterator_valid__collate_fn=collate_fn,
             iterator_valid__shuffle=False,
             device=self.device,
-            train_split=self.val_split,
+            train_split=self.split,
             callbacks=self.callbacks,
             verbose=self.config["cmd"].get("verbose", True),
         )
