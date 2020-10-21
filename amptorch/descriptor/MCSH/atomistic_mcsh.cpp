@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include "atomistic_mcsh.h"
 
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
 
 
 double calc_C1(double A, double B, double alpha, double beta){
