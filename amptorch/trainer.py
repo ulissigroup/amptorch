@@ -5,22 +5,18 @@ import warnings
 
 import ase.io
 import numpy as np
-import torch
-
 import skorch.net
+import torch
+from skorch import NeuralNetRegressor
+from skorch.callbacks import LRScheduler
+from skorch.dataset import CVSplit
+
 from amptorch.dataset import AtomsDataset, DataCollater
 from amptorch.descriptor.util import list_symbols_to_indices
+from amptorch.metrics import evaluator
 from amptorch.model import BPNN, CustomLoss
 from amptorch.preprocessing import AtomsToData
-from amptorch.utils import (
-    target_extractor,
-    to_tensor,
-    train_end_load_best_loss
-)
-from amptorch.metrics import evaluator
-from skorch import NeuralNetRegressor
-from skorch.callbacks import Checkpoint, EpochScoring, LRScheduler
-from skorch.dataset import CVSplit
+from amptorch.utils import to_tensor, train_end_load_best_loss
 
 
 class AtomsTrainer:
@@ -125,7 +121,13 @@ class AtomsTrainer:
         if self.config["cmd"].get("logger", False):
             from skorch.callbacks import WandbLogger
 
-            callbacks.append(WandbLogger(self.wandb_run, save_model=False))
+            callbacks.append(
+                WandbLogger(
+                    self.wandb_run,
+                    save_model=False,
+                    keys_ignored="dur",
+                )
+            )
         self.callbacks = callbacks
 
     def load_criterion(self):
