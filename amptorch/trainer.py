@@ -27,6 +27,8 @@ class AtomsTrainer:
     def load(self):
         self.load_config()
         self.load_rng_seed()
+        
+    def load_data_and_model(self):
         self.load_dataset()
         self.load_model()
         self.load_criterion()
@@ -173,7 +175,11 @@ class AtomsTrainer:
         )
         print("Loading skorch trainer")
 
-    def train(self):
+    def train(self, raw_data = None):
+        if raw_data is not None:
+            self.config["dataset"]["raw_data"] = raw_data
+        self.load_data_and_model()
+        
         self.net.fit(self.train_dataset, None)
 
     def predict(self, images, batch_size=32):
@@ -210,6 +216,8 @@ class AtomsTrainer:
         return predictions
 
     def load_pretrained(self, checkpoint_path=None):
+        self.load_data_and_model()
+        
         self.net.initialize()
         try:
             self.net.load_params(f_params=checkpoint_path)
