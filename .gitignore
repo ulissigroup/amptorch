@@ -2,6 +2,11 @@
 __pycache__/
 *.pyc
 
+#PyCharm
+.idea/
+
+
+
 #output files
 *.ampdb
 *.db

@@ -96,13 +96,7 @@ def calculate_fingerprints_range(fp, images):
     return fprange
 
 
-<<<<<<< HEAD
-def make_params_fileNIU(
-=======
-def make_params_file(
->>>>>>> upstream/master
-    elements, fp_dir, etas, rs_s, g4_eta=4, cutoff=6.5, g4_zeta=[1.0, 4.0], g4_gamma=[1, -1]
-    ):
+def make_params_file(elements, fp_dir, etas, rs_s, g4_eta=4, cutoff=6.5, g4_zeta=[1.0, 4.0], g4_gamma=[1, -1]):
     """
     makes a params file for simple_NN. This is the file containing
     the descriptors. This function makes g2 descriptos for the eta
@@ -158,69 +152,6 @@ def make_params_file(
                                 )
 
 
-<<<<<<< HEAD
-def make_params_file(atom_types, fp_dir, fps):
-    """
-    makes a params file for simple_NN. This is the file containing
-    the descriptors. This function makes g2 descriptos for the eta
-    and rs values that are input, and g4 descriptors that are log
-    spaced between 10 ** -5 and 10 ** -1. The number of these
-    that are made is controlled by the `n_g4_eta` variable
-    Parameters:
-        elements (list):
-            a list of elements for which you'd like to make params
-            files for
-        etas (list):
-            the eta values you'd like to use for the descriptors
-        rs_s (list):
-            a list corresponding to `etas` that contains the rs
-            values for each descriptor
-        g4_eta (int or list):
-            the number of g4 descriptors you'd like to use. if a
-            list is passed in the values of the list will be used
-            as eta values
-        cutoff (float):
-            the distance in angstroms at which you'd like to cut
-            off the descriptors
-    returns:
-        None
-    """
-    print('atom_types', atom_types)
-    print('fp_dir', fp_dir)
-    print('fingerprints:', fps)
-    at = {k: i + 1 for i, k in enumerate(atom_types)}  # index starts at 1
-    for element in at.keys():
-        element_fps = fps[element]
-        print('%s fingerprints:' % element, element_fps)
-        with open(fp_dir+"/params_{}".format(element), "w") as f:
-            for i, fp_params in enumerate(element_fps):
-                print(i, fp_params)
-                if fp_params['type'] == 'G2':
-                    f.write("2 {} 0 {} {} {} 0.0\n".format(
-                                    at[fp_params['element']], 
-                                    fp_params['cutoff'],
-                                    fp_params['eta'],
-                                    fp_params['Rs'],
-                                )
-                            )
-                elif fp_params['type'] == 'G4':
-                    f.write("4 {} {} {} {} {} {}\n".format(
-                                    at[fp_params['elements'][0]],
-                                    at[fp_params['elements'][1]],
-                                    fp_params['cutoff'],
-                                    fp_params['eta'],
-                                    fp_params['zeta'],
-                                    fp_params['gamma'],
-                                )
-                            )
-                else:
-                    raise ValueError('only G2 and G4 are supported, not {}'.format(fp_params['type']))
-                                
-
-
-
-=======
->>>>>>> upstream/master
 def reorganize_simple_nn_derivative(image, dx_dict):
     """
     reorganizes the fingerprint derivatives from simplen_nn into
@@ -288,50 +219,6 @@ def reorganize_simple_nn_fp(image, x_dict):
     return fp_l
 
 
-<<<<<<< HEAD
-def get_hashNIU(atoms, Gs=None):
-    import hashlib
-    string = str(atoms.pbc)
-    try:
-        flattened_cell = atoms.cell.array.flatten()
-    except AttributeError:  # older ASE
-        flattened_cell = atoms.cell.flatten()
-    for number in flattened_cell:
-        string += "%.15f" % number
-    for number in atoms.get_atomic_numbers():
-        string += "%3d" % number
-    for number in atoms.get_positions().flatten():
-        string += "%.15f" % number
-    if Gs:
-        gs_values = list(Gs.values())
-        for number in gs_values[0]:
-            string += "%.15f" % number
-        for number in gs_values[1]:
-            string += "%.15f" % number
-        for number in gs_values[2]:
-            string += "%.15f" % number
-        for number in gs_values[3]:
-            string += "%.15f" % number
-        for number in gs_values[4]:
-            string += "%.15f" % number
-        string += "%.15f" % gs_values[5]
-    md5 = hashlib.md5(string.encode("utf-8"))
-    hash = md5.hexdigest()
-    return hash
-
-
-def fingerprint_hash_string(Gs):
-    if not Gs:
-        return
-    assert isinstance(Gs, dict)
-    string = ''
-    for element in sorted(Gs.keys()):
-        element_fps = Gs[element]
-        fp_string = ''
-
-
-=======
->>>>>>> upstream/master
 def get_hash(atoms, Gs=None):
     import hashlib
 
@@ -358,23 +245,7 @@ def get_hash(atoms, Gs=None):
         string += "%3d" % number
     for number in atoms.get_positions().flatten():
         string += "%.15f" % number
-<<<<<<< HEAD
 
-    if Gs:  # should be a dict of per-element FPs
-        for element in sorted(Gs.keys()):
-            fps_set = Gs[element]
-            for fp_params in fps_set:
-                for sorted_key in sorted(fp_params.keys()):
-                    val = fp_params[sorted_key]
-                    if isinstance(val, list):
-                        val = ' '.join([(_ if isinstance(_, str) else ('%.15f' % _)) for _ in val])
-                    elif isinstance(val, str):
-                        pass
-                    else:
-                        val = '%.15f' % val
-                    string += val
-    # print(string)
-=======
     if Gs:
         gs_values = list(Gs.values())
         for number in gs_values[0]:
@@ -389,42 +260,23 @@ def get_hash(atoms, Gs=None):
             string += "%.15f" % number
         string += "%.15f" % gs_values[5]
 
->>>>>>> upstream/master
     md5 = hashlib.md5(string.encode("utf-8"))
     hash = md5.hexdigest()
     return hash
 
 
-<<<<<<< HEAD
-
 def factorize_data(traj, Gs):
     new_traj = []
-    new_hashes = []
-=======
-def factorize_data(traj, Gs):
-    new_traj = []
->>>>>>> upstream/master
     if os.path.isdir("amp-data-fingerprint-primes.ampdb/"):
         for image in traj:
             hash = get_hash(image, Gs)
-            if os.path.isfile(
-                "amp-data-fingerprint-primes.ampdb/loose/" + hash
-            ) and os.path.isfile("amp-data-fingerprints.ampdb/loose/" + hash):
+            if os.path.isfile("amp-data-fingerprint-primes.ampdb/loose/" + hash) and \
+                    os.path.isfile("amp-data-fingerprints.ampdb/loose/" + hash):
                 pass
             else:
                 new_traj.append(image)
-<<<<<<< HEAD
-                new_hashes.append(hash)
-    else:
+
         new_traj = traj
-    with open('new_hashes.out', 'w') as f:
-        f.write('%d new hashes:\n' % len(new_hashes))
-        for hash in new_hashes:
-            f.write(hash + '\n')
-=======
-    else:
-        new_traj = traj
->>>>>>> upstream/master
     return new_traj
 
 
@@ -510,26 +362,6 @@ def make_simple_nn_fps(traj, Gs, label, clean_up_directory=True, elements="all")
         traj = [traj]
 
     G = copy.deepcopy(Gs)
-<<<<<<< HEAD
-    # pre_hash_list = hash_images(traj, Gs, Logger('pre_hash_list.out'))
-    traj = factorize_data(traj, G)
-    # post_hash_list = hash_images(traj, Gs, Logger('post_hash_list.out'))
-    calculated = False
-    print(len(traj), 'new fingerprint calculations required')
-    if len(traj) > 0:
-        # order descriptors for simple_nn
-        # cutoff = G["cutoff"]
-        # G["G2_etas"] = [a / cutoff**2 for a in G["G2_etas"]] --> standardizes the gaussian term (sum(R)/Rcutoff)
-        # G["G4_etas"] = [a / cutoff**2 for a in G["G4_etas"]]
-        # descriptors = (
-        #     G["G2_etas"],
-        #     G["G2_rs_s"],
-        #     G["G4_etas"],
-        #     G["cutoff"],
-        #     G["G4_zetas"],
-        #     G["G4_gammas"],
-        # )
-=======
     traj = factorize_data(traj, G)
     calculated = False
     if len(traj) > 0:
@@ -545,7 +377,6 @@ def make_simple_nn_fps(traj, Gs, label, clean_up_directory=True, elements="all")
             G["G4_zetas"],
             G["G4_gammas"],
         )
->>>>>>> upstream/master
         fp_dir = "./data"+label+"/"
         if not os.path.isdir(fp_dir):
             os.mkdir(fp_dir)
@@ -567,14 +398,8 @@ def make_simple_nn_fps(traj, Gs, label, clean_up_directory=True, elements="all")
                 atom_types = list(set(atom_types))
         else:
             atom_types = elements
-<<<<<<< HEAD
-        #  ATOM_TYPES DEFINES THE INDICES BY WHICH ELEMENTS ARE DENOTED IN THE PARAMS_XX FILES
-
-        make_params_file(atom_types, fp_dir, G)
-=======
 
         make_params_file(atom_types, fp_dir, *descriptors)
->>>>>>> upstream/master
 
         # build the descriptor object
         descriptor = Symmetry_function(fp_dir=fp_dir)
@@ -630,15 +455,9 @@ def make_amp_descriptors_simple_nn(atoms, Gs, elements, cores, label, save=True)
     for now.
     """
     traj, calculated = make_simple_nn_fps(atoms, Gs, elements=elements,
-<<<<<<< HEAD
-            label=label, clean_up_directory=False)
-    if calculated:
-        fps, fp_primes = convert_simple_nn_fps(traj, Gs, cores, label, save, delete_old=False)
-=======
             label=label, clean_up_directory=True)
     if calculated:
         fps, fp_primes = convert_simple_nn_fps(traj, Gs, cores, label, save, delete_old=True)
->>>>>>> upstream/master
         return fps, fp_primes
     if save is False and calculated is False:
         fps, fp_primes = stored_fps(atoms, Gs)
