@@ -70,19 +70,28 @@ class AtomsDataset(Dataset):
         images,
         descriptor,
         Gs,
+<<<<<<< HEAD
         cutoff,
+=======
+>>>>>>> upstream/master
         forcetraining,
         label,
         cores,
         delta_data=None,
         store_primes=False,
+<<<<<<< HEAD
         logger=None, 
+=======
+>>>>>>> upstream/master
     ):
         self.images = images
         self.base_descriptor = descriptor
         self.descriptor = descriptor
         self.Gs = Gs
+<<<<<<< HEAD
         self.cutoff = cutoff
+=======
+>>>>>>> upstream/master
         self.atom_images = self.images
         self.forcetraining = forcetraining
         self.store_primes = store_primes
@@ -104,6 +113,7 @@ class AtomsDataset(Dataset):
         self.elements = self.unique()
         # TODO Print log - control verbose
         print("Calculating fingerprints...")
+<<<<<<< HEAD
         # G2_etas = Gs["G2_etas"]
         # G2_rs_s = Gs["G2_rs_s"]
         # G4_etas = Gs["G4_etas"]
@@ -114,10 +124,22 @@ class AtomsDataset(Dataset):
         if descriptor == SNN_Gaussian:
             print('SSN Gaussian: %d images' % len(self.atom_images))
             self.hashed_images = hash_images(self.atom_images, Gs=Gs, log=logger or None)
+=======
+        G2_etas = Gs["G2_etas"]
+        G2_rs_s = Gs["G2_rs_s"]
+        G4_etas = Gs["G4_etas"]
+        G4_zetas = Gs["G4_zetas"]
+        G4_gammas = Gs["G4_gammas"]
+        cutoff = Gs["cutoff"]
+        # create simple_nn fingerprints
+        if descriptor == SNN_Gaussian:
+            self.hashed_images = hash_images(self.atom_images, Gs=Gs)
+>>>>>>> upstream/master
             make_amp_descriptors_simple_nn(
                 self.atom_images, Gs, self.elements, cores=cores, label=label
             )
             self.isamp_hash = False
+<<<<<<< HEAD
         else:  # ignoring non SSN_Gaussian descriptors for now
             print('Amp Gaussian: %d images' % len(self.atom_images))
             self.hashed_images = amp_hash(self.atom_images)
@@ -135,6 +157,22 @@ class AtomsDataset(Dataset):
         # self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
         self.descriptor = self.descriptor(Gs=Gs, cutoff=cutoff)
 
+=======
+        else:
+            self.hashed_images = amp_hash(self.atom_images)
+            self.isamp_hash = True
+        G = make_symmetry_functions(elements=self.elements, type="G2", etas=G2_etas)
+        G += make_symmetry_functions(
+            elements=self.elements,
+            type="G4",
+            etas=G4_etas,
+            zetas=G4_zetas,
+            gammas=G4_gammas,
+        )
+        for g in list(G):
+            g["Rs"] = G2_rs_s
+        self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
+>>>>>>> upstream/master
         self.descriptor.calculate_fingerprints(
             self.hashed_images, calculate_derivatives=forcetraining
         )
