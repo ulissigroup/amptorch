@@ -7,22 +7,20 @@ import ase.io
 import numpy as np
 import skorch.net
 import torch
-from skorch import NeuralNetRegressor
-from skorch.callbacks import LRScheduler
-from skorch.dataset import CVSplit
-
 from amptorch.dataset import AtomsDataset, DataCollater
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.metrics import evaluator
 from amptorch.model import BPNN, CustomLoss
 from amptorch.preprocessing import AtomsToData
 from amptorch.utils import to_tensor, train_end_load_best_loss
+from skorch import NeuralNetRegressor
+from skorch.callbacks import LRScheduler
+from skorch.dataset import CVSplit
 
 
 class AtomsTrainer:
     def __init__(self, config):
         self.config = config
-        self.load()
 
     def load(self):
         self.load_config()
@@ -173,7 +171,11 @@ class AtomsTrainer:
         )
         print("Loading skorch trainer")
 
-    def train(self):
+    def train(self, raw_data=None):
+        if raw_data is not None:
+            self.config["dataset"]["raw_data"] = raw_data
+        self.load()
+
         self.net.fit(self.train_dataset, None)
 
     def predict(self, images, batch_size=32):
@@ -210,6 +212,8 @@ class AtomsTrainer:
         return predictions
 
     def load_pretrained(self, checkpoint_path=None):
+        self.load()
+
         self.net.initialize()
         try:
             self.net.load_params(f_params=checkpoint_path)
