@@ -5,18 +5,18 @@ import warnings
 
 import ase.io
 import numpy as np
-import torch
-
 import skorch.net
+import torch
+from skorch import NeuralNetRegressor
+from skorch.callbacks import Checkpoint, EpochScoring, LRScheduler
+from skorch.dataset import CVSplit
+
 from amptorch.dataset import AtomsDataset, DataCollater
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.model import BPNN, CustomMSELoss
 from amptorch.preprocessing import AtomsToData
 from amptorch.utils import (energy_score, forces_score, target_extractor,
                             to_tensor, train_end_load_best_loss)
-from skorch import NeuralNetRegressor
-from skorch.callbacks import Checkpoint, EpochScoring, LRScheduler
-from skorch.dataset import CVSplit
 
 
 class AtomsTrainer:
@@ -77,12 +77,13 @@ class AtomsTrainer:
         self.forcetraining = self.config["model"].get("get_forces", True)
         self.fp_scheme = self.config["dataset"].get("fp_scheme", "gaussian").lower()
         self.fp_params = self.config["dataset"]["fp_params"]
+        self.save_fps = self.config["dataset"].get("save_fps", True)
         
         self.train_dataset = AtomsDataset(
             images=training_images,
             descriptor_setup=(self.fp_scheme, self.fp_params, self.elements),
             forcetraining=self.forcetraining,
-            save_fps=self.config["dataset"].get("save_fps", True),
+            save_fps=self.save_fps,
         )
 
         self.feature_scaler = self.train_dataset.feature_scaler
@@ -152,10 +153,10 @@ class AtomsTrainer:
         self.callbacks = callbacks
 
     def load_criterion(self):
-        self.criterion = self.config["optim"].get("loss_fn", CustomMSELoss)
+        self.criterion = CustomMSELoss
 
     def load_optimizer(self):
-        self.optimizer = self.config["optim"].get("optimizer", torch.optim.Adam)
+        self.optimizer = torch.optim.Adam
 
     def load_logger(self):
         if self.config["cmd"].get("logger", False):
@@ -205,7 +206,7 @@ class AtomsTrainer:
             descriptor=self.train_dataset.descriptor,
             r_energy=False,
             r_forces=False,
-            save_fps=True,
+            save_fps=self.save_fps,
             fprimes=self.forcetraining,
             cores=1,
         )
