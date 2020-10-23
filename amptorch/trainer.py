@@ -8,21 +8,20 @@ import numpy as np
 import skorch.net
 import torch
 from skorch import NeuralNetRegressor
-from skorch.callbacks import Checkpoint, EpochScoring, LRScheduler
+from skorch.callbacks import LRScheduler
 from skorch.dataset import CVSplit
 
 from amptorch.dataset import AtomsDataset, DataCollater
 from amptorch.descriptor.util import list_symbols_to_indices
-from amptorch.model import BPNN, CustomMSELoss
+from amptorch.metrics import evaluator
+from amptorch.model import BPNN, CustomLoss
 from amptorch.preprocessing import AtomsToData
-from amptorch.utils import (energy_score, forces_score, target_extractor,
-                            to_tensor, train_end_load_best_loss)
+from amptorch.utils import to_tensor, train_end_load_best_loss
 
 
 class AtomsTrainer:
     def __init__(self, config):
         self.config = config
-        self.load()
 
     def load(self):
         self.load_config()
@@ -45,9 +44,12 @@ class AtomsTrainer:
 
         self.device = torch.device(self.config["optim"].get("device", "cpu"))
         self.debug = self.config["cmd"].get("debug", False)
-        os.chdir(self.config["cmd"].get("run_dir", "./"))
+        run_dir = self.config["cmd"].get("run_dir", "./")
+        os.chdir(run_dir)
         if not self.debug:
-            os.makedirs(os.path.join("checkpoints", self.identifier), exist_ok=True)
+            cp_dir = os.path.join(run_dir, "checkpoints", self.identifier)
+            print(f"Results saved to {cp_dir}")
+            os.makedirs(cp_dir, exist_ok=True)
 
     def load_rng_seed(self):
         seed = self.config["cmd"].get("seed", 0)
@@ -102,43 +104,16 @@ class AtomsTrainer:
     def load_extras(self):
         callbacks = []
         load_best_loss = train_end_load_best_loss(self.identifier)
-        if int(self.val_split * len(self.train_dataset)) == 0:
-            self.val_split = 0
-            scoring_on_train = True
-        else:
-            self.val_split = CVSplit(cv=self.val_split)
-            scoring_on_train = False
+        self.split = CVSplit(cv=self.val_split) if self.val_split != 0 else 0
 
-        callbacks.append(
-            EpochScoring(
-                energy_score,
-                on_train=scoring_on_train,
-                use_caching=True,
-                target_extractor=target_extractor,
-            )
+        metrics = evaluator(
+            self.val_split,
+            self.config["optim"].get("metric", "mae"),
+            self.identifier,
+            self.forcetraining,
         )
-        if self.config["model"]["get_forces"]:
-            callbacks.append(
-                EpochScoring(
-                    forces_score,
-                    on_train=scoring_on_train,
-                    use_caching=True,
-                    target_extractor=target_extractor,
-                )
-            )
-            callbacks.append(
-                Checkpoint(
-                    monitor="forces_score_best",
-                    fn_prefix="checkpoints/{}/".format(self.identifier),
-                )
-            )
-        else:
-            callbacks.append(
-                Checkpoint(
-                    monitor="energy_score_best",
-                    fn_prefix="checkpoints/{}/".format(self.identifier),
-                )
-            )
+        callbacks.extend(metrics)
+
         callbacks.append(load_best_loss)
         scheduler = self.config["optim"].get("scheduler", None)
         if scheduler:
@@ -149,11 +124,17 @@ class AtomsTrainer:
         if self.config["cmd"].get("logger", False):
             from skorch.callbacks import WandbLogger
 
-            callbacks.append(WandbLogger(self.wandb_run, save_model=False))
+            callbacks.append(
+                WandbLogger(
+                    self.wandb_run,
+                    save_model=False,
+                    keys_ignored="dur",
+                )
+            )
         self.callbacks = callbacks
 
     def load_criterion(self):
-        self.criterion = CustomMSELoss
+        self.criterion = self.config["optim"].get("loss_fn", CustomLoss)
 
     def load_optimizer(self):
         self.optimizer = torch.optim.Adam
@@ -179,6 +160,7 @@ class AtomsTrainer:
             criterion__force_coefficient=self.config["optim"].get(
                 "force_coefficient", 0
             ),
+            criterion__loss=self.config["optim"].get("loss", "mse"),
             optimizer=self.optimizer,
             lr=self.config["optim"].get("lr", 1e-1),
             batch_size=self.config["optim"].get("batch_size", 32),
@@ -188,13 +170,17 @@ class AtomsTrainer:
             iterator_valid__collate_fn=collate_fn,
             iterator_valid__shuffle=False,
             device=self.device,
-            train_split=self.val_split,
+            train_split=self.split,
             callbacks=self.callbacks,
             verbose=self.config["cmd"].get("verbose", True),
         )
         print("Loading skorch trainer")
 
-    def train(self):
+    def train(self, raw_data=None):
+        if raw_data is not None:
+            self.config["dataset"]["raw_data"] = raw_data
+        self.load()
+
         self.net.fit(self.train_dataset, None)
 
     def predict(self, images, batch_size=32):
@@ -231,8 +217,15 @@ class AtomsTrainer:
         return predictions
 
     def load_pretrained(self, checkpoint_path=None):
+        self.load()
+
         self.net.initialize()
         try:
-            self.net.load_params(f_params=checkpoint_path)
+            self.net.load_params(
+                f_params=os.path.join(checkpoint_path, "params.pt"),
+                f_optimizer=os.path.join(checkpoint_path, "optimizer.pt"),
+                f_criterion=os.path.join(checkpoint_path, "criterion.pt"),
+                f_history=os.path.join(checkpoint_path, "history.json"),
+            )
         except NotImplementedError:
             print("Unable to load checkpoint!")

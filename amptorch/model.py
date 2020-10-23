@@ -115,24 +115,31 @@ class BPNN(nn.Module):
         return sum(p.numel() for p in self.parameters())
 
 
-class CustomMSELoss(nn.Module):
-    def __init__(self, force_coefficient=0):
-        super(CustomMSELoss, self).__init__()
+class CustomLoss(nn.Module):
+    def __init__(self, force_coefficient=0, loss="mae"):
+        super(CustomLoss, self).__init__()
         self.alpha = force_coefficient
+        self.loss = loss
+
+        if self.loss == "mae":
+            self.loss = nn.L1Loss()
+        elif self.loss == "mse":
+            self.loss = nn.MSELoss()
+        else:
+            raise NotImplementedError(f"{self.loss} loss not available!")
 
     def forward(self, prediction, target):
 
         energy_pred = prediction[0]
         energy_target = target[0]
-        MSE_loss = nn.MSELoss()
-        energy_loss = MSE_loss(energy_pred, energy_target)
+        energy_loss = self.loss(energy_pred, energy_target)
         force_pred = prediction[1]
         if force_pred.nelement() == 0:
             self.alpha = 0
 
         if self.alpha > 0:
             force_target = target[1]
-            force_loss = MSE_loss(force_pred, force_target)
+            force_loss = self.loss(force_pred, force_target)
             loss = 0.5 * (energy_loss + self.alpha * force_loss)
         else:
             loss = 0.5 * energy_loss

@@ -1,11 +1,12 @@
 import numpy as np
+import torch
 from ase import Atoms
 from ase.calculators.emt import EMT
 
 from amptorch.ase_utils import AMPtorch
 from amptorch.trainer import AtomsTrainer
 
-distances = np.linspace(2, 5, 10)
+distances = np.linspace(2, 5, 100)
 images = []
 for dist in distances:
     image = Atoms(
@@ -42,10 +43,12 @@ config = {
         "lr": 1e-2,
         "batch_size": 10,
         "epochs": 100,
+        "loss": "mse",
+        "metric": "mae",
     },
     "dataset": {
         "raw_data": images,
-        "val_split": 0,
+        "val_split": 0.1,
         "elements": elements,
         "fp_params": Gs,
         "save_fps": True,
@@ -56,19 +59,21 @@ config = {
         "seed": 1,
         "identifier": "test",
         "verbose": True,
-        # "logger": True,
+        "logger": True,
     },
 }
 
+torch.set_num_threads(1)
 trainer = AtomsTrainer(config)
 trainer.train()
 
-predictions = trainer.predict(images[:10])
+predictions = trainer.predict(images)
 
 true_energies = np.array([image.get_potential_energy() for image in images])
 pred_energies = np.array(predictions["energy"])
 
 print("Energy MSE:", np.mean((true_energies - pred_energies) ** 2))
+print("Energy MAE:", np.mean(np.abs(true_energies - pred_energies)))
 
 image.set_calculator(AMPtorch(trainer))
 image.get_potential_energy()
