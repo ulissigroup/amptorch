@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 from ase import Atoms
 from ase.calculators.emt import EMT
 
@@ -62,6 +63,7 @@ config = {
     },
 }
 
+torch.set_num_threads(1)
 trainer = AtomsTrainer(config)
 trainer.train()
 

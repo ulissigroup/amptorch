@@ -7,15 +7,16 @@ import ase.io
 import numpy as np
 import skorch.net
 import torch
+from skorch import NeuralNetRegressor
+from skorch.callbacks import LRScheduler
+from skorch.dataset import CVSplit
+
 from amptorch.dataset import AtomsDataset, DataCollater
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.metrics import evaluator
 from amptorch.model import BPNN, CustomLoss
 from amptorch.preprocessing import AtomsToData
 from amptorch.utils import to_tensor, train_end_load_best_loss
-from skorch import NeuralNetRegressor
-from skorch.callbacks import LRScheduler
-from skorch.dataset import CVSplit
 
 
 class AtomsTrainer:
@@ -43,9 +44,12 @@ class AtomsTrainer:
 
         self.device = torch.device(self.config["optim"].get("device", "cpu"))
         self.debug = self.config["cmd"].get("debug", False)
-        os.chdir(self.config["cmd"].get("run_dir", "./"))
+        run_dir = self.config["cmd"].get("run_dir", "./")
+        os.chdir(run_dir)
         if not self.debug:
-            os.makedirs(os.path.join("checkpoints", self.identifier), exist_ok=True)
+            cp_dir = os.path.join(run_dir, "checkpoints", self.identifier)
+            print(f"Results saved to {cp_dir}")
+            os.makedirs(cp_dir, exist_ok=True)
 
     def load_rng_seed(self):
         seed = self.config["cmd"].get("seed", 0)
@@ -216,6 +220,11 @@ class AtomsTrainer:
 
         self.net.initialize()
         try:
-            self.net.load_params(f_params=checkpoint_path)
+            self.net.load_params(
+                f_params=os.path.join(checkpoint_path, "params.pt"),
+                f_optimizer=os.path.join(checkpoint_path, "optimizer.pt"),
+                f_criterion=os.path.join(checkpoint_path, "criterion.pt"),
+                f_history=os.path.join(checkpoint_path, "history.json"),
+            )
         except NotImplementedError:
             print("Unable to load checkpoint!")
