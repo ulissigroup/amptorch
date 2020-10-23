@@ -35,9 +35,9 @@ MCSHs = {   "MCSHs": {
                         #"9": {"groups": [1,2,3,4,5,6,7,8,9,10,11,12], "sigmas": sigmas}
                   },
             "atom_gaussians": {
-                        "C": "./MCSH_potential/C_coredensity_5.g",
-                        "O": "./MCSH_potential/O_totaldensity_7.g",
-                        "Cu": "./MCSH_potential/Cu_totaldensity_5.g",
+                        "C": "./MCSH_potential/C_totaldensity_4.g",
+                        "O": "./MCSH_potential/O_totaldensity_5.g",
+                        "Cu": "./MCSH_potential/Cu_totaldensity_6.g",
                   },
             "cutoff": 8
 }
