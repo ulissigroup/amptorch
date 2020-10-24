@@ -232,5 +232,6 @@ class AtomsTrainer:
                 f_criterion=os.path.join(checkpoint_path, "criterion.pt"),
                 f_history=os.path.join(checkpoint_path, "history.json"),
             )
+            # TODO(mshuaibi): remove dataset load, use saved normalizers
         except NotImplementedError:
             print("Unable to load checkpoint!")
