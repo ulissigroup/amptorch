@@ -5,18 +5,18 @@ import warnings
 
 import ase.io
 import numpy as np
-import skorch.net
 import torch
-from skorch import NeuralNetRegressor
-from skorch.callbacks import LRScheduler
-from skorch.dataset import CVSplit
 
+import skorch.net
 from amptorch.dataset import AtomsDataset, DataCollater
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.metrics import evaluator
 from amptorch.model import BPNN, CustomLoss
 from amptorch.preprocessing import AtomsToData
 from amptorch.utils import to_tensor, train_end_load_best_loss
+from skorch import NeuralNetRegressor
+from skorch.callbacks import LRScheduler
+from skorch.dataset import CVSplit
 
 
 class AtomsTrainer:
@@ -113,7 +113,8 @@ class AtomsTrainer:
         )
         callbacks.extend(metrics)
 
-        callbacks.append(load_best_loss)
+        if not self.debug:
+            callbacks.append(load_best_loss)
         scheduler = self.config["optim"].get("scheduler", None)
         if scheduler:
             scheduler = LRScheduler(
