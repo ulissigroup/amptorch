@@ -22,6 +22,7 @@ from skorch.dataset import CVSplit
 class AtomsTrainer:
     def __init__(self, config):
         self.config = config
+        self.pretrained = False
 
     def load(self):
         self.load_config()
@@ -47,9 +48,9 @@ class AtomsTrainer:
         run_dir = self.config["cmd"].get("run_dir", "./")
         os.chdir(run_dir)
         if not self.debug:
-            cp_dir = os.path.join(run_dir, "checkpoints", self.identifier)
-            print(f"Results saved to {cp_dir}")
-            os.makedirs(cp_dir, exist_ok=True)
+            self.cp_dir = os.path.join(run_dir, "checkpoints", self.identifier)
+            print(f"Results saved to {self.cp_dir}")
+            os.makedirs(self.cp_dir, exist_ok=True)
 
     def load_rng_seed(self):
         seed = self.config["cmd"].get("seed", 0)
@@ -89,6 +90,9 @@ class AtomsTrainer:
 
         self.feature_scaler = self.train_dataset.feature_scaler
         self.target_scaler = self.train_dataset.target_scaler
+        if not self.debug:
+            normalizers = {"feature": self.feature_scaler, "target": self.target_scaler}
+            torch.save(normalizers, os.path.join(self.cp_dir, "normalizers.pt"))
         self.input_dim = self.train_dataset.input_dim
         self.val_split = self.config["dataset"].get("val_split", 0)
         print("Loading dataset: {} images".format(len(self.train_dataset)))
@@ -179,7 +183,8 @@ class AtomsTrainer:
     def train(self, raw_data=None):
         if raw_data is not None:
             self.config["dataset"]["raw_data"] = raw_data
-        self.load()
+        if not self.pretrained:
+            self.load()
 
         self.net.fit(self.train_dataset, None)
 
@@ -218,8 +223,8 @@ class AtomsTrainer:
 
     def load_pretrained(self, checkpoint_path=None):
         self.load()
-
         self.net.initialize()
+        self.pretrained = True
         try:
             self.net.load_params(
                 f_params=os.path.join(checkpoint_path, "params.pt"),
@@ -227,5 +232,6 @@ class AtomsTrainer:
                 f_criterion=os.path.join(checkpoint_path, "criterion.pt"),
                 f_history=os.path.join(checkpoint_path, "history.json"),
             )
+            # TODO(mshuaibi): remove dataset load, use saved normalizers
         except NotImplementedError:
             print("Unable to load checkpoint!")
