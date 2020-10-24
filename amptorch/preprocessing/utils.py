@@ -18,9 +18,11 @@ class FeatureScaler:
             self.feature_mean = torch.mean(fingerprints, dim=0)
             self.feature_std = 1
 
-    def norm(self, data_list, threshold = 1e-6):
+    def norm(self, data_list, threshold=1e-6):
         for data in data_list:
-            idx_to_scale = torch.where((self.feature_max - self.feature_min) > threshold)[0]
+            idx_to_scale = torch.where(
+                (self.feature_max - self.feature_min) > threshold
+            )[0]
             data.fingerprint[:, idx_to_scale] = -1 + 2 * (
                 (data.fingerprint[:, idx_to_scale] - self.feature_min[idx_to_scale])
                 / (self.feature_max[idx_to_scale] - self.feature_min[idx_to_scale])
@@ -30,7 +32,11 @@ class FeatureScaler:
                     data.fingerprint.shape[1] - 1
                 )
                 nonzero_idx = torch.where(
-                    (self.feature_max[idx_to_scale_prime] - self.feature_min[idx_to_scale_prime]) > threshold
+                    (
+                        self.feature_max[idx_to_scale_prime]
+                        - self.feature_min[idx_to_scale_prime]
+                    )
+                    > threshold
                 )[0]
                 data.fprimes._values()[nonzero_idx] *= 2 / (
                     self.feature_max[idx_to_scale_prime][nonzero_idx]

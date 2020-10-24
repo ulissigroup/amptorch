@@ -167,7 +167,7 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                         // take care of pbc
                         if (!pbc_bools[0] && cell_shift[0] != 0)
                             continue;
-                        
+
                         if (!pbc_bools[1] && cell_shift[1] != 0)
                             continue;
 
@@ -203,11 +203,11 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
             // params_d: sigma, weight, A, beta, cutoff
             double A = params_d[m][2], beta = params_d[m][3];
             double weight = 1.0;
-            // double weight = params_d[m][1]; 
+            // double weight = params_d[m][1];
             double M = 0;
             if (mcsh_type == 1){
                 double m_desc[1], deriv[3];
-                
+
                 for (int j = 0; j < nneigh; ++j) {
                     double dMdx = 0.0, dMdy = 0.0, dMdz = 0.0;
 
@@ -259,7 +259,7 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                     sum_dmiu3_dyj[j] = 0.0;
                     sum_dmiu1_dzj[j] = 0.0;
                     sum_dmiu2_dzj[j] = 0.0;
-                    sum_dmiu3_dzj[j] = 0.0;  
+                    sum_dmiu3_dzj[j] = 0.0;
                 }
 
                 double miu[3], deriv[9];
@@ -311,14 +311,14 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                 mcsh[ii][m] += M;
 
                 delete [] sum_dmiu1_dxj;
-                delete [] sum_dmiu2_dxj; 
-                delete [] sum_dmiu3_dxj; 
-                delete [] sum_dmiu1_dyj; 
-                delete [] sum_dmiu2_dyj; 
-                delete [] sum_dmiu3_dyj; 
-                delete [] sum_dmiu1_dzj; 
-                delete [] sum_dmiu2_dzj; 
-                delete [] sum_dmiu3_dzj; 
+                delete [] sum_dmiu2_dxj;
+                delete [] sum_dmiu3_dxj;
+                delete [] sum_dmiu1_dyj;
+                delete [] sum_dmiu2_dyj;
+                delete [] sum_dmiu3_dyj;
+                delete [] sum_dmiu1_dzj;
+                delete [] sum_dmiu2_dzj;
+                delete [] sum_dmiu3_dzj;
             }
 
             if (mcsh_type == 3){
@@ -351,7 +351,7 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                     sum_dmiu6_dxj[j] = 0.0;
                     sum_dmiu1_dyj[j] = 0.0;
                     sum_dmiu2_dyj[j] = 0.0;
-                    sum_dmiu3_dyj[j] = 0.0; 
+                    sum_dmiu3_dyj[j] = 0.0;
                     sum_dmiu4_dyj[j] = 0.0;
                     sum_dmiu5_dyj[j] = 0.0;
                     sum_dmiu6_dyj[j] = 0.0;
@@ -360,7 +360,7 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                     sum_dmiu3_dzj[j] = 0.0;
                     sum_dmiu4_dzj[j] = 0.0;
                     sum_dmiu5_dzj[j] = 0.0;
-                    sum_dmiu6_dzj[j] = 0.0; 
+                    sum_dmiu6_dzj[j] = 0.0;
                 }
 
                 double miu[6], deriv[18];
@@ -407,16 +407,16 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                 }
                 else {
                     for (int j = 0; j < nneigh; ++j) {
-                        dMdx = (1.0/M) * (sum_miu1 * sum_dmiu1_dxj[j] + sum_miu2 * sum_dmiu2_dxj[j] + 
-                                        sum_miu3 * sum_dmiu3_dxj[j] + sum_miu4 * sum_dmiu4_dxj[j] + 
+                        dMdx = (1.0/M) * (sum_miu1 * sum_dmiu1_dxj[j] + sum_miu2 * sum_dmiu2_dxj[j] +
+                                        sum_miu3 * sum_dmiu3_dxj[j] + sum_miu4 * sum_dmiu4_dxj[j] +
                                         sum_miu5 * sum_dmiu5_dxj[j] + sum_miu6 * sum_dmiu6_dxj[j]) * weight;
 
-                        dMdy = (1.0/M) * (sum_miu1 * sum_dmiu1_dyj[j] + sum_miu2 * sum_dmiu2_dyj[j] + 
-                                        sum_miu3 * sum_dmiu3_dyj[j] + sum_miu4 * sum_dmiu4_dyj[j] + 
+                        dMdy = (1.0/M) * (sum_miu1 * sum_dmiu1_dyj[j] + sum_miu2 * sum_dmiu2_dyj[j] +
+                                        sum_miu3 * sum_dmiu3_dyj[j] + sum_miu4 * sum_dmiu4_dyj[j] +
                                         sum_miu5 * sum_dmiu5_dyj[j] + sum_miu6 * sum_dmiu6_dyj[j]) * weight;
 
-                        dMdz = (1.0/M) * (sum_miu1 * sum_dmiu1_dzj[j] + sum_miu2 * sum_dmiu2_dzj[j] + 
-                                        sum_miu3 * sum_dmiu3_dzj[j] + sum_miu4 * sum_dmiu4_dzj[j] + 
+                        dMdz = (1.0/M) * (sum_miu1 * sum_dmiu1_dzj[j] + sum_miu2 * sum_dmiu2_dzj[j] +
+                                        sum_miu3 * sum_dmiu3_dzj[j] + sum_miu4 * sum_dmiu4_dzj[j] +
                                         sum_miu5 * sum_dmiu5_dzj[j] + sum_miu6 * sum_dmiu6_dzj[j]) * weight;
 
                         dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3] += dMdx;
@@ -428,28 +428,28 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                         dmcsh[ii*nmcsh + m][i*3 + 2] -= dMdz;
                     }
                 }
-                
+
                 M = M * weight;
                 mcsh[ii][m] += M;
 
                 delete [] sum_dmiu1_dxj;
-                delete [] sum_dmiu2_dxj; 
-                delete [] sum_dmiu3_dxj; 
-                delete [] sum_dmiu4_dxj; 
-                delete [] sum_dmiu5_dxj; 
-                delete [] sum_dmiu6_dxj; 
-                delete [] sum_dmiu1_dyj; 
-                delete [] sum_dmiu2_dyj; 
-                delete [] sum_dmiu3_dyj; 
+                delete [] sum_dmiu2_dxj;
+                delete [] sum_dmiu3_dxj;
+                delete [] sum_dmiu4_dxj;
+                delete [] sum_dmiu5_dxj;
+                delete [] sum_dmiu6_dxj;
+                delete [] sum_dmiu1_dyj;
+                delete [] sum_dmiu2_dyj;
+                delete [] sum_dmiu3_dyj;
                 delete [] sum_dmiu4_dyj;
-                delete [] sum_dmiu5_dyj; 
-                delete [] sum_dmiu6_dyj; 
-                delete [] sum_dmiu1_dzj; 
-                delete [] sum_dmiu2_dzj; 
-                delete [] sum_dmiu3_dzj; 
-                delete [] sum_dmiu4_dzj; 
-                delete [] sum_dmiu5_dzj; 
-                delete [] sum_dmiu6_dzj; 
+                delete [] sum_dmiu5_dyj;
+                delete [] sum_dmiu6_dyj;
+                delete [] sum_dmiu1_dzj;
+                delete [] sum_dmiu2_dzj;
+                delete [] sum_dmiu3_dzj;
+                delete [] sum_dmiu4_dzj;
+                delete [] sum_dmiu5_dzj;
+                delete [] sum_dmiu6_dzj;
             }
         }
         delete[] nei_list_d;
@@ -605,7 +605,7 @@ extern "C" int calculate_atomistic_mcsh_noderiv(double** cell, double** cart, do
                         // take care of pbc
                         if (!pbc_bools[0] && cell_shift[0] != 0)
                             continue;
-                        
+
                         if (!pbc_bools[1] && cell_shift[1] != 0)
                             continue;
 
@@ -641,11 +641,11 @@ extern "C" int calculate_atomistic_mcsh_noderiv(double** cell, double** cart, do
             // params_d: sigma, weight, A, beta, cutoff
             double A = params_d[m][2], beta = params_d[m][3];
             double weight = 1.0;
-            // double weight = params_d[m][1]; 
+            // double weight = params_d[m][1];
             double M = 0.0;
             if (mcsh_type == 1){
                 double m_desc[1];
-                
+
                 for (int j = 0; j < nneigh; ++j) {
 
                     int neigh_atom_element_index = nei_list_i[j*2];
@@ -868,7 +868,7 @@ extern "C" int calculate_atomistic_mcsh_square(double** cell, double** cart, dou
                         // take care of pbc
                         if (!pbc_bools[0] && cell_shift[0] != 0)
                             continue;
-                        
+
                         if (!pbc_bools[1] && cell_shift[1] != 0)
                             continue;
 
@@ -904,11 +904,11 @@ extern "C" int calculate_atomistic_mcsh_square(double** cell, double** cart, dou
             // params_d: sigma, weight, A, beta, cutoff
             double A = params_d[m][2], beta = params_d[m][3];
             double weight = 1.0;
-            // double weight = params_d[m][1]; 
+            // double weight = params_d[m][1];
             double M = 0;
             if (mcsh_type == 1){
                 double m_desc[1], deriv[3];
-                
+
                 for (int j = 0; j < nneigh; ++j) {
                     double dMdx = 0.0, dMdy = 0.0, dMdz = 0.0;
 
@@ -963,7 +963,7 @@ extern "C" int calculate_atomistic_mcsh_square(double** cell, double** cart, dou
                     sum_dmiu3_dyj[j] = 0.0;
                     sum_dmiu1_dzj[j] = 0.0;
                     sum_dmiu2_dzj[j] = 0.0;
-                    sum_dmiu3_dzj[j] = 0.0;  
+                    sum_dmiu3_dzj[j] = 0.0;
                 }
 
                 double miu[3], deriv[9];
@@ -1013,14 +1013,14 @@ extern "C" int calculate_atomistic_mcsh_square(double** cell, double** cart, dou
                 mcsh[ii][m] += M;
 
                 delete [] sum_dmiu1_dxj;
-                delete [] sum_dmiu2_dxj; 
-                delete [] sum_dmiu3_dxj; 
-                delete [] sum_dmiu1_dyj; 
-                delete [] sum_dmiu2_dyj; 
-                delete [] sum_dmiu3_dyj; 
-                delete [] sum_dmiu1_dzj; 
-                delete [] sum_dmiu2_dzj; 
-                delete [] sum_dmiu3_dzj; 
+                delete [] sum_dmiu2_dxj;
+                delete [] sum_dmiu3_dxj;
+                delete [] sum_dmiu1_dyj;
+                delete [] sum_dmiu2_dyj;
+                delete [] sum_dmiu3_dyj;
+                delete [] sum_dmiu1_dzj;
+                delete [] sum_dmiu2_dzj;
+                delete [] sum_dmiu3_dzj;
             }
 
             if (mcsh_type == 3){
@@ -1053,7 +1053,7 @@ extern "C" int calculate_atomistic_mcsh_square(double** cell, double** cart, dou
                     sum_dmiu6_dxj[j] = 0.0;
                     sum_dmiu1_dyj[j] = 0.0;
                     sum_dmiu2_dyj[j] = 0.0;
-                    sum_dmiu3_dyj[j] = 0.0; 
+                    sum_dmiu3_dyj[j] = 0.0;
                     sum_dmiu4_dyj[j] = 0.0;
                     sum_dmiu5_dyj[j] = 0.0;
                     sum_dmiu6_dyj[j] = 0.0;
@@ -1062,7 +1062,7 @@ extern "C" int calculate_atomistic_mcsh_square(double** cell, double** cart, dou
                     sum_dmiu3_dzj[j] = 0.0;
                     sum_dmiu4_dzj[j] = 0.0;
                     sum_dmiu5_dzj[j] = 0.0;
-                    sum_dmiu6_dzj[j] = 0.0; 
+                    sum_dmiu6_dzj[j] = 0.0;
                 }
 
                 double miu[6], deriv[18];
@@ -1107,28 +1107,28 @@ extern "C" int calculate_atomistic_mcsh_square(double** cell, double** cart, dou
                     sum_miu4*sum_miu4 + sum_miu5*sum_miu5 + sum_miu6*sum_miu6;
                 double dMdx, dMdy, dMdz;
                 for (int j = 0; j < nneigh; ++j) {
-                    // dMdx = (1.0/M) * (sum_miu1 * sum_dmiu1_dxj[j] + sum_miu2 * sum_dmiu2_dxj[j] + 
-                    //                 sum_miu3 * sum_dmiu3_dxj[j] + sum_miu4 * sum_dmiu4_dxj[j] + 
+                    // dMdx = (1.0/M) * (sum_miu1 * sum_dmiu1_dxj[j] + sum_miu2 * sum_dmiu2_dxj[j] +
+                    //                 sum_miu3 * sum_dmiu3_dxj[j] + sum_miu4 * sum_dmiu4_dxj[j] +
                     //                 sum_miu5 * sum_dmiu5_dxj[j] + sum_miu6 * sum_dmiu6_dxj[j]) * weight;
 
-                    // dMdy = (1.0/M) * (sum_miu1 * sum_dmiu1_dyj[j] + sum_miu2 * sum_dmiu2_dyj[j] + 
-                    //                 sum_miu3 * sum_dmiu3_dyj[j] + sum_miu4 * sum_dmiu4_dyj[j] + 
+                    // dMdy = (1.0/M) * (sum_miu1 * sum_dmiu1_dyj[j] + sum_miu2 * sum_dmiu2_dyj[j] +
+                    //                 sum_miu3 * sum_dmiu3_dyj[j] + sum_miu4 * sum_dmiu4_dyj[j] +
                     //                 sum_miu5 * sum_dmiu5_dyj[j] + sum_miu6 * sum_dmiu6_dyj[j]) * weight;
 
-                    // dMdz = (1.0/M) * (sum_miu1 * sum_dmiu1_dzj[j] + sum_miu2 * sum_dmiu2_dzj[j] + 
-                    //                 sum_miu3 * sum_dmiu3_dzj[j] + sum_miu4 * sum_dmiu4_dzj[j] + 
+                    // dMdz = (1.0/M) * (sum_miu1 * sum_dmiu1_dzj[j] + sum_miu2 * sum_dmiu2_dzj[j] +
+                    //                 sum_miu3 * sum_dmiu3_dzj[j] + sum_miu4 * sum_dmiu4_dzj[j] +
                     //                 sum_miu5 * sum_dmiu5_dzj[j] + sum_miu6 * sum_dmiu6_dzj[j]) * weight;
 
-                    dMdx = (2.0) * (sum_miu1 * sum_dmiu1_dxj[j] + sum_miu2 * sum_dmiu2_dxj[j] + 
-                                    sum_miu3 * sum_dmiu3_dxj[j] + sum_miu4 * sum_dmiu4_dxj[j] + 
+                    dMdx = (2.0) * (sum_miu1 * sum_dmiu1_dxj[j] + sum_miu2 * sum_dmiu2_dxj[j] +
+                                    sum_miu3 * sum_dmiu3_dxj[j] + sum_miu4 * sum_dmiu4_dxj[j] +
                                     sum_miu5 * sum_dmiu5_dxj[j] + sum_miu6 * sum_dmiu6_dxj[j]) * weight;
 
-                    dMdy = (2.0) * (sum_miu1 * sum_dmiu1_dyj[j] + sum_miu2 * sum_dmiu2_dyj[j] + 
-                                    sum_miu3 * sum_dmiu3_dyj[j] + sum_miu4 * sum_dmiu4_dyj[j] + 
+                    dMdy = (2.0) * (sum_miu1 * sum_dmiu1_dyj[j] + sum_miu2 * sum_dmiu2_dyj[j] +
+                                    sum_miu3 * sum_dmiu3_dyj[j] + sum_miu4 * sum_dmiu4_dyj[j] +
                                     sum_miu5 * sum_dmiu5_dyj[j] + sum_miu6 * sum_dmiu6_dyj[j]) * weight;
 
-                    dMdz = (2.0) * (sum_miu1 * sum_dmiu1_dzj[j] + sum_miu2 * sum_dmiu2_dzj[j] + 
-                                    sum_miu3 * sum_dmiu3_dzj[j] + sum_miu4 * sum_dmiu4_dzj[j] + 
+                    dMdz = (2.0) * (sum_miu1 * sum_dmiu1_dzj[j] + sum_miu2 * sum_dmiu2_dzj[j] +
+                                    sum_miu3 * sum_dmiu3_dzj[j] + sum_miu4 * sum_dmiu4_dzj[j] +
                                     sum_miu5 * sum_dmiu5_dzj[j] + sum_miu6 * sum_dmiu6_dzj[j]) * weight;
 
                     dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3] += dMdx;
@@ -1143,23 +1143,23 @@ extern "C" int calculate_atomistic_mcsh_square(double** cell, double** cart, dou
                 mcsh[ii][m] += M;
 
                 delete [] sum_dmiu1_dxj;
-                delete [] sum_dmiu2_dxj; 
-                delete [] sum_dmiu3_dxj; 
-                delete [] sum_dmiu4_dxj; 
-                delete [] sum_dmiu5_dxj; 
-                delete [] sum_dmiu6_dxj; 
-                delete [] sum_dmiu1_dyj; 
-                delete [] sum_dmiu2_dyj; 
-                delete [] sum_dmiu3_dyj; 
+                delete [] sum_dmiu2_dxj;
+                delete [] sum_dmiu3_dxj;
+                delete [] sum_dmiu4_dxj;
+                delete [] sum_dmiu5_dxj;
+                delete [] sum_dmiu6_dxj;
+                delete [] sum_dmiu1_dyj;
+                delete [] sum_dmiu2_dyj;
+                delete [] sum_dmiu3_dyj;
                 delete [] sum_dmiu4_dyj;
-                delete [] sum_dmiu5_dyj; 
-                delete [] sum_dmiu6_dyj; 
-                delete [] sum_dmiu1_dzj; 
-                delete [] sum_dmiu2_dzj; 
-                delete [] sum_dmiu3_dzj; 
-                delete [] sum_dmiu4_dzj; 
-                delete [] sum_dmiu5_dzj; 
-                delete [] sum_dmiu6_dzj; 
+                delete [] sum_dmiu5_dyj;
+                delete [] sum_dmiu6_dyj;
+                delete [] sum_dmiu1_dzj;
+                delete [] sum_dmiu2_dzj;
+                delete [] sum_dmiu3_dzj;
+                delete [] sum_dmiu4_dzj;
+                delete [] sum_dmiu5_dzj;
+                delete [] sum_dmiu6_dzj;
             }
         }
         delete[] nei_list_d;
@@ -1315,7 +1315,7 @@ extern "C" int calculate_atomistic_mcsh_square_noderiv(double** cell, double** c
                         // take care of pbc
                         if (!pbc_bools[0] && cell_shift[0] != 0)
                             continue;
-                        
+
                         if (!pbc_bools[1] && cell_shift[1] != 0)
                             continue;
 
@@ -1351,11 +1351,11 @@ extern "C" int calculate_atomistic_mcsh_square_noderiv(double** cell, double** c
             // params_d: sigma, weight, A, beta, cutoff
             double A = params_d[m][2], beta = params_d[m][3];
             double weight = 1.0;
-            // double weight = params_d[m][1]; 
+            // double weight = params_d[m][1];
             double M = 0.0;
             if (mcsh_type == 1){
                 double m_desc[1];
-                
+
                 for (int j = 0; j < nneigh; ++j) {
 
                     int neigh_atom_element_index = nei_list_i[j*2];

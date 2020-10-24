@@ -6,10 +6,10 @@ ffibuilder.cdef(
                         int *, int, int*, int,
                         int**, double **, int,
                         double**, double**);
-        
-        int calculate_sf_noderiv(double **, double **, double **, int*, 
+
+        int calculate_sf_noderiv(double **, double **, double **, int*,
                             int *, int, int*, int,
-                            int**, double **, int, 
+                            int**, double **, int,
                             double**);"""
 )
 ffibuilder.set_source(

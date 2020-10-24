@@ -1,6 +1,7 @@
 import hashlib
+
 import numpy as np
-from ase.io.trajectory import Trajectory
+
 from .constants import ATOM_INDEX_TO_SYMBOL_DICT, ATOM_SYMBOL_TO_INDEX_DICT
 
 

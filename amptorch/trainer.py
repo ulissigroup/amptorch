@@ -5,18 +5,18 @@ import warnings
 
 import ase.io
 import numpy as np
-import skorch.net
 import torch
-from skorch import NeuralNetRegressor
-from skorch.callbacks import LRScheduler
-from skorch.dataset import CVSplit
 
+import skorch.net
 from amptorch.dataset import AtomsDataset, DataCollater
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.metrics import evaluator
 from amptorch.model import BPNN, CustomLoss
 from amptorch.preprocessing import AtomsToData
 from amptorch.utils import to_tensor, train_end_load_best_loss
+from skorch import NeuralNetRegressor
+from skorch.callbacks import LRScheduler
+from skorch.dataset import CVSplit
 
 
 class AtomsTrainer:
@@ -80,7 +80,7 @@ class AtomsTrainer:
         self.fp_scheme = self.config["dataset"].get("fp_scheme", "gaussian").lower()
         self.fp_params = self.config["dataset"]["fp_params"]
         self.save_fps = self.config["dataset"].get("save_fps", True)
-        
+
         self.train_dataset = AtomsDataset(
             images=training_images,
             descriptor_setup=(self.fp_scheme, self.fp_params, self.elements),
@@ -137,7 +137,7 @@ class AtomsTrainer:
         self.criterion = self.config["optim"].get("loss_fn", CustomLoss)
 
     def load_optimizer(self):
-        self.optimizer = torch.optim.Adam
+        self.optimizer = self.config["optim"].get("optimizer", torch.optim.Adam)
 
     def load_logger(self):
         if self.config["cmd"].get("logger", False):

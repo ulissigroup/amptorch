@@ -34,11 +34,11 @@ Gs = {
 
 elements = ["Cu", "C", "O"]
 dataset = AtomsDataset(
-            images=images,
-            descriptor_setup=("gaussian", Gs, elements),
-            forcetraining=False,
-            save_fps=True,
-        )
+    images=images,
+    descriptor_setup=("gaussian", Gs, elements),
+    forcetraining=False,
+    save_fps=True,
+)
 
 for data in dataset:
     print(data.fingerprint.numpy().shape)

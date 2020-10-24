@@ -12,7 +12,7 @@ double cutf(double frac) {
     // frac = dist / cutoff_dist
     if (frac >= 1.0) {
         return 0;
-    } else { 
+    } else {
         return 0.5 * (1 + cos(M_PI*frac));
     }
 }
@@ -20,7 +20,7 @@ double cutf(double frac) {
 double dcutf(double dist, double cutd) {
     if (dist/cutd >= 1.0) {
         return 0;
-    } else { 
+    } else {
         return -0.5 * M_PI * sin(M_PI*dist/cutd) / cutd;
     }
 }
