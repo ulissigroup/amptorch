@@ -7,7 +7,6 @@ class FeatureScaler:
 
     def __init__(self, data_list, forcetraining):
         self.forcetraining = forcetraining
-
         if len(data_list) > 1:
             fingerprints = torch.cat([data.fingerprint for data in data_list], dim=0)
 
@@ -15,8 +14,11 @@ class FeatureScaler:
             self.feature_min = torch.min(fingerprints, dim=0).values
 
         else:
+            fingerprints = torch.cat([data.fingerprint for data in data_list], dim=0)
             self.feature_mean = torch.mean(fingerprints, dim=0)
             self.feature_std = 1
+            self.feature_max = torch.max(fingerprints, dim=0).values
+            self.feature_min = torch.min(fingerprints, dim=0).values
 
     def norm(self, data_list, threshold = 1e-6):
         for data in data_list:
