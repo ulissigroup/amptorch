@@ -45,7 +45,7 @@ def test_calcs():
             symbols="PdOPd2",
             pbc=np.array([False, False, False], dtype=bool),
             calculator=EMT(),
-            cell=np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]),
+            cell=np.array([[10.0, 0.0, 0.0], [0.0, 10.0, 0.0], [0.0, 0.0, 10.0]]),
             positions=np.array(
                 [[0.0, 0.0, 0.0], [0.0, 2.0, 0.0], [0.0, 0.0, 3.0], [1.0, 0.0, 0.0]]
             ),
@@ -54,7 +54,7 @@ def test_calcs():
             symbols="PdOPd2",
             pbc=np.array([False, False, False], dtype=bool),
             calculator=EMT(),
-            cell=np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]),
+            cell=np.array([[10.0, 0.0, 0.0], [0.0, 10.0, 0.0], [0.0, 0.0, 10.0]]),
             positions=np.array(
                 [[0.0, 1.0, 0.0], [1.0, 2.0, 1.0], [-1.0, 1.0, 2.0], [1.0, 3.0, 2.0]]
             ),
@@ -63,21 +63,21 @@ def test_calcs():
             symbols="PdO",
             pbc=np.array([False, False, False], dtype=bool),
             calculator=EMT(),
-            cell=np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]),
+            cell=np.array([[10.0, 0.0, 0.0], [0.0, 10.0, 0.0], [0.0, 0.0, 10.0]]),
             positions=np.array([[2.0, 1.0, -1.0], [1.0, 2.0, 1.0]]),
         ),
         Atoms(
             symbols="Pd2O",
             pbc=np.array([False, False, False], dtype=bool),
             calculator=EMT(),
-            cell=np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]),
+            cell=np.array([[10.0, 0.0, 0.0], [0.0, 10.0, 0.0], [0.0, 0.0, 10.0]]),
             positions=np.array([[-2.0, -1.0, -1.0], [1.0, 2.0, 1.0], [3.0, 4.0, 4.0]]),
         ),
         Atoms(
             symbols="Cu",
             pbc=np.array([False, False, False], dtype=bool),
             calculator=EMT(),
-            cell=np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]),
+            cell=np.array([[10.0, 0.0, 0.0], [0.0, 10.0, 0.0], [0.0, 0.0, 10.0]]),
             positions=np.array([[0.0, 0.0, 0.0]]),
         ),
     ]
@@ -103,6 +103,7 @@ def test_calcs():
         zetas=Gs["G4_zetas"],
         gammas=Gs["G4_gammas"],
     )
+    G = {element: G for element in elements}
     amp_images = amp_hash(images)
     descriptor = Gaussian(Gs=G, cutoff=Gs["cutoff"])
     descriptor.calculate_fingerprints(amp_images, calculate_derivatives=True)
@@ -211,6 +212,11 @@ def test_calcs():
         x = to_tensor(batch[0], device)
         y = to_tensor(batch[1], device)
         energy_pred, force_pred = model(x)
+    import pickle
+    with open("energies.pkl", "wb") as f:
+        pickle.dump(energy_pred, f)
+    with open("forces.pkl", "wb") as f:
+        pickle.dump(force_pred, f)
     for idx, i in enumerate(amp_energies):
         assert round(i, 4) == round(
             energy_pred.tolist()[idx][0], 4
@@ -224,3 +230,4 @@ def test_calcs():
                 % (idx + 1, idx_d, value, force_pred.tolist()[idx][idx_d])
             )
     print("Force predictions are correct!")
+test_calcs()

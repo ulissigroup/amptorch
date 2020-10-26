@@ -127,6 +127,7 @@ class AtomsDataset(Dataset):
         )
         for g in list(G):
             g["Rs"] = G2_rs_s
+        G = {element: G for element in self.elements}
         self.descriptor = self.descriptor(Gs=G, cutoff=cutoff)
         self.descriptor.calculate_fingerprints(
             self.hashed_images, calculate_derivatives=forcetraining
@@ -165,15 +166,15 @@ class AtomsDataset(Dataset):
             atom_order = []
             # fingerprint scaling to [-1,1]
             for i, (atom, afp) in enumerate(image_fingerprint):
-                _afp = copy.copy(afp)
-                fprange_atom = np.array(fprange[atom])
-                for _ in range(np.shape(_afp)[0]):
-                    if (fprange_atom[_][1] - fprange_atom[_][0]) > (10.0 ** (-8.0)):
-                        _afp[_] = -1 + 2.0 * (
-                            (_afp[_] - fprange_atom[_][0])
-                            / (fprange_atom[_][1] - fprange_atom[_][0])
-                        )
-                image_fingerprint[i] = (atom, _afp)
+                # _afp = copy.copy(afp)
+                # fprange_atom = np.array(fprange[atom])
+                # for _ in range(np.shape(_afp)[0]):
+                    # if (fprange_atom[_][1] - fprange_atom[_][0]) > (10.0 ** (-8.0)):
+                        # _afp[_] = -1 + 2.0 * (
+                            # (_afp[_] - fprange_atom[_][0])
+                            # / (fprange_atom[_][1] - fprange_atom[_][0])
+                        # )
+                # image_fingerprint[i] = (atom, _afp)
                 atom_order.append(atom)
             fingerprint_dataset.append(image_fingerprint)
             image_potential_energy = (
@@ -213,14 +214,14 @@ class AtomsDataset(Dataset):
                     # scaling of fingerprint derivatives to be consistent with
                     # fingerprint scaling.
                     _image_primes = copy.copy(image_primes)
-                    for _, key in enumerate(list(image_primes.keys())):
-                        base_atom = key[3]
-                        fprange_atom = np.array(fprange[base_atom])
-                        fprange_dif = fprange_atom[:, 1] - fprange_atom[:, 0]
-                        fprange_dif[fprange_dif < 10.0 ** (-8.0)] = 2
-                        fprime = np.array(image_primes[key])
-                        fprime = 2 * fprime / fprange_dif
-                        _image_primes[key] = fprime
+                    # for _, key in enumerate(list(image_primes.keys())):
+                        # base_atom = key[3]
+                        # fprange_atom = np.array(fprange[base_atom])
+                        # fprange_dif = fprange_atom[:, 1] - fprange_atom[:, 0]
+                        # fprange_dif[fprange_dif < 10.0 ** (-8.0)] = 2
+                        # fprime = np.array(image_primes[key])
+                        # fprime = 2 * fprime / fprange_dif
+                        # _image_primes[key] = fprime
 
                     image_prime_values = list(_image_primes.values())
                     image_prime_keys = list(_image_primes.keys())
