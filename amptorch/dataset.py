@@ -41,9 +41,7 @@ class AtomsDataset(Dataset):
     def process(self):
         data_list = self.a2d.convert_all(self.images)
 
-        self.feature_scaler = FeatureScaler(data_list, self.forcetraining)
         self.target_scaler = TargetScaler(data_list, self.forcetraining)
-        self.feature_scaler.norm(data_list)
         self.target_scaler.norm(data_list)
 
         return data_list
