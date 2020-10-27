@@ -10,23 +10,23 @@ from ._libsymf import ffi, lib
 
 
 class Gaussian(BaseDescriptor):
-    def __init__(self, Gs, elements, cutoff_func='Cosine', gamma=None):
+    def __init__(self, Gs, elements, cutoff_func='cosine', gamma=None):
         super().__init__()
         self.descriptor_type = "Gaussian"
         self.Gs = Gs
         self.elements = elements
-        if cutoff_func not in ['Cosine', 'Polynomial']:
-            raise ValueError('cutoff function must be either "Cosine" or "Polynomial"')
-        if cutoff_func == 'Polynomial':
+        self.cutoff_func = cutoff_func.lower()
+        if self.cutoff_func not in ['cosine', 'polynomial']:
+            raise ValueError('cutoff function must be either "cosine" or "polynomial"')
+        if self.cutoff_func == 'polynomial':
             if  gamma is None:
-                raise ValueError('Polynomial cutoff function requires float value > 0. of `gamma`')
+                raise ValueError('polynomial cutoff function requires float value > 0. of `gamma`')
             elif gamma <= 0.:
-                raise ValueError('Polynomial cutoff function gamma must be > 0.')
-        self.cutoff_func = cutoff_func
-        print('Gaussian cutoff function:', self.cutoff_func)
+                raise ValueError('polynomial cutoff function gamma must be > 0.')
+        print('Gaussian descriptor cutoff function:', self.cutoff_func)
         self.gamma = gamma
-        if self.gamma:
-            print('Polynomial Gamma value:', self.gamma)
+        if self.gamma and self.cutoff_func == 'polynomial':
+            print('polynomial cutoff function Gamma value:', self.gamma)
         self.element_indices = list_symbols_to_indices(elements)
 
         self.prepare_descriptor_parameters()

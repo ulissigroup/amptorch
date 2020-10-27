@@ -64,7 +64,7 @@ config = {
         "seed": 1,
         "identifier": "test",
         "verbose": True,
-        "logger": True,
+        "logger": False,
     },
 }
 
