@@ -80,10 +80,11 @@ class AtomsTrainer:
         self.forcetraining = self.config["model"].get("get_forces", True)
         self.fp_scheme = self.config["dataset"].get("fp_scheme", "gaussian").lower()
         self.fp_params = self.config["dataset"]["fp_params"]
+        self.cutoff_params = self.config["dataset"].get("cutoff_params", {'cutoff_func': 'Cosine'})
 
         self.train_dataset = AtomsDataset(
             images=training_images,
-            descriptor_setup=(self.fp_scheme, self.fp_params, self.elements),
+            descriptor_setup=(self.fp_scheme, self.fp_params, self.cutoff_params, self.elements),
             forcetraining=self.forcetraining,
             save_fps=self.config["dataset"].get("save_fps", True),
         )

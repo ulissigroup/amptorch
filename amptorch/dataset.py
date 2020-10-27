@@ -19,9 +19,9 @@ class AtomsDataset(Dataset):
         self.images = images
         self.forcetraining = forcetraining
 
-        fp_scheme, fp_params, elements = descriptor_setup
+        fp_scheme, fp_params, cutoff_params, elements = descriptor_setup
         if fp_scheme == "gaussian":
-            self.descriptor = Gaussian(Gs=fp_params, elements=elements)
+            self.descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)
         elif fp_scheme == "mcsh":
             self.descriptor = AtomisticMCSH(MCSHs=fp_params, elements=elements)
         else:

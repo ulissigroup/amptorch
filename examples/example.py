@@ -36,23 +36,9 @@ Gs = {
 
 elements = ["Cu", "C", "O"]
 
-cosine_dataset_config = {
-        "raw_data": images,
-        "val_split": 0.1,
-        "elements": elements,
-        "fp_params": Gs,
-        "save_fps": True,
-        "fp_scheme": "cosine",
-    }
+cosine_cutoff_params = {'cutoff_func': 'Cosine'}
 
-polynomial_dataset_config = {
-        "raw_data": images,
-        "val_split": 0.1,
-        "elements": elements,
-        "fp_params": Gs,
-        "save_fps": True,
-        "fp_scheme": "polynomial",
-    }
+polynomial_cutoff_params = {'cutoff_func': 'Cosine', 'gamma': 2.0}
 
 config = {
     "model": {"get_forces": True, "num_layers": 3, "num_nodes": 5},
@@ -65,6 +51,13 @@ config = {
         "loss": "mse",
         "metric": "mae",
     },
+    "dataset": {
+        "raw_data": images,
+        "val_split": 0.1,
+        "elements": elements,
+        "fp_params": Gs,
+        "save_fps": True,
+    },
     "cmd": {
         "debug": False,
         "run_dir": "./",
@@ -75,7 +68,7 @@ config = {
     },
 }
 
-config["dataset"] = cosine_dataset_config
+config["dataset"]["cutoff_params"] = cosine_cutoff_params
 torch.set_num_threads(1)
 cosine_trainer = AtomsTrainer(config)
 cosine_trainer.train()
@@ -89,7 +82,7 @@ image.set_calculator(AMPtorch(cosine_trainer))
 image.get_potential_energy()
 
 
-config["dataset"] = polynomial_dataset_config
+config["dataset"]["cutoff_params"] = polynomial_cutoff_params
 torch.set_num_threads(1)
 polynomial_trainer = AtomsTrainer(config)
 polynomial_trainer.train()
