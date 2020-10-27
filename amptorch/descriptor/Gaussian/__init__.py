@@ -10,11 +10,20 @@ from ._libsymf import ffi, lib
 
 
 class Gaussian(BaseDescriptor):
-    def __init__(self, Gs, elements):
+    def __init__(self, Gs, elements, cutoff_func='Cosine', gamma=None):
         super().__init__()
         self.descriptor_type = "Gaussian"
         self.Gs = Gs
         self.elements = elements
+        if cutoff_func not in ['Cosine', 'Polynomial']:
+            raise ValueError('cutoff function must be either "Cosine" or "Polynomial"')
+        if cutoff_func == 'Polynomial':
+            if  gamma is None:
+                raise ValueError('Polynomial cutoff function requires float value > 0. of `gamma`')
+            elif gamma <= 0.:
+                raise ValueError('Polynomial cutoff function gamma must be > 0.')
+        self.cutoff_func = cutoff_func
+        self.gamma = gamma
         self.element_indices = list_symbols_to_indices(elements)
 
         self.prepare_descriptor_parameters()
@@ -186,22 +195,38 @@ class Gaussian(BaseDescriptor):
 
             x_p = _gen_2Darray_for_ffi(x, ffi)
             dx_p = _gen_2Darray_for_ffi(dx, ffi)
+            
+            errno = lib.calculate_sf_cos(
+                    cell_p,
+                    cart_p,
+                    scale_p,
+                    pbc_p,
+                    atom_indices_p,
+                    atom_num,
+                    cal_atoms_p,
+                    cal_num,
+                    self.params_set[element_index]["ip"],
+                    self.params_set[element_index]["dp"],
+                    self.params_set[element_index]["num"],
+                    x_p,
+                    dx_p,
+                ) if self.cutoff_func == 'Cosine' else  lib.calculate_sf_poly(
+                    cell_p,
+                    cart_p,
+                    scale_p,
+                    pbc_p,
+                    atom_indices_p,
+                    atom_num,
+                    cal_atoms_p,
+                    cal_num,
+                    self.params_set[element_index]["ip"],
+                    self.params_set[element_index]["dp"],
+                    self.params_set[element_index]["num"],
+                    x_p,
+                    dx_p,
+                    self.gamma,
+                )
 
-            errno = lib.calculate_sf(
-                cell_p,
-                cart_p,
-                scale_p,
-                pbc_p,
-                atom_indices_p,
-                atom_num,
-                cal_atoms_p,
-                cal_num,
-                self.params_set[element_index]["ip"],
-                self.params_set[element_index]["dp"],
-                self.params_set[element_index]["num"],
-                x_p,
-                dx_p,
-            )
             if errno == 1:
                 raise NotImplementedError("Descriptor not implemented!")
             fp = np.array(x)
@@ -224,21 +249,36 @@ class Gaussian(BaseDescriptor):
                 order="C",
             )
             x_p = _gen_2Darray_for_ffi(x, ffi)
-
-            errno = lib.calculate_sf_noderiv(
-                cell_p,
-                cart_p,
-                scale_p,
-                pbc_p,
-                atom_indices_p,
-                atom_num,
-                cal_atoms_p,
-                cal_num,
-                self.params_set[element_index]["ip"],
-                self.params_set[element_index]["dp"],
-                self.params_set[element_index]["num"],
-                x_p,
-            )
+            
+            errno = lib.lib.calculate_sf_cos_noderiv(
+                    cell_p,
+                    cart_p,
+                    scale_p,
+                    pbc_p,
+                    atom_indices_p,
+                    atom_num,
+                    cal_atoms_p,
+                    cal_num,
+                    self.params_set[element_index]["ip"],
+                    self.params_set[element_index]["dp"],
+                    self.params_set[element_index]["num"],
+                    x_p,
+                ) if self.cutoff_func == 'Cosine' else  lib.calculate_sf_poly_noderiv(
+                    cell_p,
+                    cart_p,
+                    scale_p,
+                    pbc_p,
+                    atom_indices_p,
+                    atom_num,
+                    cal_atoms_p,
+                    cal_num,
+                    self.params_set[element_index]["ip"],
+                    self.params_set[element_index]["dp"],
+                    self.params_set[element_index]["num"],
+                    x_p,
+                    dx_p,
+                    self.gamma,
+                )
 
             if errno == 1:
                 raise NotImplementedError("Descriptor not implemented!")
