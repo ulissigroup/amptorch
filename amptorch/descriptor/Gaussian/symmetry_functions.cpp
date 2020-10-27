@@ -25,6 +25,25 @@ double dcutf(double dist, double cutd) {
     }
 }
 
+double poly_cutf(double frac, double gamma) {
+    // frac = dist / cutoff_dist
+    if (frac >= 1.0) {
+        return 0;
+    } else { 
+        return 1.0 + gamma * pow(frac, gamma+1) - (gamma+1) * pow(frac, gamma);
+    }
+}
+
+double dpoly_cutf(double dist, double cutd, double gamma) {
+    if (dist/cutd >= 1.0) {
+        return 0;
+    } else { 
+        return gamma * (gamma+1) / cutd * (pow(dist/cutd, gamma) - pow(dist/cutd, gamma-1));
+    }
+}
+
+
+
 double G2(double Rij, double *precal, double *par, double &deriv) {
     // par[0] = cutoff_dist
     // par[1] = eta
