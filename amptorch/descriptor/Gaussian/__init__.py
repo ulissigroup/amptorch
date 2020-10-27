@@ -23,7 +23,10 @@ class Gaussian(BaseDescriptor):
             elif gamma <= 0.:
                 raise ValueError('Polynomial cutoff function gamma must be > 0.')
         self.cutoff_func = cutoff_func
+        print('Gaussian cutoff function:', self.cutoff_func)
         self.gamma = gamma
+        if self.gamma:
+            print('Polynomial Gamma value:', self.gamma)
         self.element_indices = list_symbols_to_indices(elements)
 
         self.prepare_descriptor_parameters()

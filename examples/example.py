@@ -35,6 +35,25 @@ Gs = {
 }
 
 elements = ["Cu", "C", "O"]
+
+cosine_dataset_config = {
+        "raw_data": images,
+        "val_split": 0.1,
+        "elements": elements,
+        "fp_params": Gs,
+        "save_fps": True,
+        "fp_scheme": "cosine",
+    }
+
+polynomial_dataset_config = {
+        "raw_data": images,
+        "val_split": 0.1,
+        "elements": elements,
+        "fp_params": Gs,
+        "save_fps": True,
+        "fp_scheme": "polynomial",
+    }
+
 config = {
     "model": {"get_forces": True, "num_layers": 3, "num_nodes": 5},
     "optim": {
@@ -46,13 +65,6 @@ config = {
         "loss": "mse",
         "metric": "mae",
     },
-    "dataset": {
-        "raw_data": images,
-        "val_split": 0.1,
-        "elements": elements,
-        "fp_params": Gs,
-        "save_fps": True,
-    },
     "cmd": {
         "debug": False,
         "run_dir": "./",
@@ -63,17 +75,34 @@ config = {
     },
 }
 
+config["dataset"] = cosine_dataset_config
 torch.set_num_threads(1)
-trainer = AtomsTrainer(config)
-trainer.train()
+cosine_trainer = AtomsTrainer(config)
+cosine_trainer.train()
 
-predictions = trainer.predict(images)
+predictions = cosine_trainer.predict(images)
 
 true_energies = np.array([image.get_potential_energy() for image in images])
-pred_energies = np.array(predictions["energy"])
+cosine_pred_energies = np.array(predictions["energy"])
 
-print("Energy MSE:", np.mean((true_energies - pred_energies) ** 2))
-print("Energy MAE:", np.mean(np.abs(true_energies - pred_energies)))
+image.set_calculator(AMPtorch(cosine_trainer))
+image.get_potential_energy()
 
-image.set_calculator(AMPtorch(trainer))
+
+config["dataset"] = polynomial_dataset_config
+torch.set_num_threads(1)
+polynomial_trainer = AtomsTrainer(config)
+polynomial_trainer.train()
+
+predictions = polynomial_trainer.predict(images)
+
+polynomial_pred_energies = np.array(predictions["energy"])
+
+print("Energy MSE (Cosine):", np.mean((true_energies - cosine_pred_energies) ** 2))
+print("Energy MAE (Cosine):", np.mean(np.abs(true_energies - cosine_pred_energies)))
+
+print("Energy MSE (Polynomial):", np.mean((true_energies - polynomial_pred_energies) ** 2))
+print("Energy MAE (Polynomial):", np.mean(np.abs(true_energies - polynomial_pred_energies)))
+
+image.set_calculator(AMPtorch(polynomial_trainer))
 image.get_potential_energy()
