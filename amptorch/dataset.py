@@ -18,7 +18,7 @@ class AtomsDataset(Dataset):
     ):
         self.images = images
         self.forcetraining = forcetraining
-
+        print('AtomsDataset descriptor setup:', descriptor_setup)
         fp_scheme, fp_params, cutoff_params, elements = descriptor_setup
         if fp_scheme == "gaussian":
             self.descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)
