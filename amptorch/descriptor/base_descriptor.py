@@ -96,8 +96,10 @@ class BaseDescriptor(ABC):
 
             try:
                 current_snapshot_grp = db[str(0)]
+                print('current snapshot group [0] exists', current_snapshot_grp)
             except Exception:
                 current_snapshot_grp = db.create_group(str(0))
+                print('current snapshot group [0] created', current_snapshot_grp)
 
             num_desc_list = []
             index_arr_dict = {}
@@ -116,8 +118,10 @@ class BaseDescriptor(ABC):
 
                     try:
                         current_element_grp = current_snapshot_grp[element]
+                        print('current element group exists', element, current_element_grp)
                     except Exception:
                         current_element_grp = current_snapshot_grp.create_group(element)
+                        print('current element group created', element, current_element_grp)
 
                     if calc_derivatives:
                         try:
@@ -135,6 +139,7 @@ class BaseDescriptor(ABC):
                             fp_primes_size = np.array(
                                 current_element_grp["fp_primes_size"]
                             )
+                            print('loaded existing fingerprints')
                         except Exception:
                             (
                                 size_info,
@@ -149,6 +154,7 @@ class BaseDescriptor(ABC):
                                 calc_derivatives=calc_derivatives,
                                 log=log,
                             )
+                            print('calculating fingerprints')
 
                             if save_fps:
                                 current_element_grp.create_dataset(
@@ -181,6 +187,7 @@ class BaseDescriptor(ABC):
                         try:
                             size_info = np.array(current_element_grp["size_info"])
                             fps = np.array(current_element_grp["fps"])
+                            print('loaded existing fingerprints')
                         except Exception:
                             size_info, fps, _, _, _, _ = self.calculate_fingerprints(
                                 image,
@@ -188,6 +195,7 @@ class BaseDescriptor(ABC):
                                 calc_derivatives=calc_derivatives,
                                 log=log,
                             )
+                            print('calculating fingerprints')
 
                             if save_fps:
                                 current_element_grp.create_dataset(
