@@ -38,7 +38,7 @@ elements = ["Cu", "C", "O"]
 
 cosine_cutoff_params = {'cutoff_func': 'Cosine'}
 
-polynomial_cutoff_params = {'cutoff_func': 'Cosine', 'gamma': 2.0}
+polynomial_cutoff_params = {'cutoff_func': 'Polynomial', 'gamma': 2.0}
 
 config = {
     "model": {"get_forces": True, "num_layers": 3, "num_nodes": 5},
