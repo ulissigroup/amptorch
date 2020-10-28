@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/ulissigroup/amptorch.svg?branch=master)](https://travis-ci.org/ulissigroup/amptorch)
-[![Coverage Status](https://coveralls.io/repos/github/ulissigroup/amptorch/badge.svg?branch=master)](https://coveralls.io/github/ulissigroup/amptorch?branch=master)
+[![ulissigroup](https://circleci.com/gh/ulissigroup/amptorch.svg?style=svg)](https://app.circleci.com/pipelines/github/ulissigroup/amptorch)
 ## *AMPtorch*: Atomistic Machine-learning Package - PyTorch
 
 *AMPtorch* is a PyTorch implementation of the [Atomistic Machine-learning Package](https://amp.readthedocs.io/en/latest/) (AMP) code that seeks to provide users with improved performance and flexibility as compared to the original code. The implementation does so by benefiting from state-of-the-art machine learning methods and techniques to be optimized in conjunction with high-throughput supercomputers. *AMPtorch* is built on top of [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/en/latest/) and [Skorch](https://skorch.readthedocs.io/en/stable/).
