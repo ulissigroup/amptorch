@@ -96,10 +96,8 @@ class BaseDescriptor(ABC):
 
             try:
                 current_snapshot_grp = db[str(0)]
-                print('current snapshot group [0] exists', current_snapshot_grp)
             except Exception:
                 current_snapshot_grp = db.create_group(str(0))
-                print('current snapshot group [0] created', current_snapshot_grp)
 
             num_desc_list = []
             index_arr_dict = {}
@@ -118,10 +116,8 @@ class BaseDescriptor(ABC):
 
                     try:
                         current_element_grp = current_snapshot_grp[element]
-                        print('current element group exists', element, current_element_grp)
                     except Exception:
                         current_element_grp = current_snapshot_grp.create_group(element)
-                        print('current element group created', element, current_element_grp)
 
                     if calc_derivatives:
                         try:
