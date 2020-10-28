@@ -40,7 +40,7 @@ config = {
     "optim": {
         "device": "cpu",
         "force_coefficient": 0.04,
-        "lr": 1e-3,
+        "lr": 1e-2,
         "batch_size": 10,
         "epochs": 300,
         "loss": "mse",
@@ -96,18 +96,18 @@ def test_training():
     torch.set_num_threads(1)
 
     ### train only
-    # energy+mae loss
-    config["model"]["get_forces"] = False
-    config["optim"]["force_coefficient"] = 0
-    config["optim"]["loss"] = "mae"
-    get_energy_metrics(config)
-    print("Train energy only success!")
     # energy+forces+mse loss
     config["model"]["get_forces"] = True
     config["optim"]["force_coefficient"] = 0.04
     config["optim"]["loss"] = "mse"
     get_force_metrics(config)
     print("Train energy+forces success!")
+    # energy+mae loss
+    config["model"]["get_forces"] = False
+    config["optim"]["force_coefficient"] = 0
+    config["optim"]["loss"] = "mae"
+    get_energy_metrics(config)
+    print("Train energy only success!")
 
     ### train+val
     # energy only
