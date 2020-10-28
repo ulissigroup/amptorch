@@ -9,6 +9,49 @@ from ..util import _gen_2Darray_for_ffi, list_symbols_to_indices
 from ._libsymf import ffi, lib
 
 
+class GaussianDescriptorSet:
+    # TODO:
+    #  - convert default settings to self.full-list descriptor set
+    #  - convert element-wise settings to self.full-list descriptor set
+    #  - validate full-list descriptor set and save as self.full-list descriptor set
+    #  - convert self.full-list descriptor set to various formats required by Gaussian
+
+    def __init__(self, elements, Gs, pair_interactions=None, triplet_interactions=None):
+        self.elements = elements
+        self.pair_interactions = self._validate_pair_interactions(pair_interactions, elements)
+        self.triplet_interactions = self._validate_triple_interactionstriplet_interactions, elements)
+        self.g2s, self.g4s = self.process_raw_gs(Gs)
+
+    def _validate_pair_interactions(self, pair_interactions, elements):
+        return
+
+    def _validate_triplet_interactions(self, triplet_interactions, elements):
+        return
+
+    def process_raw_gs(self, Gs):
+        if sorted(Gs.keys()) == sorted(self.elements):
+            # return self.process_preformated_gs(Gs)
+
+        for element in self.elements:
+            if element in self.Gs:
+                self.descriptor_setup[
+                    element
+                ] = self._prepare_descriptor_parameters_element(
+                    self.Gs[element], self.element_indices
+                )
+            elif "default" in self.Gs:
+                self.descriptor_setup[
+                    element
+                ] = self._prepare_descriptor_parameters_element(
+                    self.Gs["default"], self.element_indices
+                )
+            else:
+                raise NotImplementedError(
+                    "Symmetry function parameters not defined properly"
+                )
+
+
+
 class Gaussian(BaseDescriptor):
     def __init__(self, Gs, elements, cutoff_func="cosine", gamma=None):
         super().__init__()
