@@ -135,7 +135,6 @@ class BaseDescriptor(ABC):
                             fp_primes_size = np.array(
                                 current_element_grp["fp_primes_size"]
                             )
-                            print('loaded existing fingerprints')
                         except Exception:
                             (
                                 size_info,
@@ -150,7 +149,6 @@ class BaseDescriptor(ABC):
                                 calc_derivatives=calc_derivatives,
                                 log=log,
                             )
-                            print('calculating fingerprints')
 
                             if save_fps:
                                 current_element_grp.create_dataset(
