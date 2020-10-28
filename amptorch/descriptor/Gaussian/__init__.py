@@ -107,9 +107,9 @@ class Gaussian(BaseDescriptor):
         if "G5" in Gs:
             descriptor_setup += [
                 [5, element_indices[i], element_indices[j], cutoff, eta, zeta, gamma]
-                for eta in Gs["G4"]["etas"]
-                for zeta in Gs["G4"]["zetas"]
-                for gamma in Gs["G4"]["gammas"]
+                for eta in Gs["G5"]["etas"]
+                for zeta in Gs["G5"]["zetas"]
+                for gamma in Gs["G5"]["gammas"]
                 for i in range(len(element_indices))
                 for j in range(i, len(element_indices))
             ]
