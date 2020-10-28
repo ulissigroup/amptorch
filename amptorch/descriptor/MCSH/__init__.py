@@ -133,7 +133,6 @@ class AtomisticMCSH(BaseDescriptor):
 
     def get_descriptor_setup_hash(self):
         # set self.descriptor_setup_hash
-
         string = ""
         for desc in self.descriptor_setup:
             for num in desc:

@@ -51,7 +51,7 @@ ATOM_INDEX_TO_SYMBOL_DICT = {
     50: "Sn",
     51: "Sb",
     52: "Te",
-    53: "In",
+    53: "I",
     54: "Xe",
     55: "Cs",
     56: "Ba",
