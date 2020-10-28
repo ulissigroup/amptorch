@@ -221,6 +221,7 @@ class AtomsTrainer:
         return predictions
 
     def load_pretrained(self, checkpoint_path=None):
+        print(f"Loading checkpoint from {checkpoint_path}")
         self.load()
         self.net.initialize()
         self.pretrained = True
