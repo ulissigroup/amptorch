@@ -45,7 +45,7 @@ jobs:
             source /home/circleci/miniconda/etc/profile.d/conda.sh
             conda activate amptorch
             pip install -e .
-	    python -m unittest
+            python -m unittest
 
       - run:
           name: Run black
