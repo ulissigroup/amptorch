@@ -159,7 +159,7 @@ class Gaussian(BaseDescriptor):
         return np.array(descriptor_setup)
 
     def get_descriptor_setup_hash(self):
-        string = ""
+        string = 'cosine' if self.cutoff_func == 'cosine' else 'polynomial%.15f' % self.gamma
         for element in self.descriptor_setup.keys():
             string += element
             for desc in self.descriptor_setup[element]:
@@ -296,7 +296,7 @@ class Gaussian(BaseDescriptor):
             )
             x_p = _gen_2Darray_for_ffi(x, ffi)
             
-            errno = lib.lib.calculate_sf_cos_noderiv(
+            errno = lib.calculate_sf_cos_noderiv(
                     cell_p,
                     cart_p,
                     scale_p,
