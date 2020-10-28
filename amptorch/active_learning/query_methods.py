@@ -57,7 +57,6 @@ def max_uncertainty(_, sample_candidates, samples_to_retrain, parent_calc):
     queried_images = compute_query(images_to_query, parent_calc)
     return queried_images
 
-
 def final_query(_, sample_candidates, samples_to_retrain, parent_calc):
     if len(sample_candidates) <= samples_to_retrain:
         warnings.warn(
@@ -71,6 +70,21 @@ def final_query(_, sample_candidates, samples_to_retrain, parent_calc):
     queried_images = compute_query(images_to_query, parent_calc)
     return queried_images
 
+def final_max_query(_, sample_candidates, samples_to_retrain, parent_calc):
+    if len(sample_candidates) <= samples_to_retrain:
+        warnings.warn(
+            "# of samples exceeds # of available candidates! Defaulting to all available candidates",
+            stacklevel=2,
+        )
+        samples_to_retrain = len(sample_candidates) - 1
+    uncertainty = np.array(
+        [atoms.info["uncertainty"][0] for atoms in sample_candidates]
+    )
+    query_idx = np.argsort(uncertainty)[-samples_to_retrain:].tolist()
+    query_idx.append(-1)
+    images_to_query = [sample_candidates[idx] for idx in query_idx]
+    queried_images = compute_query(images_to_query, parent_calc)
+    return queried_images
 
 def compute_query(images_to_calculate, parent_calc):
     queried_images = []
@@ -88,7 +102,6 @@ def compute_query(images_to_calculate, parent_calc):
         os.chdir(cwd)
         os.system("rm -rf ./temp")
     return queried_images
-
 
 def termination_criteria(termination_args, method="iter"):
     """Criteria for AL termination
