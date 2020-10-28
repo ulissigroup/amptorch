@@ -9,8 +9,10 @@ def target_extractor(y):
     elif len(y) == 1:
         return (to_numpy(y[0]), None)
 
+
 def to_tensor(X, device, accept_sparse=False):
     return X
+
 
 class train_end_load_best_loss(skorch.callbacks.base.Callback):
     def __init__(self, filename):

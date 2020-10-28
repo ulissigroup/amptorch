@@ -4,7 +4,7 @@
 #include "calculate_sf.h"
 
 extern "C" int calculate_sf_cos(double** cell, double** cart, double** scale, int* pbc_bools,
-                            int* atom_i, int natoms, int* cal_atoms, int cal_num, 
+                            int* atom_i, int natoms, int* cal_atoms, int cal_num,
                             int** params_i, double** params_d, int nsyms,
                             double** symf, double** dsymf) {
     // cell: cell info of structure
@@ -20,7 +20,7 @@ extern "C" int calculate_sf_cos(double** cell, double** cart, double** scale, in
 
     // symf: symmetry function vector ([# of atoms, # of symfuncs])
 
-    // dsymf: derivative of symmetry function vector 
+    // dsymf: derivative of symmetry function vector
     // originally, dsymf is 4D array (dimension: [# of atoms, # of symfuncs, # of atoms, 3])
     // in this function, we use 2D array ([# of atoms *  # of symfuncs, # of atoms * 3])
 
@@ -55,14 +55,14 @@ extern "C" int calculate_sf_cos(double** cell, double** cart, double** scale, in
     for (int s=0; s < nsyms; ++s) {
         if (cutoff < params_d[s][0])
             cutoff = params_d[s][0];
-        
+
         if ((params_i[s][0] == 4 || params_i[s][0] == 5) &&
              params_d[s][2] < 1.0)
             return 2;
-        
+
         powtwo[s] = pow(2, 1.-params_d[s][2]);
     }
-    
+
     total_bins = 1;
 
     // calculate the distance between cell plane
@@ -94,14 +94,14 @@ extern "C" int calculate_sf_cos(double** cell, double** cart, double** scale, in
         nbins[i] = ceil(plane_d[i]/cutoff);
         total_bins *= nbins[i];
     }
-    
+
     int *atoms_bin = new int[total_bins];
     for (int i=0; i<total_bins; ++i)
         atoms_bin[i] = 0;
 
     // cut the cell into numerous bins (evenly according to nbins)
     // assign the bin index to each atom (which bin does the atom belong to)
-    // note bin_i is an integer array, and 
+    // note bin_i is an integer array, and
     for (int i=0; i<natoms; ++i) {
         for (int j=0; j<3; ++j) {
             bin_i[i][j] = (int) (scale[i][j] * (double) nbins[j]);
@@ -136,7 +136,7 @@ extern "C" int calculate_sf_cos(double** cell, double** cart, double** scale, in
         double* nei_list_d = new double[max_atoms_bin * 4 * neigh_check_bins];
         int*    nei_list_i = new int[max_atoms_bin * 2 * neigh_check_bins];
         nneigh = 0;
-        
+
         for (int j=0; j < 3; ++j) {
             max_bin[j] = bin_i[i][j] + bin_range[j];
             min_bin[j] = bin_i[i][j] - bin_range[j];
@@ -151,19 +151,19 @@ extern "C" int calculate_sf_cos(double** cell, double** cart, double** scale, in
                     cell_shift[0] = (dx-pbc_bin[0]) / nbins[0];
                     cell_shift[1] = (dy-pbc_bin[1]) / nbins[1];
                     cell_shift[2] = (dz-pbc_bin[2]) / nbins[2];
-                    
+
                     bin_num = pbc_bin[0] + nbins[0]*pbc_bin[1] + nbins[0]*nbins[1]*pbc_bin[2];
-                    
+
                     for (int j=0; j < natoms; ++j) {
                         // what does this mean?
                         // only consider atom in the current bin (not other atoms in the cell that's not in this bin)
                         if (bin_i[j][3] != bin_num)
                             continue;
-                        
+
                         // take care of pbc
                         if (!pbc_bools[0] && cell_shift[0] != 0)
                             continue;
-                        
+
                         if (!pbc_bools[1] && cell_shift[1] != 0)
                             continue;
 
@@ -180,9 +180,9 @@ extern "C" int calculate_sf_cos(double** cell, double** cart, double** scale, in
                         }
 
                         tmp = sqrt(total_shift[0]*total_shift[0] + total_shift[1]*total_shift[1] + total_shift[2]*total_shift[2]);
-                        
+
                         if (tmp < cutoff) {
-                            for (int a=0; a < 3; ++a) 
+                            for (int a=0; a < 3; ++a)
                                 nei_list_d[nneigh*4 + a] = total_shift[a];
                             nei_list_d[nneigh*4 + 3] = tmp;
                             nei_list_i[nneigh*2]    = atom_i[j];
@@ -248,8 +248,8 @@ extern "C" int calculate_sf_cos(double** cell, double** cart, double** scale, in
                 precal[11] = rRij*rRij+rRik*rRik;
 
                 for (int s=0; s < nsyms; ++s) {
-                    if ((params_i[s][0] == 4) && 
-                       (((params_i[s][1] == nei_list_i[j*2]) && (params_i[s][2] == nei_list_i[k*2])) || 
+                    if ((params_i[s][0] == 4) &&
+                       (((params_i[s][1] == nei_list_i[j*2]) && (params_i[s][2] == nei_list_i[k*2])) ||
                         ((params_i[s][1] == nei_list_i[k*2]) && (params_i[s][2] == nei_list_i[j*2]))) ) { // FIXME:
 
                         precal[0] = cutf(rRij / params_d[s][0]);
@@ -320,11 +320,11 @@ extern "C" int calculate_sf_cos(double** cell, double** cart, double** scale, in
                 }
             }
         }
-        
+
         delete[] nei_list_d;
         delete[] nei_list_i;
     }
-    
+
     for (int i=0; i<natoms; i++) {
         delete[] bin_i[i];
     }
@@ -337,7 +337,7 @@ extern "C" int calculate_sf_cos(double** cell, double** cart, double** scale, in
 
 
 extern "C" int calculate_sf_cos_noderiv(double** cell, double** cart, double** scale, int* pbc_bools,
-                            int* atom_i, int natoms, int* cal_atoms, int cal_num, 
+                            int* atom_i, int natoms, int* cal_atoms, int cal_num,
                             int** params_i, double** params_d, int nsyms,
                             double** symf) {
     // cell: cell info of structure
@@ -353,7 +353,7 @@ extern "C" int calculate_sf_cos_noderiv(double** cell, double** cart, double** s
 
     // symf: symmetry function vector ([# of atoms, # of symfuncs])
 
-    // dsymf: derivative of symmetry function vector 
+    // dsymf: derivative of symmetry function vector
     // originally, dsymf is 4D array (dimension: [# of atoms, # of symfuncs, # of atoms, 3])
     // in this function, we use 2D array ([# of atoms *  # of symfuncs, # of atoms * 3])
 
@@ -388,14 +388,14 @@ extern "C" int calculate_sf_cos_noderiv(double** cell, double** cart, double** s
     for (int s=0; s < nsyms; ++s) {
         if (cutoff < params_d[s][0])
             cutoff = params_d[s][0];
-        
+
         if ((params_i[s][0] == 4 || params_i[s][0] == 5) &&
              params_d[s][2] < 1.0)
             return 2;
-        
+
         powtwo[s] = pow(2, 1.-params_d[s][2]);
     }
-    
+
     total_bins = 1;
 
     // calculate the distance between cell plane
@@ -427,14 +427,14 @@ extern "C" int calculate_sf_cos_noderiv(double** cell, double** cart, double** s
         nbins[i] = ceil(plane_d[i]/cutoff);
         total_bins *= nbins[i];
     }
-    
+
     int *atoms_bin = new int[total_bins];
     for (int i=0; i<total_bins; ++i)
         atoms_bin[i] = 0;
 
     // cut the cell into numerous bins (evenly according to nbins)
     // assign the bin index to each atom (which bin does the atom belong to)
-    // note bin_i is an integer array, and 
+    // note bin_i is an integer array, and
     for (int i=0; i<natoms; ++i) {
         for (int j=0; j<3; ++j) {
             bin_i[i][j] = (int) (scale[i][j] * (double) nbins[j]);
@@ -469,7 +469,7 @@ extern "C" int calculate_sf_cos_noderiv(double** cell, double** cart, double** s
         double* nei_list_d = new double[max_atoms_bin * 4 * neigh_check_bins];
         int*    nei_list_i = new int[max_atoms_bin * 2 * neigh_check_bins];
         nneigh = 0;
-        
+
         for (int j=0; j < 3; ++j) {
             max_bin[j] = bin_i[i][j] + bin_range[j];
             min_bin[j] = bin_i[i][j] - bin_range[j];
@@ -484,18 +484,18 @@ extern "C" int calculate_sf_cos_noderiv(double** cell, double** cart, double** s
                     cell_shift[0] = (dx-pbc_bin[0]) / nbins[0];
                     cell_shift[1] = (dy-pbc_bin[1]) / nbins[1];
                     cell_shift[2] = (dz-pbc_bin[2]) / nbins[2];
-                    
+
                     bin_num = pbc_bin[0] + nbins[0]*pbc_bin[1] + nbins[0]*nbins[1]*pbc_bin[2];
-                    
+
                     for (int j=0; j < natoms; ++j) {
                         // what does this mean?
                         if (bin_i[j][3] != bin_num)
                             continue;
-                        
+
                         // take care of pbc
                         if (!pbc_bools[0] && cell_shift[0] != 0)
                             continue;
-                        
+
                         if (!pbc_bools[1] && cell_shift[1] != 0)
                             continue;
 
@@ -512,9 +512,9 @@ extern "C" int calculate_sf_cos_noderiv(double** cell, double** cart, double** s
                         }
 
                         tmp = sqrt(total_shift[0]*total_shift[0] + total_shift[1]*total_shift[1] + total_shift[2]*total_shift[2]);
-                        
+
                         if (tmp < cutoff) {
-                            for (int a=0; a < 3; ++a) 
+                            for (int a=0; a < 3; ++a)
                                 nei_list_d[nneigh*4 + a] = total_shift[a];
                             nei_list_d[nneigh*4 + 3] = tmp;
                             nei_list_i[nneigh*2]    = atom_i[j];
@@ -572,8 +572,8 @@ extern "C" int calculate_sf_cos_noderiv(double** cell, double** cart, double** s
                 precal[11] = rRij*rRij+rRik*rRik;
 
                 for (int s=0; s < nsyms; ++s) {
-                    if ((params_i[s][0] == 4) && 
-                       (((params_i[s][1] == nei_list_i[j*2]) && (params_i[s][2] == nei_list_i[k*2])) || 
+                    if ((params_i[s][0] == 4) &&
+                       (((params_i[s][1] == nei_list_i[j*2]) && (params_i[s][2] == nei_list_i[k*2])) ||
                         ((params_i[s][1] == nei_list_i[k*2]) && (params_i[s][2] == nei_list_i[j*2]))) ) { // FIXME:
 
                         precal[0] = cutf(rRij / params_d[s][0]);
@@ -620,11 +620,11 @@ extern "C" int calculate_sf_cos_noderiv(double** cell, double** cart, double** s
                 }
             }
         }
-        
+
         delete[] nei_list_d;
         delete[] nei_list_i;
     }
-    
+
     for (int i=0; i<natoms; i++) {
         delete[] bin_i[i];
     }
@@ -635,7 +635,7 @@ extern "C" int calculate_sf_cos_noderiv(double** cell, double** cart, double** s
 
 
 extern "C" int calculate_sf_poly(double** cell, double** cart, double** scale, int* pbc_bools,
-                            int* atom_i, int natoms, int* cal_atoms, int cal_num, 
+                            int* atom_i, int natoms, int* cal_atoms, int cal_num,
                             int** params_i, double** params_d, int nsyms,
                             double** symf, double** dsymf, double gamma) {
     // cell: cell info of structure
@@ -651,7 +651,7 @@ extern "C" int calculate_sf_poly(double** cell, double** cart, double** scale, i
 
     // symf: symmetry function vector ([# of atoms, # of symfuncs])
 
-    // dsymf: derivative of symmetry function vector 
+    // dsymf: derivative of symmetry function vector
     // originally, dsymf is 4D array (dimension: [# of atoms, # of symfuncs, # of atoms, 3])
     // in this function, we use 2D array ([# of atoms *  # of symfuncs, # of atoms * 3])
 
@@ -686,14 +686,14 @@ extern "C" int calculate_sf_poly(double** cell, double** cart, double** scale, i
     for (int s=0; s < nsyms; ++s) {
         if (cutoff < params_d[s][0])
             cutoff = params_d[s][0];
-        
+
         if ((params_i[s][0] == 4 || params_i[s][0] == 5) &&
              params_d[s][2] < 1.0)
             return 2;
-        
+
         powtwo[s] = pow(2, 1.-params_d[s][2]);
     }
-    
+
     total_bins = 1;
 
     // calculate the distance between cell plane
@@ -725,14 +725,14 @@ extern "C" int calculate_sf_poly(double** cell, double** cart, double** scale, i
         nbins[i] = ceil(plane_d[i]/cutoff);
         total_bins *= nbins[i];
     }
-    
+
     int *atoms_bin = new int[total_bins];
     for (int i=0; i<total_bins; ++i)
         atoms_bin[i] = 0;
 
     // cut the cell into numerous bins (evenly according to nbins)
     // assign the bin index to each atom (which bin does the atom belong to)
-    // note bin_i is an integer array, and 
+    // note bin_i is an integer array, and
     for (int i=0; i<natoms; ++i) {
         for (int j=0; j<3; ++j) {
             bin_i[i][j] = (int) (scale[i][j] * (double) nbins[j]);
@@ -767,7 +767,7 @@ extern "C" int calculate_sf_poly(double** cell, double** cart, double** scale, i
         double* nei_list_d = new double[max_atoms_bin * 4 * neigh_check_bins];
         int*    nei_list_i = new int[max_atoms_bin * 2 * neigh_check_bins];
         nneigh = 0;
-        
+
         for (int j=0; j < 3; ++j) {
             max_bin[j] = bin_i[i][j] + bin_range[j];
             min_bin[j] = bin_i[i][j] - bin_range[j];
@@ -782,19 +782,19 @@ extern "C" int calculate_sf_poly(double** cell, double** cart, double** scale, i
                     cell_shift[0] = (dx-pbc_bin[0]) / nbins[0];
                     cell_shift[1] = (dy-pbc_bin[1]) / nbins[1];
                     cell_shift[2] = (dz-pbc_bin[2]) / nbins[2];
-                    
+
                     bin_num = pbc_bin[0] + nbins[0]*pbc_bin[1] + nbins[0]*nbins[1]*pbc_bin[2];
-                    
+
                     for (int j=0; j < natoms; ++j) {
                         // what does this mean?
                         // only consider atom in the current bin (not other atoms in the cell that's not in this bin)
                         if (bin_i[j][3] != bin_num)
                             continue;
-                        
+
                         // take care of pbc
                         if (!pbc_bools[0] && cell_shift[0] != 0)
                             continue;
-                        
+
                         if (!pbc_bools[1] && cell_shift[1] != 0)
                             continue;
 
@@ -811,9 +811,9 @@ extern "C" int calculate_sf_poly(double** cell, double** cart, double** scale, i
                         }
 
                         tmp = sqrt(total_shift[0]*total_shift[0] + total_shift[1]*total_shift[1] + total_shift[2]*total_shift[2]);
-                        
+
                         if (tmp < cutoff) {
-                            for (int a=0; a < 3; ++a) 
+                            for (int a=0; a < 3; ++a)
                                 nei_list_d[nneigh*4 + a] = total_shift[a];
                             nei_list_d[nneigh*4 + 3] = tmp;
                             nei_list_i[nneigh*2]    = atom_i[j];
@@ -834,7 +834,7 @@ extern "C" int calculate_sf_poly(double** cell, double** cart, double** scale, i
 
             for (int s=0; s < nsyms; ++s) {
                 if ((params_i[s][0] == 2) && (params_i[s][1] == nei_list_i[j*2])) { // FIXME:
-                    precal[0] = poly_cutf(rRij / params_d[s][0], gamma);                    
+                    precal[0] = poly_cutf(rRij / params_d[s][0], gamma);
                     precal[1] = dpoly_cutf(rRij, params_d[s][0], gamma);
                     symf[ii][s] += G2(rRij, precal, params_d[s], dradtmp); // FIXME: index
                     tmpd[0] = dradtmp*vecij[0];
@@ -878,8 +878,8 @@ extern "C" int calculate_sf_poly(double** cell, double** cart, double** scale, i
                 precal[11] = rRij*rRij+rRik*rRik;
 
                 for (int s=0; s < nsyms; ++s) {
-                    if ((params_i[s][0] == 4) && 
-                       (((params_i[s][1] == nei_list_i[j*2]) && (params_i[s][2] == nei_list_i[k*2])) || 
+                    if ((params_i[s][0] == 4) &&
+                       (((params_i[s][1] == nei_list_i[j*2]) && (params_i[s][2] == nei_list_i[k*2])) ||
                         ((params_i[s][1] == nei_list_i[k*2]) && (params_i[s][2] == nei_list_i[j*2]))) ) { // FIXME:
 
                         precal[0] = poly_cutf(rRij / params_d[s][0], gamma);
@@ -948,11 +948,11 @@ extern "C" int calculate_sf_poly(double** cell, double** cart, double** scale, i
                 }
             }
         }
-        
+
         delete[] nei_list_d;
         delete[] nei_list_i;
     }
-    
+
     for (int i=0; i<natoms; i++) {
         delete[] bin_i[i];
     }
@@ -965,7 +965,7 @@ extern "C" int calculate_sf_poly(double** cell, double** cart, double** scale, i
 
 
 extern "C" int calculate_sf_poly_noderiv(double** cell, double** cart, double** scale, int* pbc_bools,
-                            int* atom_i, int natoms, int* cal_atoms, int cal_num, 
+                            int* atom_i, int natoms, int* cal_atoms, int cal_num,
                             int** params_i, double** params_d, int nsyms,
                             double** symf, double gamma) {
     // cell: cell info of structure
@@ -981,7 +981,7 @@ extern "C" int calculate_sf_poly_noderiv(double** cell, double** cart, double** 
 
     // symf: symmetry function vector ([# of atoms, # of symfuncs])
 
-    // dsymf: derivative of symmetry function vector 
+    // dsymf: derivative of symmetry function vector
     // originally, dsymf is 4D array (dimension: [# of atoms, # of symfuncs, # of atoms, 3])
     // in this function, we use 2D array ([# of atoms *  # of symfuncs, # of atoms * 3])
 
@@ -1016,14 +1016,14 @@ extern "C" int calculate_sf_poly_noderiv(double** cell, double** cart, double** 
     for (int s=0; s < nsyms; ++s) {
         if (cutoff < params_d[s][0])
             cutoff = params_d[s][0];
-        
+
         if ((params_i[s][0] == 4 || params_i[s][0] == 5) &&
              params_d[s][2] < 1.0)
             return 2;
-        
+
         powtwo[s] = pow(2, 1.-params_d[s][2]);
     }
-    
+
     total_bins = 1;
 
     // calculate the distance between cell plane
@@ -1055,14 +1055,14 @@ extern "C" int calculate_sf_poly_noderiv(double** cell, double** cart, double** 
         nbins[i] = ceil(plane_d[i]/cutoff);
         total_bins *= nbins[i];
     }
-    
+
     int *atoms_bin = new int[total_bins];
     for (int i=0; i<total_bins; ++i)
         atoms_bin[i] = 0;
 
     // cut the cell into numerous bins (evenly according to nbins)
     // assign the bin index to each atom (which bin does the atom belong to)
-    // note bin_i is an integer array, and 
+    // note bin_i is an integer array, and
     for (int i=0; i<natoms; ++i) {
         for (int j=0; j<3; ++j) {
             bin_i[i][j] = (int) (scale[i][j] * (double) nbins[j]);
@@ -1097,7 +1097,7 @@ extern "C" int calculate_sf_poly_noderiv(double** cell, double** cart, double** 
         double* nei_list_d = new double[max_atoms_bin * 4 * neigh_check_bins];
         int*    nei_list_i = new int[max_atoms_bin * 2 * neigh_check_bins];
         nneigh = 0;
-        
+
         for (int j=0; j < 3; ++j) {
             max_bin[j] = bin_i[i][j] + bin_range[j];
             min_bin[j] = bin_i[i][j] - bin_range[j];
@@ -1112,18 +1112,18 @@ extern "C" int calculate_sf_poly_noderiv(double** cell, double** cart, double** 
                     cell_shift[0] = (dx-pbc_bin[0]) / nbins[0];
                     cell_shift[1] = (dy-pbc_bin[1]) / nbins[1];
                     cell_shift[2] = (dz-pbc_bin[2]) / nbins[2];
-                    
+
                     bin_num = pbc_bin[0] + nbins[0]*pbc_bin[1] + nbins[0]*nbins[1]*pbc_bin[2];
-                    
+
                     for (int j=0; j < natoms; ++j) {
                         // what does this mean?
                         if (bin_i[j][3] != bin_num)
                             continue;
-                        
+
                         // take care of pbc
                         if (!pbc_bools[0] && cell_shift[0] != 0)
                             continue;
-                        
+
                         if (!pbc_bools[1] && cell_shift[1] != 0)
                             continue;
 
@@ -1140,9 +1140,9 @@ extern "C" int calculate_sf_poly_noderiv(double** cell, double** cart, double** 
                         }
 
                         tmp = sqrt(total_shift[0]*total_shift[0] + total_shift[1]*total_shift[1] + total_shift[2]*total_shift[2]);
-                        
+
                         if (tmp < cutoff) {
-                            for (int a=0; a < 3; ++a) 
+                            for (int a=0; a < 3; ++a)
                                 nei_list_d[nneigh*4 + a] = total_shift[a];
                             nei_list_d[nneigh*4 + 3] = tmp;
                             nei_list_i[nneigh*2]    = atom_i[j];
@@ -1199,8 +1199,8 @@ extern "C" int calculate_sf_poly_noderiv(double** cell, double** cart, double** 
                 precal[11] = rRij*rRij+rRik*rRik;
 
                 for (int s=0; s < nsyms; ++s) {
-                    if ((params_i[s][0] == 4) && 
-                       (((params_i[s][1] == nei_list_i[j*2]) && (params_i[s][2] == nei_list_i[k*2])) || 
+                    if ((params_i[s][0] == 4) &&
+                       (((params_i[s][1] == nei_list_i[j*2]) && (params_i[s][2] == nei_list_i[k*2])) ||
                         ((params_i[s][1] == nei_list_i[k*2]) && (params_i[s][2] == nei_list_i[j*2]))) ) { // FIXME:
 
                         precal[0] = poly_cutf(rRij / params_d[s][0], gamma);
@@ -1245,11 +1245,11 @@ extern "C" int calculate_sf_poly_noderiv(double** cell, double** cart, double** 
                 }
             }
         }
-        
+
         delete[] nei_list_d;
         delete[] nei_list_i;
     }
-    
+
     for (int i=0; i<natoms; i++) {
         delete[] bin_i[i];
     }

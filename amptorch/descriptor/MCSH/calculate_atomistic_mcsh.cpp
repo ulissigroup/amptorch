@@ -168,7 +168,7 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                         // take care of pbc
                         if (!pbc_bools[0] && cell_shift[0] != 0)
                             continue;
-                        
+
                         if (!pbc_bools[1] && cell_shift[1] != 0)
                             continue;
 
@@ -206,7 +206,7 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
             double M = 0;
             if (mcsh_type == 1){
                 double m_desc[1], deriv[3];
-                
+
                 for (int j = 0; j < nneigh; ++j) {
                     double dMdx = 0, dMdy = 0, dMdz = 0;
 
@@ -326,16 +326,16 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                          sum_miu4*sum_miu4 + sum_miu5*sum_miu5 + sum_miu6*sum_miu6);
                 int dMdx, dMdy, dMdz;
                 for (int j = 0; j < nneigh; ++j) {
-                    dMdx = (1/M) * (sum_miu1 * sum_dmiu1_dxj[j] + sum_miu2 * sum_dmiu2_dxj[j] + 
-                                    sum_miu3 * sum_dmiu3_dxj[j] + sum_miu4 * sum_dmiu4_dxj[j] + 
+                    dMdx = (1/M) * (sum_miu1 * sum_dmiu1_dxj[j] + sum_miu2 * sum_dmiu2_dxj[j] +
+                                    sum_miu3 * sum_dmiu3_dxj[j] + sum_miu4 * sum_dmiu4_dxj[j] +
                                     sum_miu5 * sum_dmiu5_dxj[j] + sum_miu6 * sum_dmiu6_dxj[j]) * weight;
 
-                    dMdy = (1/M) * (sum_miu1 * sum_dmiu1_dyj[j] + sum_miu2 * sum_dmiu2_dyj[j] + 
-                                    sum_miu3 * sum_dmiu3_dyj[j] + sum_miu4 * sum_dmiu4_dyj[j] + 
+                    dMdy = (1/M) * (sum_miu1 * sum_dmiu1_dyj[j] + sum_miu2 * sum_dmiu2_dyj[j] +
+                                    sum_miu3 * sum_dmiu3_dyj[j] + sum_miu4 * sum_dmiu4_dyj[j] +
                                     sum_miu5 * sum_dmiu5_dyj[j] + sum_miu6 * sum_dmiu6_dyj[j]) * weight;
 
-                    dMdz = (1/M) * (sum_miu1 * sum_dmiu1_dzj[j] + sum_miu2 * sum_dmiu2_dzj[j] + 
-                                    sum_miu3 * sum_dmiu3_dzj[j] + sum_miu4 * sum_dmiu4_dzj[j] + 
+                    dMdz = (1/M) * (sum_miu1 * sum_dmiu1_dzj[j] + sum_miu2 * sum_dmiu2_dzj[j] +
+                                    sum_miu3 * sum_dmiu3_dzj[j] + sum_miu4 * sum_dmiu4_dzj[j] +
                                     sum_miu5 * sum_dmiu5_dzj[j] + sum_miu6 * sum_dmiu6_dzj[j]) * weight;
 
                     dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3] += dMdx;

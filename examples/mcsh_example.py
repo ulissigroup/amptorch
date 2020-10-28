@@ -22,26 +22,26 @@ for dist in distances:
 
 
 sigmas = np.logspace(np.log10(0.05), np.log10(5.0), num=5)
-MCSHs = {   "MCSHs": {   
-                        "0": {"groups": [1], "sigmas": sigmas},
-                        "1": {"groups": [1], "sigmas": sigmas},
-                        "2": {"groups": [1,2], "sigmas": sigmas},
-                        "3": {"groups": [1,2,3], "sigmas": sigmas},
-                        "4": {"groups": [1,2,3,4], "sigmas": sigmas},
-                        "5": {"groups": [1,2,3,4,5], "sigmas": sigmas},
-                        "6": {"groups": [1,2,3,4,5,6,7], "sigmas": sigmas},
-                        #"7": {"groups": [1,2,3,4,5,6,7,8], "sigmas": sigmas},
-                        #"8": {"groups": [1,2,3,4,5,6,7,8,9,10], "sigmas": sigmas},
-                        #"9": {"groups": [1,2,3,4,5,6,7,8,9,10,11,12], "sigmas": sigmas}
-                  },
-            "atom_gaussians": {
-                        "C": "./MCSH_potential/C_coredensity_5.g",
-                        "O": "./MCSH_potential/O_totaldensity_7.g",
-                        "Cu": "./MCSH_potential/Cu_totaldensity_5.g",
-                  },
-            "cutoff": 8
+MCSHs = {
+    "MCSHs": {
+        "0": {"groups": [1], "sigmas": sigmas},
+        "1": {"groups": [1], "sigmas": sigmas},
+        "2": {"groups": [1, 2], "sigmas": sigmas},
+        "3": {"groups": [1, 2, 3], "sigmas": sigmas},
+        "4": {"groups": [1, 2, 3, 4], "sigmas": sigmas},
+        "5": {"groups": [1, 2, 3, 4, 5], "sigmas": sigmas},
+        "6": {"groups": [1, 2, 3, 4, 5, 6, 7], "sigmas": sigmas},
+        # "7": {"groups": [1,2,3,4,5,6,7,8], "sigmas": sigmas},
+        # "8": {"groups": [1,2,3,4,5,6,7,8,9,10], "sigmas": sigmas},
+        # "9": {"groups": [1,2,3,4,5,6,7,8,9,10,11,12], "sigmas": sigmas}
+    },
+    "atom_gaussians": {
+        "C": "./MCSH_potential/C_coredensity_5.g",
+        "O": "./MCSH_potential/O_totaldensity_7.g",
+        "Cu": "./MCSH_potential/Cu_totaldensity_5.g",
+    },
+    "cutoff": 8,
 }
-
 
 
 elements = ["Cu", "C", "O"]
@@ -49,8 +49,8 @@ config = {
     "model": {"get_forces": False, "num_layers": 3, "num_nodes": 20},
     "optim": {
         "device": "cpu",
-        #"force_coefficient": 0.04,
-	"force_coefficient": 0.0,
+        # "force_coefficient": 0.04,
+        "force_coefficient": 0.0,
         "lr": 1e-2,
         "batch_size": 10,
         "epochs": 100,

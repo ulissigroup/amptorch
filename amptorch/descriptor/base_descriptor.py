@@ -118,7 +118,7 @@ class BaseDescriptor(ABC):
                         current_element_grp = current_snapshot_grp[element]
                     except Exception:
                         current_element_grp = current_snapshot_grp.create_group(element)
- 
+
                     if calc_derivatives:
                         try:
                             size_info = np.array(current_element_grp["size_info"])
@@ -154,9 +154,7 @@ class BaseDescriptor(ABC):
                                 current_element_grp.create_dataset(
                                     "size_info", data=size_info
                                 )
-                                current_element_grp.create_dataset(
-                                    "fps", data=fps
-                                )
+                                current_element_grp.create_dataset("fps", data=fps)
                                 current_element_grp.create_dataset(
                                     "fp_primes_val", data=fp_primes_val
                                 )
@@ -195,9 +193,7 @@ class BaseDescriptor(ABC):
                                 current_element_grp.create_dataset(
                                     "size_info", data=size_info
                                 )
-                                current_element_grp.create_dataset(
-                                    "fps", data=fps
-                                )
+                                current_element_grp.create_dataset("fps", data=fps)
 
                         num_desc_list.append(size_info[2])
                         num_desc_dict[element] = size_info[2]
@@ -299,10 +295,7 @@ class BaseDescriptor(ABC):
                 else:
 
                     size_info, fps, _, _, _, _ = self.calculate_fingerprints(
-                        image,
-                        element,
-                        calc_derivatives=calc_derivatives,
-                        log=log
+                        image, element, calc_derivatives=calc_derivatives, log=log
                     )
 
                     num_desc_list.append(size_info[2])
@@ -316,9 +309,9 @@ class BaseDescriptor(ABC):
         num_desc_max = np.max(num_desc_list)
         image_fp_array = np.zeros((num_atoms, num_desc_max))
         for element in fp_dict.keys():
-            image_fp_array[
-                index_arr_dict[element], : num_desc_dict[element]
-            ] = fp_dict[element]
+            image_fp_array[index_arr_dict[element], : num_desc_dict[element]] = fp_dict[
+                element
+            ]
 
         image_dict["descriptors"] = image_fp_array
         image_dict["num_descriptors"] = num_desc_dict

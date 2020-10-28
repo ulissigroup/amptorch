@@ -12,7 +12,7 @@ double cutf(double frac) {
     // frac = dist / cutoff_dist
     if (frac >= 1.0) {
         return 0;
-    } else { 
+    } else {
         return 0.5 * (1 + cos(M_PI*frac));
     }
 }
@@ -20,7 +20,7 @@ double cutf(double frac) {
 double dcutf(double dist, double cutd) {
     if (dist/cutd >= 1.0) {
         return 0;
-    } else { 
+    } else {
         return -0.5 * M_PI * sin(M_PI*dist/cutd) / cutd;
     }
 }
@@ -29,7 +29,7 @@ double poly_cutf(double frac, double gamma) {
     // frac = dist / cutoff_dist
     if (frac >= 1.0) {
         return 0;
-    } else { 
+    } else {
         return 1.0 + gamma * pow(frac, gamma+1) - (gamma+1) * pow(frac, gamma);
     }
 }
@@ -37,7 +37,7 @@ double poly_cutf(double frac, double gamma) {
 double dpoly_cutf(double dist, double cutd, double gamma) {
     if (dist/cutd >= 1.0) {
         return 0;
-    } else { 
+    } else {
         return gamma * (gamma+1) / cutd * (pow(dist/cutd, gamma) - pow(dist/cutd, gamma-1));
     }
 }

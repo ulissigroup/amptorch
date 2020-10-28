@@ -36,9 +36,9 @@ Gs = {
 
 elements = ["Cu", "C", "O"]
 
-cosine_cutoff_params = {'cutoff_func': 'Cosine'}
+cosine_cutoff_params = {"cutoff_func": "Cosine"}
 
-polynomial_cutoff_params = {'cutoff_func': 'Polynomial', 'gamma': 2.0}
+polynomial_cutoff_params = {"cutoff_func": "Polynomial", "gamma": 2.0}
 
 config = {
     "model": {"get_forces": True, "num_layers": 3, "num_nodes": 5},
@@ -94,8 +94,13 @@ polynomial_pred_energies = np.array(predictions["energy"])
 print("Energy MSE (Cosine):", np.mean((true_energies - cosine_pred_energies) ** 2))
 print("Energy MAE (Cosine):", np.mean(np.abs(true_energies - cosine_pred_energies)))
 
-print("Energy MSE (Polynomial):", np.mean((true_energies - polynomial_pred_energies) ** 2))
-print("Energy MAE (Polynomial):", np.mean(np.abs(true_energies - polynomial_pred_energies)))
+print(
+    "Energy MSE (Polynomial):", np.mean((true_energies - polynomial_pred_energies) ** 2)
+)
+print(
+    "Energy MAE (Polynomial):",
+    np.mean(np.abs(true_energies - polynomial_pred_energies)),
+)
 
 image.set_calculator(AMPtorch(polynomial_trainer))
 image.get_potential_energy()

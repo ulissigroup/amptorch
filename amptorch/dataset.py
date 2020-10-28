@@ -3,8 +3,12 @@ from torch_geometric.data import Batch
 
 from amptorch.descriptor.Gaussian import Gaussian
 from amptorch.descriptor.MCSH import AtomisticMCSH
-from amptorch.preprocessing import (AtomsToData, FeatureScaler, TargetScaler,
-                                    sparse_block_diag)
+from amptorch.preprocessing import (
+    AtomsToData,
+    # FeatureScaler,
+    TargetScaler,
+    sparse_block_diag,
+)
 
 
 class AtomsDataset(Dataset):

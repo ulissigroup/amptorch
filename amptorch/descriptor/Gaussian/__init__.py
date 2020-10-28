@@ -18,8 +18,12 @@ class GaussianDescriptorSet:
 
     def __init__(self, elements, Gs, pair_interactions=None, triplet_interactions=None):
         self.elements = elements
-        self.pair_interactions = self._validate_pair_interactions(pair_interactions, elements)
-        self.triplet_interactions = self._validate_triple_interactionstriplet_interactions, elements)
+        self.pair_interactions = self._validate_pair_interactions(
+            pair_interactions, elements
+        )
+        self.triplet_interactions = self._validate_triple_interactions(
+            triplet_interactions, elements
+        )
         self.g2s, self.g4s = self.process_raw_gs(Gs)
 
     def _validate_pair_interactions(self, pair_interactions, elements):
@@ -29,47 +33,49 @@ class GaussianDescriptorSet:
         return
 
     def process_raw_gs(self, Gs):
-        if sorted(Gs.keys()) == sorted(self.elements):
-            # return self.process_preformated_gs(Gs)
+        return None, None
+        # if sorted(Gs.keys()) == sorted(self.elements):
+        #     return self.process_preformated_gs(Gs)
 
-        for element in self.elements:
-            if element in self.Gs:
-                self.descriptor_setup[
-                    element
-                ] = self._prepare_descriptor_parameters_element(
-                    self.Gs[element], self.element_indices
-                )
-            elif "default" in self.Gs:
-                self.descriptor_setup[
-                    element
-                ] = self._prepare_descriptor_parameters_element(
-                    self.Gs["default"], self.element_indices
-                )
-            else:
-                raise NotImplementedError(
-                    "Symmetry function parameters not defined properly"
-                )
-
+        # for element in self.elements:
+        #     if element in self.Gs:
+        #         self.descriptor_setup[
+        #             element
+        #         ] = self._prepare_descriptor_parameters_element(
+        #             self.Gs[element], self.element_indices
+        #         )
+        #     elif "default" in self.Gs:
+        #         self.descriptor_setup[
+        #             element
+        #         ] = self._prepare_descriptor_parameters_element(
+        #             self.Gs["default"], self.element_indices
+        #         )
+        #     else:
+        #         raise NotImplementedError(
+        #             "Symmetry function parameters not defined properly"
+        #         )
 
 
 class Gaussian(BaseDescriptor):
-    def __init__(self, Gs, elements, cutoff_func='cosine', gamma=None):
+    def __init__(self, Gs, elements, cutoff_func="cosine", gamma=None):
         super().__init__()
         self.descriptor_type = "Gaussian"
         self.Gs = Gs
         self.elements = elements
         self.cutoff_func = cutoff_func.lower()
-        if self.cutoff_func not in ['cosine', 'polynomial']:
+        if self.cutoff_func not in ["cosine", "polynomial"]:
             raise ValueError('cutoff function must be either "cosine" or "polynomial"')
-        if self.cutoff_func == 'polynomial':
-            if  gamma is None:
-                raise ValueError('polynomial cutoff function requires float value > 0. of `gamma`')
-            elif gamma <= 0.:
-                raise ValueError('polynomial cutoff function gamma must be > 0.')
-        print('Gaussian descriptor cutoff function:', self.cutoff_func)
+        if self.cutoff_func == "polynomial":
+            if gamma is None:
+                raise ValueError(
+                    "polynomial cutoff function requires float value > 0. of `gamma`"
+                )
+            elif gamma <= 0.0:
+                raise ValueError("polynomial cutoff function gamma must be > 0.")
+        print("Gaussian descriptor cutoff function:", self.cutoff_func)
         self.gamma = gamma
-        if self.gamma and self.cutoff_func == 'polynomial':
-            print('polynomial cutoff function Gamma value:', self.gamma)
+        if self.gamma and self.cutoff_func == "polynomial":
+            print("polynomial cutoff function Gamma value:", self.gamma)
         self.element_indices = list_symbols_to_indices(elements)
 
         self.prepare_descriptor_parameters()
@@ -159,7 +165,9 @@ class Gaussian(BaseDescriptor):
         return np.array(descriptor_setup)
 
     def get_descriptor_setup_hash(self):
-        string = 'cosine' if self.cutoff_func == 'cosine' else 'polynomial%.15f' % self.gamma
+        string = (
+            "cosine" if self.cutoff_func == "cosine" else "polynomial%.15f" % self.gamma
+        )
         for element in self.descriptor_setup.keys():
             string += element
             for desc in self.descriptor_setup[element]:
@@ -241,8 +249,9 @@ class Gaussian(BaseDescriptor):
 
             x_p = _gen_2Darray_for_ffi(x, ffi)
             dx_p = _gen_2Darray_for_ffi(dx, ffi)
-            
-            errno = lib.calculate_sf_cos(
+
+            errno = (
+                lib.calculate_sf_cos(
                     cell_p,
                     cart_p,
                     scale_p,
@@ -256,7 +265,9 @@ class Gaussian(BaseDescriptor):
                     self.params_set[element_index]["num"],
                     x_p,
                     dx_p,
-                ) if self.cutoff_func == 'cosine' else  lib.calculate_sf_poly(
+                )
+                if self.cutoff_func == "cosine"
+                else lib.calculate_sf_poly(
                     cell_p,
                     cart_p,
                     scale_p,
@@ -272,6 +283,7 @@ class Gaussian(BaseDescriptor):
                     dx_p,
                     self.gamma,
                 )
+            )
 
             if errno == 1:
                 raise NotImplementedError("Descriptor not implemented!")
@@ -295,8 +307,9 @@ class Gaussian(BaseDescriptor):
                 order="C",
             )
             x_p = _gen_2Darray_for_ffi(x, ffi)
-            
-            errno = lib.calculate_sf_cos_noderiv(
+
+            errno = (
+                lib.calculate_sf_cos_noderiv(
                     cell_p,
                     cart_p,
                     scale_p,
@@ -309,7 +322,9 @@ class Gaussian(BaseDescriptor):
                     self.params_set[element_index]["dp"],
                     self.params_set[element_index]["num"],
                     x_p,
-                ) if self.cutoff_func == 'cosine' else  lib.calculate_sf_poly_noderiv(
+                )
+                if self.cutoff_func == "cosine"
+                else lib.calculate_sf_poly_noderiv(
                     cell_p,
                     cart_p,
                     scale_p,
@@ -325,6 +340,7 @@ class Gaussian(BaseDescriptor):
                     dx_p,
                     self.gamma,
                 )
+            )
 
             if errno == 1:
                 raise NotImplementedError("Descriptor not implemented!")
