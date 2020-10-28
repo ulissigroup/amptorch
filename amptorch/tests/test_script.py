@@ -5,9 +5,9 @@ repository.
 
 import unittest
 
-from consistency_test import test_energy_force_consistency
-from pretrained_test import test_pretrained
-from training_test import test_training
+from .consistency_test import test_energy_force_consistency
+from .pretrained_test import test_pretrained
+from .training_test import test_training
 
 
 class TestMethods(unittest.TestCase):
