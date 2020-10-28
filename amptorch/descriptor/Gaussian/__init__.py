@@ -213,7 +213,7 @@ class Gaussian(BaseDescriptor):
                     self.params_set[element_index]["num"],
                     x_p,
                     dx_p,
-                ) if self.cutoff_func == 'Cosine' else  lib.calculate_sf_poly(
+                ) if self.cutoff_func == 'cosine' else  lib.calculate_sf_poly(
                     cell_p,
                     cart_p,
                     scale_p,
@@ -266,7 +266,7 @@ class Gaussian(BaseDescriptor):
                     self.params_set[element_index]["dp"],
                     self.params_set[element_index]["num"],
                     x_p,
-                ) if self.cutoff_func == 'Cosine' else  lib.calculate_sf_poly_noderiv(
+                ) if self.cutoff_func == 'cosine' else  lib.calculate_sf_poly_noderiv(
                     cell_p,
                     cart_p,
                     scale_p,
