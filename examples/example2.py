@@ -76,7 +76,7 @@ predictions = cosine_trainer.predict(images)
 cosine1_pred_energies = np.array(predictions["energy"])
 
 print("Gaussian descriptor_setup:")
-print(cosine_trainer.train_dataset.descriptor_setup)
+print(cosine_trainer.train_dataset.descriptor.descriptor_setup)
 
 
 gds = GaussianDescriptorSet(cosine_trainer.elements)
