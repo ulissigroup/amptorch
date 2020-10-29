@@ -21,34 +21,76 @@ class GaussianDescriptorSet:
         self.element_indices = list_symbols_to_indices(elements)
         self.cutoff = cutoff
         self.all_interactions = set()
-        self.interactions = {element: {'G2': set(), 'G4': set(), 'G5': set()} for element in elements}
+        self.interactions = {
+            element: {"G2": set(), "G4": set(), "G5": set()} for element in elements
+        }
 
-    def add_g2(self, element_i, element_j, eta=3., rs=0., cutoff=None):
-        assert element_i in self.elements, f'{element_i} is not in {self.elements}'
-        assert element_j in self.elements, f'{element_j} is not in {self.elements}'
-        g2_params = (2, self.element_indices[element_j], 0, cutoff or self.cutoff, eta, rs, 0.)
-        self.interactions[element_i]['G2'].add(g2_params)
-        return self.interactions[element_i]['G2']
-        
-    def add_g4(self, element_i, element_j, element_k, eta=.005, zeta=1., gamma=1., cutoff=None):
-        assert element_i in self.elements, f'{element_i} is not in {self.elements}'
-        assert element_j in self.elements, f'{element_j} is not in {self.elements}'
-        assert element_k in self.elements, f'{element_k} is not in {self.elements}'
+    def add_g2(self, element_i, element_j, eta=3.0, rs=0.0, cutoff=None):
+        assert element_i in self.elements, f"{element_i} is not in {self.elements}"
+        assert element_j in self.elements, f"{element_j} is not in {self.elements}"
+        g2_params = (
+            2,
+            self.element_indices[element_j],
+            0,
+            cutoff or self.cutoff,
+            eta,
+            rs,
+            0.0,
+        )
+        self.interactions[element_i]["G2"].add(g2_params)
+        return self.interactions[element_i]["G2"]
+
+    def add_g4(
+        self,
+        element_i,
+        element_j,
+        element_k,
+        eta=0.005,
+        zeta=1.0,
+        gamma=1.0,
+        cutoff=None,
+    ):
+        assert element_i in self.elements, f"{element_i} is not in {self.elements}"
+        assert element_j in self.elements, f"{element_j} is not in {self.elements}"
+        assert element_k in self.elements, f"{element_k} is not in {self.elements}"
         element_j, element_k = sorted([element_j, element_k])
-        g4_params = (4, self.element_indices[element_j], self.element_indices[element_k], 
-                     cutoff or self.cutoff, eta / cutoff**2, zeta, gamma)
-        self.interactions[element_i]['G4'].add(g4_params)
-        return self.interactions[element_i]['G4']
-        
-    def add_g5(self, element_i, element_j, element_k, eta=.005, zeta=1., gamma=1., cutoff=None):
-        assert element_i in self.elements, f'{element_i} is not in {self.elements}'
-        assert element_j in self.elements, f'{element_j} is not in {self.elements}'
-        assert element_k in self.elements, f'{element_k} is not in {self.elements}'
+        g4_params = (
+            4,
+            self.element_indices[element_j],
+            self.element_indices[element_k],
+            cutoff or self.cutoff,
+            eta / cutoff ** 2,
+            zeta,
+            gamma,
+        )
+        self.interactions[element_i]["G4"].add(g4_params)
+        return self.interactions[element_i]["G4"]
+
+    def add_g5(
+        self,
+        element_i,
+        element_j,
+        element_k,
+        eta=0.005,
+        zeta=1.0,
+        gamma=1.0,
+        cutoff=None,
+    ):
+        assert element_i in self.elements, f"{element_i} is not in {self.elements}"
+        assert element_j in self.elements, f"{element_j} is not in {self.elements}"
+        assert element_k in self.elements, f"{element_k} is not in {self.elements}"
         element_j, element_k = sorted([element_j, element_k])
-        g4_params = (5, self.element_indices[element_j], self.element_indices[element_k], 
-                     cutoff or self.cutoff, eta, zeta, gamma)
-        self.interactions[element_i]['G5'].add(g4_params)
-        return self.interactions[element_i]['G5']
+        g4_params = (
+            5,
+            self.element_indices[element_j],
+            self.element_indices[element_k],
+            cutoff or self.cutoff,
+            eta,
+            zeta,
+            gamma,
+        )
+        self.interactions[element_i]["G5"].add(g4_params)
+        return self.interactions[element_i]["G5"]
 
     def process_combinatorial_Gs(self, Gs):
         for element, descriptors in self.interactions.items():
@@ -66,13 +108,15 @@ class GaussianDescriptorSet:
                 )
 
     def _prepare_element_combinatorial_params(self, element_Gs, element_indices):
-        descriptor_setup = {'G2': set(), 'G4': set(), 'G5': set()}
+        descriptor_setup = {"G2": set(), "G4": set(), "G5": set()}
         cutoff = element_Gs["cutoff"]
         if "G2" in element_Gs:
             for eta in np.array(element_Gs["G2"]["etas"]) / element_Gs["cutoff"] ** 2:
                 for rs in element_Gs["G2"]["rs_s"]:
                     for element1 in element_indices:
-                        descriptor_setup['G2'].add((2, element1, 0, cutoff, eta, rs, 0.0))
+                        descriptor_setup["G2"].add(
+                            (2, element1, 0, cutoff, eta, rs, 0.0)
+                        )
 
         if "G4" in element_Gs:
             for eta in np.array(element_Gs["G4"]["etas"]) / element_Gs["cutoff"] ** 2:
@@ -80,7 +124,17 @@ class GaussianDescriptorSet:
                     for gamma in element_Gs["G4"]["gammas"]:
                         for i in range(len(element_indices)):
                             for j in range(i, len(element_indices)):
-                                descriptor_setup['G4'].add((4, element_indices[i], element_indices[j], cutoff, eta, zeta, gamma))
+                                descriptor_setup["G4"].add(
+                                    (
+                                        4,
+                                        element_indices[i],
+                                        element_indices[j],
+                                        cutoff,
+                                        eta,
+                                        zeta,
+                                        gamma,
+                                    )
+                                )
 
         if "G5" in element_Gs:
             for eta in element_Gs["G5"]["etas"]:
@@ -88,13 +142,23 @@ class GaussianDescriptorSet:
                     for gamma in element_Gs["G5"]["gammas"]:
                         for i in range(len(element_indices)):
                             for j in range(i, len(element_indices)):
-                                descriptor_setup['G5'].add((5, element_indices[i], element_indices[j], cutoff, eta, zeta, gamma))       
+                                descriptor_setup["G5"].add(
+                                    (
+                                        5,
+                                        element_indices[i],
+                                        element_indices[j],
+                                        cutoff,
+                                        eta,
+                                        zeta,
+                                        gamma,
+                                    )
+                                )
         return descriptor_setup
 
     def to_descriptor_setup(self):
         descriptor_setup = {element: None for element in self.elements}
         for element, descriptors in self.interactions.items():
-            g2s, g4s, g5s = descriptors['G2'], descriptors['G4'], descriptors['G5']
+            g2s, g4s, g5s = descriptors["G2"], descriptors["G4"], descriptors["G5"]
             g2s = [list(params) for params in sorted(g2s)]
             g4s = [list(params) for params in sorted(g4s)]
             g5s = [list(params) for params in sorted(g5s)]
