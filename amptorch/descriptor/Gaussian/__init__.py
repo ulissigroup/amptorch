@@ -16,44 +16,90 @@ class GaussianDescriptorSet:
     #  - validate full-list descriptor set and save as self.full-list descriptor set
     #  - convert self.full-list descriptor set to various formats required by Gaussian
 
-    def __init__(self, elements, Gs, pair_interactions=None, triplet_interactions=None):
+    def __init__(self, elements, cutoff=6.5, default_interactions=False):
         self.elements = elements
-        self.pair_interactions = self._validate_pair_interactions(
-            pair_interactions, elements
-        )
-        self.triplet_interactions = self._validate_triple_interactions(
-            triplet_interactions, elements
-        )
-        self.g2s, self.g4s = self.process_raw_gs(Gs)
+        self.element_indices = list_symbols_to_indices(elements)
+        self.cutoff = cutoff
+        self.all_interactions = set()
+        self.interactions = {element: {'G2': set(), 'G4': set(), 'G5': set()} for element in elements}
 
-    def _validate_pair_interactions(self, pair_interactions, elements):
-        return
+    def add_g2(self, element_i, element_j, eta=3., rs=0., cutoff=None):
+        assert element_i in self.elements, f'{element_i} is not in {self.elements}'
+        assert element_j in self.elements, f'{element_j} is not in {self.elements}'
+        g2_params = (2, self.element_indices[element_j], 0, cutoff or self.cutoff, eta, rs, 0.)
+        self.interactions[element_i]['G2'].add(g2_params)
+        return self.interactions[element_i]['G2']
+        
+    def add_g4(self, element_i, element_j, element_k, eta=.005, zeta=1., gamma=1., cutoff=None):
+        assert element_i in self.elements, f'{element_i} is not in {self.elements}'
+        assert element_j in self.elements, f'{element_j} is not in {self.elements}'
+        assert element_k in self.elements, f'{element_k} is not in {self.elements}'
+        element_j, element_k = sorted([element_j, element_k])
+        g4_params = (4, self.element_indices[element_j], self.element_indices[element_k], 
+                     cutoff or self.cutoff, eta / cutoff**2, zeta, gamma)
+        self.interactions[element_i]['G4'].add(g4_params)
+        return self.interactions[element_i]['G4']
+        
+    def add_g5(self, element_i, element_j, element_k, eta=.005, zeta=1., gamma=1., cutoff=None):
+        assert element_i in self.elements, f'{element_i} is not in {self.elements}'
+        assert element_j in self.elements, f'{element_j} is not in {self.elements}'
+        assert element_k in self.elements, f'{element_k} is not in {self.elements}'
+        element_j, element_k = sorted([element_j, element_k])
+        g4_params = (5, self.element_indices[element_j], self.element_indices[element_k], 
+                     cutoff or self.cutoff, eta, zeta, gamma)
+        self.interactions[element_i]['G5'].add(g4_params)
+        return self.interactions[element_i]['G5']
 
-    def _validate_triplet_interactions(self, triplet_interactions, elements):
-        return
+    def process_combinatorial_Gs(self, Gs):
+        for element, descriptors in self.interactions.items():
+            if element in Gs:
+                self.interactions[element] = self._prepare_element_combinatorial_params(
+                    Gs[element], self.element_indices
+                )
+            elif "default" in Gs:
+                self.interactions[element] = self._prepare_element_combinatorial_params(
+                    Gs["default"], self.element_indices
+                )
+            else:
+                raise NotImplementedError(
+                    "Symmetry function parameters not defined properly"
+                )
 
-    def process_raw_gs(self, Gs):
-        return None, None
-        # if sorted(Gs.keys()) == sorted(self.elements):
-        #     return self.process_preformated_gs(Gs)
+    def _prepare_element_combinatorial_params(self, element_Gs, element_indices):
+        descriptor_setup = {'G2': set(), 'G4': set(), 'G5': set()}
+        cutoff = element_Gs["cutoff"]
+        if "G2" in element_Gs:
+            for eta in np.array(element_Gs["G2"]["etas"]) / element_Gs["cutoff"] ** 2:
+                for rs in element_Gs["G2"]["rs_s"]:
+                    for element1 in element_indices:
+                        descriptor_setup['G2'].add((2, element1, 0, cutoff, eta, rs, 0.0))
 
-        # for element in self.elements:
-        #     if element in self.Gs:
-        #         self.descriptor_setup[
-        #             element
-        #         ] = self._prepare_descriptor_parameters_element(
-        #             self.Gs[element], self.element_indices
-        #         )
-        #     elif "default" in self.Gs:
-        #         self.descriptor_setup[
-        #             element
-        #         ] = self._prepare_descriptor_parameters_element(
-        #             self.Gs["default"], self.element_indices
-        #         )
-        #     else:
-        #         raise NotImplementedError(
-        #             "Symmetry function parameters not defined properly"
-        #         )
+        if "G4" in element_Gs:
+            for eta in np.array(element_Gs["G4"]["etas"]) / element_Gs["cutoff"] ** 2:
+                for zeta in element_Gs["G4"]["zetas"]:
+                    for gamma in element_Gs["G4"]["gammas"]:
+                        for i in range(len(element_indices)):
+                            for j in range(i, len(element_indices)):
+                                descriptor_setup['G4'].add((4, element_indices[i], element_indices[j], cutoff, eta, zeta, gamma))
+
+        if "G5" in element_Gs:
+            for eta in element_Gs["G5"]["etas"]:
+                for zeta in element_Gs["G5"]["zetas"]:
+                    for gamma in element_Gs["G5"]["gammas"]:
+                        for i in range(len(element_indices)):
+                            for j in range(i, len(element_indices)):
+                                descriptor_setup['G5'].add((5, element_indices[i], element_indices[j], cutoff, eta, zeta, gamma))       
+        return descriptor_setup
+
+    def to_descriptor_setup(self):
+        descriptor_setup = {element: None for element in self.elements}
+        for element, descriptors in self.interactions.items():
+            g2s, g4s, g5s = descriptors['G2'], descriptors['G4'], descriptors['G5']
+            g2s = [list(params) for params in sorted(g2s)]
+            g4s = [list(params) for params in sorted(g4s)]
+            g5s = [list(params) for params in sorted(g5s)]
+            descriptor_setup[element] = np.array(g2s + g4s + g5s)
+        return descriptor_setup
 
 
 class Gaussian(BaseDescriptor):
