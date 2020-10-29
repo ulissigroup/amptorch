@@ -1,10 +1,10 @@
 import numpy as np
 import torch
+from amptorch.ase_utils import AMPtorch
+from amptorch.descriptor.Gaussian import GaussianDescriptorSet
+from amptorch.trainer import AtomsTrainer
 from ase import Atoms
 from ase.calculators.emt import EMT
-
-from amptorch.ase_utils import AMPtorch
-from amptorch.trainer import AtomsTrainer
 
 distances = np.linspace(2, 5, 100)
 images = []
@@ -72,11 +72,26 @@ config["dataset"]["cutoff_params"] = cosine_cutoff_params
 torch.set_num_threads(1)
 cosine_trainer = AtomsTrainer(config)
 cosine_trainer.train()
+predictions = cosine_trainer.predict(images)
+cosine1_pred_energies = np.array(predictions["energy"])
+
+print("Gaussian descriptor_setup:")
+print(cosine_trainer.train_dataset.descriptor_setup)
+
+
+gds = GaussianDescriptorSet(cosine_trainer.elements)
+gds.process_combinatorial_Gs(Gs)
+print("GaussianDescriptorSet descriptor_setup:")
+print(gds.to_descriptor_setup())
+
+cosine_trainer.train_dataset.descriptor.descriptor_setup = gds.to_descriptor_setup()
+cosine_trainer.get_descriptor_setup_hash()
+cosine_trainer.train()
 
 predictions = cosine_trainer.predict(images)
 
 true_energies = np.array([image.get_potential_energy() for image in images])
-cosine_pred_energies = np.array(predictions["energy"])
+cosine2_pred_energies = np.array(predictions["energy"])
 
 image.set_calculator(AMPtorch(cosine_trainer))
 image.get_potential_energy()
@@ -91,8 +106,11 @@ predictions = polynomial_trainer.predict(images)
 
 polynomial_pred_energies = np.array(predictions["energy"])
 
-print("Energy MSE (Cosine):", np.mean((true_energies - cosine_pred_energies) ** 2))
-print("Energy MAE (Cosine):", np.mean(np.abs(true_energies - cosine_pred_energies)))
+print("Energy MSE (Cosine1):", np.mean((true_energies - cosine1_pred_energies) ** 2))
+print("Energy MAE (Cosine1):", np.mean(np.abs(true_energies - cosine1_pred_energies)))
+
+print("Energy MSE (Cosine1):", np.mean((true_energies - cosine2_pred_energies) ** 2))
+print("Energy MAE (Cosine1):", np.mean(np.abs(true_energies - cosine2_pred_energies)))
 
 print(
     "Energy MSE (Polynomial):", np.mean((true_energies - polynomial_pred_energies) ** 2)
@@ -104,13 +122,3 @@ print(
 
 image.set_calculator(AMPtorch(polynomial_trainer))
 image.get_potential_energy()
-
-gaussian = polynomial_trainer.train_dataset.descriptor
-print('Gaussian descriptor_setup:')
-print(gaussian.descriptor_setup)
-
-from amptorch.descriptor.Gaussian import GaussianDescriptorSet
-gds = GaussianDescriptorSet(gaussian.elements)
-gds.process_combinatorial_Gs(Gs)
-print('GaussianDescriptorSet descriptor_setup:')
-print(gds.to_descriptor_setup())
