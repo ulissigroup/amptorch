@@ -17,6 +17,7 @@ class MLP(nn.Module):
         layers = []
         for _ in range(n_layers - 1):
             layers.append(nn.Linear(self.n_neurons[_], self.n_neurons[_ + 1]))
+            layers.append(nn.BatchNorm1d(self.n_neurons[_ + 1])
             layers.append(activation())
         layers.append(nn.Linear(self.n_neurons[-2], self.n_neurons[-1]))
         self.model_net = nn.Sequential(*layers)
