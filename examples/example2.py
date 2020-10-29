@@ -85,7 +85,7 @@ print("GaussianDescriptorSet descriptor_setup:")
 print(gds.to_descriptor_setup())
 
 cosine_trainer.train_dataset.descriptor.descriptor_setup = gds.to_descriptor_setup()
-cosine_trainer.get_descriptor_setup_hash()
+cosine_trainer.train_dataset.descriptor.get_descriptor_setup_hash()
 cosine_trainer.train()
 
 predictions = cosine_trainer.predict(images)
