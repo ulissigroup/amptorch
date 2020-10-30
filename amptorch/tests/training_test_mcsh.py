@@ -34,14 +34,11 @@ MCSHs = {
         "4": {"groups": [1, 2, 3, 4], "sigmas": sigmas},
         "5": {"groups": [1, 2, 3, 4, 5], "sigmas": sigmas},
         "6": {"groups": [1, 2, 3, 4, 5, 6, 7], "sigmas": sigmas},
-        # "7": {"groups": [1,2,3,4,5,6,7,8], "sigmas": sigmas},
-        # "8": {"groups": [1,2,3,4,5,6,7,8,9,10], "sigmas": sigmas},
-        # "9": {"groups": [1,2,3,4,5,6,7,8,9,10,11,12], "sigmas": sigmas}
     },
     "atom_gaussians": {
-        "C": "../examples/MCSH_potential/C_totaldensity_4.g",
-        "O": "../examples/MCSH_potential/O_totaldensity_5.g",
-        "Cu": "../examples/MCSH_potential/Cu_totaldensity_6.g",
+        "C": "mcsh_params/C_totaldensity_4.g",
+        "O": "mcsh_params/O_totaldensity_5.g",
+        "Cu": "mcsh_params/Cu_totaldensity_6.g",
     },
     "cutoff": 8,
 }
@@ -86,11 +83,8 @@ def get_energy_metrics(config):
     trainer.train()
     predictions = trainer.predict(images)
     pred_energies = np.array(predictions["energy"])
-
     mae = np.mean(np.abs(true_energies - pred_energies))
     assert mae < 0.02
-
-    return mae
 
 
 def get_force_metrics(config):
@@ -104,8 +98,6 @@ def get_force_metrics(config):
     f_mae = np.mean(np.abs(pred_forces - true_forces))
     assert e_mae < 0.01
     assert f_mae < 0.03
-
-    return e_mae, f_mae
 
 
 def test_training():
