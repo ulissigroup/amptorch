@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import csv
 from scipy.optimize import minimize
 
 
@@ -162,7 +161,6 @@ def save_gaussian(r, x0, atom, density_type, num_gaussian):
 
     f = open(result_filename, "w")
     n = int(len(x0) / 2)
-    result = np.zeros(len(r))
     for i in range(n):
         f.write("{}\t{}\n".format(x0[i + n], (1 / (2 * x0[i] * x0[i]))))
     f.close()
