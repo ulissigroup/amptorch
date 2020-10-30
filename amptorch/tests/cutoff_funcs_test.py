@@ -96,11 +96,6 @@ def test_cutoff_funcs():
     print("training model with Polynomial cutoff function (gamma = 2.0)")
     print("E_MAE: %f, F_MAE: %f" % get_performance_metrics(config))
 
-    ### Polynomial cutoff function (gamma = 4.0)
-    config["dataset"]["cutoff_params"] = {"cutoff_func": "Polynomial", "gamma": 4.0}
-    print("training model with Polynomial cutoff function (gamma = 4.0)")
-    print("E_MAE: %f, F_MAE: %f" % get_performance_metrics(config))
-
 
 if __name__ == "__main__":
     test_cutoff_funcs()
