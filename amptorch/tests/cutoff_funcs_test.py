@@ -73,8 +73,8 @@ def get_performance_metrics(config):
 
     e_mae = np.mean(np.abs(true_energies - pred_energies))
     f_mae = np.mean(np.abs(pred_forces - true_forces))
-    assert e_mae < 0.01
-    assert f_mae < 0.03
+    assert e_mae < 0.01, "%f !< .01" % e_mae
+    assert f_mae < 0.03, "%f !< .03" % f_mae
 
     return e_mae, f_mae
 
@@ -96,9 +96,9 @@ def test_cutoff_funcs():
     print("training model with Polynomial cutoff function (gamma = 2.0)")
     print("E_MAE: %f, F_MAE: %f" % get_performance_metrics(config))
 
-    ### Polynomial cutoff function (gamma = 5.0)
-    config["dataset"]["cutoff_params"] = {"cutoff_func": "Polynomial", "gamma": 5.0}
-    print("training model with Polynomial cutoff function (gamma = 5.0)")
+    ### Polynomial cutoff function (gamma = 4.0)
+    config["dataset"]["cutoff_params"] = {"cutoff_func": "Polynomial", "gamma": 4.0}
+    print("training model with Polynomial cutoff function (gamma = 4.0)")
     print("E_MAE: %f, F_MAE: %f" % get_performance_metrics(config))
 
 
