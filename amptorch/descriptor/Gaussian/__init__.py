@@ -10,11 +10,25 @@ from ._libsymf import ffi, lib
 
 
 class Gaussian(BaseDescriptor):
-    def __init__(self, Gs, elements):
+    def __init__(self, Gs, elements, cutoff_func="cosine", gamma=None):
         super().__init__()
         self.descriptor_type = "Gaussian"
         self.Gs = Gs
         self.elements = elements
+        self.cutoff_func = cutoff_func.lower()
+        if self.cutoff_func not in ["cosine", "polynomial"]:
+            raise ValueError('cutoff function must be either "cosine" or "polynomial"')
+        if self.cutoff_func == "polynomial":
+            if gamma is None:
+                raise ValueError(
+                    "polynomial cutoff function requires float value > 0. of `gamma`"
+                )
+            elif gamma <= 0.0:
+                raise ValueError("polynomial cutoff function gamma must be > 0.")
+        print("Gaussian descriptor cutoff function:", self.cutoff_func)
+        self.gamma = gamma
+        if self.gamma and self.cutoff_func == "polynomial":
+            print("polynomial cutoff function Gamma value:", self.gamma)
         self.element_indices = list_symbols_to_indices(elements)
 
         self.prepare_descriptor_parameters()
@@ -95,16 +109,18 @@ class Gaussian(BaseDescriptor):
         if "G5" in Gs:
             descriptor_setup += [
                 [5, element_indices[i], element_indices[j], cutoff, eta, zeta, gamma]
-                for eta in Gs["G4"]["etas"]
-                for zeta in Gs["G4"]["zetas"]
-                for gamma in Gs["G4"]["gammas"]
+                for eta in Gs["G5"]["etas"]
+                for zeta in Gs["G5"]["zetas"]
+                for gamma in Gs["G5"]["gammas"]
                 for i in range(len(element_indices))
                 for j in range(i, len(element_indices))
             ]
         return np.array(descriptor_setup)
 
     def get_descriptor_setup_hash(self):
-        string = ""
+        string = (
+            "cosine" if self.cutoff_func == "cosine" else "polynomial%.15f" % self.gamma
+        )
         for element in self.descriptor_setup.keys():
             string += element
             for desc in self.descriptor_setup[element]:
@@ -187,21 +203,41 @@ class Gaussian(BaseDescriptor):
             x_p = _gen_2Darray_for_ffi(x, ffi)
             dx_p = _gen_2Darray_for_ffi(dx, ffi)
 
-            errno = lib.calculate_sf(
-                cell_p,
-                cart_p,
-                scale_p,
-                pbc_p,
-                atom_indices_p,
-                atom_num,
-                cal_atoms_p,
-                cal_num,
-                self.params_set[element_index]["ip"],
-                self.params_set[element_index]["dp"],
-                self.params_set[element_index]["num"],
-                x_p,
-                dx_p,
+            errno = (
+                lib.calculate_sf_cos(
+                    cell_p,
+                    cart_p,
+                    scale_p,
+                    pbc_p,
+                    atom_indices_p,
+                    atom_num,
+                    cal_atoms_p,
+                    cal_num,
+                    self.params_set[element_index]["ip"],
+                    self.params_set[element_index]["dp"],
+                    self.params_set[element_index]["num"],
+                    x_p,
+                    dx_p,
+                )
+                if self.cutoff_func == "cosine"
+                else lib.calculate_sf_poly(
+                    cell_p,
+                    cart_p,
+                    scale_p,
+                    pbc_p,
+                    atom_indices_p,
+                    atom_num,
+                    cal_atoms_p,
+                    cal_num,
+                    self.params_set[element_index]["ip"],
+                    self.params_set[element_index]["dp"],
+                    self.params_set[element_index]["num"],
+                    x_p,
+                    dx_p,
+                    self.gamma,
+                )
             )
+
             if errno == 1:
                 raise NotImplementedError("Descriptor not implemented!")
             fp = np.array(x)
@@ -225,19 +261,38 @@ class Gaussian(BaseDescriptor):
             )
             x_p = _gen_2Darray_for_ffi(x, ffi)
 
-            errno = lib.calculate_sf_noderiv(
-                cell_p,
-                cart_p,
-                scale_p,
-                pbc_p,
-                atom_indices_p,
-                atom_num,
-                cal_atoms_p,
-                cal_num,
-                self.params_set[element_index]["ip"],
-                self.params_set[element_index]["dp"],
-                self.params_set[element_index]["num"],
-                x_p,
+            errno = (
+                lib.calculate_sf_cos_noderiv(
+                    cell_p,
+                    cart_p,
+                    scale_p,
+                    pbc_p,
+                    atom_indices_p,
+                    atom_num,
+                    cal_atoms_p,
+                    cal_num,
+                    self.params_set[element_index]["ip"],
+                    self.params_set[element_index]["dp"],
+                    self.params_set[element_index]["num"],
+                    x_p,
+                )
+                if self.cutoff_func == "cosine"
+                else lib.calculate_sf_poly_noderiv(
+                    cell_p,
+                    cart_p,
+                    scale_p,
+                    pbc_p,
+                    atom_indices_p,
+                    atom_num,
+                    cal_atoms_p,
+                    cal_num,
+                    self.params_set[element_index]["ip"],
+                    self.params_set[element_index]["dp"],
+                    self.params_set[element_index]["num"],
+                    x_p,
+                    dx_p,
+                    self.gamma,
+                )
             )
 
             if errno == 1:

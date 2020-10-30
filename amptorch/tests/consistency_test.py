@@ -121,7 +121,18 @@ def test_energy_force_consistency():
     torch_Cu_weights_2 = torch.FloatTensor(Cu_weights_2[:-1, :]).t()
     torch_Cu_bias_2 = torch.FloatTensor(Cu_weights_2[-1, :])
 
-    descriptor_setup = ("gaussian", Gs, elements)
+    descriptor_name = "gaussian"
+    descriptor_params = Gs
+    descriptor_cutoff_params = {"cutoff_func": "cosine"}
+    descriptor_elements = elements
+
+    descriptor_setup = (
+        descriptor_name,
+        descriptor_params,
+        descriptor_cutoff_params,
+        descriptor_elements,
+    )
+
     dataset = AtomsDataset(
         images,
         descriptor_setup,

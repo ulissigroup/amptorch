@@ -20,6 +20,8 @@ static inline double pow_int(const double &x, const double n) {
 double sigm(double, double &);
 double cutf(double);
 double dcutf(double, double);
+double poly_cutf(double, double);
+double dpoly_cutf(double, double, double);
 double G2(double, double *, double *, double &);
 double G4(double, double, double, double, double *, double *, double *);
 double G5(double, double, double, double *, double *, double *);

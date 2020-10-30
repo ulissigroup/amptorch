@@ -1,9 +1,9 @@
 import numpy as np
 import torch
+from skorch.callbacks import Checkpoint, EpochScoring
 from torch.nn import L1Loss, MSELoss
 
 from amptorch.utils import target_extractor
-from skorch.callbacks import Checkpoint, EpochScoring
 
 
 def mae_energy_score(net, X, y):

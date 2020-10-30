@@ -4,6 +4,8 @@ import numpy as np
 
 from .constants import ATOM_INDEX_TO_SYMBOL_DICT, ATOM_SYMBOL_TO_INDEX_DICT
 
+# from ase.io.trajectory import Trajectory
+
 
 def _gen_2Darray_for_ffi(arr, ffi, cdata="double"):
     # Function to generate 2D pointer for cffi

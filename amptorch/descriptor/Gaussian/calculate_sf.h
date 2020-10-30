@@ -8,12 +8,22 @@
 //#include "mpi.h"
 #include "symmetry_functions.h"
 
-extern "C" int calculate_sf(double **, double **, double **, int*,
+extern "C" int calculate_sf_cos(double **, double **, double **, int*,
                             int *, int, int*, int,
                             int**, double **, int,
                             double**, double**);
 
-extern "C" int calculate_sf_noderiv(double **, double **, double **, int*,
+extern "C" int calculate_sf_cos_noderiv(double **, double **, double **, int*,
                             int *, int, int*, int,
                             int**, double **, int,
                             double**);
+
+extern "C" int calculate_sf_poly(double **, double **, double **, int*,
+                            int *, int, int*, int,
+                            int**, double **, int,
+                            double**, double**, double);
+
+extern "C" int calculate_sf_poly_noderiv(double **, double **, double **, int*,
+                            int *, int, int*, int,
+                            int**, double **, int,
+                            double**, double);
