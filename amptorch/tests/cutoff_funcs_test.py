@@ -64,19 +64,7 @@ true_energies = np.array([image.get_potential_energy() for image in images])
 true_forces = np.concatenate(np.array([image.get_forces() for image in images]))
 
 
-def get_energy_metrics(config):
-    trainer = AtomsTrainer(config)
-    trainer.train()
-    predictions = trainer.predict(images)
-    pred_energies = np.array(predictions["energy"])
-
-    mae = np.mean(np.abs(true_energies - pred_energies))
-    assert mae < 0.02
-
-    return mae
-
-
-def get_force_metrics(config):
+def get_performance_metrics(config):
     trainer = AtomsTrainer(config)
     trainer.train()
     predictions = trainer.predict(images)
@@ -91,40 +79,28 @@ def get_force_metrics(config):
     return e_mae, f_mae
 
 
-def test_training():
+def test_cutoff_funcs():
     torch.set_num_threads(1)
 
-    ### train only
-    # energy+forces+mse loss
     config["model"]["get_forces"] = True
     config["optim"]["force_coefficient"] = 0.04
     config["optim"]["loss"] = "mse"
-    get_force_metrics(config)
-    print("Train energy+forces success!")
-    # energy+mae loss
-    config["model"]["get_forces"] = False
-    config["optim"]["force_coefficient"] = 0
-    config["optim"]["loss"] = "mae"
-    get_energy_metrics(config)
-    print("Train energy only success!")
 
-    ### train+val
-    # energy only
-    config["model"]["get_forces"] = False
-    config["optim"]["force_coefficient"] = 0
-    config["optim"]["loss"] = "mae"
-    config["dataset"]["val_split"] = 0.1
-    get_energy_metrics(config)
-    print("Val energy only success!")
+    ### Cosine cutoff function
+    config["dataset"]["cutoff_params"] = {"cutoff_func": "Cosine"}
+    print("training model with Cosine cutoff function")
+    print("E_MAE: %f, F_MAE: %f" % get_performance_metrics(config))
 
-    # energy+forces
-    config["model"]["get_forces"] = True
-    config["optim"]["force_coefficient"] = 0.04
-    config["optim"]["loss"] = "mse"
-    config["dataset"]["val_split"] = 0.1
-    get_force_metrics(config)
-    print("Val energy+forces success!")
+    ### Polynomial cutoff function (gamma = 2.0)
+    config["dataset"]["cutoff_params"] = {"cutoff_func": "Polynomial", "gamma": 2.0}
+    print("training model with Polynomial cutoff function (gamma = 2.0)")
+    print("E_MAE: %f, F_MAE: %f" % get_performance_metrics(config))
+
+    ### Polynomial cutoff function (gamma = 5.0)
+    config["dataset"]["cutoff_params"] = {"cutoff_func": "Polynomial", "gamma": 5.0}
+    print("training model with Polynomial cutoff function (gamma = 5.0)")
+    print("E_MAE: %f, F_MAE: %f" % get_performance_metrics(config))
 
 
 if __name__ == "__main__":
-    test_training()
+    test_cutoff_funcs()

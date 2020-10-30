@@ -5,9 +5,8 @@ import warnings
 
 import ase.io
 import numpy as np
-import torch
-
 import skorch.net
+import torch
 from amptorch.dataset import AtomsDataset, DataCollater
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.metrics import evaluator
