@@ -87,12 +87,23 @@ def test_cutoff_funcs():
     config["optim"]["loss"] = "mse"
 
     ### Cosine cutoff function
-    config["dataset"]["cutoff_params"] = {"cutoff_func": "Cosine"}
+
+    cosine_cutoff_params = {
+        "cutoff_func": "Cosine",
+    }
+
+    config["dataset"]["cutoff_params"] = cosine_cutoff_params
     print("training model with Cosine cutoff function")
     print("E_MAE: %f, F_MAE: %f" % get_performance_metrics(config))
 
     ### Polynomial cutoff function (gamma = 2.0)
-    config["dataset"]["cutoff_params"] = {"cutoff_func": "Polynomial", "gamma": 2.0}
+
+    polynomial_cutoff_params = {
+        "cutoff_func": "Polynomial",
+        "gamma": 2.0,
+    }
+
+    config["dataset"]["cutoff_params"] = polynomial_cutoff_params
     print("training model with Polynomial cutoff function (gamma = 2.0)")
     print("E_MAE: %f, F_MAE: %f" % get_performance_metrics(config))
 
