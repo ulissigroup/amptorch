@@ -3,7 +3,7 @@
 
 *AMPtorch* is a PyTorch implementation of the [Atomistic Machine-learning Package](https://amp.readthedocs.io/en/latest/) (AMP) code that seeks to provide users with improved performance and flexibility as compared to the original code. The implementation does so by benefiting from state-of-the-art machine learning methods and techniques to be optimized in conjunction with high-throughput supercomputers. *AMPtorch* is built on top of [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/en/latest/) and [Skorch](https://skorch.readthedocs.io/en/stable/).
 
-This project is being developed at Carnegie Mellon University in the Department of Chemical Engineering, by Muhammed Shuaibi and Zachary Ulissi, in collaboration with Brown University's Andrew Peterson as part of the Department of Energy's *Bridging the time scale in exascale computing of chemical systems* project. 
+This project is being developed at Carnegie Mellon University in the Department of Chemical Engineering, by Muhammed Shuaibi and Zachary Ulissi, in collaboration with Brown University's Andrew Peterson as part of the Department of Energy's *Bridging the time scale in exascale computing of chemical systems* project.
 
 ### Installation
 
@@ -22,7 +22,7 @@ Install dependencies:
 ### Use
 #TODO
 
-### Acknowledgements 
+### Acknowledgements
 - Funded by the Department of Energy's Basic Enenergy Science, Computational Chemical Sciences Program Office. Award # DE-SC0019441
 - Engineering ideas have been heavily borrowed from our work on the [Open Catalyst Project](https://github.com/Open-Catalyst-Project/baselines)
 - Gaussian fingerprints have been adapted from [SIMPLE-NN](https://github.com/MDIL-SNU/SIMPLE-NN)

@@ -5,9 +5,8 @@ import warnings
 
 import ase.io
 import numpy as np
-import torch
-
 import skorch.net
+import torch
 from amptorch.dataset import AtomsDataset, DataCollater
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.metrics import evaluator
@@ -80,10 +79,18 @@ class AtomsTrainer:
         self.forcetraining = self.config["model"].get("get_forces", True)
         self.fp_scheme = self.config["dataset"].get("fp_scheme", "gaussian").lower()
         self.fp_params = self.config["dataset"]["fp_params"]
+        self.cutoff_params = self.config["dataset"].get(
+            "cutoff_params", {"cutoff_func": "Cosine"}
+        )
 
         self.train_dataset = AtomsDataset(
             images=training_images,
-            descriptor_setup=(self.fp_scheme, self.fp_params, self.elements),
+            descriptor_setup=(
+                self.fp_scheme,
+                self.fp_params,
+                self.cutoff_params,
+                self.elements,
+            ),
             forcetraining=self.forcetraining,
             save_fps=self.config["dataset"].get("save_fps", True),
         )

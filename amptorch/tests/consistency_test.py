@@ -1,12 +1,11 @@
 import numpy as np
 import torch
 import torch.nn as nn
+from amptorch.dataset import AtomsDataset, DataCollater
+from amptorch.model import BPNN, MLP
 from ase import Atoms
 from ase.calculators.emt import EMT
 from torch.utils.data import DataLoader
-
-from amptorch.dataset import AtomsDataset, DataCollater
-from amptorch.model import BPNN, MLP
 
 
 ### Construct test data
@@ -121,7 +120,18 @@ def test_energy_force_consistency():
     torch_Cu_weights_2 = torch.FloatTensor(Cu_weights_2[:-1, :]).t()
     torch_Cu_bias_2 = torch.FloatTensor(Cu_weights_2[-1, :])
 
-    descriptor_setup = ("gaussian", Gs, elements)
+    descriptor_name = "gaussian"
+    descriptor_params = Gs
+    descriptor_cutoff_params = {"cutoff_func": "cosine"}
+    descriptor_elements = elements
+
+    descriptor_setup = (
+        descriptor_name,
+        descriptor_params,
+        descriptor_cutoff_params,
+        descriptor_elements,
+    )
+
     dataset = AtomsDataset(
         images,
         descriptor_setup,

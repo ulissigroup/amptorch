@@ -35,7 +35,7 @@ double dz0dz(){
 }
 
 void calc_MCSH_0_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
@@ -49,7 +49,7 @@ void calc_MCSH_0_1(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_1_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
@@ -82,7 +82,7 @@ void calc_MCSH_1_1(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_2_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
@@ -107,9 +107,9 @@ void calc_MCSH_2_1(double x0, double y0, double z0, double r0_sqr, double A, dou
     double temp_y = 3.0 * lambda_y0_sqr + C3;
     double temp_z = 3.0 * lambda_z0_sqr + C3;
 
-    double temp_dx = 6.0 * lambda * lambda_x0; // = lambda * (3 * 2 * lambda_x0) 
-    double temp_dy = 6.0 * lambda * lambda_y0; 
-    double temp_dz = 6.0 * lambda * lambda_z0; 
+    double temp_dx = 6.0 * lambda * lambda_x0; // = lambda * (3 * 2 * lambda_x0)
+    double temp_dy = 6.0 * lambda * lambda_y0;
+    double temp_dz = 6.0 * lambda * lambda_z0;
 
     double miu_2_1_1 = temp * temp_x;
     double miu_2_1_2 = temp * temp_y;
@@ -141,11 +141,11 @@ void calc_MCSH_2_1(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_2_2(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double x0_sqr = x0*x0;
     double y0_sqr = y0*y0;
@@ -168,12 +168,12 @@ void calc_MCSH_2_2(double x0, double y0, double z0, double r0_sqr, double A, dou
 
     // dmiu1 dx/dy/dz
     deriv[0] = dx0dx() * temp * y0 * const_1_p_2_C2_x2;
-    deriv[1] = dy0dy() * temp * x0 * const_1_p_2_C2_y2; 
+    deriv[1] = dy0dy() * temp * x0 * const_1_p_2_C2_y2;
     deriv[2] = dz0dz() * miu_2_2_1 * const_2_C2_x;
 
     // dmiu2 dx/dy/dz
     deriv[3] = dx0dx() * temp * z0 * const_1_p_2_C2_x2;
-    deriv[4] = dy0dy() * miu_2_2_2 * const_2_C2_y; 
+    deriv[4] = dy0dy() * miu_2_2_2 * const_2_C2_y;
     deriv[5] = dz0dz() * temp * x0 * const_1_p_2_C2_z2;
 
     // dmiu3 dx/dy/dz
@@ -187,11 +187,11 @@ void calc_MCSH_2_2(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_3_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
 
     double lambda_x0 = x0 * lambda;
@@ -215,7 +215,7 @@ void calc_MCSH_3_1(double x0, double y0, double z0, double r0_sqr, double A, dou
     double temp_y = 15.0 * lambda_y0_3 + C3 * lambda_y0;
     double temp_z = 15.0 * lambda_z0_3 + C3 * lambda_z0;
 
-    double temp_dx = lambda * (45.0 * lambda_x0_sqr + C3); 
+    double temp_dx = lambda * (45.0 * lambda_x0_sqr + C3);
     double temp_dy = lambda * (45.0 * lambda_y0_sqr + C3);
     double temp_dz = lambda * (45.0 * lambda_z0_sqr + C3);
 
@@ -249,11 +249,11 @@ void calc_MCSH_3_1(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_3_2(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double x0_sqr = x0*x0;
     double y0_sqr = y0*y0;
@@ -335,7 +335,7 @@ void calc_MCSH_3_2(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_3_3(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
@@ -352,17 +352,17 @@ void calc_MCSH_3_3(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_4_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
 
     double lambda_x0 = lambda * x0;
     double lambda_y0 = lambda * y0;
     double lambda_z0 = lambda * z0;
-    
+
     double lambda_x0_sqr = lambda_x0 * lambda_x0;
     double lambda_y0_sqr = lambda_y0 * lambda_y0;
     double lambda_z0_sqr = lambda_z0 * lambda_z0;
@@ -385,7 +385,7 @@ void calc_MCSH_4_1(double x0, double y0, double z0, double r0_sqr, double A, dou
     double temp_y = 105.0 * lambda_y0_4 + C3 * lambda_y0_sqr + C4;
     double temp_z = 105.0 * lambda_z0_4 + C3 * lambda_z0_sqr + C4;
 
-    double temp_dx = lambda * (420.0 * lambda_x0_3 + 2.0 * C3 * lambda_x0); 
+    double temp_dx = lambda * (420.0 * lambda_x0_3 + 2.0 * C3 * lambda_x0);
     double temp_dy = lambda * (420.0 * lambda_y0_3 + 2.0 * C3 * lambda_y0);
     double temp_dz = lambda * (420.0 * lambda_z0_3 + 2.0 * C3 * lambda_z0);
 
@@ -419,11 +419,11 @@ void calc_MCSH_4_1(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_4_2(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double x0_sqr = x0*x0;
     double y0_sqr = y0*y0;
@@ -432,7 +432,7 @@ void calc_MCSH_4_2(double x0, double y0, double z0, double r0_sqr, double A, dou
     double lambda_x0 = lambda * x0;
     double lambda_y0 = lambda * y0;
     double lambda_z0 = lambda * z0;
-    
+
     double lambda_x0_sqr = lambda_x0 * lambda_x0;
     double lambda_y0_sqr = lambda_y0 * lambda_y0;
     double lambda_z0_sqr = lambda_z0 * lambda_z0;
@@ -511,11 +511,11 @@ void calc_MCSH_4_2(double x0, double y0, double z0, double r0_sqr, double A, dou
 
 
 void calc_MCSH_4_3(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
     double x0_sqr = x0*x0;
@@ -597,11 +597,11 @@ void calc_MCSH_4_3(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_4_4(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     // double lambda_sqr = lambda * lambda;
     double x0_sqr = x0*x0;
@@ -665,11 +665,11 @@ void calc_MCSH_4_4(double x0, double y0, double z0, double r0_sqr, double A, dou
 
 
 void calc_MCSH_5_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
 
     double lambda_x0 = lambda * x0;
@@ -736,11 +736,11 @@ void calc_MCSH_5_1(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_5_2(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
 
     // double lambda_sqr = lambda * lambda;
@@ -834,11 +834,11 @@ void calc_MCSH_5_2(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_5_3(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
     // double x0_sqr = x0*x0;
@@ -973,11 +973,11 @@ void calc_MCSH_5_3(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_5_4(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
     double x0_sqr = x0*x0;
@@ -987,7 +987,7 @@ void calc_MCSH_5_4(double x0, double y0, double z0, double r0_sqr, double A, dou
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
     double lambda_z0 = z0 * lambda;
-    
+
     double lambda_x0_sqr = lambda_sqr * x0_sqr;
     double lambda_y0_sqr = lambda_sqr * y0_sqr;
     double lambda_z0_sqr = lambda_sqr * z0_sqr;
@@ -1044,11 +1044,11 @@ void calc_MCSH_5_4(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_5_5(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
     double x0_sqr = x0*x0;
@@ -1058,7 +1058,7 @@ void calc_MCSH_5_5(double x0, double y0, double z0, double r0_sqr, double A, dou
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
     double lambda_z0 = z0 * lambda;
-    
+
     double lambda_x0_sqr = lambda_x0 * lambda_x0;
     double lambda_y0_sqr = lambda_y0 * lambda_y0;
     double lambda_z0_sqr = lambda_z0 * lambda_z0;
@@ -1122,11 +1122,11 @@ void calc_MCSH_5_5(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_6_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     // double lambda_sqr = lambda * lambda;
     // double x0_sqr = x0*x0;
@@ -1136,7 +1136,7 @@ void calc_MCSH_6_1(double x0, double y0, double z0, double r0_sqr, double A, dou
     double lambda_x0 = lambda * x0;
     double lambda_y0 = lambda * y0;
     double lambda_z0 = lambda * z0;
-    
+
     double lambda_x0_sqr = lambda_x0 * lambda_x0;
     double lambda_y0_sqr = lambda_y0 * lambda_y0;
     double lambda_z0_sqr = lambda_z0 * lambda_z0;
@@ -1202,11 +1202,11 @@ void calc_MCSH_6_1(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_6_2(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     // double lambda_sqr = lambda * lambda;
     double x0_sqr = x0*x0;
@@ -1302,11 +1302,11 @@ void calc_MCSH_6_2(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_6_3(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
 
@@ -1337,7 +1337,7 @@ void calc_MCSH_6_3(double x0, double y0, double z0, double r0_sqr, double A, dou
     double temp_dx_2 = 2.0 * lambda_sqr * x0;
     double temp_dy_2 = 2.0 * lambda_sqr * y0;
     double temp_dz_2 = 2.0 * lambda_sqr * z0;
-    
+
     double C4_1 = 3.0 / gamma, C4_2 = 3.0 / (4.0 * gamma * gamma);
     double temp_x_4 = lambda_x0_4 + C4_1 * lambda_x0_sqr + C4_2;
     double temp_y_4 = lambda_y0_4 + C4_1 * lambda_y0_sqr + C4_2;
@@ -1440,11 +1440,11 @@ void calc_MCSH_6_3(double x0, double y0, double z0, double r0_sqr, double A, dou
 
 
 void calc_MCSH_6_4(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     // double lambda_sqr = lambda * lambda;
     double x0_sqr = x0*x0;
@@ -1454,7 +1454,7 @@ void calc_MCSH_6_4(double x0, double y0, double z0, double r0_sqr, double A, dou
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
     double lambda_z0 = z0 * lambda;
-    
+
     double lambda_x0_sqr = lambda_x0 * lambda_x0;
     double lambda_y0_sqr = lambda_y0 * lambda_y0;
     double lambda_z0_sqr = lambda_z0 * lambda_z0;
@@ -1515,11 +1515,11 @@ void calc_MCSH_6_4(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_6_5(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     // double lambda_sqr = lambda * lambda;
 
@@ -1591,11 +1591,11 @@ void calc_MCSH_6_5(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_6_6(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
     double x0_sqr = x0*x0;
@@ -1735,7 +1735,7 @@ void calc_MCSH_6_7(double x0, double y0, double z0, double r0_sqr, double A, dou
 {
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
 
@@ -1783,11 +1783,11 @@ void calc_MCSH_6_7(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_7_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     // double lambda_sqr = lambda * lambda;
 
@@ -1795,7 +1795,7 @@ void calc_MCSH_7_1(double x0, double y0, double z0, double r0_sqr, double A, dou
     double lambda_x0 = lambda * x0;
     double lambda_y0 = lambda * y0;
     double lambda_z0 = lambda * z0;
-    
+
     double lambda_x0_sqr = lambda_x0 * lambda_x0;
     double lambda_y0_sqr = lambda_y0 * lambda_y0;
     double lambda_z0_sqr = lambda_z0 * lambda_z0;
@@ -1865,11 +1865,11 @@ void calc_MCSH_7_1(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_7_2(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     // double lambda_sqr = lambda * lambda;
     double x0_sqr = x0*x0;
@@ -1903,7 +1903,7 @@ void calc_MCSH_7_2(double x0, double y0, double z0, double r0_sqr, double A, dou
     double gamma = calc_gamma(alpha, beta);
     double C3 = (135135.0 * 15.0 / (2.0 * gamma)) - 155925.0;
     double C4 = (135135.0 * 45.0 / (4.0 * gamma * gamma)) - (155925.0 * 3.0 / gamma) + 42525.0;
-    double C5 = (135135.0 * 15.0 / (8.0 * gamma * gamma * gamma)) - (155925.0 * 3.0 / (4.0 * gamma * gamma)) + (42525.0 / (2.0 * gamma)) - 1575.0; 
+    double C5 = (135135.0 * 15.0 / (8.0 * gamma * gamma * gamma)) - (155925.0 * 3.0 / (4.0 * gamma * gamma)) + (42525.0 / (2.0 * gamma)) - 1575.0;
 
     double temp = C1 * exp( C2 * r0_sqr);
 
@@ -1971,11 +1971,11 @@ void calc_MCSH_7_2(double x0, double y0, double z0, double r0_sqr, double A, dou
 
 
 void calc_MCSH_7_3(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
 
@@ -2023,7 +2023,7 @@ void calc_MCSH_7_3(double x0, double y0, double z0, double r0_sqr, double A, dou
     double C5_1 = 5.0 / gamma, C5_2 = 15.0 / (4.0 * gamma * gamma);
     double temp_x_5 = lambda_x0_5 + C5_1 * lambda_x0_3 + C5_2 * lambda_x0;
     double temp_y_5 = lambda_y0_5 + C5_1 * lambda_y0_3 + C5_2 * lambda_y0;
-    double temp_z_5 = lambda_z0_5 + C5_1 * lambda_z0_3 + C5_2 * lambda_z0; 
+    double temp_z_5 = lambda_z0_5 + C5_1 * lambda_z0_3 + C5_2 * lambda_z0;
 
     double temp_dx_5 = lambda * (5.0 * lambda_x0_4 + 3.0 * C5_1 * lambda_x0_sqr + C5_2);
     double temp_dy_5 = lambda * (5.0 * lambda_y0_4 + 3.0 * C5_1 * lambda_y0_sqr + C5_2);
@@ -2122,11 +2122,11 @@ void calc_MCSH_7_3(double x0, double y0, double z0, double r0_sqr, double A, dou
 
 
 void calc_MCSH_7_4(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     // double lambda_sqr = lambda * lambda;
     double x0_sqr = x0*x0;
@@ -2136,7 +2136,7 @@ void calc_MCSH_7_4(double x0, double y0, double z0, double r0_sqr, double A, dou
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
     double lambda_z0 = z0 * lambda;
-    
+
     double lambda_x0_sqr = lambda_x0 * lambda_x0;
     double lambda_y0_sqr = lambda_y0 * lambda_y0;
     double lambda_z0_sqr = lambda_z0 * lambda_z0;
@@ -2148,7 +2148,7 @@ void calc_MCSH_7_4(double x0, double y0, double z0, double r0_sqr, double A, dou
     double lambda_x0_4 = lambda_x0_3 * lambda_x0;
     double lambda_y0_4 = lambda_y0_3 * lambda_y0;
     double lambda_z0_4 = lambda_z0_3 * lambda_z0;
-    
+
     double lambda_x0_5 = lambda_x0_4 * lambda_x0;
     double lambda_y0_5 = lambda_y0_4 * lambda_y0;
     double lambda_z0_5 = lambda_z0_4 * lambda_z0;
@@ -2201,11 +2201,11 @@ void calc_MCSH_7_4(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_7_5(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
 
@@ -2348,11 +2348,11 @@ void calc_MCSH_7_5(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_7_6(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
     double x0_sqr = x0*x0;
@@ -2493,11 +2493,11 @@ void calc_MCSH_7_6(double x0, double y0, double z0, double r0_sqr, double A, dou
 
 
 void calc_MCSH_7_7(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     // double lambda_sqr = lambda * lambda;
 
@@ -2590,11 +2590,11 @@ void calc_MCSH_7_7(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_7_8(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
 
@@ -2630,7 +2630,7 @@ void calc_MCSH_7_8(double x0, double y0, double z0, double r0_sqr, double A, dou
     double temp_dx_3 = lambda * (3.0 * lambda_x0_sqr + C3_1);
     double temp_dy_3 = lambda * (3.0 * lambda_y0_sqr + C3_1);
     double temp_dz_3 = lambda * (3.0 * lambda_z0_sqr + C3_1);
-    
+
     double temp_term1_x = 135135.0 * temp_x_3 - 31185.0 * lambda_x0;
     double temp_term1_y = 135135.0 * temp_y_3 - 31185.0 * lambda_y0;
     double temp_term1_z = 135135.0 * temp_z_3 - 31185.0 * lambda_z0;
@@ -2702,11 +2702,11 @@ void calc_MCSH_7_8(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_8_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     // double lambda_sqr = lambda * lambda;
     // double x0_sqr = x0*x0;
@@ -2716,7 +2716,7 @@ void calc_MCSH_8_1(double x0, double y0, double z0, double r0_sqr, double A, dou
     double lambda_x0 = lambda * x0;
     double lambda_y0 = lambda * y0;
     double lambda_z0 = lambda * z0;
-    
+
     double lambda_x0_sqr = lambda_x0 * lambda_x0;
     double lambda_y0_sqr = lambda_y0 * lambda_y0;
     double lambda_z0_sqr = lambda_z0 * lambda_z0;
@@ -2791,14 +2791,14 @@ void calc_MCSH_8_1(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_8_2(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     // double lambda_sqr = lambda * lambda;
-    
+
     double x0_sqr = x0*x0;
     double y0_sqr = y0*y0;
     double z0_sqr = z0*z0;
@@ -2834,7 +2834,7 @@ void calc_MCSH_8_2(double x0, double y0, double z0, double r0_sqr, double A, dou
     double gamma = calc_gamma(alpha, beta);
     double C3 = (2027025.0 * 21.0 / (2.0 * gamma)) - 2837835.0;
     double C4 = (2027025.0 * 105.0 / (4.0 * gamma * gamma)) - (2837835.0 * 5.0 / gamma) + 1091475.0;
-    double C5 = (2027025.0 * 105.0 / (8.0 * gamma * gamma * gamma)) - (2837835.0 * 15.0 / (4.0 * gamma * gamma)) + (1091475.0 * 3.0 / (2.0 * gamma)) - 99225.0; 
+    double C5 = (2027025.0 * 105.0 / (8.0 * gamma * gamma * gamma)) - (2837835.0 * 15.0 / (4.0 * gamma * gamma)) + (1091475.0 * 3.0 / (2.0 * gamma)) - 99225.0;
 
     double temp = C1 * exp( C2 * r0_sqr);
 
@@ -2902,11 +2902,11 @@ void calc_MCSH_8_2(double x0, double y0, double z0, double r0_sqr, double A, dou
 
 
 void calc_MCSH_8_3(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
 
@@ -3057,11 +3057,11 @@ void calc_MCSH_8_3(double x0, double y0, double z0, double r0_sqr, double A, dou
 
 
 void calc_MCSH_8_4(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     // double lambda_sqr = lambda * lambda;
     double x0_sqr = x0*x0;
@@ -3071,7 +3071,7 @@ void calc_MCSH_8_4(double x0, double y0, double z0, double r0_sqr, double A, dou
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
     double lambda_z0 = z0 * lambda;
-    
+
     double lambda_x0_sqr = lambda_x0 * lambda_x0;
     double lambda_y0_sqr = lambda_y0 * lambda_y0;
     double lambda_z0_sqr = lambda_z0 * lambda_z0;
@@ -3141,11 +3141,11 @@ void calc_MCSH_8_4(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_8_5(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     // double lambda_sqr = lambda * lambda;
 
@@ -3185,12 +3185,12 @@ void calc_MCSH_8_5(double x0, double y0, double z0, double r0_sqr, double A, dou
     double C5_1 = 5.0 / gamma, C5_2 = 15.0 / (4.0 * gamma * gamma);
     double temp_x_5 = lambda_x0_5 + C5_1 * lambda_x0_3 + C5_2 * lambda_x0;
     double temp_y_5 = lambda_y0_5 + C5_1 * lambda_y0_3 + C5_2 * lambda_y0;
-    double temp_z_5 = lambda_z0_5 + C5_1 * lambda_z0_3 + C5_2 * lambda_z0; 
+    double temp_z_5 = lambda_z0_5 + C5_1 * lambda_z0_3 + C5_2 * lambda_z0;
 
     double temp_dx_5 = lambda * (5.0 * lambda_x0_4 + 3.0 * C5_1 * lambda_x0_sqr + C5_2);
     double temp_dy_5 = lambda * (5.0 * lambda_y0_4 + 3.0 * C5_1 * lambda_y0_sqr + C5_2);
     double temp_dz_5 = lambda * (5.0 * lambda_z0_4 + 3.0 * C5_1 * lambda_z0_sqr + C5_2);
-    
+
 
 
     double temp_term1_x = 2027025.0 * temp_x_5 - 1351350.0 * temp_x_3 + 155925.0 * lambda_x0;
@@ -3285,11 +3285,11 @@ void calc_MCSH_8_5(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_8_6(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
     double x0_sqr = x0*x0;
@@ -3340,7 +3340,7 @@ void calc_MCSH_8_6(double x0, double y0, double z0, double r0_sqr, double A, dou
     double C5_1 = 5.0 / gamma, C5_2 = 15.0 / (4.0 * gamma * gamma);
     double temp_x_5 = lambda_x0_5 + C5_1 * lambda_x0_3 + C5_2 * lambda_x0;
     double temp_y_5 = lambda_y0_5 + C5_1 * lambda_y0_3 + C5_2 * lambda_y0;
-    double temp_z_5 = lambda_z0_5 + C5_1 * lambda_z0_3 + C5_2 * lambda_z0; 
+    double temp_z_5 = lambda_z0_5 + C5_1 * lambda_z0_3 + C5_2 * lambda_z0;
 
     double temp_dx_5 = lambda * (5.0 * lambda_x0_4 + 3.0 * C5_1 * lambda_x0_sqr + C5_2);
     double temp_dy_5 = lambda * (5.0 * lambda_y0_4 + 3.0 * C5_1 * lambda_y0_sqr + C5_2);
@@ -3364,7 +3364,7 @@ void calc_MCSH_8_6(double x0, double y0, double z0, double r0_sqr, double A, dou
     double temp_dterm2_dy = -135135.0 * temp_dy_5 + 103950.0 * temp_dy_3 - 14175.0 * lambda;
     double temp_dterm2_dz = -135135.0 * temp_dz_5 + 103950.0 * temp_dz_3 - 14175.0 * lambda;
 
-    
+
     double temp_miu1 = temp_y_2 * temp_term1_x + temp_term2_x;
     double temp_miu2 = temp_x_2 * temp_term1_y + temp_term2_y;
     double temp_miu3 = temp_z_2 * temp_term1_x + temp_term2_x;
@@ -3446,11 +3446,11 @@ void calc_MCSH_8_6(double x0, double y0, double z0, double r0_sqr, double A, dou
 
 
 void calc_MCSH_8_7(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
 
@@ -3559,11 +3559,11 @@ void calc_MCSH_8_7(double x0, double y0, double z0, double r0_sqr, double A, dou
 
 
 void calc_MCSH_8_8(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
     double x0_sqr = x0*x0;
@@ -3713,11 +3713,11 @@ void calc_MCSH_8_8(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_8_9(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
 
@@ -3830,11 +3830,11 @@ void calc_MCSH_8_9(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_8_10(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
 
@@ -3952,11 +3952,11 @@ void calc_MCSH_8_10(double x0, double y0, double z0, double r0_sqr, double A, do
 }
 
 void calc_MCSH_9_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     // double lambda_sqr = lambda * lambda;
     // double x0_sqr = x0*x0;
@@ -3966,7 +3966,7 @@ void calc_MCSH_9_1(double x0, double y0, double z0, double r0_sqr, double A, dou
     double lambda_x0 = lambda * x0;
     double lambda_y0 = lambda * y0;
     double lambda_z0 = lambda * z0;
-    
+
     double lambda_x0_sqr = lambda_x0 * lambda_x0;
     double lambda_y0_sqr = lambda_y0 * lambda_y0;
     double lambda_z0_sqr = lambda_z0 * lambda_z0;
@@ -4045,11 +4045,11 @@ void calc_MCSH_9_1(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_9_2(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     // double lambda_sqr = lambda * lambda;
     double x0_sqr = x0*x0;
@@ -4160,11 +4160,11 @@ void calc_MCSH_9_2(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_9_3(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
 
@@ -4191,7 +4191,7 @@ void calc_MCSH_9_3(double x0, double y0, double z0, double r0_sqr, double A, dou
     double lambda_x0_6 = lambda_x0_5 * lambda_x0;
     double lambda_y0_6 = lambda_y0_5 * lambda_y0;
     double lambda_z0_6 = lambda_z0_5 * lambda_z0;
-    
+
     double lambda_x0_7 = lambda_x0_6 * lambda_x0;
     double lambda_y0_7 = lambda_y0_6 * lambda_y0;
     double lambda_z0_7 = lambda_z0_6 * lambda_z0;
@@ -4220,7 +4220,7 @@ void calc_MCSH_9_3(double x0, double y0, double z0, double r0_sqr, double A, dou
     double C5_1 = 5.0 / gamma, C5_2 = 15.0 / (4.0 * gamma * gamma);
     double temp_x_5 = lambda_x0_5 + C5_1 * lambda_x0_3 + C5_2 * lambda_x0;
     double temp_y_5 = lambda_y0_5 + C5_1 * lambda_y0_3 + C5_2 * lambda_y0;
-    double temp_z_5 = lambda_z0_5 + C5_1 * lambda_z0_3 + C5_2 * lambda_z0; 
+    double temp_z_5 = lambda_z0_5 + C5_1 * lambda_z0_3 + C5_2 * lambda_z0;
 
     double temp_dx_5 = lambda * (5.0 * lambda_x0_4 + 3.0 * C5_1 * lambda_x0_sqr + C5_2);
     double temp_dy_5 = lambda * (5.0 * lambda_y0_4 + 3.0 * C5_1 * lambda_y0_sqr + C5_2);
@@ -4328,11 +4328,11 @@ void calc_MCSH_9_3(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_9_4(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     // double lambda_sqr = lambda * lambda;
     double x0_sqr = x0*x0;
@@ -4342,7 +4342,7 @@ void calc_MCSH_9_4(double x0, double y0, double z0, double r0_sqr, double A, dou
     double lambda_x0 = x0 * lambda;
     double lambda_y0 = y0 * lambda;
     double lambda_z0 = z0 * lambda;
-    
+
     double lambda_x0_sqr = lambda_x0 * lambda_x0;
     double lambda_y0_sqr = lambda_y0 * lambda_y0;
     double lambda_z0_sqr = lambda_z0 * lambda_z0;
@@ -4417,11 +4417,11 @@ void calc_MCSH_9_4(double x0, double y0, double z0, double r0_sqr, double A, dou
 
 
 void calc_MCSH_9_5(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
 
@@ -4582,11 +4582,11 @@ void calc_MCSH_9_5(double x0, double y0, double z0, double r0_sqr, double A, dou
 
 
 void calc_MCSH_9_6(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
     double x0_sqr = x0*x0;
@@ -4744,11 +4744,11 @@ void calc_MCSH_9_6(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_9_7(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
     // double x0_sqr = x0*x0;
@@ -4808,7 +4808,7 @@ void calc_MCSH_9_7(double x0, double y0, double z0, double r0_sqr, double A, dou
     double C5_1 = 5.0 / gamma, C5_2 = 15.0 / (4.0 * gamma * gamma);
     double temp_x_5 = lambda_x0_5 + C5_1 * lambda_x0_3 + C5_2 * lambda_x0;
     double temp_y_5 = lambda_y0_5 + C5_1 * lambda_y0_3 + C5_2 * lambda_y0;
-    double temp_z_5 = lambda_z0_5 + C5_1 * lambda_z0_3 + C5_2 * lambda_z0; 
+    double temp_z_5 = lambda_z0_5 + C5_1 * lambda_z0_3 + C5_2 * lambda_z0;
 
     double temp_dx_5 = lambda * (5.0 * lambda_x0_4 + 3.0 * C5_1 * lambda_x0_sqr + C5_2);
     double temp_dy_5 = lambda * (5.0 * lambda_y0_4 + 3.0 * C5_1 * lambda_y0_sqr + C5_2);
@@ -4915,11 +4915,11 @@ void calc_MCSH_9_7(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_9_8(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     // double lambda_sqr = lambda * lambda;
     double x0_sqr = x0*x0;
@@ -4962,7 +4962,7 @@ void calc_MCSH_9_8(double x0, double y0, double z0, double r0_sqr, double A, dou
     double C5_1 = 5.0 / gamma, C5_2 = 15.0 / (4.0 * gamma * gamma);
     double temp_x_5 = lambda_x0_5 + C5_1 * lambda_x0_3 + C5_2 * lambda_x0;
     double temp_y_5 = lambda_y0_5 + C5_1 * lambda_y0_3 + C5_2 * lambda_y0;
-    double temp_z_5 = lambda_z0_5 + C5_1 * lambda_z0_3 + C5_2 * lambda_z0; 
+    double temp_z_5 = lambda_z0_5 + C5_1 * lambda_z0_3 + C5_2 * lambda_z0;
 
     double temp_dx_5 = lambda * (5.0 * lambda_x0_4 + 3.0 * C5_1 * lambda_x0_sqr + C5_2);
     double temp_dy_5 = lambda * (5.0 * lambda_y0_4 + 3.0 * C5_1 * lambda_y0_sqr + C5_2);
@@ -5066,11 +5066,11 @@ void calc_MCSH_9_8(double x0, double y0, double z0, double r0_sqr, double A, dou
 }
 
 void calc_MCSH_9_9(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
 
@@ -5118,7 +5118,7 @@ void calc_MCSH_9_9(double x0, double y0, double z0, double r0_sqr, double A, dou
     double C5_1 = 5.0 / gamma, C5_2 = 15.0 / (4.0 * gamma * gamma);
     double temp_x_5 = lambda_x0_5 + C5_1 * lambda_x0_3 + C5_2 * lambda_x0;
     double temp_y_5 = lambda_y0_5 + C5_1 * lambda_y0_3 + C5_2 * lambda_y0;
-    double temp_z_5 = lambda_z0_5 + C5_1 * lambda_z0_3 + C5_2 * lambda_z0; 
+    double temp_z_5 = lambda_z0_5 + C5_1 * lambda_z0_3 + C5_2 * lambda_z0;
 
     double temp_dx_5 = lambda * (5.0 * lambda_x0_4 + 3.0 * C5_1 * lambda_x0_sqr + C5_2);
     double temp_dy_5 = lambda * (5.0 * lambda_y0_4 + 3.0 * C5_1 * lambda_y0_sqr + C5_2);
@@ -5197,11 +5197,11 @@ void calc_MCSH_9_9(double x0, double y0, double z0, double r0_sqr, double A, dou
 
 
 void calc_MCSH_9_10(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
     double x0_sqr = x0*x0;
@@ -5244,9 +5244,9 @@ void calc_MCSH_9_10(double x0, double y0, double z0, double r0_sqr, double A, do
     double temp_dx_4 = lambda * (4.0 * lambda_x0_3 + 2.0 * C4_1 * lambda_x0);
     double temp_dy_4 = lambda * (4.0 * lambda_y0_3 + 2.0 * C4_1 * lambda_y0);
     double temp_dz_4 = lambda * (4.0 * lambda_z0_3 + 2.0 * C4_1 * lambda_z0);
-    
 
-    
+
+
     double temp_term1_x = 34459425.0 * temp_x_4 - 12162150.0 * temp_x_2 + 405405.0;
     double temp_term1_y = 34459425.0 * temp_y_4 - 12162150.0 * temp_y_2 + 405405.0;
 
@@ -5314,11 +5314,11 @@ void calc_MCSH_9_10(double x0, double y0, double z0, double r0_sqr, double A, do
 }
 
 void calc_MCSH_9_11(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
     double lambda_sqr = lambda * lambda;
     // double x0_sqr = x0*x0;
@@ -5419,19 +5419,19 @@ void calc_MCSH_9_11(double x0, double y0, double z0, double r0_sqr, double A, do
     double temp_dmiu2_dx = temp_dx_3 * temp_z_2 * temp_term1_y + temp_dx_3 * temp_term2_y + lambda * temp_z_2 * temp_term3_y + lambda * temp_term4_y;
     double temp_dmiu2_dy = temp_x_3 * temp_z_2 * temp_dterm1_dy + temp_x_3 * temp_dterm2_dy + lambda_x0 * temp_z_2 * temp_dterm3_dy + lambda_x0 * temp_dterm4_dy;
     double temp_dmiu2_dz = temp_x_3 * temp_dz_2 * temp_term1_y + lambda_x0 * temp_dz_2 * temp_term3_y;
-    
+
     double temp_dmiu3_dx = temp_z_3 * temp_y_2 * temp_dterm1_dx + temp_z_3 * temp_dterm2_dx + lambda_z0 * temp_y_2 * temp_dterm3_dx + lambda_z0 * temp_dterm4_dx;
     double temp_dmiu3_dy = temp_z_3 * temp_dy_2 * temp_term1_x + lambda_z0 * temp_dy_2 * temp_term3_x;
     double temp_dmiu3_dz = temp_dz_3 * temp_y_2 * temp_term1_x + temp_dz_3 * temp_term2_x + lambda * temp_y_2 * temp_term3_x + lambda * temp_term4_x;
-    
+
     double temp_dmiu4_dx = temp_dx_3 * temp_y_2 * temp_term1_z + temp_dx_3 * temp_term2_z + lambda * temp_y_2 * temp_term3_z + lambda * temp_term4_z;
     double temp_dmiu4_dy = temp_x_3 * temp_dy_2 * temp_term1_z + lambda_x0 * temp_dy_2 * temp_term3_z;
     double temp_dmiu4_dz = temp_x_3 * temp_y_2 * temp_dterm1_dz + temp_x_3 * temp_dterm2_dz + lambda_x0 * temp_y_2 * temp_dterm3_dz + lambda_x0 * temp_dterm4_dz;
-    
+
     double temp_dmiu5_dx = temp_z_3 * temp_dx_2 * temp_term1_y + lambda_z0 * temp_dx_2 * temp_term3_y;
     double temp_dmiu5_dy = temp_z_3 * temp_x_2 * temp_dterm1_dy + temp_z_3 * temp_dterm2_dy + lambda_z0 * temp_x_2 * temp_dterm3_dy + lambda_z0 * temp_dterm4_dy;
     double temp_dmiu5_dz = temp_dz_3 * temp_x_2 * temp_term1_y + temp_dz_3 * temp_term2_y + lambda * temp_x_2 * temp_term3_y + lambda * temp_term4_y;
-    
+
     double temp_dmiu6_dx = temp_y_3 * temp_dx_2 * temp_term1_z + lambda_y0 * temp_dx_2 * temp_term3_z;
     double temp_dmiu6_dy = temp_dy_3 * temp_x_2 * temp_term1_z + temp_dy_3 * temp_term2_z + lambda * temp_x_2 * temp_term3_z + lambda * temp_term4_z;
     double temp_dmiu6_dz = temp_y_3 * temp_x_2 * temp_dterm1_dz + temp_y_3 * temp_dterm2_dz + lambda_y0 * temp_x_2 * temp_dterm3_dz + lambda_y0 * temp_dterm4_dz;
@@ -5488,11 +5488,11 @@ void calc_MCSH_9_11(double x0, double y0, double z0, double r0_sqr, double A, do
 
 
 void calc_MCSH_9_12(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv)
-{   
+{
     // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
-    
+
     double lambda = calc_lambda(alpha, beta);
 
     double lambda_x0 = x0 * lambda;
@@ -5705,20 +5705,20 @@ int get_mcsh_type(int mcsh_order, int group_num)
 AtomisticMCSHFunction get_mcsh_function(int mcsh_order, int group_num)
 {
     AtomisticMCSHFunction result;
-    
+
     if (mcsh_order == 0) {
         if (group_num == 1) {
             result = calc_MCSH_0_1;
-        } 
+        }
     } else if (mcsh_order == 1) {
         if (group_num == 1) {
             result = calc_MCSH_1_1;
-        } 
+        }
     } else if (mcsh_order == 2) {
         if (group_num == 1) {
             result = calc_MCSH_2_1;
         } else if (group_num == 2){
-            result = calc_MCSH_2_2;    
+            result = calc_MCSH_2_2;
         }
     } else if (mcsh_order == 3) {
         if (group_num == 1) {
