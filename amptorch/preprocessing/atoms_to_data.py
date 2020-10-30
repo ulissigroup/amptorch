@@ -2,8 +2,9 @@ import ase.db.sqlite
 import ase.io.trajectory
 import numpy as np
 import torch
-from amptorch.descriptor.descriptor_calculator import DescriptorCalculator
 from torch_geometric.data import Data
+
+from amptorch.descriptor.descriptor_calculator import DescriptorCalculator
 
 try:
     shell = get_ipython().__class__.__name__
