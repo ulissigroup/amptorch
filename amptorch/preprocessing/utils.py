@@ -55,7 +55,7 @@ class TargetScaler:
             self.target_mean = torch.mean(energies, dim=0)
             self.target_std = torch.std(energies, dim=0)
         else:
-            self.target_mean = data_list[0].energy
+            self.target_mean = 0
             self.target_std = 1
 
     def norm(self, data_list):
