@@ -21,7 +21,7 @@ for dist in distances:
     images.append(image)
 
 
-sigmas = np.logspace(np.log10(0.05), np.log10(5.0), num=5)
+sigmas = np.logspace(np.log10(0.02), np.log10(1.0), num=5)
 MCSHs = {
     "MCSHs": {
         "0": {"groups": [1], "sigmas": sigmas},
