@@ -24,23 +24,20 @@ for dist in distances:
 
 ### Construct parameters
 
-sigmas = np.logspace(np.log10(0.02), np.log10(1.0), num=5)
+sigmas = np.logspace(np.log10(0.02), np.log10(1.0), num=4)
 MCSHs = {
     "MCSHs": {
         "0": {"groups": [1], "sigmas": sigmas},
         "1": {"groups": [1], "sigmas": sigmas},
         "2": {"groups": [1, 2], "sigmas": sigmas},
         "3": {"groups": [1, 2, 3], "sigmas": sigmas},
-        "4": {"groups": [1, 2, 3, 4], "sigmas": sigmas},
-        "5": {"groups": [1, 2, 3, 4, 5], "sigmas": sigmas},
-        "6": {"groups": [1, 2, 3, 4, 5, 6, 7], "sigmas": sigmas},
     },
     "atom_gaussians": {
         "C": "mcsh_params/C_totaldensity_4.g",
         "O": "mcsh_params/O_totaldensity_5.g",
         "Cu": "mcsh_params/Cu_totaldensity_6.g",
     },
-    "cutoff": 8,
+    "cutoff": 10,
 }
 
 
@@ -50,7 +47,7 @@ config = {
     "optim": {
         "device": "cpu",
         "force_coefficient": 0.04,
-        "lr": 1e-2,
+        "lr": 1e-3,
         "batch_size": 10,
         "epochs": 300,
         "loss": "mse",
@@ -96,8 +93,8 @@ def get_force_metrics(config):
 
     e_mae = np.mean(np.abs(true_energies - pred_energies))
     f_mae = np.mean(np.abs(pred_forces - true_forces))
-    assert e_mae < 0.01
-    assert f_mae < 0.03
+    assert e_mae < 0.06
+    assert f_mae < 0.06
 
 
 def test_training():
