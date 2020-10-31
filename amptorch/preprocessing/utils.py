@@ -2,40 +2,47 @@ import torch
 
 
 class FeatureScaler:
-    """Normalizes an input tensor and later reverts it.
-    Adapted from https://github.com/Open-Catalyst-Project/baselines"""
+    """
+    Normalizes an input tensor and later reverts it.
+    Adapted from https://github.com/Open-Catalyst-Project/baselines
+    """
 
     def __init__(self, data_list, forcetraining):
         self.forcetraining = forcetraining
         fingerprints = torch.cat([data.fingerprint for data in data_list], dim=0)
-        self.feature_max = torch.max(fingerprints, dim=0).values
-        self.feature_min = torch.min(fingerprints, dim=0).values
+        atomic_numbers = torch.cat([data.atomic_numbers for data in data_list], dim=0)
+        self.unique = torch.unique(atomic_numbers).tolist()
+        self.scales = {}
+        for element in self.unique:
+            idx = torch.where(atomic_numbers == element)[0]
+            element_fps = fingerprints[idx]
+            mean = torch.mean(element_fps, dim=0)
+            std = torch.std(element_fps, dim=0)
+            std[std == 0] = 1
+            self.scales[element] = {"offset": mean, "scale": std}
 
     def norm(self, data_list, threshold=1e-6):
         for data in data_list:
-            idx_to_scale = torch.where(
-                (self.feature_max - self.feature_min) > threshold
-            )[0]
-            data.fingerprint[:, idx_to_scale] = -1 + 2 * (
-                (data.fingerprint[:, idx_to_scale] - self.feature_min[idx_to_scale])
-                / (self.feature_max[idx_to_scale] - self.feature_min[idx_to_scale])
-            )
+            fingerprint = data.fingerprint
+            atomic_numbers = data.atomic_numbers
+            for element in self.unique:
+                element_idx = torch.where(atomic_numbers == element)
+                element_fp = fingerprint[element_idx]
+                element_fp = (
+                    element_fp - self.scales[element]["offset"]
+                ) / self.scales[element]["scale"]
+                fingerprint[element_idx] = element_fp
             if self.forcetraining:
-                idx_to_scale_prime = data.fprimes._indices()[0] % (
-                    data.fingerprint.shape[1] - 1
+                base_atoms = torch.repeat_interleave(
+                    atomic_numbers, data.fingerprint.shape[1]
                 )
-                nonzero_idx = torch.where(
-                    (
-                        self.feature_max[idx_to_scale_prime]
-                        - self.feature_min[idx_to_scale_prime]
-                    )
-                    > threshold
-                )[0]
-                data.fprimes._values()[nonzero_idx] *= 2 / (
-                    self.feature_max[idx_to_scale_prime][nonzero_idx]
-                    - self.feature_min[idx_to_scale_prime][nonzero_idx]
-                )
+                fp_idx = data.fprimes._indices()[0]
+                fp_idx_to_scale = fp_idx % data.fingerprint.shape[1]
+                element_idx = base_atoms[fp_idx].tolist()
                 _values = data.fprimes._values()
+                for i, element in enumerate(element_idx):
+                    _values[i] /= self.scales[element]["scale"][fp_idx_to_scale[i]]
+
                 _indices = data.fprimes._indices()
                 _size = data.fprimes.size()
                 data.fprimes = torch.sparse.FloatTensor(_indices, _values, _size)
@@ -43,8 +50,10 @@ class FeatureScaler:
 
 
 class TargetScaler:
-    """Normalizes an input tensor and later reverts it.
-    Adapted from https://github.com/Open-Catalyst-Project/baselines"""
+    """
+    Normalizes an input tensor and later reverts it.
+    Adapted from https://github.com/Open-Catalyst-Project/baselines
+    """
 
     def __init__(self, data_list, forcetraining):
         self.forcetraining = forcetraining
