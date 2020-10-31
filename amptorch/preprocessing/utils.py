@@ -7,7 +7,19 @@ class FeatureScaler:
     Adapted from https://github.com/Open-Catalyst-Project/baselines
     """
 
-    def __init__(self, data_list, forcetraining):
+    def __init__(
+        self,
+        data_list,
+        forcetraining,
+        scaling,
+    ):
+        self.transform = scaling["scaling"]
+        if self.transform not in ["normalize", "standardize"]:
+            raise NotImplementedError(f"{transform} scaling not supported.")
+        if self.transform == "normalize" and "range" not in scaling:
+            raise NotImplementedError("Normalization requires desire range.")
+        if self.transform == "normalize":
+            feature_range = scaling["range"]
         self.forcetraining = forcetraining
         fingerprints = torch.cat([data.fingerprint for data in data_list], dim=0)
         atomic_numbers = torch.cat([data.atomic_numbers for data in data_list], dim=0)
@@ -16,10 +28,19 @@ class FeatureScaler:
         for element in self.unique:
             idx = torch.where(atomic_numbers == element)[0]
             element_fps = fingerprints[idx]
-            mean = torch.mean(element_fps, dim=0)
-            std = torch.std(element_fps, dim=0)
-            std[std == 0] = 1
-            self.scales[element] = {"offset": mean, "scale": std}
+            if self.transform == "standardize":
+                mean = torch.mean(element_fps, dim=0)
+                std = torch.std(element_fps, dim=0)
+                std[std == 0] = 1
+                self.scales[element] = {"offset": mean, "scale": std}
+            else:
+                fpmin = torch.min(element_fps, dim=0).values
+                fpmax = torch.max(element_fps, dim=0).values
+                data_range = fpmax - fpmin
+                data_range[data_range == 0] = 1
+                scale = (feature_range[1] - feature_range[0]) / (data_range)
+                offset = feature_range[0] - fpmin * scale
+                self.scales[element] = {"offset": offset, "scale": scale}
 
     def norm(self, data_list, threshold=1e-6):
         for data in data_list:
@@ -28,9 +49,14 @@ class FeatureScaler:
             for element in self.unique:
                 element_idx = torch.where(atomic_numbers == element)
                 element_fp = fingerprint[element_idx]
-                element_fp = (
-                    element_fp - self.scales[element]["offset"]
-                ) / self.scales[element]["scale"]
+                if self.transform == "standardize":
+                    element_fp = (
+                        element_fp - self.scales[element]["offset"]
+                    ) / self.scales[element]["scale"]
+                else:
+                    element_fp = (
+                        element_fp * self.scales[element]["scale"]
+                    ) + self.scales[element]["offset"]
                 fingerprint[element_idx] = element_fp
             if self.forcetraining:
                 base_atoms = torch.repeat_interleave(
@@ -41,8 +67,10 @@ class FeatureScaler:
                 element_idx = base_atoms[fp_idx].tolist()
                 _values = data.fprimes._values()
                 for i, element in enumerate(element_idx):
-                    _values[i] /= self.scales[element]["scale"][fp_idx_to_scale[i]]
-
+                    if self.transform == "standardize":
+                        _values[i] /= self.scales[element]["scale"][fp_idx_to_scale[i]]
+                    else:
+                        _values[i] *= self.scales[element]["scale"][fp_idx_to_scale[i]]
                 _indices = data.fprimes._indices()
                 _size = data.fprimes.size()
                 data.fprimes = torch.sparse.FloatTensor(_indices, _values, _size)

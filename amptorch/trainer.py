@@ -5,18 +5,18 @@ import warnings
 
 import ase.io
 import numpy as np
-import skorch.net
 import torch
-from skorch import NeuralNetRegressor
-from skorch.callbacks import LRScheduler
-from skorch.dataset import CVSplit
 
+import skorch.net
 from amptorch.dataset import AtomsDataset, DataCollater
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.metrics import evaluator
 from amptorch.model import BPNN, CustomLoss
 from amptorch.preprocessing import AtomsToData
 from amptorch.utils import to_tensor, train_end_load_best_loss
+from skorch import NeuralNetRegressor
+from skorch.callbacks import LRScheduler
+from skorch.dataset import CVSplit
 
 
 class AtomsTrainer:
@@ -94,12 +94,15 @@ class AtomsTrainer:
             ),
             forcetraining=self.forcetraining,
             save_fps=self.config["dataset"].get("save_fps", True),
+            scaling=self.config["dataset"].get(
+                "scaling", {"scaling": "normalize", "range": (0, 1)}
+            ),
         )
 
         self.feature_scaler = self.train_dataset.feature_scaler
         self.target_scaler = self.train_dataset.target_scaler
         if not self.debug:
-            normalizers = {"target": self.target_scaler}
+            normalizers = {"target": self.target_scaler, "feature": self.feature_scaler}
             torch.save(normalizers, os.path.join(self.cp_dir, "normalizers.pt"))
         self.input_dim = self.train_dataset.input_dim
         self.val_split = self.config["dataset"].get("val_split", 0)
