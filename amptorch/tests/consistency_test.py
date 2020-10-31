@@ -139,8 +139,7 @@ def test_energy_force_consistency():
         forcetraining=True,
         save_fps=True,
         cores=1,
-        scaling={"scaling": "normalize", "range": (-1, 1)},
-        # scaling={"scaling": "standardize"},
+        scaling={"type": "normalize", "range": (-1, 1)},
     )
 
     collate_fn = DataCollater(train=False, forcetraining=True)

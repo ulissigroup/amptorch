@@ -52,6 +52,9 @@ config = {
         "elements": elements,
         "fp_params": Gs,
         "save_fps": True,
+        # feature scaling to be used - normalize or standardize
+        # normalize requires a range to be specified
+        "scaling": {"type": "normalize", "range": (0, 1)},
     },
     "cmd": {
         "debug": False,
@@ -59,6 +62,7 @@ config = {
         "seed": 1,
         "identifier": "test",
         "verbose": True,
+        # Weights and Biases used for logging - an account(free) is required
         "logger": True,
     },
 }

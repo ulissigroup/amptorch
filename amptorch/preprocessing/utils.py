@@ -13,7 +13,7 @@ class FeatureScaler:
         forcetraining,
         scaling,
     ):
-        self.transform = scaling["scaling"]
+        self.transform = scaling["type"]
         if self.transform not in ["normalize", "standardize"]:
             raise NotImplementedError(f"{self.transform} scaling not supported.")
         if self.transform == "normalize" and "range" not in scaling:
