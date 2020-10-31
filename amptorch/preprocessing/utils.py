@@ -15,7 +15,7 @@ class FeatureScaler:
     ):
         self.transform = scaling["scaling"]
         if self.transform not in ["normalize", "standardize"]:
-            raise NotImplementedError(f"{transform} scaling not supported.")
+            raise NotImplementedError(f"{self.transform} scaling not supported.")
         if self.transform == "normalize" and "range" not in scaling:
             raise NotImplementedError("Normalization requires desire range.")
         if self.transform == "normalize":
@@ -30,7 +30,7 @@ class FeatureScaler:
             element_fps = fingerprints[idx]
             if self.transform == "standardize":
                 mean = torch.mean(element_fps, dim=0)
-                std = torch.std(element_fps, dim=0)
+                std = torch.std(element_fps, dim=0, unbiased=False)
                 std[std == 0] = 1
                 self.scales[element] = {"offset": mean, "scale": std}
             else:
