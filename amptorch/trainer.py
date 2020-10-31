@@ -96,6 +96,7 @@ class AtomsTrainer:
             save_fps=self.config["dataset"].get("save_fps", True),
         )
 
+        self.feature_scaler = self.train_dataset.feature_scaler
         self.target_scaler = self.train_dataset.target_scaler
         if not self.debug:
             normalizers = {"target": self.target_scaler}
@@ -210,6 +211,7 @@ class AtomsTrainer:
         )
 
         data_list = a2d.convert_all(images, disable_tqdm=True)
+        self.feature_scaler.norm(data_list)
 
         self.net.module.eval()
         collate_fn = DataCollater(train=False, forcetraining=self.forcetraining)
