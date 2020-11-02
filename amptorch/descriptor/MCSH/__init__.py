@@ -294,7 +294,11 @@ class AtomisticMCSH(BaseDescriptor):
             x_p = _gen_2Darray_for_ffi(x, ffi)
 
             if self.params_set["square"]:
+<<<<<<< HEAD
                 errno = lib.calculate_atomistic_mcsh_square_noderiv(
+=======
+                errno = lib.calculate_atomistic_mcsh_square(
+>>>>>>> cfc4a73ba7d85f157237ff0a93e44e530576195d
                     cell_p,
                     cart_p,
                     scale_p,
