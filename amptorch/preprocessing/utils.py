@@ -21,7 +21,7 @@ class FeatureScaler:
         if self.transform == "normalize":
             feature_range = scaling["range"]
         self.forcetraining = forcetraining
-        self.separate_elements = scaling["separate_elements"]
+        self.separate_elements = scaling.get("separate_elements", True)
         fingerprints = torch.cat([data.fingerprint for data in data_list], dim=0)
         atomic_numbers = torch.cat([data.atomic_numbers for data in data_list], dim=0)
 

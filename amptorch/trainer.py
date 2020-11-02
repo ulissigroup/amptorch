@@ -96,7 +96,8 @@ class AtomsTrainer:
             forcetraining=self.forcetraining,
             save_fps=self.config["dataset"].get("save_fps", True),
             scaling=self.config["dataset"].get(
-                "scaling", {"type": "normalize", "range": (0, 1)}
+                "scaling",
+                {"type": "normalize", "range": (0, 1), "separate_elements": True},
             ),
         )
 
@@ -111,7 +112,7 @@ class AtomsTrainer:
 
     def load_model(self):
         elements = list_symbols_to_indices(self.elements)
-        self.separate_element_model = self.config["model"]["separate_element"]
+        self.separate_element_model = self.config["model"].get("separate_element", True)
         if self.separate_element_model:
             self.model = BPNN(
                 elements=elements, input_dim=self.input_dim, **self.config["model"]
