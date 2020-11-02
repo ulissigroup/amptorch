@@ -14,7 +14,7 @@ from skorch.dataset import CVSplit
 from amptorch.dataset import AtomsDataset, DataCollater
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.metrics import evaluator
-from amptorch.model import BPNN, CustomLoss
+from amptorch.model import BPNN, SingleNN, CustomLoss
 from amptorch.preprocessing import AtomsToData
 from amptorch.utils import to_tensor, train_end_load_best_loss
 
@@ -111,9 +111,15 @@ class AtomsTrainer:
 
     def load_model(self):
         elements = list_symbols_to_indices(self.elements)
-        self.model = BPNN(
-            elements=elements, input_dim=self.input_dim, **self.config["model"]
-        )
+        self.separate_element_model = self.config["model"]["separate_element"]
+        if self.separate_element_model:
+            self.model = BPNN(
+                elements=elements, input_dim=self.input_dim, **self.config["model"]
+            )
+        else:
+            self.model = SingleNN(
+                elements=elements, input_dim=self.input_dim, **self.config["model"]
+            )
         print("Loading model: {} parameters".format(self.model.num_params))
 
     def load_extras(self):
