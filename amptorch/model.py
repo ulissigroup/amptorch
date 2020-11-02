@@ -141,12 +141,12 @@ class SingleNN(nn.Module):
         self.activation_fn = activation
 
         self.model = MLP(
-                    n_input_nodes=input_dim,
-                    n_layers=num_layers,
-                    n_hidden_size=num_nodes,
-                    activation=activation,
-                    batchnorm=batchnorm,
-                )
+            n_input_nodes=input_dim,
+            n_layers=num_layers,
+            n_hidden_size=num_nodes,
+            activation=activation,
+            batchnorm=batchnorm,
+        )
 
     def forward(self, batch):
         with torch.enable_grad():

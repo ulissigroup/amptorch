@@ -44,7 +44,7 @@ class FeatureScaler:
                     scale = (feature_range[1] - feature_range[0]) / (data_range)
                     offset = feature_range[0] - fpmin * scale
                     self.scales[element] = {"offset": offset, "scale": scale}
-        
+
         else:
             if self.transform == "standardize":
                 mean = torch.mean(fingerprints, dim=0)
@@ -59,7 +59,6 @@ class FeatureScaler:
                 scale = (feature_range[1] - feature_range[0]) / (data_range)
                 offset = feature_range[0] - fpmin * scale
                 self.scale = {"offset": offset, "scale": scale}
-
 
     def norm(self, data_list, threshold=1e-6):
         if self.separate_elements:
@@ -88,13 +87,17 @@ class FeatureScaler:
                     _values = data.fprimes._values()
                     for i, element in enumerate(element_idx):
                         if self.transform == "standardize":
-                            _values[i] /= self.scales[element]["scale"][fp_idx_to_scale[i]]
+                            _values[i] /= self.scales[element]["scale"][
+                                fp_idx_to_scale[i]
+                            ]
                         else:
-                            _values[i] *= self.scales[element]["scale"][fp_idx_to_scale[i]]
+                            _values[i] *= self.scales[element]["scale"][
+                                fp_idx_to_scale[i]
+                            ]
                     _indices = data.fprimes._indices()
                     _size = data.fprimes.size()
                     data.fprimes = torch.sparse.FloatTensor(_indices, _values, _size)
-        
+
         else:
             for data in data_list:
                 fingerprint = data.fingerprint
@@ -103,15 +106,14 @@ class FeatureScaler:
                 #     element_idx = torch.where(atomic_numbers == element)
                 #     element_fp = fingerprint[element_idx]
                 if self.transform == "standardize":
-                    fingerprint = (
-                        fingerprint - self.scale["offset"]
-                    ) / self.scale["scale"]
+                    fingerprint = (fingerprint - self.scale["offset"]) / self.scale[
+                        "scale"
+                    ]
                 else:
-                    fingerprint = (
-                        element_fp * self.scale["scale"]
-                    ) + self.scale["offset"]
+                    fingerprint = (element_fp * self.scale["scale"]) + self.scale[
+                        "offset"
+                    ]
                     # fingerprint[element_idx] = element_fp
-
 
                 if self.forcetraining:
                     base_atoms = torch.repeat_interleave(
