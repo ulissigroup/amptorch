@@ -80,6 +80,7 @@ class AtomsTrainer:
         self.forcetraining = self.config["model"].get("get_forces", True)
         self.fp_scheme = self.config["dataset"].get("fp_scheme", "gaussian").lower()
         self.fp_params = self.config["dataset"]["fp_params"]
+        self.save_fps = self.config["dataset"].get("save_fps", True)
         self.cutoff_params = self.config["dataset"].get(
             "cutoff_params", {"cutoff_func": "Cosine"}
         )
@@ -208,7 +209,7 @@ class AtomsTrainer:
             descriptor=self.train_dataset.descriptor,
             r_energy=False,
             r_forces=False,
-            save_fps=True,
+            save_fps=self.save_fps,
             fprimes=self.forcetraining,
             cores=1,
         )
