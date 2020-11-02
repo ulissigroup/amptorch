@@ -23,7 +23,7 @@ __pycache__/
 datasets/*
 md_work/*
 
-*wandb*
+*wandb
 .ipynb_checkpoints
 *processed*
 *checkpoints*

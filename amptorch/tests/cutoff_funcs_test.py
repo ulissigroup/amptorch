@@ -51,6 +51,7 @@ config = {
         "val_split": 0,
         "elements": elements,
         "fp_params": Gs,
+        "scaling": {"type": "standardize"},
     },
     "cmd": {
         "debug": False,
