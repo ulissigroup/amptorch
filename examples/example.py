@@ -36,7 +36,12 @@ Gs = {
 
 elements = ["Cu", "C", "O"]
 config = {
-    "model": {"get_forces": True, "num_layers": 3, "num_nodes": 5},
+    "model": {
+        "get_forces": True,
+        "num_layers": 3,
+        "num_nodes": 5,
+        "batchnorm": False,
+    },
     "optim": {
         "device": "cpu",
         "force_coefficient": 0.04,
@@ -63,7 +68,7 @@ config = {
         "identifier": "test",
         "verbose": True,
         # Weights and Biases used for logging - an account(free) is required
-        "logger": True,
+        "logger": False,
     },
 }
 
