@@ -94,11 +94,15 @@ class AtomsTrainer:
             ),
             forcetraining=self.forcetraining,
             save_fps=self.config["dataset"].get("save_fps", True),
+            scaling=self.config["dataset"].get(
+                "scaling", {"type": "normalize", "range": (0, 1)}
+            ),
         )
 
+        self.feature_scaler = self.train_dataset.feature_scaler
         self.target_scaler = self.train_dataset.target_scaler
         if not self.debug:
-            normalizers = {"target": self.target_scaler}
+            normalizers = {"target": self.target_scaler, "feature": self.feature_scaler}
             torch.save(normalizers, os.path.join(self.cp_dir, "normalizers.pt"))
         self.input_dim = self.train_dataset.input_dim
         self.val_split = self.config["dataset"].get("val_split", 0)
@@ -210,6 +214,7 @@ class AtomsTrainer:
         )
 
         data_list = a2d.convert_all(images, disable_tqdm=True)
+        self.feature_scaler.norm(data_list)
 
         self.net.module.eval()
         collate_fn = DataCollater(train=False, forcetraining=self.forcetraining)
