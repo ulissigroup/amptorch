@@ -19,6 +19,7 @@ from amptorch.model import BPNN, CustomLoss
 from amptorch.preprocessing import AtomsToData
 from amptorch.utils import to_tensor, train_end_load_best_loss
 from amptorch.data_parallel import DataParallel, ParallelCollater
+from amptorch.ase_utils import AMPtorch
 
 
 class AtomsTrainer:
@@ -271,3 +272,6 @@ class AtomsTrainer:
             # TODO(mshuaibi): remove dataset load, use saved normalizers
         except NotImplementedError:
             print("Unable to load checkpoint!")
+
+    def get_calc(self):
+        return AMPtorch(self)
