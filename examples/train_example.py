@@ -34,7 +34,6 @@ Gs = {
     },
 }
 
-elements = ["Cu", "C", "O"]
 config = {
     "model": {
         "get_forces": True,
@@ -43,18 +42,17 @@ config = {
         "batchnorm": False,
     },
     "optim": {
-        "device": "cpu",
         "force_coefficient": 0.04,
         "lr": 1e-2,
-        "batch_size": 10,
+        "batch_size": 32,
         "epochs": 100,
         "loss": "mse",
         "metric": "mae",
+        "gpus": 0,
     },
     "dataset": {
         "raw_data": images,
         "val_split": 0.1,
-        "elements": elements,
         "fp_params": Gs,
         "save_fps": True,
         # feature scaling to be used - normalize or standardize
