@@ -66,6 +66,7 @@ class BPNN(nn.Module):
         get_forces=True,
         batchnorm=False,
         activation=Tanh,
+        separate_elements=True,
     ):
         super(BPNN, self).__init__()
         self.get_forces = get_forces
@@ -135,6 +136,7 @@ class SingleNN(nn.Module):
         get_forces=True,
         batchnorm=False,
         activation=Tanh,
+        separate_elements=False,
     ):
         super(SingleNN, self).__init__()
         self.get_forces = get_forces

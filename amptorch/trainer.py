@@ -112,7 +112,9 @@ class AtomsTrainer:
 
     def load_model(self):
         elements = list_symbols_to_indices(self.elements)
-        self.separate_element_model = self.config["model"].get("separate_elements", True)
+        self.separate_element_model = self.config["model"].get(
+            "separate_elements", True
+        )
         if self.separate_element_model:
             self.model = BPNN(
                 elements=elements, input_dim=self.input_dim, **self.config["model"]
