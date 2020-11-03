@@ -56,7 +56,7 @@ class ParallelCollater:
             batch = self.collater(data_list)
             batch_list = [batch[0]]
             target_list = [batch[1]]
-            return (batch_list, target_list)
+            return [batch_list, target_list]
 
         else:
             num_devices = min(self.num_gpus, len(data_list))
@@ -78,4 +78,4 @@ class ParallelCollater:
             ]
             batch_list = [batch[0] for batch in skorch_list]
             target_list = [batch[1] for batch in skorch_list]
-            return (batch_list, target_list)
+            return [batch_list, target_list]
