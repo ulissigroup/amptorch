@@ -33,9 +33,9 @@ configs = {
       **custom_args                 # Any additional arguments used to customize existing/new models
   },
   "optim": {
-      "device": str,                # Device to use, "cpu" or "cuda" (default: "cpu")             
+      "gpus": int,                  # No. of gpus to use, 0 for cpu (default: 0)
       "force_coefficient": float,   # If force training, coefficient to weight the force component by (default: 0)
-      "lr": float,                  # Initial learning rate (default: 1e-1)  
+      "lr": float,                  # Initial learning rate (default: 1e-1)
       "batch_size": int,            # Batch size (default: 32)
       "epochs": int,                # Max training epochs (default: 100)
       "optimizer": object,          # Training optimizer (default: torch.optim.Adam)
@@ -43,20 +43,20 @@ configs = {
       "loss": str,                  # Control loss function criterion, "mse" or "mae" (default: "mse")
       "metric": str,                # Metrics to be reported by, "mse" or "mae" (default: "mae")
       "scheduler": str,             # Learning rate scheduler to use, ex. 'CosineAnnealingLR' (default: None)
-      "scheduler_params": dict,     # Learning rate scheduler parameters, ex. {"T_max":5} 
+      "scheduler_params": dict,     # Learning rate scheduler parameters, ex. {"T_max":5}
   },
   "dataset": {
       "raw_data": str or list,      # Path to ASE trajectory or database or list of Atoms objects
-      "val_split": float,           # Proportion of training set to use for validation 
+      "val_split": float,           # Proportion of training set to use for validation
       "elements": list,             # List of unique elements in dataset, optional (default: computes unique elements)
       "fp_scheme": str,             # Fingerprinting scheme to feature dataset, "gaussian" or "mcsh" (default: "gaussian")
       "fp_params": dict,            # Fingerprint parameters, see examples for correct layout
       "cutoff_params": dict,        # Cutoff function - polynomial or cosine,
-                                    ## Polynomial - {"cutoff_func": "Polynomial", "gamma": 2.0} 
+                                    ## Polynomial - {"cutoff_func": "Polynomial", "gamma": 2.0}
                                     ## Cosine     - {"cutoff_func": "Cosine"}
       "save_fps": bool,             # Write calculated fingerprints to disk (default: True)
       "scaling": dict,              # Feature scaling scheme, normalization or standardization
-                                    ## normalization (scales features between "range")  
+                                    ## normalization (scales features between "range")
                                                   - {"type": "normalize", "range": (0, 1)}
                                     ## standardization (scales data to mean=0, stdev=1)
                                                   - {"type": "standardize"}
@@ -69,7 +69,7 @@ configs = {
       "verbose": bool,              # Print training scores (default: True)
       "logger": False,              # Log results to Weights and Biases (https://www.wandb.com/)
                                     ## wandb offers a very clean and flexible interface to monitor results online
-                                    ## A free account is necessary to view and log results 
+                                    ## A free account is necessary to view and log results
   },
 }
 ```
