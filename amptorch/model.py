@@ -66,6 +66,7 @@ class BPNN(nn.Module):
         get_forces=True,
         batchnorm=False,
         activation=Tanh,
+        separate_elements=True,
     ):
         super(BPNN, self).__init__()
         self.get_forces = get_forces
@@ -119,6 +120,62 @@ class BPNN(nn.Module):
 
             else:
                 forces = torch.tensor([], device=energy.device)
+
+            return energy, forces
+
+    @property
+    def num_params(self):
+        return sum(p.numel() for p in self.parameters())
+
+
+class SingleNN(nn.Module):
+    def __init__(
+        self,
+        elements,
+        input_dim,
+        num_nodes,
+        num_layers,
+        get_forces=True,
+        batchnorm=False,
+        activation=Tanh,
+        separate_elements=False,
+    ):
+        super(SingleNN, self).__init__()
+        self.get_forces = get_forces
+        self.activation_fn = activation
+
+        self.model = MLP(
+            n_input_nodes=input_dim,
+            n_layers=num_layers,
+            n_hidden_size=num_nodes,
+            activation=activation,
+            batchnorm=batchnorm,
+        )
+
+    def forward(self, batch):
+        with torch.enable_grad():
+            atomic_numbers = batch.atomic_numbers
+            fingerprints = batch.fingerprint.float()
+            fingerprints.requires_grad = True
+            image_idx = batch.image_idx
+            sorted_image_idx = torch.unique_consecutive(image_idx)
+            o = self.model(fingerprints)
+            energy = scatter(o, image_idx, dim=0)[sorted_image_idx]
+
+            if self.get_forces:
+                gradients = grad(
+                    energy,
+                    fingerprints,
+                    grad_outputs=torch.ones_like(energy),
+                    create_graph=True,
+                )[0].view(1, -1)
+
+                forces = -1 * torch.sparse.mm(batch.fprimes.t(), gradients.t()).view(
+                    -1, 3
+                )
+
+            else:
+                forces = torch.tensor([])
 
             return energy, forces
 
