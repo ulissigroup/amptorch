@@ -118,7 +118,7 @@ class BPNN(nn.Module):
                 )
 
             else:
-                forces = torch.tensor([])
+                forces = torch.tensor([], device=energy.device)
 
             return energy, forces
 

@@ -20,14 +20,14 @@ def to_tensor(X, device, accept_sparse=False):
     if isinstance(X[0], Batch):
         return X
     else:
-        for i, targets in enumerate(X):
-            X[i][0] = targets[0].to(device)
-            X[i][1] = targets[1].to(device)
+        for i, batch in enumerate(X):
+            for j, targets in enumerate(batch):
+                X[i][j] = targets.to(device)
         if device != "cpu":
             outputs = gather(X, device)
         else:
             outputs = X[0]
-        return (outputs[0], outputs[1])
+        return outputs
 
 
 class train_end_load_best_loss(skorch.callbacks.base.Callback):
