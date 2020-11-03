@@ -1,3 +1,6 @@
+"""
+Adapted from https://github.com/Open-Catalyst-Project/ocp/blob/master/ocpmodels/common/data_parallel.py
+"""
 from itertools import chain
 import torch
 
