@@ -110,7 +110,7 @@ class FeatureScaler:
                         "scale"
                     ]
                 else:
-                    fingerprint = (element_fp * self.scale["scale"]) + self.scale[
+                    fingerprint = (fingerprint * self.scale["scale"]) + self.scale[
                         "offset"
                     ]
                     # fingerprint[element_idx] = element_fp
