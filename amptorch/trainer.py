@@ -18,7 +18,7 @@ from amptorch.metrics import evaluator
 from amptorch.model import BPNN, CustomLoss
 from amptorch.preprocessing import AtomsToData
 from amptorch.utils import to_tensor, train_end_load_best_loss
-from amptorch.data_parallel import AMPDataParallel, ParallelCollater
+from amptorch.data_parallel import DataParallel, ParallelCollater
 
 
 class AtomsTrainer:
@@ -122,14 +122,15 @@ class AtomsTrainer:
         self.model = BPNN(
             elements=elements, input_dim=self.input_dim, **self.config["model"]
         )
+        print("Loading model: {} parameters".format(self.model.num_params))
         collate_fn = DataCollater(train=True, forcetraining=self.forcetraining)
         self.parallel_collater = ParallelCollater(self.gpus, collate_fn)
-        self.model = AMPDataParallel(
-            self.model,
-            output_device=self.output_device,
-            num_gpus=self.gpus,
-        )
-        print("Loading model: {} parameters".format(self.model.module.num_params))
+        if self.gpus > 0:
+            self.model = DataParallel(
+                self.model,
+                output_device=self.output_device,
+                num_gpus=self.gpus,
+            )
 
     def load_extras(self):
         callbacks = []

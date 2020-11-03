@@ -1,10 +1,19 @@
 import skorch
+from skorch.utils import to_numpy
 from torch_geometric.data import Batch
 from torch.nn.parallel.scatter_gather import gather
 
 
 def target_extractor(y):
-    return y
+    extracted = []
+    for batch in y:
+        energy_targets = to_numpy(batch[0])
+        if len(batch) == 2:
+            force_targets = to_numpy(batch[1])
+            extracted.append([energy_targets, force_targets])
+        elif len(batch) == 1:
+            extracted.append([energy_targets, None])
+    return extracted
 
 
 def to_tensor(X, device, accept_sparse=False):
@@ -14,7 +23,10 @@ def to_tensor(X, device, accept_sparse=False):
         for i, targets in enumerate(X):
             X[i][0] = targets[0].to(device)
             X[i][1] = targets[1].to(device)
-        outputs = gather(X, device)
+        if device != "cpu":
+            outputs = gather(X, device)
+        else:
+            outputs = X[0]
         return (outputs[0], outputs[1])
 
 

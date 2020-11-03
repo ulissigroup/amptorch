@@ -87,6 +87,8 @@ class BPNN(nn.Module):
         self.element_mask = ElementMask(elements)
 
     def forward(self, batch):
+        if isinstance(batch, list):
+            batch = batch[0]
         with torch.enable_grad():
             atomic_numbers = batch.atomic_numbers
             fingerprints = batch.fingerprint.float()

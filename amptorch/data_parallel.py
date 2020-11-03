@@ -2,7 +2,7 @@ from itertools import chain
 import torch
 
 
-class AMPDataParallel(torch.nn.DataParallel):
+class DataParallel(torch.nn.DataParallel):
     def __init__(self, module, output_device, num_gpus):
         if num_gpus < 0:
             raise ValueError("# GPUs must be positive.")
@@ -16,7 +16,7 @@ class AMPDataParallel(torch.nn.DataParallel):
                 raise ValueError("Main device must be less than # of GPUs")
             device_ids = list(range(num_gpus))
 
-        super(AMPDataParallel, self).__init__(
+        super(DataParallel, self).__init__(
             module=module, device_ids=device_ids, output_device=output_device
         )
 
