@@ -1,17 +1,21 @@
 import skorch
-from skorch.utils import to_numpy
+from torch_geometric.data import Batch
+from torch.nn.parallel.scatter_gather import gather
 
 
 def target_extractor(y):
-    # TODO better remove need for numpy call here before GPU support
-    if len(y) == 2:
-        return (to_numpy(y[0]), to_numpy(y[1]))
-    elif len(y) == 1:
-        return (to_numpy(y[0]), None)
+    return y
 
 
 def to_tensor(X, device, accept_sparse=False):
-    return X
+    if isinstance(X[0], Batch):
+        return X
+    else:
+        for i, targets in enumerate(X):
+            X[i][0] = targets[0].to(device)
+            X[i][1] = targets[1].to(device)
+        outputs = gather(X, device)
+        return (outputs[0], outputs[1])
 
 
 class train_end_load_best_loss(skorch.callbacks.base.Callback):

@@ -1,3 +1,4 @@
+import time
 import datetime
 import os
 import random
@@ -17,6 +18,7 @@ from amptorch.metrics import evaluator
 from amptorch.model import BPNN, CustomLoss
 from amptorch.preprocessing import AtomsToData
 from amptorch.utils import to_tensor, train_end_load_best_loss
+from amptorch.data_parallel import AMPDataParallel, ParallelCollater
 
 
 class AtomsTrainer:
@@ -43,7 +45,13 @@ class AtomsTrainer:
         else:
             self.identifier = self.timestamp
 
-        self.device = torch.device(self.config["optim"].get("device", "cpu"))
+        self.gpus = self.config["optim"].get("gpus", 0)
+        if self.gpus > 0:
+            self.output_device = 0
+            self.device = f"cuda:{self.output_device}"
+        else:
+            self.device = "cpu"
+            self.output_device = -1
         self.debug = self.config["cmd"].get("debug", False)
         run_dir = self.config["cmd"].get("run_dir", "./")
         os.chdir(run_dir)
@@ -114,7 +122,14 @@ class AtomsTrainer:
         self.model = BPNN(
             elements=elements, input_dim=self.input_dim, **self.config["model"]
         )
-        print("Loading model: {} parameters".format(self.model.num_params))
+        collate_fn = DataCollater(train=True, forcetraining=self.forcetraining)
+        self.parallel_collater = ParallelCollater(self.gpus, collate_fn)
+        self.model = AMPDataParallel(
+            self.model,
+            output_device=self.output_device,
+            num_gpus=self.gpus,
+        )
+        print("Loading model: {} parameters".format(self.model.module.num_params))
 
     def load_extras(self):
         callbacks = []
@@ -168,8 +183,6 @@ class AtomsTrainer:
     def load_skorch(self):
         skorch.net.to_tensor = to_tensor
 
-        collate_fn = DataCollater(train=True, forcetraining=self.forcetraining)
-
         self.net = NeuralNetRegressor(
             module=self.model,
             criterion=self.criterion,
@@ -181,10 +194,12 @@ class AtomsTrainer:
             lr=self.config["optim"].get("lr", 1e-1),
             batch_size=self.config["optim"].get("batch_size", 32),
             max_epochs=self.config["optim"].get("epochs", 100),
-            iterator_train__collate_fn=collate_fn,
+            iterator_train__collate_fn=self.parallel_collater,
             iterator_train__shuffle=True,
-            iterator_valid__collate_fn=collate_fn,
+            iterator_train__pin_memory=True,
+            iterator_valid__collate_fn=self.parallel_collater,
             iterator_valid__shuffle=False,
+            iterator_valid__pin_memory=True,
             device=self.device,
             train_split=self.split,
             callbacks=self.callbacks,
@@ -198,7 +213,10 @@ class AtomsTrainer:
         if not self.pretrained:
             self.load()
 
+        stime = time.time()
         self.net.fit(self.train_dataset, None)
+        elapsed_time = time.time() - stime
+        print(f"Training completed in {elapsed_time}s")
 
     def predict(self, images, batch_size=32):
         if len(images) < 1:
@@ -222,11 +240,15 @@ class AtomsTrainer:
 
         predictions = {"energy": [], "forces": []}
         for data in data_list:
-            collated = collate_fn([data])
-            energy, forces = self.net.module(collated)
+            collated = collate_fn([data]).to(self.device)
+            energy, forces = self.net.module([collated])
 
-            energy = self.target_scaler.denorm(energy, pred="energy").detach().tolist()
-            forces = self.target_scaler.denorm(forces, pred="forces").detach().numpy()
+            energy = self.target_scaler.denorm(
+                energy.detach().cpu(), pred="energy"
+            ).tolist()
+            forces = self.target_scaler.denorm(
+                forces.detach().cpu(), pred="forces"
+            ).numpy()
 
             predictions["energy"].extend(energy)
             predictions["forces"].append(forces)
