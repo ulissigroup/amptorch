@@ -647,19 +647,6 @@ extern "C" int calculate_atomistic_mcsh_noderiv(double** cell, double** cart, do
                 double m_desc[1];
 
                 for (int j = 0; j < nneigh; ++j) {
-<<<<<<< HEAD
-                    dMdx = (1/M) * (sum_miu1 * sum_dmiu1_dxj[j] + sum_miu2 * sum_dmiu2_dxj[j] +
-                                    sum_miu3 * sum_dmiu3_dxj[j] + sum_miu4 * sum_dmiu4_dxj[j] +
-                                    sum_miu5 * sum_dmiu5_dxj[j] + sum_miu6 * sum_dmiu6_dxj[j]) * weight;
-
-                    dMdy = (1/M) * (sum_miu1 * sum_dmiu1_dyj[j] + sum_miu2 * sum_dmiu2_dyj[j] +
-                                    sum_miu3 * sum_dmiu3_dyj[j] + sum_miu4 * sum_dmiu4_dyj[j] +
-                                    sum_miu5 * sum_dmiu5_dyj[j] + sum_miu6 * sum_dmiu6_dyj[j]) * weight;
-
-                    dMdz = (1/M) * (sum_miu1 * sum_dmiu1_dzj[j] + sum_miu2 * sum_dmiu2_dzj[j] +
-                                    sum_miu3 * sum_dmiu3_dzj[j] + sum_miu4 * sum_dmiu4_dzj[j] +
-                                    sum_miu5 * sum_dmiu5_dzj[j] + sum_miu6 * sum_dmiu6_dzj[j]) * weight;
-=======
 
                     int neigh_atom_element_index = nei_list_i[j*2];
                     int neigh_atom_element_order = element_index_to_order[neigh_atom_element_index];
@@ -676,7 +663,6 @@ extern "C" int calculate_atomistic_mcsh_noderiv(double** cell, double** cart, do
 
             if (mcsh_type == 2){
                 double sum_miu1 = 0.0, sum_miu2 = 0.0, sum_miu3 = 0.0;
->>>>>>> upstream_master
 
                 double miu[3];
                 for (int j = 0; j < nneigh; ++j) {
