@@ -47,7 +47,7 @@ config = {
         "force_coefficient": 0.04,
         "lr": 1e-2,
         "batch_size": 10,
-        "epochs": 100,
+        "epochs": 10,
         "loss": "mse",
         "metric": "mae",
     },
@@ -83,10 +83,11 @@ gds = GaussianDescriptorSet(cosine_trainer.elements)
 gds.process_combinatorial_Gs(Gs)
 print("GaussianDescriptorSet descriptor_setup:")
 print(gds.to_descriptor_setup())
-print('Gaussian hash')
+print("Gaussian hash")
 print(cosine_trainer.train_dataset.descriptor.descriptor_setup_hash)
-print('GaussianDescriptorSet hash')
-
+print("GaussianDescriptorSet hash")
+print(gds.get_descriptor_setup_hash())
+input()
 cosine_trainer.train_dataset.descriptor.descriptor_setup = gds.to_descriptor_setup()
 cosine_trainer.train_dataset.descriptor.get_descriptor_setup_hash()
 cosine_trainer.train()
