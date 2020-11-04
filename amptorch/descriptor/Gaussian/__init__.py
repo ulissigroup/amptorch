@@ -16,7 +16,13 @@ class GaussianDescriptorSet:
     #  - validate full-list descriptor set and save as self.full-list descriptor set
     #  - convert self.full-list descriptor set to various formats required by Gaussian
 
-    def __init__(self, elements, cutoff=6.5, cutoff_params={'cutoff_func': 'cosine'}, default_interactions=False):
+    def __init__(
+        self,
+        elements,
+        cutoff=6.5,
+        cutoff_params={"cutoff_func": "cosine"},
+        default_interactions=False,
+    ):
         self.elements = elements
         self.element_indices = list_symbols_to_indices(elements)
         self.cutoff = cutoff
@@ -155,10 +161,12 @@ class GaussianDescriptorSet:
                                     )
                                 )
         return descriptor_setup
-    
+
     def get_descriptor_setup_hash(self):
         string = (
-            "cosine" if self.cutoff_params['cutoff_func'] == "cosine" else "polynomial%.15f" % self.cutoff_params['gamma']
+            "cosine"
+            if self.cutoff_params["cutoff_func"] == "cosine"
+            else "polynomial%.15f" % self.cutoff_params["gamma"]
         )
         descriptor_setup = self.descriptor_setup()
         for element in descriptor_setup.keys():
@@ -258,36 +266,63 @@ class Gaussian(BaseDescriptor):
         return
 
     def _prepare_descriptor_parameters_element(self, Gs, element_indices):
-        descriptor_setup = {'G2': set(), 'G4': set(), 'G5': set()}
+        descriptor_setup = {"G2": set(), "G4": set(), "G5": set()}
         cutoff = Gs["cutoff"]
+        print(Gs)
         if "G2" in Gs:
-            descriptor_setup['G2'].add([
-                [2, element1, 0, cutoff, eta, rs, 0.0]
-                for eta in np.array(Gs["G2"]["etas"]) / Gs["cutoff"] ** 2
-                for rs in Gs["G2"]["rs_s"]
-                for element1 in element_indices
-            ])
+            descriptor_setup["G2"].add(
+                [
+                    [2, element1, 0, cutoff, eta, rs, 0.0]
+                    for eta in np.array(Gs["G2"]["etas"]) / cutoff ** 2
+                    for rs in Gs["G2"]["rs_s"]
+                    for element1 in element_indices
+                ]
+            )
 
         if "G4" in Gs:
-            descriptor_setup['G4'].add([
-                [4, element_indices[i], element_indices[j], cutoff, eta, zeta, gamma]
-                for eta in np.array(Gs["G4"]["etas"]) / Gs["cutoff"] ** 2
-                for zeta in Gs["G4"]["zetas"]
-                for gamma in Gs["G4"]["gammas"]
-                for i in range(len(element_indices))
-                for j in range(i, len(element_indices))
-            ])
+            descriptor_setup["G4"].add(
+                [
+                    [
+                        4,
+                        element_indices[i],
+                        element_indices[j],
+                        cutoff,
+                        eta,
+                        zeta,
+                        gamma,
+                    ]
+                    for eta in (np.array(Gs["G4"]["etas"]) / cutoff ** 2)
+                    for zeta in Gs["G4"]["zetas"]
+                    for gamma in Gs["G4"]["gammas"]
+                    for i in range(len(element_indices))
+                    for j in range(i, len(element_indices))
+                ]
+            )
 
         if "G5" in Gs:
-            descriptor_setup['G5'].add([
-                [5, element_indices[i], element_indices[j], cutoff, eta, zeta, gamma]
-                for eta in Gs["G5"]["etas"]
-                for zeta in Gs["G5"]["zetas"]
-                for gamma in Gs["G5"]["gammas"]
-                for i in range(len(element_indices))
-                for j in range(i, len(element_indices))
-            ])
-        g2s, g4s, g5s = descriptor_setup["G2"], descriptor_setup["G4"], descriptor_setup["G5"]
+            descriptor_setup["G5"].add(
+                [
+                    [
+                        5,
+                        element_indices[i],
+                        element_indices[j],
+                        cutoff,
+                        eta,
+                        zeta,
+                        gamma,
+                    ]
+                    for eta in Gs["G5"]["etas"]
+                    for zeta in Gs["G5"]["zetas"]
+                    for gamma in Gs["G5"]["gammas"]
+                    for i in range(len(element_indices))
+                    for j in range(i, len(element_indices))
+                ]
+            )
+        g2s, g4s, g5s = (
+            descriptor_setup["G2"],
+            descriptor_setup["G4"],
+            descriptor_setup["G5"],
+        )
         g2s = [list(params) for params in sorted(g2s)]
         g4s = [list(params) for params in sorted(g4s)]
         g5s = [list(params) for params in sorted(g5s)]
