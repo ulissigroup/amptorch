@@ -1,10 +1,9 @@
 import numpy as np
 import torch
-from ase import Atoms
-from ase.calculators.emt import EMT
-
 from amptorch.ase_utils import AMPtorch
 from amptorch.trainer import AtomsTrainer
+from ase import Atoms
+from ase.calculators.emt import EMT
 
 distances = np.linspace(2, 5, 100)
 images = []
@@ -70,39 +69,17 @@ config = {
     },
 }
 
-config["dataset"]["cutoff_params"] = cosine_cutoff_params
 torch.set_num_threads(1)
-cosine_trainer = AtomsTrainer(config)
-cosine_trainer.train()
+trainer = AtomsTrainer(config)
+trainer.train()
 
-predictions = cosine_trainer.predict(images)
+predictions = trainer.predict(images)
 
 true_energies = np.array([image.get_potential_energy() for image in images])
-cosine_pred_energies = np.array(predictions["energy"])
+pred_energies = np.array(predictions["energy"])
 
-image.set_calculator(AMPtorch(cosine_trainer))
-image.get_potential_energy()
+print("Energy MSE:", np.mean((true_energies - pred_energies) ** 2))
+print("Energy MAE:", np.mean(np.abs(true_energies - pred_energies)))
 
-
-config["dataset"]["cutoff_params"] = polynomial_cutoff_params
-torch.set_num_threads(1)
-polynomial_trainer = AtomsTrainer(config)
-polynomial_trainer.train()
-
-predictions = polynomial_trainer.predict(images)
-
-polynomial_pred_energies = np.array(predictions["energy"])
-
-print("Energy MSE (Cosine):", np.mean((true_energies - cosine_pred_energies) ** 2))
-print("Energy MAE (Cosine):", np.mean(np.abs(true_energies - cosine_pred_energies)))
-
-print(
-    "Energy MSE (Polynomial):", np.mean((true_energies - polynomial_pred_energies) ** 2)
-)
-print(
-    "Energy MAE (Polynomial):",
-    np.mean(np.abs(true_energies - polynomial_pred_energies)),
-)
-
-image.set_calculator(AMPtorch(polynomial_trainer))
+image.set_calculator(AMPtorch(trainer))
 image.get_potential_energy()

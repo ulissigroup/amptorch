@@ -1,6 +1,3 @@
-from torch.utils.data import Dataset
-from torch_geometric.data import Batch
-
 from amptorch.descriptor.Gaussian import Gaussian
 from amptorch.descriptor.MCSH import AtomisticMCSH
 from amptorch.preprocessing import (

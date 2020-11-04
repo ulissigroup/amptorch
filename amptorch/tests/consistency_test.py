@@ -1,12 +1,11 @@
 import numpy as np
 import torch
 import torch.nn as nn
+from amptorch.dataset import AtomsDataset, DataCollater
+from amptorch.model import BPNN, MLP
 from ase import Atoms
 from ase.calculators.emt import EMT
 from torch.utils.data import DataLoader
-
-from amptorch.dataset import AtomsDataset, DataCollater
-from amptorch.model import BPNN, MLP
 
 
 ## Construct test data

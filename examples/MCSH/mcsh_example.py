@@ -1,8 +1,7 @@
 import numpy as np
+from amptorch.trainer import AtomsTrainer
 from ase import Atoms
 from ase.calculators.emt import EMT
-
-from amptorch.trainer import AtomsTrainer
 
 distances = np.linspace(2, 5, 10)
 images = []
