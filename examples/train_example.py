@@ -33,24 +33,30 @@ Gs = {
     },
 }
 
-elements = ["Cu", "C", "O"]
 config = {
-    "model": {"get_forces": True, "num_layers": 3, "num_nodes": 5},
+    "model": {
+        "get_forces": True,
+        "num_layers": 3,
+        "num_nodes": 5,
+        "batchnorm": False,
+    },
     "optim": {
-        "device": "cpu",
         "force_coefficient": 0.04,
         "lr": 1e-2,
-        "batch_size": 10,
+        "batch_size": 32,
         "epochs": 100,
         "loss": "mse",
         "metric": "mae",
+        "gpus": 0,
     },
     "dataset": {
         "raw_data": images,
         "val_split": 0.1,
-        "elements": elements,
         "fp_params": Gs,
         "save_fps": True,
+        # feature scaling to be used - normalize or standardize
+        # normalize requires a range to be specified
+        "scaling": {"type": "normalize", "range": (0, 1)},
     },
     "cmd": {
         "debug": False,
@@ -58,7 +64,8 @@ config = {
         "seed": 1,
         "identifier": "test",
         "verbose": True,
-        "logger": True,
+        # Weights and Biases used for logging - an account(free) is required
+        "logger": False,
     },
 }
 

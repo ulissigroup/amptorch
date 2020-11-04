@@ -1,9 +1,11 @@
 from amptorch.descriptor.Gaussian import Gaussian
 from amptorch.descriptor.MCSH import AtomisticMCSH
-from amptorch.preprocessing import AtomsToData  # FeatureScaler,
-from amptorch.preprocessing import TargetScaler, sparse_block_diag
-from torch.utils.data import Dataset
-from torch_geometric.data import Batch
+from amptorch.preprocessing import (
+    AtomsToData,
+    FeatureScaler,
+    TargetScaler,
+    sparse_block_diag,
+)
 
 
 class AtomsDataset(Dataset):
@@ -13,10 +15,12 @@ class AtomsDataset(Dataset):
         descriptor_setup,
         forcetraining=True,
         save_fps=True,
+        scaling={"type": "normalize", "range": (0, 1)},
         cores=1,
     ):
         self.images = images
         self.forcetraining = forcetraining
+        self.scaling = scaling
         fp_scheme, fp_params, cutoff_params, elements = descriptor_setup
         if fp_scheme == "gaussian":
             self.descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)
@@ -39,7 +43,9 @@ class AtomsDataset(Dataset):
     def process(self):
         data_list = self.a2d.convert_all(self.images)
 
+        self.feature_scaler = FeatureScaler(data_list, self.forcetraining, self.scaling)
         self.target_scaler = TargetScaler(data_list, self.forcetraining)
+        self.feature_scaler.norm(data_list)
         self.target_scaler.norm(data_list)
 
         return data_list
@@ -76,8 +82,10 @@ class DataCollater:
 
         if self.train:
             if self.forcetraining:
-                return batch, (batch.energy, batch.forces)
+                return batch, [batch.energy, batch.forces]
             else:
-                return batch, (batch.energy,)
+                return batch, [
+                    batch.energy,
+                ]
         else:
             return batch
