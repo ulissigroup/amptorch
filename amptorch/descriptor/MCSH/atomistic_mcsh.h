@@ -145,6 +145,9 @@ int get_mcsh_type(int mcsh_order, int group_num);
 AtomisticMCSHFunction get_mcsh_function(int mcsh_order, int group_num);
 
 
+
+
+
 typedef void (*AtomisticMCSHFunctionNoderiv) ( double, double, double, double, double, double, double, double, double *);
 
 void calc_MCSH_0_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value);

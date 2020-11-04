@@ -175,16 +175,6 @@ void calc_MCSH_2_2(double x0, double y0, double z0, double r0_sqr, double A, dou
     double const_1_p_2_C2_z2 = 1.0 + 2.0 * C2 * z0_sqr;
 
     // dmiu1 dx/dy/dz
-<<<<<<< HEAD
-    deriv[0] = dx0dx() * temp * y0 * const_1_p_2_C2_x2;
-    deriv[1] = dy0dy() * temp * x0 * const_1_p_2_C2_y2;
-    deriv[2] = dz0dz() * miu_2_2_1 * const_2_C2_x;
-
-    // dmiu2 dx/dy/dz
-    deriv[3] = dx0dx() * temp * z0 * const_1_p_2_C2_x2;
-    deriv[4] = dy0dy() * miu_2_2_2 * const_2_C2_y;
-    deriv[5] = dz0dz() * temp * x0 * const_1_p_2_C2_z2;
-=======
     deriv[0] = temp * y0 * const_1_p_2_C2_x2;
     deriv[1] = temp * x0 * const_1_p_2_C2_y2;
     deriv[2] = miu_2_2_1 * const_2_C2_z;
@@ -193,7 +183,6 @@ void calc_MCSH_2_2(double x0, double y0, double z0, double r0_sqr, double A, dou
     deriv[3] = temp * z0 * const_1_p_2_C2_x2;
     deriv[4] = miu_2_2_2 * const_2_C2_y;
     deriv[5] = temp * x0 * const_1_p_2_C2_z2;
->>>>>>> upstream_master
 
     // dmiu3 dx/dy/dz
     deriv[6] = miu_2_2_3 * const_2_C2_x;

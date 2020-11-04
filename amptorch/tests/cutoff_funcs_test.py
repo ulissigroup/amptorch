@@ -1,9 +1,5 @@
 import numpy as np
 import torch
-from amptorch.trainer import AtomsTrainer
-from ase import Atoms
-from ase.calculators.emt import EMT
-
 from ase import Atoms
 from ase.calculators.emt import EMT
 
@@ -42,7 +38,6 @@ elements = ["Cu", "C", "O"]
 config = {
     "model": {"get_forces": True, "num_layers": 3, "num_nodes": 20},
     "optim": {
-        "device": "cpu",
         "force_coefficient": 0.04,
         "lr": 1e-2,
         "batch_size": 10,
@@ -55,6 +50,7 @@ config = {
         "val_split": 0,
         "elements": elements,
         "fp_params": Gs,
+        "scaling": {"type": "standardize"},
     },
     "cmd": {
         "debug": False,
