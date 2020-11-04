@@ -3,6 +3,10 @@ import torch
 from amptorch.utils import target_extractor
 from skorch.callbacks import Checkpoint, EpochScoring
 from torch.nn import L1Loss, MSELoss
+from skorch.callbacks import Checkpoint, EpochScoring
+from torch.nn import L1Loss, MSELoss
+
+from amptorch.utils import target_extractor
 
 
 def mae_energy_score(net, X, y):
@@ -12,7 +16,7 @@ def mae_energy_score(net, X, y):
         X = X.dataset
     energy_pred = X.target_scaler.denorm(energy_pred, pred="energy")
     energy_target = X.target_scaler.denorm(
-        torch.FloatTensor(np.concatenate(y[::2])), pred="energy"
+        torch.FloatTensor(np.concatenate([i[0] for i in y])), pred="energy"
     )
     energy_loss = mae_loss(energy_pred, energy_target)
 
@@ -26,7 +30,7 @@ def mae_forces_score(net, X, y):
         X = X.dataset
     force_pred = X.target_scaler.denorm(force_pred, pred="forces")
     force_target = X.target_scaler.denorm(
-        torch.FloatTensor(np.concatenate(y[1::2])), pred="forces"
+        torch.FloatTensor(np.concatenate([i[1] for i in y])), pred="forces"
     )
     force_loss = mae_loss(force_pred, force_target)
 

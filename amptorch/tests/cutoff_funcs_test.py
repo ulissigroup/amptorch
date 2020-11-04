@@ -4,6 +4,11 @@ from amptorch.trainer import AtomsTrainer
 from ase import Atoms
 from ase.calculators.emt import EMT
 
+from ase import Atoms
+from ase.calculators.emt import EMT
+
+from amptorch.trainer import AtomsTrainer
+
 ### Construct test data
 distances = np.linspace(2, 5, 100)
 images = []

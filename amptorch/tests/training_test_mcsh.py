@@ -1,8 +1,9 @@
 import numpy as np
 import torch
-from amptorch.trainer import AtomsTrainer
 from ase import Atoms
 from ase.calculators.emt import EMT
+
+from amptorch.trainer import AtomsTrainer
 
 ### Construct test data
 distances = np.linspace(2, 5, 100)
@@ -22,23 +23,30 @@ for dist in distances:
     images.append(image)
 
 ### Construct parameters
-Gs = {
-    "default": {
-        "G2": {
-            "etas": np.logspace(np.log10(0.05), np.log10(5.0), num=4),
-            "rs_s": [0],
-        },
-        "G4": {"etas": [0.005], "zetas": [1.0, 4.0], "gammas": [1.0, -1.0]},
-        "cutoff": 6,
-    },
-}
-elements = ["Cu", "C", "O"]
 
+sigmas = np.logspace(np.log10(0.02), np.log10(1.0), num=4)
+MCSHs = {
+    "MCSHs": {
+        "0": {"groups": [1], "sigmas": sigmas},
+        "1": {"groups": [1], "sigmas": sigmas},
+        "2": {"groups": [1, 2], "sigmas": sigmas},
+        "3": {"groups": [1, 2, 3], "sigmas": sigmas},
+    },
+    "atom_gaussians": {
+        "C": "mcsh_params/C_totaldensity_4.g",
+        "O": "mcsh_params/O_totaldensity_5.g",
+        "Cu": "mcsh_params/Cu_totaldensity_6.g",
+    },
+    "cutoff": 10,
+}
+
+
+elements = ["Cu", "C", "O"]
 config = {
     "model": {"get_forces": True, "num_layers": 3, "num_nodes": 20},
     "optim": {
         "force_coefficient": 0.04,
-        "lr": 1e-2,
+        "lr": 1e-3,
         "batch_size": 10,
         "epochs": 300,
         "loss": "mse",
@@ -48,11 +56,13 @@ config = {
         "raw_data": images,
         "val_split": 0,
         "elements": elements,
-        "fp_params": Gs,
-        "scaling": {"type": "standardize"},
+        "fp_scheme": "mcsh",
+        "fp_params": MCSHs,
+        "save_fps": False,
     },
     "cmd": {
         "debug": False,
+        "run_dir": "./",
         "seed": 1,
         "identifier": "test",
         "verbose": False,
@@ -69,11 +79,8 @@ def get_energy_metrics(config):
     trainer.train()
     predictions = trainer.predict(images)
     pred_energies = np.array(predictions["energy"])
-
     mae = np.mean(np.abs(true_energies - pred_energies))
     assert mae < 0.02
-
-    return mae
 
 
 def get_force_metrics(config):
@@ -85,10 +92,8 @@ def get_force_metrics(config):
 
     e_mae = np.mean(np.abs(true_energies - pred_energies))
     f_mae = np.mean(np.abs(pred_forces - true_forces))
-    assert e_mae < 0.01
-    assert f_mae < 0.03
-
-    return e_mae, f_mae
+    assert e_mae < 0.06
+    assert f_mae < 0.06
 
 
 def test_training():

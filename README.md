@@ -19,9 +19,93 @@ Install dependencies:
 
 4. Install pre-commit hooks: `pre-commit install`
 
-### Use
-#TODO
+### Usage
+#### Configs
+To train a model using `amptorch`, a set of `configs` must be specified to interact with the trainer. An outline is provided below with all possible flags to modify and their descriptions:
+```
+configs = {
+  "model": {
+      "num_layers": int,            # No. of hidden layers
+      "num_nodes": int,             # No. of nodes per layer
+      "get_forces": bool,           # Compute per-atom forces (default: True)
+      "batchnorm": bool,            # Enable batch-normalization (default:False)
+      "activation": object,         # Activation function (default: nn.Tanh)
+      **custom_args                 # Any additional arguments used to customize existing/new models
+  },
+  "optim": {
+      "gpus": int,                  # No. of gpus to use, 0 for cpu (default: 0)
+      "force_coefficient": float,   # If force training, coefficient to weight the force component by (default: 0)
+      "lr": float,                  # Initial learning rate (default: 1e-1)
+      "batch_size": int,            # Batch size (default: 32)
+      "epochs": int,                # Max training epochs (default: 100)
+      "optimizer": object,          # Training optimizer (default: torch.optim.Adam)
+      "loss_fn": object,            # Loss function to optimize (default: CustomLoss)
+      "loss": str,                  # Control loss function criterion, "mse" or "mae" (default: "mse")
+      "metric": str,                # Metrics to be reported by, "mse" or "mae" (default: "mae")
+      "scheduler": str,             # Learning rate scheduler to use, ex. 'CosineAnnealingLR' (default: None)
+      "scheduler_params": dict,     # Learning rate scheduler parameters, ex. {"T_max":5}
+  },
+  "dataset": {
+      "raw_data": str or list,      # Path to ASE trajectory or database or list of Atoms objects
+      "val_split": float,           # Proportion of training set to use for validation
+      "elements": list,             # List of unique elements in dataset, optional (default: computes unique elements)
+      "fp_scheme": str,             # Fingerprinting scheme to feature dataset, "gaussian" or "mcsh" (default: "gaussian")
+      "fp_params": dict,            # Fingerprint parameters, see examples for correct layout
+      "cutoff_params": dict,        # Cutoff function - polynomial or cosine,
+                                    ## Polynomial - {"cutoff_func": "Polynomial", "gamma": 2.0}
+                                    ## Cosine     - {"cutoff_func": "Cosine"}
+      "save_fps": bool,             # Write calculated fingerprints to disk (default: True)
+      "scaling": dict,              # Feature scaling scheme, normalization or standardization
+                                    ## normalization (scales features between "range")
+                                                  - {"type": "normalize", "range": (0, 1)}
+                                    ## standardization (scales data to mean=0, stdev=1)
+                                                  - {"type": "standardize"}
+  },
+  "cmd": {
+      "debug": bool,                # Debug mode, does not write/save checkpoints/results (default: False)
+      "run_dir": str,               # Path to run trainer, where logs are to be saved (default: "./")
+      "seed": int,                  # Random seed (default: 0)
+      "identifier": str,            # Unique identifer to experiment, optional
+      "verbose": bool,              # Print training scores (default: True)
+      "logger": False,              # Log results to Weights and Biases (https://www.wandb.com/)
+                                    ## wandb offers a very clean and flexible interface to monitor results online
+                                    ## A free account is necessary to view and log results
+  },
+}
+```
+#### Train model
+```
+from amptorch import AtomsTrainer
 
+<<<<<<< HEAD
+=======
+trainer = AtomsTrainer(configs)
+trainer.train()
+```
+#### Load checkpoints
+Previously trained models may be loaded as follows:
+```
+trainer = AtomsTrainer(configs)
+trainer.load_checkpoint(path_to_checkpoint_dir)
+```
+#### Make predictions
+```
+predictions = trainer.predict(list_of_atoms_objects)
+energies = predictions["energy"]
+forces = predictions["forces"]
+```
+#### Construct AMPtorch-ASE calculator
+To interface with ASE, an ASE calculator may be constructed as follows:
+```
+from amptorch import AMPtorch
+
+calc = AMPtorch(trainer)
+slab.set_calculator(calc)
+energy = slab.get_potential_energy()
+forces = slab.get_forces()
+```
+
+>>>>>>> upstream_master
 ### Acknowledgements
 - Funded by the Department of Energy's Basic Enenergy Science, Computational Chemical Sciences Program Office. Award # DE-SC0019441
 - Engineering ideas have been heavily borrowed from our work on the [Open Catalyst Project](https://github.com/Open-Catalyst-Project/baselines)
