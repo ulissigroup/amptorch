@@ -13,6 +13,7 @@ from skorch.callbacks import LRScheduler
 from skorch.dataset import CVSplit
 
 from amptorch.dataset import AtomsDataset, DataCollater
+from amptorch.dataset_lmdb import AtomsLMDBDataset
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.metrics import evaluator
 from amptorch.model import BPNN, CustomLoss
@@ -78,42 +79,48 @@ class AtomsTrainer:
         return elements
 
     def load_dataset(self):
-        training_images = self.config["dataset"]["raw_data"]
-        # TODO: Scalability when dataset to large to fit into memory
-        if isinstance(training_images, str):
-            training_images = ase.io.read(training_images, ":")
-        self.elements = self.config["dataset"].get(
-            "elements", self.get_unique_elements(training_images)
-        )
-
         self.forcetraining = self.config["model"].get("get_forces", True)
-        self.fp_scheme = self.config["dataset"].get("fp_scheme", "gaussian").lower()
-        self.fp_params = self.config["dataset"]["fp_params"]
         self.save_fps = self.config["dataset"].get("save_fps", True)
-        self.cutoff_params = self.config["dataset"].get(
-            "cutoff_params", {"cutoff_func": "Cosine"}
-        )
+        if "lmdb_path" in self.config["dataset"]:
+            self.train_dataset = AtomsLMDBDataset(
+                self.config["dataset"]["lmdb_path"],
+            )
+            self.elements = self.train_dataset.elements
+        else:
+            training_images = self.config["dataset"]["raw_data"]
 
-        self.train_dataset = AtomsDataset(
-            images=training_images,
-            descriptor_setup=(
-                self.fp_scheme,
-                self.fp_params,
-                self.cutoff_params,
-                self.elements,
-            ),
-            forcetraining=self.forcetraining,
-            save_fps=self.config["dataset"].get("save_fps", True),
-            scaling=self.config["dataset"].get(
-                "scaling", {"type": "normalize", "range": (0, 1)}
-            ),
-        )
+            self.fp_scheme = self.config["dataset"].get("fp_scheme", "gaussian").lower()
+            self.fp_params = self.config["dataset"]["fp_params"]
+            self.cutoff_params = self.config["dataset"].get(
+                "cutoff_params", {"cutoff_func": "Cosine"}
+            )
+            if isinstance(training_images, str):
+                training_images = ase.io.read(training_images, ":")
+            self.elements = self.config["dataset"].get(
+                "elements", self.get_unique_elements(training_images)
+            )
+
+            self.train_dataset = AtomsDataset(
+                images=training_images,
+                descriptor_setup=(
+                    self.fp_scheme,
+                    self.fp_params,
+                    self.cutoff_params,
+                    self.elements,
+                ),
+                forcetraining=self.forcetraining,
+                save_fps=self.config["dataset"].get("save_fps", True),
+                scaling=self.config["dataset"].get(
+                    "scaling", {"type": "normalize", "range": (0, 1)}
+                ),
+            )
 
         self.feature_scaler = self.train_dataset.feature_scaler
         self.target_scaler = self.train_dataset.target_scaler
         if not self.debug:
             normalizers = {"target": self.target_scaler, "feature": self.feature_scaler}
             torch.save(normalizers, os.path.join(self.cp_dir, "normalizers.pt"))
+
         self.input_dim = self.train_dataset.input_dim
         self.val_split = self.config["dataset"].get("val_split", 0)
         print("Loading dataset: {} images".format(len(self.train_dataset)))
