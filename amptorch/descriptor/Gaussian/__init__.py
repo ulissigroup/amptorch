@@ -16,10 +16,11 @@ class GaussianDescriptorSet:
     #  - validate full-list descriptor set and save as self.full-list descriptor set
     #  - convert self.full-list descriptor set to various formats required by Gaussian
 
-    def __init__(self, elements, cutoff=6.5, default_interactions=False):
+    def __init__(self, elements, cutoff=6.5, cutoff_params={'cutoff_func': 'cosine'}, default_interactions=False):
         self.elements = elements
         self.element_indices = list_symbols_to_indices(elements)
         self.cutoff = cutoff
+        self.cutoff_params = cutoff_params
         self.all_interactions = set()
         self.interactions = {
             element: {"G2": set(), "G4": set(), "G5": set()} for element in elements
@@ -154,6 +155,20 @@ class GaussianDescriptorSet:
                                     )
                                 )
         return descriptor_setup
+    
+    def get_descriptor_setup_hash(self):
+        string = (
+            "cosine" if self.cutoff_params['cutoff_func'] == "cosine" else "polynomial%.15f" % self.cutoff_params['gamma']
+        )
+        descriptor_setup = self.descriptor_setup()
+        for element in descriptor_setup.keys():
+            string += element
+            for desc in descriptor_setup[element]:
+                for num in desc:
+                    string += "%.15f" % num
+        md5 = hashlib.md5(string.encode("utf-8"))
+        hash_result = md5.hexdigest()
+        self.descriptor_setup_hash = hash_result
 
     def to_descriptor_setup(self):
         descriptor_setup = {element: None for element in self.elements}
