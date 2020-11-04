@@ -38,8 +38,18 @@ class AtomsToData:
         atoms,
         idx,
     ):
+        descriptor_calculator = DescriptorCalculator(
+            images=[atoms],
+            descriptor=self.descriptor,
+            calc_derivatives=self.fprimes,
+            save_fps=self.save_fps,
+            cores=self.cores,
+            verbose=False,
+        )
+        self.descriptor_data = descriptor_calculator.prepare_descriptors()
+
         natoms = len(atoms)
-        image_data = self.descriptor_data[idx]
+        image_data = self.descriptor_data[0]
         atomic_numbers = torch.LongTensor(atoms.get_atomic_numbers())
         image_idx = torch.full((1, natoms), idx, dtype=torch.int64).view(-1)
         image_fingerprint = torch.FloatTensor(image_data["descriptors"])
@@ -102,16 +112,6 @@ class AtomsToData:
             atoms_iter = atoms_collection
         else:
             raise NotImplementedError
-
-        descriptor_calculator = DescriptorCalculator(
-            images=atoms_collection,
-            descriptor=self.descriptor,
-            calc_derivatives=self.fprimes,
-            save_fps=self.save_fps,
-            cores=self.cores,
-            verbose=not disable_tqdm,
-        )
-        self.descriptor_data = descriptor_calculator.prepare_descriptors()
 
         # list for all data
         data_list = []
