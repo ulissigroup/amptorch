@@ -77,7 +77,7 @@ class AtomsTrainer:
         elements = np.unique(elements)
         return elements
 
-    def load_dataset(self):
+    def load_dataset(self, process=True):
         training_images = self.config["dataset"]["raw_data"]
         # TODO: Scalability when dataset to large to fit into memory
         if isinstance(training_images, str):
@@ -107,6 +107,7 @@ class AtomsTrainer:
             scaling=self.config["dataset"].get(
                 "scaling", {"type": "normalize", "range": (0, 1)}
             ),
+            process=process,
         )
 
         self.feature_scaler = self.train_dataset.feature_scaler
