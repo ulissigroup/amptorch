@@ -77,12 +77,12 @@ def test_gaussian_descriptor_set():
     gds.process_combinatorial_Gs(Gs)
 
     gaussian_setup = cosine_trainer.train_dataset.descriptor.descriptor_setup
-    gds_setup = gds.to_descriptor_setup()
+    gds_setup = gds.descriptor_setup
     compare_setups(gaussian_setup, gds_setup)
     print("Gaussian and GaussianDescriptorSet setups match!")
 
     gaussian_hash = cosine_trainer.train_dataset.descriptor.descriptor_setup_hash
-    gds_hash = gds.get_descriptor_setup_hash()
+    gds_hash = gds.descriptor_setup_hash
     compare_hashes(gaussian_hash, gds_hash)
     print("Gaussian and GaussianDescriptorSet hashes match!")
 

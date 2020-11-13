@@ -56,8 +56,8 @@ gds.process_combinatorial_Gs(Gs)
 gaussian_setup = cosine_trainer.train_dataset.descriptor.descriptor_setup
 gaussian_hash = cosine_trainer.train_dataset.descriptor.descriptor_setup_hash
 
-gds_setup = gds.to_descriptor_setup()
-gds_hash = gds.get_descriptor_setup_hash()
+gds_setup = gds.descriptor_setup
+gds_hash = gds.descriptor_setup_hash
 
 print("\n#########################")
 print("The two descriptor construction methods match?")
