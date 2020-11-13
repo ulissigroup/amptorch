@@ -116,8 +116,11 @@ def test_gaussian_descriptor_set():
     gaussian_setup = cosine_trainer.train_dataset.descriptor.descriptor_setup
     for element, descriptors in gaussian_setup.items():
         for descriptor in descriptors:
-            print(element, descriptor)
+            print('gau', element, descriptor)
     gds_setup = gds.descriptor_setup
+    for element, descriptors in gds_setup.items():
+        for descriptor in descriptors:
+            print('gds', element, descriptor)
     compare_setups(gaussian_setup, gds_setup)
     print("Gaussian and GaussianDescriptorSet setups match!")
 
