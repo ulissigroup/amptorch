@@ -143,7 +143,7 @@ class GaussianDescriptorSet:
                         self.add_g2(element_i, element_j, eta, rs, cutoff, update=False)
 
         if "G4" in element_Gs:
-            for eta in np.array(element_Gs["G4"]["etas"]) / element_Gs["cutoff"] ** 2:
+            for eta in np.array(element_Gs["G4"]["etas"]):
                 for zeta in element_Gs["G4"]["zetas"]:
                     for gamma in element_Gs["G4"]["gammas"]:
                         for j, element_j in enumerate(self.elements):
