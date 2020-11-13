@@ -37,25 +37,9 @@ class GaussianDescriptorSet:
     def add_g2(self, element_i, element_j, eta=3.0, rs=0.0, cutoff=None, update=True):
         assert element_i in self.elements, f"{element_i} is not in {self.elements}"
         assert element_j in self.elements, f"{element_j} is not in {self.elements}"
-        with open("debug.txt", "w") as f:
-            print(
-                "self.element_indices[np.where(self.element_indices == element_j)]",
-                file=f,
-                flush=True,
-            )
-            print(
-                self.element_indices[np.where(self.element_indices == element_j)],
-                file=f,
-                flush=True,
-            )
-            print(
-                type(self.element_indices[np.where(self.element_indices == element_j)]),
-                file=f,
-                flush=True,
-            )
         g2_params = (
             2,
-            self.element_indices[np.where(self.element_indices == element_j)],
+            self.element_indices[self.elements.index(element_j)],
             0,
             cutoff or self.cutoff,
             eta,
@@ -84,8 +68,8 @@ class GaussianDescriptorSet:
         element_j, element_k = sorted([element_j, element_k])
         g4_params = (
             4,
-            self.element_indices[np.where(self.element_indices == element_j)],
-            self.element_indices[np.where(self.element_indices == element_k)],
+            self.element_indices[self.elements.index(element_j)],
+            self.element_indices[self.elements.index(element_k)],
             cutoff or self.cutoff,
             eta / cutoff ** 2,
             zeta,
@@ -113,8 +97,8 @@ class GaussianDescriptorSet:
         element_j, element_k = sorted([element_j, element_k])
         g5_params = (
             5,
-            self.element_indices[np.where(self.element_indices == element_j)],
-            self.element_indices[np.where(self.element_indices == element_k)],
+            self.element_indices[self.elements.index(element_j)],
+            self.element_indices[self.elements.index(element_k)],
             cutoff or self.cutoff,
             eta,
             zeta,
