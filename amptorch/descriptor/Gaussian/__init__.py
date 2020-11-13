@@ -37,9 +37,22 @@ class GaussianDescriptorSet:
     def add_g2(self, element_i, element_j, eta=3.0, rs=0.0, cutoff=None, update=True):
         assert element_i in self.elements, f"{element_i} is not in {self.elements}"
         assert element_j in self.elements, f"{element_j} is not in {self.elements}"
-        print("self.element_indices[np.where(self.element_indices == element_j)]")
-        print(self.element_indices[np.where(self.element_indices == element_j)])
-        print(type(self.element_indices[np.where(self.element_indices == element_j)]))
+        with open("debug.txt", "w") as f:
+            print(
+                "self.element_indices[np.where(self.element_indices == element_j)]",
+                file=f,
+                flush=True,
+            )
+            print(
+                self.element_indices[np.where(self.element_indices == element_j)],
+                file=f,
+                flush=True,
+            )
+            print(
+                type(self.element_indices[np.where(self.element_indices == element_j)]),
+                file=f,
+                flush=True,
+            )
         g2_params = (
             2,
             self.element_indices[np.where(self.element_indices == element_j)],
