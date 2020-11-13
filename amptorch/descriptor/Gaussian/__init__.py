@@ -177,6 +177,7 @@ class GaussianDescriptorSet:
         md5 = hashlib.md5(string.encode("utf-8"))
         hash_result = md5.hexdigest()
         self.descriptor_setup_hash = hash_result
+        return self.descriptor_setup_hash
 
     def to_descriptor_setup(self):
         descriptor_setup = {element: None for element in self.elements}
