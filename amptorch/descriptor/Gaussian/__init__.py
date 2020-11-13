@@ -106,14 +106,14 @@ class GaussianDescriptorSet:
         )
         self.interactions[element_i]["G5"].add(g5_params)
         self.descriptor_setup = None
-        self.descriptor_hash = None
+        self.descriptor_setup_hash = None
         if update:
             self.update()
         return self.interactions[element_i]["G5"]
 
     def update(self):
         self.descriptor_setup = self._get_descriptor_setup()
-        self.descriptor_hash = self._get_descriptor_hash()
+        self.descriptor_setup_hash = self._get_descriptor_setup_hash()
 
     def process_combinatorial_Gs(self, Gs):
         for element in self.interactions.keys():
@@ -173,7 +173,7 @@ class GaussianDescriptorSet:
                                     update=False,
                                 )
 
-    def _get_descriptor_hash(self):
+    def _get_descriptor_setup_hash(self):
         string = (
             "cosine"
             if self.cutoff_params["cutoff_func"] == "cosine"
