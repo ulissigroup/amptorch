@@ -184,7 +184,11 @@ def test_energy_force_consistency():
     for idx, i in enumerate(true_energies):
         assert round(i, 4) == round(
             energy_pred.tolist()[idx], 4
-        ), "The predicted energy of image %i is wrong!" % (idx + 1)
+        ), "The predicted energy of image %i is wrong!, %f, %f" % (
+            idx + 1,
+            round(i, 4),
+            round(energy_pred.tolist()[idx], 4),
+        )
     print("Energy predictions are correct!")
     for idx, sample in enumerate(true_forces):
         for idx_d, value in enumerate(sample):

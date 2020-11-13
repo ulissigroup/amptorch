@@ -13,12 +13,6 @@ from .training_test import test_training
 
 
 class TestMethods(unittest.TestCase):
-    def test_training_scenarios(self):
-        test_training()
-
-    def test_load_retrain(self):
-        test_pretrained()
-
     def test_consistency(self):
         test_energy_force_consistency()
 
@@ -27,6 +21,12 @@ class TestMethods(unittest.TestCase):
 
     def test_gds(self):
         test_gaussian_descriptor_set()
+
+    def test_load_retrain(self):
+        test_pretrained()
+
+    def test_training_scenarios(self):
+        test_training()
 
 
 if __name__ == "__main__":
