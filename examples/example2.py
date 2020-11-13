@@ -1,27 +1,6 @@
 import numpy as np
-import torch
-from amptorch.ase_utils import AMPtorch
 from amptorch.descriptor.Gaussian import GaussianDescriptorSet
 from amptorch.trainer import AtomsTrainer
-from ase import Atoms
-from ase.calculators.emt import EMT
-
-distances = np.linspace(2, 5, 100)
-images = []
-for dist in distances:
-    image = Atoms(
-        "CuCO",
-        [
-            (-dist * np.sin(0.65), dist * np.cos(0.65), 0),
-            (0, 0, 0),
-            (dist * np.sin(0.65), dist * np.cos(0.65), 0),
-        ],
-    )
-    image.set_cell([10, 10, 10])
-    image.wrap(pbc=True)
-    image.set_calculator(EMT())
-    images.append(image)
-
 
 Gs = {
     "default": {
@@ -34,11 +13,9 @@ Gs = {
     },
 }
 
-elements = ["Cu", "C", "O"]
+elements = ["Cu", "C", "O"]  # arbitrary
 
 cosine_cutoff_params = {"cutoff_func": "Cosine"}
-
-polynomial_cutoff_params = {"cutoff_func": "Polynomial", "gamma": 5.0}
 
 config = {
     "model": {"get_forces": True, "num_layers": 3, "num_nodes": 5},
@@ -52,10 +29,11 @@ config = {
         "metric": "mae",
     },
     "dataset": {
-        "raw_data": images,
+        "raw_data": [],  # no images required to confirm descriptors + hash match
         "val_split": 0.1,
         "elements": elements,
         "fp_params": Gs,
+        "cutoff_params": cosine_cutoff_params,
         "save_fps": True,
     },
     "cmd": {
@@ -68,61 +46,31 @@ config = {
     },
 }
 
-config["dataset"]["cutoff_params"] = cosine_cutoff_params
-torch.set_num_threads(1)
 cosine_trainer = AtomsTrainer(config)
-cosine_trainer.train()
-predictions = cosine_trainer.predict(images)
-cosine1_pred_energies = np.array(predictions["energy"])
-
-print("Gaussian descriptor_setup:")
-print(cosine_trainer.train_dataset.descriptor.descriptor_setup)
-
-
+cosine_trainer.load_config()
+cosine_trainer.load_rng_seed()
+cosine_trainer.load_dataset(process=False)
 gds = GaussianDescriptorSet(cosine_trainer.elements)
 gds.process_combinatorial_Gs(Gs)
-print("GaussianDescriptorSet descriptor_setup:")
-print(gds.to_descriptor_setup())
+
+gaussian_setup = cosine_trainer.train_dataset.descriptor.descriptor_setup
+gaussian_hash = cosine_trainer.train_dataset.descriptor.descriptor_setup_hash
+
+gds_setup = gds.to_descriptor_setup()
+gds_hash = gds.get_descriptor_setup_hash()
+
+print("\n#########################")
+print("The two descriptor construction methods match?")
+for key in gaussian_setup:
+    matches = 0
+    for g_params, gds_params in zip(gaussian_setup[key], gds_setup[key]):
+        matches += np.all(g_params == gds_params)
+    print("%s: (%d/%d) matches" % (key, matches, len(gaussian_setup[key])))
+
+print("#########################\n")
+
 print("Gaussian hash")
-print(cosine_trainer.train_dataset.descriptor.descriptor_setup_hash)
+print(gds_hash)
 print("GaussianDescriptorSet hash")
-print(gds.get_descriptor_setup_hash())
-input()
-cosine_trainer.train_dataset.descriptor.descriptor_setup = gds.to_descriptor_setup()
-cosine_trainer.train_dataset.descriptor.get_descriptor_setup_hash()
-cosine_trainer.train()
-
-predictions = cosine_trainer.predict(images)
-
-true_energies = np.array([image.get_potential_energy() for image in images])
-cosine2_pred_energies = np.array(predictions["energy"])
-
-image.set_calculator(AMPtorch(cosine_trainer))
-image.get_potential_energy()
-
-
-config["dataset"]["cutoff_params"] = polynomial_cutoff_params
-torch.set_num_threads(1)
-polynomial_trainer = AtomsTrainer(config)
-polynomial_trainer.train()
-
-predictions = polynomial_trainer.predict(images)
-
-polynomial_pred_energies = np.array(predictions["energy"])
-
-print("Energy MSE (Cosine1):", np.mean((true_energies - cosine1_pred_energies) ** 2))
-print("Energy MAE (Cosine1):", np.mean(np.abs(true_energies - cosine1_pred_energies)))
-
-print("Energy MSE (Cosine1):", np.mean((true_energies - cosine2_pred_energies) ** 2))
-print("Energy MAE (Cosine1):", np.mean(np.abs(true_energies - cosine2_pred_energies)))
-
-print(
-    "Energy MSE (Polynomial):", np.mean((true_energies - polynomial_pred_energies) ** 2)
-)
-print(
-    "Energy MAE (Polynomial):",
-    np.mean(np.abs(true_energies - polynomial_pred_energies)),
-)
-
-image.set_calculator(AMPtorch(polynomial_trainer))
-image.get_potential_energy()
+print(gaussian_hash)
+print("hashes match:", gaussian_hash == gds_hash)
