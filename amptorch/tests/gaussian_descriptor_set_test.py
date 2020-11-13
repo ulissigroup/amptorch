@@ -88,13 +88,14 @@ def test_gaussian_descriptor_set():
     gds.process_combinatorial_Gs(Gs)
 
     gaussian_setup = cosine_trainer.train_dataset.descriptor.descriptor_setup
+    gds_setup = gds.descriptor_setup
+
     for element in gaussian_setup.keys():
         gau_descriptors = gaussian_setup[element]
         gds_descriptors = gds_setup[element]
         for gau_d, gds_d, in zip(gau_descriptors, gds_descriptors):
             print('gau', element, gau_d)
             print('gds', element, gds_d)
-    gds_setup = gds.descriptor_setup
     compare_setups(gaussian_setup, gds_setup)
     print("Gaussian and GaussianDescriptorSet setups match!")
 
