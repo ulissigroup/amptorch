@@ -42,7 +42,7 @@ class GaussianDescriptorSet:
             self.element_indices[self.elements.index(element_j)],
             0,
             cutoff or self.cutoff,
-            eta,
+            eta / cutoff ** 2.,
             rs,
             0.0,
         )
@@ -72,7 +72,7 @@ class GaussianDescriptorSet:
             self.element_indices[self.elements.index(element_j)],
             self.element_indices[self.elements.index(element_k)],
             cutoff or self.cutoff,
-            eta / cutoff ** 2,
+            eta / cutoff ** 2.,
             zeta,
             gamma,
         )
@@ -137,7 +137,7 @@ class GaussianDescriptorSet:
     def _process_element_combinatorial_params(self, element_i, element_Gs):
         cutoff = element_Gs["cutoff"]
         if "G2" in element_Gs:
-            for eta in np.array(element_Gs["G2"]["etas"]) / element_Gs["cutoff"] ** 2:
+            for eta in np.array(element_Gs["G2"]["etas"]):
                 for rs in element_Gs["G2"]["rs_s"]:
                     for element_j in self.elements:
                         self.add_g2(element_i, element_j, eta, rs, cutoff, update=False)
@@ -199,7 +199,7 @@ class GaussianDescriptorSet:
             g2s = [list(params) for params in sorted(g2s)]
             g4s = [list(params) for params in sorted(g4s)]
             g5s = [list(params) for params in sorted(g5s)]
-            descriptor_setup[element] = np.array(g2s + g4s + g5s)
+            descriptor_setup[element] = np.array(g2s + g4s + g5s, dtype=)
         return descriptor_setup
 
     def __eq__(self, other):
