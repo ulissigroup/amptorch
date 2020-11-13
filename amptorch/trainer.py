@@ -111,11 +111,14 @@ class AtomsTrainer:
             ),
             process=process,
         )
-
+        if process:
         self.feature_scaler = self.train_dataset.feature_scaler
         self.target_scaler = self.train_dataset.target_scaler
         if not self.debug:
-            normalizers = {"target": self.target_scaler, "feature": self.feature_scaler}
+                normalizers = {
+                    "target": self.target_scaler,
+                    "feature": self.feature_scaler,
+                }
             torch.save(normalizers, os.path.join(self.cp_dir, "normalizers.pt"))
         self.input_dim = self.train_dataset.input_dim
         self.val_split = self.config["dataset"].get("val_split", 0)
