@@ -66,7 +66,7 @@ class GaussianDescriptorSet:
         assert element_i in self.elements, f"{element_i} is not in {self.elements}"
         assert element_j in self.elements, f"{element_j} is not in {self.elements}"
         assert element_k in self.elements, f"{element_k} is not in {self.elements}"
-        element_j, element_k = sorted([element_j, element_k])
+        # element_j, element_k = sorted([element_j, element_k])
         g4_params = (
             4,
             self.element_indices[self.elements.index(element_j)],
@@ -96,7 +96,7 @@ class GaussianDescriptorSet:
         assert element_i in self.elements, f"{element_i} is not in {self.elements}"
         assert element_j in self.elements, f"{element_j} is not in {self.elements}"
         assert element_k in self.elements, f"{element_k} is not in {self.elements}"
-        element_j, element_k = sorted([element_j, element_k])
+        # element_j, element_k = sorted([element_j, element_k])
         g5_params = (
             5,
             self.element_indices[self.elements.index(element_j)],
@@ -119,7 +119,7 @@ class GaussianDescriptorSet:
         self.descriptor_setup_hash = self._get_descriptor_setup_hash()
 
     def process_combinatorial_Gs(self, Gs):
-        for element in self.interactions.keys():
+        for element in self.elements:
             if element in Gs:
                 # self.interactions[element] =
                 self._process_element_combinatorial_params(element, Gs[element])
@@ -162,7 +162,7 @@ class GaussianDescriptorSet:
         if "G5" in element_Gs:
             for eta in element_Gs["G5"]["etas"]:
                 for zeta in element_Gs["G5"]["zetas"]:
-                    for gamma in element_Gs["G5"]["gammas"]:
+                    for gamma in element_Gs["G5"]["gammas"]: 
                         for j, element_j in enumerate(self.elements):
                             for element_k in self.elements[j:]:
                                 self.add_g5(
