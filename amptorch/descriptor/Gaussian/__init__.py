@@ -46,7 +46,7 @@ class GaussianDescriptorSet:
             rs,
             0.0,
         )
-        print(element_i, g2_params)
+        # print(element_i, g2_params)
         self.interactions[element_i]["G2"].add(g2_params)
         if update:
             self.update()
@@ -76,7 +76,7 @@ class GaussianDescriptorSet:
             zeta,
             gamma,
         )
-        print(element_i, g4_params)
+        # print(element_i, g4_params)
         self.interactions[element_i]["G4"].add(g4_params)
         if update:
             self.update()
@@ -106,7 +106,7 @@ class GaussianDescriptorSet:
             zeta,
             gamma,
         )
-        print(element_i, g5_params)
+        # print(element_i, g5_params)
         self.interactions[element_i]["G5"].add(g5_params)
         self.descriptor_setup = None
         self.descriptor_setup_hash = None
@@ -162,7 +162,7 @@ class GaussianDescriptorSet:
         if "G5" in element_Gs:
             for eta in element_Gs["G5"]["etas"]:
                 for zeta in element_Gs["G5"]["zetas"]:
-                    for gamma in element_Gs["G5"]["gammas"]: 
+                    for gamma in element_Gs["G5"]["gammas"]:
                         for j, element_j in enumerate(self.elements):
                             for element_k in self.elements[j:]:
                                 self.add_g5(
