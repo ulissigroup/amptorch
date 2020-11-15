@@ -88,7 +88,7 @@ def compare_setups(setup1, setup2):
         print("%s descriptors" % element)
         for i in [2, 4, 5]:
             print(
-                "\t(%d/%d) G%d descriptors match" % (i, matches[i][0], sum(matches[i]))
+                "\t(%d/%d) G%d descriptors match" % (matches[i][0], sum(matches[i]), i)
             )
         for i in [2, 4, 5]:
             assert matches[i][1] == 0, "only %d/%d %s G%ds matched" % (
@@ -119,9 +119,12 @@ def test_gaussian_descriptor_set():
     for element in gaussian_setup.keys():
         gau_descriptors = gaussian_setup[element]
         gds_descriptors = gds_setup[element]
-        for gau_d, gds_d, in zip(gau_descriptors, gds_descriptors):
-            print('gau', element, gau_d)
-            print('gds', element, gds_d)
+        for (
+            gau_d,
+            gds_d,
+        ) in zip(gau_descriptors, gds_descriptors):
+            print("gau", element, gau_d)
+            print("gds", element, gds_d)
     compare_setups(gaussian_setup, gds_setup)
     print("Gaussian and GaussianDescriptorSet setups match!")
 
