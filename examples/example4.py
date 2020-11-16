@@ -31,7 +31,7 @@ config = {
         "force_coefficient": 0.04,
         "lr": 1e-2,
         "batch_size": 10,
-        "epochs": 50,
+        "epochs": 250,
         "loss": "mse",
         "metric": "mae",
     },
@@ -85,7 +85,7 @@ Gs_gds = {
 gds.process_combinatorial_Gs(Gs_gds)
 etas = [5.027, 6.143, 3.182, 1.757]
 rss = [2.326, 2.628, 2.975, 3.930]
-gds.batch_add_descriptors(2, etas, rss)
+gds.batch_add_descriptors(2, etas, rss, [])
 config["dataset"]["fp_params"] = gds
 print("automated G2s")
 test_model(config)
