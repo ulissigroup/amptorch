@@ -92,7 +92,8 @@ def test_model(configuration):
 images100 = read("pt3ag4_100_images.traj", index=":")
 images250 = read("pt3ag4_250_images.traj", index=":")
 
-short_training, long_training = 100, 500
+short_training = 100
+long_training = 500
 
 long_arch = 3, 5
 wide_arch = 2, 10
