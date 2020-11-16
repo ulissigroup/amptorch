@@ -39,7 +39,7 @@ def get_hash(image):
 
 def validate_image(image):
     for number in image.get_scaled_positions().flatten():
-        if num > 1.0 or num < 0.0:
+        if number > 1.0 or number < 0.0:
             raise ValueError(
                 "****ERROR: scaled position not strictly between [0, 1]"
                 "Please check atom position and system cell size are set up correctly"
