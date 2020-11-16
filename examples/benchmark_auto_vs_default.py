@@ -110,13 +110,16 @@ trials_results = []
 for i, (images, epochs, arch) in enumerate(trials):
     num_layers, num_nodes = arch
     results = []
-    print("trial (%d/%d) - %d images, %d training epochs, %d layers, %d nodes") % (
-        i + 1,
-        len(trials),
-        len(images),
-        epochs,
-        num_layers,
-        num_nodes,
+    print(
+        "trial (%d/%d) - %d images, %d training epochs, %d layers, %d nodes"
+        % (
+            i + 1,
+            len(trials),
+            len(images),
+            epochs,
+            num_layers,
+            num_nodes,
+        )
     )
     print("default config")
     config_default = get_config(Gs_default)
