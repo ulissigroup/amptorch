@@ -25,13 +25,13 @@ Gs = {
 cosine_cutoff_params = {"cutoff_func": "Cosine"}
 
 config = {
-    "model": {"get_forces": True, "num_layers": 3, "num_nodes": 5},
+    "model": {"get_forces": True, "num_layers": 2, "num_nodes": 10},
     "optim": {
         "device": "cpu",
         "force_coefficient": 0.04,
         "lr": 1e-2,
         "batch_size": 10,
-        "epochs": 250,
+        "epochs": 500,
         "loss": "mse",
         "metric": "mae",
     },
@@ -83,8 +83,8 @@ Gs_gds = {
     },
 }
 gds.process_combinatorial_Gs(Gs_gds)
-etas = [5.027, 6.143, 3.182, 1.757]
-rss = [2.326, 2.628, 2.975, 3.930]
+etas = [23.258, 39.395, 8.552, 2.613]  # [5.027, 6.143, 3.182, 1.757]
+rss = [2.390, 2.627, 2.908, 4.009]  # [2.326, 2.628, 2.975, 3.930]
 gds.batch_add_descriptors(2, etas, rss, [])
 config["dataset"]["fp_params"] = gds
 print("automated G2s")
