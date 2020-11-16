@@ -263,7 +263,7 @@ class Gaussian(BaseDescriptor):
                     raise NotImplementedError(
                         "Symmetry function parameters not defined properly"
                     )
-        elif isinstance(self.Gs, GaussianDescriptorSet):
+        elif hasattr(self.Gs, "descriptor_setup"):
             self.descriptor_setup = self.Gs.descriptor_setup
         else:
             raise ValueError(
@@ -379,7 +379,7 @@ class Gaussian(BaseDescriptor):
             md5 = hashlib.md5(string.encode("utf-8"))
             hash_result = md5.hexdigest()
             self.descriptor_setup_hash = hash_result
-        elif isinstance(self.Gs, GaussianDescriptorSet):
+        elif hasattr(self.Gs, "descriptor_setup_hash"):
             self.descriptor_setup_hash = self.Gs.descriptor_setup_hash
         else:
             raise ValueError(
