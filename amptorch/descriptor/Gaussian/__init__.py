@@ -75,6 +75,7 @@ class Gaussian(BaseDescriptor):
         self.get_descriptor_setup_hash()
 
     def prepare_descriptor_parameters(self):
+        if isinstance(self.Gs, dict):
         self.descriptor_setup = {}
         for element in self.elements:
             if element in self.Gs:
@@ -93,7 +94,13 @@ class Gaussian(BaseDescriptor):
                 raise NotImplementedError(
                     "Symmetry function parameters not defined properly"
                 )
-
+        elif isinstance(self.Gs, GaussianDescriptorSet):
+            self.descriptor_setup = self.Gs.descriptor_setup
+        else:
+            raise ValueError(
+                "Gs must be a dict with descriptor params or a GaussianDescriptorSet object: passed was a (%s)"
+                % type(self.Gs)
+            )
         self.params_set = dict()
         for element in self.elements:
             element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
@@ -163,8 +170,11 @@ class Gaussian(BaseDescriptor):
         return descriptor_setup
 
     def get_descriptor_setup_hash(self):
+        if isinstance(self.Gs, dict):
         string = (
-            "cosine" if self.cutoff_func == "cosine" else "polynomial%.15f" % self.gamma
+                "cosine"
+                if self.cutoff_func == "cosine"
+                else "polynomial%.15f" % self.gamma
         )
         for element in self.descriptor_setup.keys():
             string += element
@@ -174,6 +184,13 @@ class Gaussian(BaseDescriptor):
         md5 = hashlib.md5(string.encode("utf-8"))
         hash_result = md5.hexdigest()
         self.descriptor_setup_hash = hash_result
+        elif isinstance(self.Gs, GaussianDescriptorSet):
+            self.descriptor_setup_hash = self.Gs.descriptor_setup_hash
+        else:
+            raise ValueError(
+                "Gs must be a dict with descriptor params or a GaussianDescriptorSet object: passed was a (%s)"
+                % type(self.Gs)
+            )
 
     def save_descriptor_setup(self, filename):
         with open(filename, "w") as out_file:
