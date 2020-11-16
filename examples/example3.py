@@ -50,7 +50,7 @@ config = {
         "metric": "mae",
     },
     "dataset": {
-        "raw_data": [],  # no images required to confirm descriptors + hash match
+        "raw_data": images,
         "val_split": 0.1,
         "elements": elements,
         "fp_params": Gs,
