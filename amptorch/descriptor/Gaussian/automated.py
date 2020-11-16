@@ -28,6 +28,42 @@ class GaussianDescriptorSet:
         self.descriptor_setup = None
         self.descriptor_setup_hash = None
 
+    def batch_add_descriptors(
+        self, number, param1s, param2s, param3s, cutoff=None, update=True
+    ):
+        for element_i in self.elements:
+            for j, element_j in enumerate(self.elements):
+                if number == 2:
+                    for eta, rs in zip(param1s, param2s):
+                        self.add_g2(element_i, element_j, eta, rs, cutoff, False)
+                else:
+                    for element_k in self.elements[j:]:
+                        for eta, zeta, gamma in zip(param1s, param2s, param3s):
+                            if number == 4:
+                                self.add_g4(
+                                    element_i,
+                                    element_j,
+                                    element_k,
+                                    eta,
+                                    zeta,
+                                    gamma,
+                                    cutoff,
+                                    False,
+                                )
+                            else:
+                                self.add_g5(
+                                    element_i,
+                                    element_j,
+                                    element_k,
+                                    eta,
+                                    zeta,
+                                    gamma,
+                                    cutoff,
+                                    False,
+                                )
+        if update:
+            self.update()
+
     def add_g2(self, element_i, element_j, eta=3.0, rs=0.0, cutoff=None, update=True):
         assert element_i in self.elements, f"{element_i} is not in {self.elements}"
         assert element_j in self.elements, f"{element_j} is not in {self.elements}"
