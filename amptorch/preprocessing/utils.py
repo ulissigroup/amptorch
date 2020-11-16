@@ -101,19 +101,10 @@ class FeatureScaler:
         else:
             for data in data_list:
                 fingerprint = data.fingerprint
-                # atomic_numbers = data.atomic_numbers
-                # for element in self.unique:
-                #     element_idx = torch.where(atomic_numbers == element)
-                #     element_fp = fingerprint[element_idx]
                 if self.transform == "standardize":
-                    fingerprint = (fingerprint - self.scale["offset"]) / self.scale[
-                        "scale"
-                    ]
+                    fingerprint = (fingerprint - self.scale["offset"]) / self.scale["scale"]
                 else:
-                    fingerprint = (fingerprint * self.scale["scale"]) + self.scale[
-                        "offset"
-                    ]
-                    # fingerprint[element_idx] = element_fp
+                    fingerprint = (fingerprint * self.scale["scale"]) + self.scale["offset"]
 
                 if self.forcetraining:
                     base_atoms = torch.repeat_interleave(
@@ -121,9 +112,7 @@ class FeatureScaler:
                     )
                     fp_idx = data.fprimes._indices()[0]
                     fp_idx_to_scale = fp_idx % data.fingerprint.shape[1]
-                    # element_idx = base_atoms[fp_idx].tolist()
                     _values = data.fprimes._values()
-                    # for i, element in enumerate(element_idx):
                     if self.transform == "standardize":
                         _values[i] /= self.scale["scale"][fp_idx_to_scale[i]]
                     else:

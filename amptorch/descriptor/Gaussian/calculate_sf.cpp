@@ -91,6 +91,7 @@ extern "C" int calculate_sf_cos(double** cell, double** cart, double** scale, in
         plane_d[i] = 1/sqrt(tmp);
         // nbins[i] is height/cutoff in dimension i (how many "cutoff" can a height in that dimension hold)
         // if height > cutoff, nbins > 1, if height <= cutoff, nbins = 1
+        // ==> nbins: num of bins in each cell in each dimension
         nbins[i] = ceil(plane_d[i]/cutoff);
         total_bins *= nbins[i];
     }
@@ -106,6 +107,7 @@ extern "C" int calculate_sf_cos(double** cell, double** cart, double** scale, in
         for (int j=0; j<3; ++j) {
             bin_i[i][j] = (int) (scale[i][j] * (double) nbins[j]);
             // this is an integer!
+            // bug when scale == 1?
         }
         bin_i[i][3] = bin_i[i][0] + nbins[0]*bin_i[i][1] + nbins[0]*nbins[1]*bin_i[i][2];
         atoms_bin[bin_i[i][3]]++;
@@ -125,8 +127,10 @@ extern "C" int calculate_sf_cos(double** cell, double** cart, double** scale, in
     for (int i=0; i < 3; ++i) {
         // plane_d[i] / nbins[i] = height[i] / nbins[i] = size of bin in i dimension
         // cutoff * nbins[i] / plane_d[i] = cutoff / size of bin in i dimension = num bin needed in i dimension
+        // if cutoff < size: bin_range = 1, if cutoff > size: bin_range > 1
         bin_range[i] = ceil(cutoff * nbins[i] / plane_d[i]);
-        neigh_check_bins *= 2*bin_range[i];
+        // +1?
+        neigh_check_bins *= 2*bin_range[i]+1;
     }
 
     //for (int i=0; i < natoms; ++i) {
@@ -142,6 +146,7 @@ extern "C" int calculate_sf_cos(double** cell, double** cart, double** scale, in
             min_bin[j] = bin_i[i][j] - bin_range[j];
         }
 
+        // loop through nearby bins
         for (int dx=min_bin[0]; dx < max_bin[0]+1; ++dx) {
             for (int dy=min_bin[1]; dy < max_bin[1]+1; ++dy) {
                 for (int dz=min_bin[2]; dz < max_bin[2]+1; ++dz) {
