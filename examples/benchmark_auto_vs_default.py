@@ -106,7 +106,8 @@ trials = [
     (images250, long_training, wide_arch),
 ]
 trials_results = []
-for i, (images, epochs, (num_layers, num_nodes)) in enumerate(trials):
+for i, trial in enumerate(trials):
+    (images, epochs, (num_layers, num_nodes)) = trial
     results = []
     print("trial (%d/%d) - %d images, % training epochs, %d layers, %d nodes") % (
         i + 1,
