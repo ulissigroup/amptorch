@@ -42,7 +42,7 @@ class GaussianDescriptorSet:
             self.element_indices[self.elements.index(element_j)],
             0,
             cutoff or self.cutoff,
-            eta / cutoff ** 2.0,
+            eta / (cutoff or self.cutoff) ** 2.0,
             rs,
             0.0,
         )
@@ -72,7 +72,7 @@ class GaussianDescriptorSet:
             self.element_indices[self.elements.index(element_j)],
             self.element_indices[self.elements.index(element_k)],
             cutoff or self.cutoff,
-            eta / cutoff ** 2.0,
+            eta / (cutoff or self.cutoff) ** 2.0,
             zeta,
             gamma,
         )
