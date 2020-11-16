@@ -5,7 +5,7 @@ import torch
 from ase.io import read
 
 distances = np.linspace(2, 5, 100)
-images = read("pt3ag4_100_images.traj", index=":")
+images = read("pt3ag4_250_images.traj", index=":")
 
 elements = ["Pt", "Ag"]  # arbitrary
 
@@ -48,7 +48,7 @@ config = {
         "run_dir": "./",
         "seed": 1,
         "identifier": "test",
-        "verbose": True,
+        "verbose": False,
         "logger": False,
     },
 }
