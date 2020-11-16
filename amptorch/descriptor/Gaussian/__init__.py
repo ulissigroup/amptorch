@@ -244,25 +244,32 @@ class Gaussian(BaseDescriptor):
         self.get_descriptor_setup_hash()
 
     def prepare_descriptor_parameters(self):
-        self.descriptor_setup = {}
-        for element in self.elements:
-            if element in self.Gs:
-                self.descriptor_setup[
-                    element
-                ] = self._prepare_descriptor_parameters_element(
-                    self.Gs[element], self.element_indices
-                )
-            elif "default" in self.Gs:
-                self.descriptor_setup[
-                    element
-                ] = self._prepare_descriptor_parameters_element(
-                    self.Gs["default"], self.element_indices
-                )
-            else:
-                raise NotImplementedError(
-                    "Symmetry function parameters not defined properly"
-                )
-
+        if isinstance(self.Gs, dict):
+            self.descriptor_setup = {}
+            for element in self.elements:
+                if element in self.Gs:
+                    self.descriptor_setup[
+                        element
+                    ] = self._prepare_descriptor_parameters_element(
+                        self.Gs[element], self.element_indices
+                    )
+                elif "default" in self.Gs:
+                    self.descriptor_setup[
+                        element
+                    ] = self._prepare_descriptor_parameters_element(
+                        self.Gs["default"], self.element_indices
+                    )
+                else:
+                    raise NotImplementedError(
+                        "Symmetry function parameters not defined properly"
+                    )
+        elif isinstance(self.Gs, GaussianDescriptorSet):
+            self.descriptor_setup = self.Gs.descriptor_setup
+        else:
+            raise ValueError(
+                "Gs must be a dict with descriptor params or a GaussianDescriptorSet object: passed was a (%s)"
+                % type(self.Gs)
+            )
         self.params_set = dict()
         for element in self.elements:
             element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
@@ -358,17 +365,27 @@ class Gaussian(BaseDescriptor):
         return descriptor_setup
 
     def get_descriptor_setup_hash(self):
-        string = (
-            "cosine" if self.cutoff_func == "cosine" else "polynomial%.15f" % self.gamma
-        )
-        for element in self.descriptor_setup.keys():
-            string += element
-            for desc in self.descriptor_setup[element]:
-                for num in desc:
-                    string += "%.15f" % num
-        md5 = hashlib.md5(string.encode("utf-8"))
-        hash_result = md5.hexdigest()
-        self.descriptor_setup_hash = hash_result
+        if isinstance(self.Gs, dict):
+            string = (
+                "cosine"
+                if self.cutoff_func == "cosine"
+                else "polynomial%.15f" % self.gamma
+            )
+            for element in self.descriptor_setup.keys():
+                string += element
+                for desc in self.descriptor_setup[element]:
+                    for num in desc:
+                        string += "%.15f" % num
+            md5 = hashlib.md5(string.encode("utf-8"))
+            hash_result = md5.hexdigest()
+            self.descriptor_setup_hash = hash_result
+        elif isinstance(self.Gs, GaussianDescriptorSet):
+            self.descriptor_setup_hash = self.Gs.descriptor_setup_hash
+        else:
+            raise ValueError(
+                "Gs must be a dict with descriptor params or a GaussianDescriptorSet object: passed was a (%s)"
+                % type(self.Gs)
+            )
 
     def save_descriptor_setup(self, filename):
         with open(filename, "w") as out_file:
