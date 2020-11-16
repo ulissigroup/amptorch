@@ -41,7 +41,9 @@ gds.batch_add_descriptors(2, etas, rss, [])
 torch.set_num_threads(1)
 
 
-def get_config(descriptors, num_layers=2, num_nodes=10, epochs=100, verbose=False):
+def get_config(
+    descriptors, images, num_layers=2, num_nodes=10, epochs=100, verbose=False
+):
     configs = {
         "model": {"get_forces": True, "num_layers": num_layers, "num_nodes": num_nodes},
         "optim": {
@@ -122,11 +124,11 @@ for i, (images, epochs, arch) in enumerate(trials):
         )
     )
     print("default config")
-    config_default = get_config(Gs_default)
+    config_default = get_config(Gs_default, images, num_layers, num_nodes, epochs)
     default_results = list(test_model(config_default))
     results.append(default_results)
     print("automated config")
-    config_automated = get_config(gds)
+    config_automated = get_config(gds, images, num_layers, num_nodes, epochs)
     automated_results = list(test_model(config_automated))
     results.append(automated_results)
     trials_results.append(results)
