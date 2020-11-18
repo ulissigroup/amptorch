@@ -21,7 +21,7 @@ def test_energy_force_consistency():
     images = [
         Atoms(
             symbols="PdOPd2",
-            pbc=[False, False, False],
+            pbc=True,
             calculator=EMT(),
             cell=np.array([[10.0, 0.0, 0.0], [0.0, 10.0, 0.0], [0.0, 0.0, 10.0]]),
             positions=np.array(
@@ -30,7 +30,7 @@ def test_energy_force_consistency():
         ),
         Atoms(
             symbols="PdOPd2",
-            pbc=[False, False, False],
+            pbc=True,
             calculator=EMT(),
             cell=np.array([[10.0, 0.0, 0.0], [0.0, 10.0, 0.0], [0.0, 0.0, 10.0]]),
             positions=np.array(
@@ -39,21 +39,21 @@ def test_energy_force_consistency():
         ),
         Atoms(
             symbols="PdO",
-            pbc=[False, False, False],
+            pbc=True,
             calculator=EMT(),
             cell=np.array([[10.0, 0.0, 0.0], [0.0, 10.0, 0.0], [0.0, 0.0, 10.0]]),
             positions=np.array([[2.0, 1.0, -1.0], [1.0, 2.0, 1.0]]),
         ),
         Atoms(
             symbols="Pd2O",
-            pbc=[False, False, False],
+            pbc=True,
             calculator=EMT(),
             cell=np.array([[10.0, 0.0, 0.0], [0.0, 10.0, 0.0], [0.0, 0.0, 10.0]]),
             positions=np.array([[-2.0, -1.0, -1.0], [1.0, 2.0, 1.0], [3.0, 4.0, 4.0]]),
         ),
         Atoms(
             symbols="Cu",
-            pbc=[False, False, False],
+            pbc=True,
             calculator=EMT(),
             cell=np.array([[10.0, 0.0, 0.0], [0.0, 10.0, 0.0], [0.0, 0.0, 10.0]]),
             positions=np.array([[0.0, 0.0, 0.0]]),
