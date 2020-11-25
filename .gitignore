@@ -28,6 +28,7 @@ md_work/*
 *processed*
 *checkpoints*
 *results*
+*.lmdb*
 
 #build/compiled_files
 *build/

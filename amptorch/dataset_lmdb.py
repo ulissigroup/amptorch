@@ -11,32 +11,29 @@ class AtomsLMDBDataset(Dataset):
         db_path,
     ):
         self.db_path = db_path
-        env = self.connect_db(self.db_path)
-        self.keys = [f"{j}".encode("ascii") for j in range(env.stat()["entries"])]
-        self.feature_scaler = pickle.loads(
-            env.begin().get("feature_scaler".encode("ascii"))
-        )
-        self.target_scaler = pickle.loads(
-            env.begin().get("target_scaler".encode("ascii"))
-        )
-        self.length = pickle.loads(env.begin().get("length".encode("ascii")))
-        self.elements = pickle.loads(env.begin().get("elements".encode("ascii")))
-        self.descriptor = self.get_descriptor(
-            pickle.loads(env.begin().get("descriptor_setup".encode("ascii")))
-        )
-        env.close()
+        self.env = self.connect_db(self.db_path)
+        self.keys = [f"{j}".encode("ascii") for j in range(self.env.stat()["entries"])]
+        with self.env.begin(write=False) as txn:
+            self.feature_scaler = pickle.loads(
+                txn.get("feature_scaler".encode("ascii"))
+            )
+            self.target_scaler = pickle.loads(txn.get("target_scaler".encode("ascii")))
+            self.length = pickle.loads(txn.get("length".encode("ascii")))
+            self.elements = pickle.loads(txn.get("elements".encode("ascii")))
+            self.descriptor = self.get_descriptor(
+                pickle.loads(txn.get("descriptor_setup".encode("ascii")))
+            )
 
     def __len__(self):
         return self.length
 
     def __getitem__(self, idx):
-        env = self.connect_db(self.db_path)
-        data = env.begin().get(self.keys[idx])
-        data_object = pickle.loads(data)
-        env.close()
+        with self.env.begin(write=False) as txn:
+            data = txn.get(self.keys[idx])
+            data_object = pickle.loads(data)
 
-        self.feature_scaler.norm([data_object])
-        self.target_scaler.norm([data_object])
+            self.feature_scaler.norm([data_object])
+            self.target_scaler.norm([data_object])
 
         return data_object
 
@@ -61,6 +58,7 @@ class AtomsLMDBDataset(Dataset):
             readonly=True,
             lock=False,
             readahead=False,
-            map_size=1099511627776 * 2,
+            meminit=False,
+            max_readers=1,
         )
         return env
