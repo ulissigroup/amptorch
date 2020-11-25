@@ -21,7 +21,7 @@ Install dependencies:
 
 ### Usage
 #### Configs
-To train a model using `amptorch`, a set of `configs` must be specified to interact with the trainer. An outline is provided below with all possible flags to modify and their descriptions:
+To train a model using `amptorch`, a set of `configs` must be specified to interact with the trainer. An exhaustive list of all possible flags and their descriptions is provided below:
 ```
 configs = {
   "model": {
@@ -63,6 +63,7 @@ configs = {
   },
   "cmd": {
       "debug": bool,                # Debug mode, does not write/save checkpoints/results (default: False)
+      "dtype": object,              # Pytorch level of precision (default: torch.FloatTensor)
       "run_dir": str,               # Path to run trainer, where logs are to be saved (default: "./")
       "seed": int,                  # Random seed (default: 0)
       "identifier": str,            # Unique identifer to experiment, optional
