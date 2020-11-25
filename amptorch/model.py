@@ -91,7 +91,7 @@ class BPNN(nn.Module):
             batch = batch[0]
         with torch.enable_grad():
             atomic_numbers = batch.atomic_numbers
-            fingerprints = batch.fingerprint.float()
+            fingerprints = batch.fingerprint
             fingerprints.requires_grad = True
             image_idx = batch.image_idx
             sorted_image_idx = torch.unique_consecutive(image_idx)
