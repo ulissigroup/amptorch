@@ -1,5 +1,3 @@
-**.ignore
-
 #python
 __pycache__/
 *.pyc
@@ -25,11 +23,11 @@ __pycache__/
 datasets/*
 md_work/*
 
-*/wandb/
+*wandb
 .ipynb_checkpoints
-*/processed/*
-*/checkpoints/*
-*/results/*
+*processed*
+*checkpoints*
+*results*
 
 #build/compiled_files
 *build/

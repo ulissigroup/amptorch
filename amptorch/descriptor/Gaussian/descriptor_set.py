@@ -4,12 +4,6 @@ import numpy as np
 
 
 class GaussianDescriptorSet:
-    # TODO:
-    #  - convert default settings to self.full-list descriptor set
-    #  - convert element-wise settings to self.full-list descriptor set
-    #  - validate full-list descriptor set and save as self.full-list descriptor set
-    #  - convert self.full-list descriptor set to various formats required by Gaussian
-
     def __init__(
         self,
         elements,
