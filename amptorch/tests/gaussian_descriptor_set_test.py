@@ -1,5 +1,5 @@
 import numpy as np
-from amptorch.descriptor.Gaussian import GaussianDescriptorSet
+from amptorch.descriptor.Gaussian.automated import GaussianDescriptorSet
 from amptorch.trainer import AtomsTrainer
 
 Gs = {
