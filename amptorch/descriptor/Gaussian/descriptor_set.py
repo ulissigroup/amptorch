@@ -20,6 +20,12 @@ class GaussianDescriptorSet:
         self.elements = elements
         self.element_indices = list_symbols_to_indices(elements)
         self.cutoff = cutoff
+        cutoff_params = {
+            (k.lower() if isinstance(k, str) else k): (
+                v.lower() if isinstance(v, str) else v
+            )
+            for k, v in cutoff_params.items()
+        }
         self.cutoff_params = cutoff_params
         self.all_interactions = set()
         self.interactions = {
