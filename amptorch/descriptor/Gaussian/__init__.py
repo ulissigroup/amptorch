@@ -18,7 +18,7 @@ class Gaussian(BaseDescriptor):
         super().__init__()
         self.descriptor_type = "Gaussian"
         self.Gs = Gs
-        self.elements = elements
+        self.elements = list(elements)
         self.cutoff_func = cutoff_func.lower()
         if self.cutoff_func not in ["cosine", "polynomial"]:
             raise ValueError('cutoff function must be either "cosine" or "polynomial"')
