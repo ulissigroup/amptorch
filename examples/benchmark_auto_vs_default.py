@@ -109,6 +109,7 @@ trials = [
     (images250, long_training, wide_arch),
 ]
 trials_results = []
+n_repeats = 1
 for i, (images, epochs, arch) in enumerate(trials):
     num_layers, num_nodes = arch
     results = []
@@ -123,17 +124,25 @@ for i, (images, epochs, arch) in enumerate(trials):
             num_nodes,
         )
     )
-    print("default config")
-    config_default = get_config(Gs_default, images, num_layers, num_nodes, epochs)
-    default_results = list(test_model(config_default))
-    results.append(default_results)
-    print("automated config")
-    config_automated = get_config(gds, images, num_layers, num_nodes, epochs)
-    automated_results = list(test_model(config_automated))
-    results.append(automated_results)
-    trials_results.append(results)
+    for n in range(n_repeats):
+        print("repeat (%d/%d)" % (n + 1, n_repeats))
+        print("default config")
+        config_default = get_config(Gs_default, images, num_layers, num_nodes, epochs)
+        default_results = list(test_model(config_default))
+        print("automated config")
+        config_automated = get_config(gds, images, num_layers, num_nodes, epochs)
+        automated_results = list(test_model(config_automated))
+        results.append([default_results, automated_results])
+    # [repeat [default, automated]]
+    avg_results = np.array(results)
+    avg_results = avg_results.mean(axis=0)
+    trials_results.append(avg_results.flatten())
     print()
 
 trials_results = np.array(trials_results)
-np.savetxt("trials_results.csv", trials_results, delimiter=",")
+avg_default_results = trials_results[:, 0, :]
+np.savetxt("avg_default_results.csv", avg_default_results, delimiter=",")
+
+avg_gds_results = trials_results[:, 1, :]
+np.savetxt("avg_gds_results.csv", avg_gds_results, delimiter=",")
 print("benchmarking complete")
