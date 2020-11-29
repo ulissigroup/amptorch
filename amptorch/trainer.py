@@ -39,6 +39,8 @@ class AtomsTrainer:
         self.load_skorch()
 
     def load_config(self):
+        dtype = self.config["cmd"].get("dtype", torch.FloatTensor)
+        torch.set_default_tensor_type(dtype)
         self.timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         self.identifier = self.config["cmd"].get("identifier", False)
         if self.identifier:
