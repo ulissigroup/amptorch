@@ -7,6 +7,10 @@ from ..base_descriptor import BaseDescriptor
 from ..constants import ATOM_SYMBOL_TO_INDEX_DICT
 from ..util import _gen_2Darray_for_ffi, list_symbols_to_indices
 from ._libsymf import ffi, lib
+from .descriptor_set import GaussianDescriptorSet
+
+
+GDS = GaussianDescriptorSet  # so Flake8 allows the commit to proceed, also an easy-access-acronym!
 
 
 class Gaussian(BaseDescriptor):
