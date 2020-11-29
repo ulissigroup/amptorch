@@ -80,6 +80,10 @@ class AtomsTrainer:
         return elements
 
     def load_dataset(self, process=True):
+        """
+        *NOTE* `process` should only be set to `False` for testing purposes (i.e. gaussian_descriptor_set_test.py)
+        This setting should not be used for any application use of Amptorch.
+        """
         training_images = self.config["dataset"]["raw_data"]
         # TODO: Scalability when dataset to large to fit into memory
         if isinstance(training_images, str):
