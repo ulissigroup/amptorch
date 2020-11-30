@@ -161,9 +161,7 @@ class SingleNN(nn.Module):
             fingerprints.requires_grad = True
             image_idx = batch.image_idx
             sorted_image_idx = torch.unique_consecutive(image_idx)
-            o = torch.sum(
-                self.model(fingerprints),dim=1
-            )
+            o = torch.sum(self.model(fingerprints), dim=1)
             energy = scatter(o, image_idx, dim=0)[sorted_image_idx]
 
             if self.get_forces:

@@ -102,9 +102,13 @@ class FeatureScaler:
             for data in data_list:
                 fingerprint = data.fingerprint
                 if self.transform == "standardize":
-                    fingerprint = (fingerprint - self.scale["offset"]) / self.scale["scale"]
+                    fingerprint = (fingerprint - self.scale["offset"]) / self.scale[
+                        "scale"
+                    ]
                 else:
-                    fingerprint = (fingerprint * self.scale["scale"]) + self.scale["offset"]
+                    fingerprint = (fingerprint * self.scale["scale"]) + self.scale[
+                        "offset"
+                    ]
                 data.fingerprint = fingerprint
 
                 if self.forcetraining:
@@ -123,7 +127,6 @@ class FeatureScaler:
                     data.fprimes = torch.sparse.FloatTensor(_indices, _values, _size)
 
         return data_list
-
 
 
 class TargetScaler:
