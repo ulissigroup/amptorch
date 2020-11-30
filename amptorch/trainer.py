@@ -229,7 +229,6 @@ class AtomsTrainer:
         self.net.fit(self.train_dataset, None)
         elapsed_time = time.time() - stime
         print(f"Training completed in {elapsed_time}s")
-        return elapsed_time
 
     def predict(self, images, batch_size=32):
         if len(images) < 1:
