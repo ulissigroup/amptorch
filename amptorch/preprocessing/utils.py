@@ -105,6 +105,7 @@ class FeatureScaler:
                     fingerprint = (fingerprint - self.scale["offset"]) / self.scale["scale"]
                 else:
                     fingerprint = (fingerprint * self.scale["scale"]) + self.scale["offset"]
+                data.fingerprint = fingerprint
 
                 if self.forcetraining:
                     base_atoms = torch.repeat_interleave(
@@ -122,6 +123,7 @@ class FeatureScaler:
                     data.fprimes = torch.sparse.FloatTensor(_indices, _values, _size)
 
         return data_list
+
 
 
 class TargetScaler:
