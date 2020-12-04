@@ -7,7 +7,13 @@ from torch_scatter import scatter
 
 class MLP(nn.Module):
     def __init__(
-        self, n_input_nodes, n_layers, n_hidden_size, activation, n_output_nodes=1
+        self,
+        n_input_nodes,
+        n_layers,
+        n_hidden_size,
+        activation,
+        batchnorm,
+        n_output_nodes=1,
     ):
         super(MLP, self).__init__()
         if isinstance(n_hidden_size, int):
@@ -18,6 +24,8 @@ class MLP(nn.Module):
         for _ in range(n_layers - 1):
             layers.append(nn.Linear(self.n_neurons[_], self.n_neurons[_ + 1]))
             layers.append(activation())
+            if batchnorm:
+                layers.append(nn.BatchNorm1d(self.n_neurons[_ + 1]))
         layers.append(nn.Linear(self.n_neurons[-2], self.n_neurons[-1]))
         self.model_net = nn.Sequential(*layers)
 
@@ -56,6 +64,7 @@ class BPNN(nn.Module):
         num_nodes,
         num_layers,
         get_forces=True,
+        batchnorm=False,
         activation=Tanh,
     ):
         super(BPNN, self).__init__()
@@ -71,15 +80,18 @@ class BPNN(nn.Module):
                     n_layers=num_layers,
                     n_hidden_size=num_nodes,
                     activation=activation,
+                    batchnorm=batchnorm,
                 )
             )
 
         self.element_mask = ElementMask(elements)
 
     def forward(self, batch):
+        if isinstance(batch, list):
+            batch = batch[0]
         with torch.enable_grad():
             atomic_numbers = batch.atomic_numbers
-            fingerprints = batch.fingerprint.float()
+            fingerprints = batch.fingerprint
             fingerprints.requires_grad = True
             image_idx = batch.image_idx
             sorted_image_idx = torch.unique_consecutive(image_idx)
@@ -106,7 +118,7 @@ class BPNN(nn.Module):
                 )
 
             else:
-                forces = torch.tensor([])
+                forces = torch.tensor([], device=energy.device)
 
             return energy, forces
 

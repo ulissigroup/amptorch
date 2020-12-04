@@ -6,6 +6,21 @@ ffibuilder.cdef(
                                     int *, int, int*, int,
                                     int**, double **, int, double **, int*, int*,
                                     double**, double**);
+
+        int calculate_atomistic_mcsh_square(double **, double **, double **, int*,
+                                    int *, int, int*, int,
+                                    int**, double **, int, double **, int*, int*,
+                                    double**, double**);
+
+        int calculate_atomistic_mcsh_noderiv(double **, double **, double **, int*,
+                                    int *, int, int*, int,
+                                    int**, double **, int, double **, int*, int*,
+                                    double**);
+
+        int calculate_atomistic_mcsh_square_noderiv(double **, double **, double **, int*,
+                                    int *, int, int*, int,
+                                    int**, double **, int, double **, int*, int*,
+                                    double**);
     """
 )
 ffibuilder.set_source(
