@@ -97,19 +97,19 @@ class Gaussian(BaseDescriptor):
         descriptor_setup = {"G2": set(), "G4": set(), "G5": set()}
         cutoff = Gs["cutoff"]
         if "G2" in Gs:
-            descriptor_setup["G2"].add(
+            descriptor_setup["G2"].update(
                 [
-                    [2, element1, 0, cutoff, eta, rs, 0.0]
-                    for eta in np.array(Gs["G2"]["etas"]) / Gs["cutoff"] ** 2
+                    (2, element1, 0, cutoff, eta, rs, 0.0)
+                    for eta in np.array(Gs["G2"]["etas"]) / cutoff ** 2
                     for rs in Gs["G2"]["rs_s"]
                     for element1 in element_indices
                 ]
             )
 
         if "G4" in Gs:
-            descriptor_setup["G4"].add(
+            descriptor_setup["G4"].update(
                 [
-                    [
+                    (
                         4,
                         element_indices[i],
                         element_indices[j],
@@ -117,8 +117,8 @@ class Gaussian(BaseDescriptor):
                         eta,
                         zeta,
                         gamma,
-                    ]
-                    for eta in np.array(Gs["G4"]["etas"]) / Gs["cutoff"] ** 2
+                    )
+                    for eta in (np.array(Gs["G4"]["etas"]) / cutoff ** 2)
                     for zeta in Gs["G4"]["zetas"]
                     for gamma in Gs["G4"]["gammas"]
                     for i in range(len(element_indices))
@@ -127,9 +127,9 @@ class Gaussian(BaseDescriptor):
             )
 
         if "G5" in Gs:
-            descriptor_setup["G5"].add(
+            descriptor_setup["G5"].update(
                 [
-                    [
+                    (
                         5,
                         element_indices[i],
                         element_indices[j],
@@ -137,7 +137,7 @@ class Gaussian(BaseDescriptor):
                         eta,
                         zeta,
                         gamma,
-                    ]
+                    )
                     for eta in Gs["G5"]["etas"]
                     for zeta in Gs["G5"]["zetas"]
                     for gamma in Gs["G5"]["gammas"]
