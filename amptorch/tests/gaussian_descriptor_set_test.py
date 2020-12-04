@@ -58,11 +58,11 @@ def compare_setups(setup1, setup2):
         assert len(setup1[element]) == len(setup2[element])
         matches = {2: [0, 0], 4: [0, 0], 5: [0, 0]}
         for params1, params2 in zip(setup1[element], setup2[element]):
-            matches[params1[0]][1 if np.all(params1 == params2) else 0] += 1
+            matches[params1[0]][0 if np.all(params1 == params2) else 1] += 1
         print("%s descriptors" % element)
         for i in [2, 4, 5]:
             print(
-                "\t(%d/%d) G%d descriptors match" % (i, matches[i][0], sum(matches[i]))
+                "\t(%d/%d) G%d descriptors match" % (matches[i][0], sum(matches[i]), i)
             )
         for i in [2, 4, 5]:
             assert matches[i][1] == 0, "only %d/%d %s G%ds matched" % (
@@ -89,6 +89,7 @@ def test_gaussian_descriptor_set():
 
     gaussian_setup = cosine_trainer.train_dataset.descriptor.descriptor_setup
     gds_setup = gds.descriptor_setup
+
     compare_setups(gaussian_setup, gds_setup)
     print("Gaussian and GaussianDescriptorSet setups match!")
 
