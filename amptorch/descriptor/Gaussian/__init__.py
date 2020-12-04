@@ -37,24 +37,24 @@ class Gaussian(BaseDescriptor):
 
     def prepare_descriptor_parameters(self):
         if isinstance(self.Gs, dict):
-        self.descriptor_setup = {}
-        for element in self.elements:
-            if element in self.Gs:
-                self.descriptor_setup[
-                    element
-                ] = self._prepare_descriptor_parameters_element(
-                    self.Gs[element], self.element_indices
-                )
-            elif "default" in self.Gs:
-                self.descriptor_setup[
-                    element
-                ] = self._prepare_descriptor_parameters_element(
-                    self.Gs["default"], self.element_indices
-                )
-            else:
-                raise NotImplementedError(
-                    "Symmetry function parameters not defined properly"
-                )
+            self.descriptor_setup = {}
+            for element in self.elements:
+                if element in self.Gs:
+                    self.descriptor_setup[
+                        element
+                    ] = self._prepare_descriptor_parameters_element(
+                        self.Gs[element], self.element_indices
+                    )
+                elif "default" in self.Gs:
+                    self.descriptor_setup[
+                        element
+                    ] = self._prepare_descriptor_parameters_element(
+                        self.Gs["default"], self.element_indices
+                    )
+                else:
+                    raise NotImplementedError(
+                        "Symmetry function parameters not defined properly"
+                    )
         elif hasattr(self.Gs, "descriptor_setup"):
             self.descriptor_setup = self.Gs.descriptor_setup
         else:
@@ -94,36 +94,62 @@ class Gaussian(BaseDescriptor):
         return
 
     def _prepare_descriptor_parameters_element(self, Gs, element_indices):
-        descriptor_setup = {'G2': set(), 'G4': set(), 'G5': set()}
+        descriptor_setup = {"G2": set(), "G4": set(), "G5": set()}
         cutoff = Gs["cutoff"]
         if "G2" in Gs:
-            descriptor_setup['G2'].add([
-                [2, element1, 0, cutoff, eta, rs, 0.0]
-                for eta in np.array(Gs["G2"]["etas"]) / Gs["cutoff"] ** 2
-                for rs in Gs["G2"]["rs_s"]
-                for element1 in element_indices
-            ])
+            descriptor_setup["G2"].add(
+                [
+                    [2, element1, 0, cutoff, eta, rs, 0.0]
+                    for eta in np.array(Gs["G2"]["etas"]) / Gs["cutoff"] ** 2
+                    for rs in Gs["G2"]["rs_s"]
+                    for element1 in element_indices
+                ]
+            )
 
         if "G4" in Gs:
-            descriptor_setup['G4'].add([
-                [4, element_indices[i], element_indices[j], cutoff, eta, zeta, gamma]
-                for eta in np.array(Gs["G4"]["etas"]) / Gs["cutoff"] ** 2
-                for zeta in Gs["G4"]["zetas"]
-                for gamma in Gs["G4"]["gammas"]
-                for i in range(len(element_indices))
-                for j in range(i, len(element_indices))
-            ])
+            descriptor_setup["G4"].add(
+                [
+                    [
+                        4,
+                        element_indices[i],
+                        element_indices[j],
+                        cutoff,
+                        eta,
+                        zeta,
+                        gamma,
+                    ]
+                    for eta in np.array(Gs["G4"]["etas"]) / Gs["cutoff"] ** 2
+                    for zeta in Gs["G4"]["zetas"]
+                    for gamma in Gs["G4"]["gammas"]
+                    for i in range(len(element_indices))
+                    for j in range(i, len(element_indices))
+                ]
+            )
 
         if "G5" in Gs:
-            descriptor_setup['G5'].add([
-                [5, element_indices[i], element_indices[j], cutoff, eta, zeta, gamma]
-                for eta in Gs["G5"]["etas"]
-                for zeta in Gs["G5"]["zetas"]
-                for gamma in Gs["G5"]["gammas"]
-                for i in range(len(element_indices))
-                for j in range(i, len(element_indices))
-            ])
-        g2s, g4s, g5s = descriptor_setup["G2"], descriptor_setup["G4"], descriptor_setup["G5"]
+            descriptor_setup["G5"].add(
+                [
+                    [
+                        5,
+                        element_indices[i],
+                        element_indices[j],
+                        cutoff,
+                        eta,
+                        zeta,
+                        gamma,
+                    ]
+                    for eta in Gs["G5"]["etas"]
+                    for zeta in Gs["G5"]["zetas"]
+                    for gamma in Gs["G5"]["gammas"]
+                    for i in range(len(element_indices))
+                    for j in range(i, len(element_indices))
+                ]
+            )
+        g2s, g4s, g5s = (
+            descriptor_setup["G2"],
+            descriptor_setup["G4"],
+            descriptor_setup["G5"],
+        )
         g2s = [list(params) for params in sorted(g2s)]
         g4s = [list(params) for params in sorted(g4s)]
         g5s = [list(params) for params in sorted(g5s)]
@@ -132,19 +158,19 @@ class Gaussian(BaseDescriptor):
 
     def get_descriptor_setup_hash(self):
         if isinstance(self.Gs, dict):
-        string = (
+            string = (
                 "cosine"
                 if self.cutoff_func == "cosine"
                 else "polynomial%.15f" % self.gamma
-        )
-        for element in self.descriptor_setup.keys():
-            string += element
-            for desc in self.descriptor_setup[element]:
-                for num in desc:
-                    string += "%.15f" % num
-        md5 = hashlib.md5(string.encode("utf-8"))
-        hash_result = md5.hexdigest()
-        self.descriptor_setup_hash = hash_result
+            )
+            for element in self.descriptor_setup.keys():
+                string += element
+                for desc in self.descriptor_setup[element]:
+                    for num in desc:
+                        string += "%.15f" % num
+            md5 = hashlib.md5(string.encode("utf-8"))
+            hash_result = md5.hexdigest()
+            self.descriptor_setup_hash = hash_result
         elif hasattr(self.Gs, "descriptor_setup_hash"):
             self.descriptor_setup_hash = self.Gs.descriptor_setup_hash
         else:

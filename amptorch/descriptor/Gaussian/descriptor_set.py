@@ -11,7 +11,7 @@ class GaussianDescriptorSet:
         cutoff_params={"cutoff_func": "cosine"},
         default_interactions=False,
     ):
-        self.elements = elements
+        self.elements = list(elements)
         self.element_indices = list_symbols_to_indices(elements)
         self.cutoff = cutoff
         cutoff_params = {
