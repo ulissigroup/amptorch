@@ -7,6 +7,10 @@ from ..base_descriptor import BaseDescriptor
 from ..constants import ATOM_SYMBOL_TO_INDEX_DICT
 from ..util import _gen_2Darray_for_ffi, list_symbols_to_indices
 from ._libsymf import ffi, lib
+from .descriptor_set import GaussianDescriptorSet
+
+
+GDS = GaussianDescriptorSet  # so Flake8 allows the commit to proceed, also an easy-access-acronym!
 
 
 class Gaussian(BaseDescriptor):
@@ -14,7 +18,7 @@ class Gaussian(BaseDescriptor):
         super().__init__()
         self.descriptor_type = "Gaussian"
         self.Gs = Gs
-        self.elements = elements
+        self.elements = list(elements)
         self.cutoff_func = cutoff_func.lower()
         if self.cutoff_func not in ["cosine", "polynomial"]:
             raise ValueError('cutoff function must be either "cosine" or "polynomial"')
@@ -32,25 +36,32 @@ class Gaussian(BaseDescriptor):
         self.get_descriptor_setup_hash()
 
     def prepare_descriptor_parameters(self):
-        self.descriptor_setup = {}
-        for element in self.elements:
-            if element in self.Gs:
-                self.descriptor_setup[
-                    element
-                ] = self._prepare_descriptor_parameters_element(
-                    self.Gs[element], self.element_indices
-                )
-            elif "default" in self.Gs:
-                self.descriptor_setup[
-                    element
-                ] = self._prepare_descriptor_parameters_element(
-                    self.Gs["default"], self.element_indices
-                )
-            else:
-                raise NotImplementedError(
-                    "Symmetry function parameters not defined properly"
-                )
-
+        if isinstance(self.Gs, dict):
+            self.descriptor_setup = {}
+            for element in self.elements:
+                if element in self.Gs:
+                    self.descriptor_setup[
+                        element
+                    ] = self._prepare_descriptor_parameters_element(
+                        self.Gs[element], self.element_indices
+                    )
+                elif "default" in self.Gs:
+                    self.descriptor_setup[
+                        element
+                    ] = self._prepare_descriptor_parameters_element(
+                        self.Gs["default"], self.element_indices
+                    )
+                else:
+                    raise NotImplementedError(
+                        "Symmetry function parameters not defined properly"
+                    )
+        elif hasattr(self.Gs, "descriptor_setup"):
+            self.descriptor_setup = self.Gs.descriptor_setup
+        else:
+            raise ValueError(
+                "Gs must be a dict with descriptor params or a GaussianDescriptorSet object: passed was a (%s)"
+                % type(self.Gs)
+            )
         self.params_set = dict()
         for element in self.elements:
             element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
@@ -83,49 +94,90 @@ class Gaussian(BaseDescriptor):
         return
 
     def _prepare_descriptor_parameters_element(self, Gs, element_indices):
-        descriptor_setup = []
+        descriptor_setup = {"G2": set(), "G4": set(), "G5": set()}
         cutoff = Gs["cutoff"]
         if "G2" in Gs:
-            descriptor_setup += [
-                [2, element1, 0, cutoff, eta, rs, 0.0]
-                for eta in np.array(Gs["G2"]["etas"]) / Gs["cutoff"] ** 2
-                for rs in Gs["G2"]["rs_s"]
-                for element1 in element_indices
-            ]
+            descriptor_setup["G2"].update(
+                [
+                    (2, element1, 0, cutoff, eta, rs, 0.0)
+                    for eta in np.array(Gs["G2"]["etas"]) / cutoff ** 2
+                    for rs in Gs["G2"]["rs_s"]
+                    for element1 in element_indices
+                ]
+            )
 
         if "G4" in Gs:
-            descriptor_setup += [
-                [4, element_indices[i], element_indices[j], cutoff, eta, zeta, gamma]
-                for eta in np.array(Gs["G4"]["etas"]) / Gs["cutoff"] ** 2
-                for zeta in Gs["G4"]["zetas"]
-                for gamma in Gs["G4"]["gammas"]
-                for i in range(len(element_indices))
-                for j in range(i, len(element_indices))
-            ]
+            descriptor_setup["G4"].update(
+                [
+                    (
+                        4,
+                        element_indices[i],
+                        element_indices[j],
+                        cutoff,
+                        eta,
+                        zeta,
+                        gamma,
+                    )
+                    for eta in (np.array(Gs["G4"]["etas"]) / cutoff ** 2)
+                    for zeta in Gs["G4"]["zetas"]
+                    for gamma in Gs["G4"]["gammas"]
+                    for i in range(len(element_indices))
+                    for j in range(i, len(element_indices))
+                ]
+            )
 
         if "G5" in Gs:
-            descriptor_setup += [
-                [5, element_indices[i], element_indices[j], cutoff, eta, zeta, gamma]
-                for eta in Gs["G5"]["etas"]
-                for zeta in Gs["G5"]["zetas"]
-                for gamma in Gs["G5"]["gammas"]
-                for i in range(len(element_indices))
-                for j in range(i, len(element_indices))
-            ]
-        return np.array(descriptor_setup)
+            descriptor_setup["G5"].update(
+                [
+                    (
+                        5,
+                        element_indices[i],
+                        element_indices[j],
+                        cutoff,
+                        eta,
+                        zeta,
+                        gamma,
+                    )
+                    for eta in Gs["G5"]["etas"]
+                    for zeta in Gs["G5"]["zetas"]
+                    for gamma in Gs["G5"]["gammas"]
+                    for i in range(len(element_indices))
+                    for j in range(i, len(element_indices))
+                ]
+            )
+        g2s, g4s, g5s = (
+            descriptor_setup["G2"],
+            descriptor_setup["G4"],
+            descriptor_setup["G5"],
+        )
+        g2s = [list(params) for params in sorted(g2s)]
+        g4s = [list(params) for params in sorted(g4s)]
+        g5s = [list(params) for params in sorted(g5s)]
+        descriptor_setup = np.array(g2s + g4s + g5s)
+        return descriptor_setup
 
     def get_descriptor_setup_hash(self):
-        string = (
-            "cosine" if self.cutoff_func == "cosine" else "polynomial%.15f" % self.gamma
-        )
-        for element in self.descriptor_setup.keys():
-            string += element
-            for desc in self.descriptor_setup[element]:
-                for num in desc:
-                    string += "%.15f" % num
-        md5 = hashlib.md5(string.encode("utf-8"))
-        hash_result = md5.hexdigest()
-        self.descriptor_setup_hash = hash_result
+        if isinstance(self.Gs, dict):
+            string = (
+                "cosine"
+                if self.cutoff_func == "cosine"
+                else "polynomial%.15f" % self.gamma
+            )
+            for element in self.descriptor_setup.keys():
+                string += element
+                for desc in self.descriptor_setup[element]:
+                    for num in desc:
+                        string += "%.15f" % num
+            md5 = hashlib.md5(string.encode("utf-8"))
+            hash_result = md5.hexdigest()
+            self.descriptor_setup_hash = hash_result
+        elif hasattr(self.Gs, "descriptor_setup_hash"):
+            self.descriptor_setup_hash = self.Gs.descriptor_setup_hash
+        else:
+            raise ValueError(
+                "Gs must be a dict with descriptor params or a GaussianDescriptorSet object: passed was a (%s)"
+                % type(self.Gs)
+            )
 
     def save_descriptor_setup(self, filename):
         with open(filename, "w") as out_file:
