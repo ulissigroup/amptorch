@@ -47,10 +47,10 @@ class FeatureScaler:
 
         else:
             if self.transform == "standardize":
-                mean = torch.mean(element_fps, dim=0)
-                std = torch.std(element_fps, dim=0, unbiased=False)
+                mean = torch.mean(fingerprints, dim=0)
+                std = torch.std(fingerprints, dim=0, unbiased=False)
                 std[std < 1e-8] = 1
-                self.scales[element] = {"offset": mean, "scale": std}
+                self.scale = {"offset": mean, "scale": std}
             else:
                 fpmin = torch.min(fingerprints, dim=0).values
                 fpmax = torch.max(fingerprints, dim=0).values
