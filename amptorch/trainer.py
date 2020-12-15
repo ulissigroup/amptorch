@@ -39,6 +39,8 @@ class AtomsTrainer:
         self.load_skorch()
 
     def load_config(self):
+        dtype = self.config["cmd"].get("dtype", torch.FloatTensor)
+        torch.set_default_tensor_type(dtype)
         self.timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         self.identifier = self.config["cmd"].get("identifier", False)
         if self.identifier:
@@ -77,7 +79,11 @@ class AtomsTrainer:
         elements = np.unique(elements)
         return elements
 
-    def load_dataset(self):
+    def load_dataset(self, process=True):
+        """
+        *NOTE* `process` should only be set to `False` for testing purposes (i.e. gaussian_descriptor_set_test.py)
+        This setting should not be used for any application use of Amptorch.
+        """
         training_images = self.config["dataset"]["raw_data"]
         # TODO: Scalability when dataset to large to fit into memory
         if isinstance(training_images, str):
@@ -108,16 +114,20 @@ class AtomsTrainer:
                 "scaling",
                 {"type": "normalize", "range": (0, 1), "separate_elements": True},
             ),
+            process=process,
         )
-
-        self.feature_scaler = self.train_dataset.feature_scaler
-        self.target_scaler = self.train_dataset.target_scaler
-        if not self.debug:
-            normalizers = {"target": self.target_scaler, "feature": self.feature_scaler}
-            torch.save(normalizers, os.path.join(self.cp_dir, "normalizers.pt"))
-        self.input_dim = self.train_dataset.input_dim
-        self.val_split = self.config["dataset"].get("val_split", 0)
-        print("Loading dataset: {} images".format(len(self.train_dataset)))
+        if process:
+            self.feature_scaler = self.train_dataset.feature_scaler
+            self.target_scaler = self.train_dataset.target_scaler
+            if not self.debug:
+                normalizers = {
+                    "target": self.target_scaler,
+                    "feature": self.feature_scaler,
+                }
+                torch.save(normalizers, os.path.join(self.cp_dir, "normalizers.pt"))
+            self.input_dim = self.train_dataset.input_dim
+            self.val_split = self.config["dataset"].get("val_split", 0)
+            print("Loading dataset: {} images".format(len(self.train_dataset)))
 
     def load_model(self):
         elements = list_symbols_to_indices(self.elements)
