@@ -1,0 +1,8 @@
+program: sweep_example.py
+method: grid
+metric:
+  name: val_loss
+  goal: minimize
+parameters:
+  epochs:
+    values: [5, 10]
