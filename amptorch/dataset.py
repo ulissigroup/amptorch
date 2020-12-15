@@ -20,6 +20,7 @@ class AtomsDataset(Dataset):
         save_fps=True,
         scaling={"type": "normalize", "range": (0, 1)},
         cores=1,
+        process=True,
     ):
         self.images = images
         self.forcetraining = forcetraining
@@ -41,7 +42,7 @@ class AtomsDataset(Dataset):
             cores=cores,
         )
 
-        self.data_list = self.process()
+        self.data_list = self.process() if process else None
 
     def process(self):
         data_list = self.a2d.convert_all(self.images)
