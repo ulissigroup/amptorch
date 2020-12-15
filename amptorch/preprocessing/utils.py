@@ -21,11 +21,11 @@ class FeatureScaler:
         if self.transform == "normalize":
             feature_range = scaling["range"]
         self.forcetraining = forcetraining
-        self.separate_elements = scaling.get("separate_elements", True)
+        self.elementwise = scaling.get("elementwise", True)
         fingerprints = torch.cat([data.fingerprint for data in data_list], dim=0)
         atomic_numbers = torch.cat([data.atomic_numbers for data in data_list], dim=0)
 
-        if self.separate_elements:
+        if self.elementwise:
             self.unique = torch.unique(atomic_numbers).tolist()
             self.scales = {}
             for element in self.unique:
@@ -34,13 +34,13 @@ class FeatureScaler:
                 if self.transform == "standardize":
                     mean = torch.mean(element_fps, dim=0)
                     std = torch.std(element_fps, dim=0, unbiased=False)
-                    std[std == 0] = 1
+                    std[std < 1e-8] = 1
                     self.scales[element] = {"offset": mean, "scale": std}
                 else:
                     fpmin = torch.min(element_fps, dim=0).values
                     fpmax = torch.max(element_fps, dim=0).values
                     data_range = fpmax - fpmin
-                    data_range[data_range == 0] = 1
+                    data_range[data_range < 1e-8] = 1
                     scale = (feature_range[1] - feature_range[0]) / (data_range)
                     offset = feature_range[0] - fpmin * scale
                     self.scales[element] = {"offset": offset, "scale": scale}
@@ -61,7 +61,7 @@ class FeatureScaler:
                 self.scale = {"offset": offset, "scale": scale}
 
     def norm(self, data_list, threshold=1e-6):
-        if self.separate_elements:
+        if self.elementwise:
             for data in data_list:
                 fingerprint = data.fingerprint
                 atomic_numbers = data.atomic_numbers

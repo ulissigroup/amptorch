@@ -80,10 +80,6 @@ class AtomsTrainer:
         return elements
 
     def load_dataset(self, process=True):
-        """
-        *NOTE* `process` should only be set to `False` for testing purposes (i.e. gaussian_descriptor_set_test.py)
-        This setting should not be used for any application use of Amptorch.
-        """
         training_images = self.config["dataset"]["raw_data"]
         # TODO: Scalability when dataset to large to fit into memory
         if isinstance(training_images, str):
@@ -112,7 +108,7 @@ class AtomsTrainer:
             save_fps=self.config["dataset"].get("save_fps", True),
             scaling=self.config["dataset"].get(
                 "scaling",
-                {"type": "normalize", "range": (0, 1), "separate_elements": True},
+                {"type": "normalize", "range": (0, 1), "elementwise": True},
             ),
             process=process,
         )
@@ -131,17 +127,17 @@ class AtomsTrainer:
 
     def load_model(self):
         elements = list_symbols_to_indices(self.elements)
-        self.separate_element_model = self.config["model"].get(
-            "separate_elements", True
-        )
-        if self.separate_element_model:
+        model = self.config["model"].get("name", "bpnn").lower()
+        if model == "bpnn":
             self.model = BPNN(
                 elements=elements, input_dim=self.input_dim, **self.config["model"]
             )
-        else:
+        elif model == "singlenn":
             self.model = SingleNN(
                 elements=elements, input_dim=self.input_dim, **self.config["model"]
             )
+        else:
+            raise NotImplementedError(f"{model} not supported!")
         print("Loading model: {} parameters".format(self.model.num_params))
         collate_fn = DataCollater(train=True, forcetraining=self.forcetraining)
         self.parallel_collater = ParallelCollater(self.gpus, collate_fn)
