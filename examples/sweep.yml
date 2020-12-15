@@ -1,7 +1,7 @@
 program: sweep_example.py
 method: grid
 metric:
-  name: val_loss
+  name: valid_loss
   goal: minimize
 parameters:
   epochs:
