@@ -5,7 +5,7 @@ import h5py
 import numpy as np
 from tqdm import tqdm
 
-from .util import get_hash, list_symbols_to_indices
+from .util import get_hash, list_symbols_to_indices, validate_image
 
 
 class BaseDescriptor(ABC):
@@ -52,6 +52,7 @@ class BaseDescriptor(ABC):
             desc="Computing fingerprints",
             disable=not verbose,
         ):
+            validate_image(image)
             image_hash = get_hash(image)
             image_db_filename = "{}/{}.h5".format(self.desc_fp_database_dir, image_hash)
 
