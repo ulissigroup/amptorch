@@ -160,9 +160,7 @@ class AtomsTrainer:
             callbacks.append(load_best_loss)
         scheduler = self.config["optim"].get("scheduler", None)
         if scheduler:
-            scheduler = LRScheduler(
-                scheduler, **self.config["optim"]["scheduler_params"]
-            )
+            scheduler = LRScheduler(scheduler["policy"], **scheduler["params"])
             callbacks.append(scheduler)
         if self.config["cmd"].get("logger", False):
             from skorch.callbacks import WandbLogger
