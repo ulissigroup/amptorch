@@ -42,8 +42,8 @@ configs = {
       "loss_fn": object,            # Loss function to optimize (default: CustomLoss)
       "loss": str,                  # Control loss function criterion, "mse" or "mae" (default: "mse")
       "metric": str,                # Metrics to be reported by, "mse" or "mae" (default: "mae")
-      "scheduler": str,             # Learning rate scheduler to use, ex. 'CosineAnnealingLR' (default: None)
-      "scheduler_params": dict,     # Learning rate scheduler parameters, ex. {"T_max":5}
+      "scheduler": dict,            # Learning rate scheduler to use
+				    ##            - {"policy": "StepLR", "params": {"step_size": 10, "gamma": 0.1}}
   },
   "dataset": {
       "raw_data": str or list,      # Path to ASE trajectory or database or list of Atoms objects
