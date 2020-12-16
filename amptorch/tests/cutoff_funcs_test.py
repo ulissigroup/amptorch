@@ -1,3 +1,4 @@
+import copy
 import numpy as np
 import torch
 from ase import Atoms
@@ -93,9 +94,10 @@ def test_cutoff_funcs():
         "cutoff_func": "Cosine",
     }
 
-    config["dataset"]["cutoff_params"] = cosine_cutoff_params
+    config_1 = copy.deepcopy(config)
+    config_1["dataset"]["cutoff_params"] = cosine_cutoff_params
     print("training model with Cosine cutoff function")
-    print("E_MAE: %f, F_MAE: %f" % get_performance_metrics(config))
+    print("E_MAE: %f, F_MAE: %f" % get_performance_metrics(config_1))
 
     ### Polynomial cutoff function (gamma = 2.0)
 
@@ -104,9 +106,10 @@ def test_cutoff_funcs():
         "gamma": 2.0,
     }
 
+    config_2 = copy.deepcopy(config)
     config["dataset"]["cutoff_params"] = polynomial_cutoff_params
     print("training model with Polynomial cutoff function (gamma = 2.0)")
-    print("E_MAE: %f, F_MAE: %f" % get_performance_metrics(config))
+    print("E_MAE: %f, F_MAE: %f" % get_performance_metrics(config_2))
 
 
 if __name__ == "__main__":
