@@ -1,6 +1,6 @@
 import numpy as np
 from amptorch.descriptor.Gaussian import GaussianDescriptorSet
-from amptorch.trainer import AtomsTrainer
+from amptorch.dataset import AtomsDataset
 
 Gs = {
     "default": {
@@ -15,36 +15,27 @@ Gs = {
 
 elements = ["Cu", "C", "O"]  # arbitrary
 
-cosine_cutoff_params = {"cutoff_func": "Cosine"}
+forcetraining = True
+fp_scheme = "gaussian"
+fp_params = Gs
+save_fps = True
+cutoff_params = {"cutoff_func": "Cosine"}
 
-config = {
-    "model": {"get_forces": True, "num_layers": 3, "num_nodes": 5},
-    "optim": {
-        "device": "cpu",
-        "force_coefficient": 0.04,
-        "lr": 1e-2,
-        "batch_size": 10,
-        "epochs": 10,
-        "loss": "mse",
-        "metric": "mae",
-    },
-    "dataset": {
-        "raw_data": [],  # no images required to confirm descriptors + hash match
-        "val_split": 0.1,
-        "elements": elements,
-        "fp_params": Gs,
-        "cutoff_params": cosine_cutoff_params,
-        "save_fps": True,
-    },
-    "cmd": {
-        "debug": False,
-        "run_dir": "./",
-        "seed": 1,
-        "identifier": "test",
-        "verbose": True,
-        "logger": False,
-    },
-}
+descriptor_setup = (
+    fp_scheme,
+    fp_params,
+    cutoff_params,
+    elements,
+)
+
+train_dataset = AtomsDataset(
+    images=[],
+    descriptor_setup=descriptor_setup,
+    forcetraining=forcetraining,
+    save_fps=True,
+    scaling={"type": "normalize", "range": (0, 1)},
+    process=False,
+)
 
 
 def compare_setups(setup1, setup2):
@@ -80,20 +71,16 @@ def compare_hashes(hash1, hash2):
 
 
 def test_gaussian_descriptor_set():
-    cosine_trainer = AtomsTrainer(config)
-    cosine_trainer.load_config()
-    cosine_trainer.load_rng_seed()
-    cosine_trainer.load_dataset(process=False)
-    gds = GaussianDescriptorSet(cosine_trainer.elements)
+    gds = GaussianDescriptorSet(elements)
     gds.process_combinatorial_Gs(Gs)
 
-    gaussian_setup = cosine_trainer.train_dataset.descriptor.descriptor_setup
+    gaussian_setup = train_dataset.descriptor.descriptor_setup
     gds_setup = gds.descriptor_setup
 
     compare_setups(gaussian_setup, gds_setup)
     print("Gaussian and GaussianDescriptorSet setups match!")
 
-    gaussian_hash = cosine_trainer.train_dataset.descriptor.descriptor_setup_hash
+    gaussian_hash = train_dataset.descriptor.descriptor_setup_hash
     gds_hash = gds.descriptor_setup_hash
     compare_hashes(gaussian_hash, gds_hash)
     print("Gaussian and GaussianDescriptorSet hashes match!")
