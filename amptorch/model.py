@@ -13,6 +13,8 @@ class MLP(nn.Module):
         n_hidden_size,
         activation,
         batchnorm,
+        dropout,
+        dropout_rate,
         n_output_nodes=1,
     ):
         super(MLP, self).__init__()
@@ -23,9 +25,12 @@ class MLP(nn.Module):
         layers = []
         for _ in range(n_layers - 1):
             layers.append(nn.Linear(self.n_neurons[_], self.n_neurons[_ + 1]))
-            layers.append(activation())
             if batchnorm:
                 layers.append(nn.BatchNorm1d(self.n_neurons[_ + 1]))
+            layers.append(activation())
+            if dropout:
+                layers.append(nn.Dropout(p=dropout_rate))
+
         layers.append(nn.Linear(self.n_neurons[-2], self.n_neurons[-1]))
         self.model_net = nn.Sequential(*layers)
 
@@ -65,6 +70,8 @@ class BPNN(nn.Module):
         num_layers,
         get_forces=True,
         batchnorm=False,
+        dropout=False,
+        dropout_rate=0.5,
         activation=Tanh,
         name="bpnn",
     ):
@@ -82,6 +89,8 @@ class BPNN(nn.Module):
                     n_hidden_size=num_nodes,
                     activation=activation,
                     batchnorm=batchnorm,
+                    dropout=dropout,
+                    dropout_rate=dropout_rate,
                 )
             )
 
@@ -137,6 +146,8 @@ class SingleNN(nn.Module):
         num_layers,
         get_forces=True,
         batchnorm=False,
+        dropout=False,
+        dropout_rate=0.5,
         activation=Tanh,
         name="singlenn",
     ):
@@ -150,6 +161,8 @@ class SingleNN(nn.Module):
             n_hidden_size=num_nodes,
             activation=activation,
             batchnorm=batchnorm,
+            dropout=dropout,
+            dropout_rate=dropout_rate,
         )
 
     def forward(self, batch):
@@ -176,7 +189,7 @@ class SingleNN(nn.Module):
                 )
 
             else:
-                forces = torch.tensor([])
+                forces = torch.tensor([], device=energy.device)
 
             return energy, forces
 
