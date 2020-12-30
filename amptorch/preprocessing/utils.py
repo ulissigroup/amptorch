@@ -1,5 +1,14 @@
 import torch
 
+try:
+    shell = get_ipython().__class__.__name__
+    if shell == "ZMQInteractiveShell":
+        from tqdm.notebook import tqdm
+    else:
+        from tqdm import tqdm
+except NameError:
+    from tqdm import tqdm
+
 
 class FeatureScaler:
     """
@@ -42,8 +51,14 @@ class FeatureScaler:
                 offset = feature_range[0] - fpmin * scale
                 self.scales[element] = {"offset": offset, "scale": scale}
 
-    def norm(self, data_list):
-        for data in data_list:
+    def norm(self, data_list, disable_tqdm=False):
+        for data in tqdm(
+            data_list,
+            desc="Scaling Feature data (%s)" % self.transform,
+            total=len(data_list),
+            unit=" scalings",
+            disable=disable_tqdm,
+        ):
             fingerprint = data.fingerprint
             atomic_numbers = data.atomic_numbers
             for element in self.unique:
@@ -95,8 +110,14 @@ class TargetScaler:
             self.target_mean = 0
             self.target_std = 1
 
-    def norm(self, data_list):
-        for data in data_list:
+    def norm(self, data_list, disable_tqdm=False):
+        for data in tqdm(
+            data_list,
+            desc="Scaling Target data",
+            total=len(data_list),
+            unit=" scalings",
+            disable=disable_tqdm,
+        ):        
             data.energy = (data.energy - self.target_mean) / self.target_std
 
             if self.forcetraining:

@@ -243,7 +243,7 @@ class AtomsTrainer:
         )
 
         data_list = a2d.convert_all(images, disable_tqdm=True)
-        self.feature_scaler.norm(data_list)
+        self.feature_scaler.norm(data_list, disable_tqdm=True)
 
         self.net.module.eval()
         collate_fn = DataCollater(train=False, forcetraining=self.forcetraining)
