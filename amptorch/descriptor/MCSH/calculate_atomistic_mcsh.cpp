@@ -286,8 +286,8 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
                         sum_dmiu3_dzj[j] += deriv[8];
                     }
                 }
-                // M = sqrt(sum_miu1*sum_miu1 + sum_miu2*sum_miu2 + sum_miu3*sum_miu3);
-                M = sum_miu1*sum_miu1 + sum_miu2*sum_miu2 + sum_miu3*sum_miu3;
+                M = sqrt(sum_miu1*sum_miu1 + sum_miu2*sum_miu2 + sum_miu3*sum_miu3);
+                // M = sum_miu1*sum_miu1 + sum_miu2*sum_miu2 + sum_miu3*sum_miu3;
                 double dMdx, dMdy, dMdz;
                 if (fabs(M) <= 1e-8) {
                     M = 0;
