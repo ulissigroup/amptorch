@@ -81,11 +81,11 @@ class FeatureScaler:
                 fp_idx_to_scale = fp_idx % data.fingerprint.shape[1]
                 element_idx = base_atoms[fp_idx].tolist()
                 _values = data.fprimes._values()
-                for i, element in enumerate(element_idx):
-                    if self.transform == "standardize":
-                        _values[i] /= self.scales[element]["scale"][fp_idx_to_scale[i]]
-                    else:
-                        _values[i] *= self.scales[element]["scale"][fp_idx_to_scale[i]]
+                scale = torch.FloatTensor([self.scales[element]["scale"][fp_idx_to_scale[i]] for i, element in enumerate(element_idx)])
+                if self.transform == "standardize":
+                    _values[i] /= scale
+                else:
+                    _values[i] *= scale
                 _indices = data.fprimes._indices()
                 _size = data.fprimes.size()
                 data.fprimes = torch.sparse.FloatTensor(_indices, _values, _size)
