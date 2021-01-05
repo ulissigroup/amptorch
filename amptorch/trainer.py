@@ -232,7 +232,7 @@ class AtomsTrainer:
         elapsed_time = time.time() - stime
         print(f"Training completed in {elapsed_time}s")
 
-    def predict(self, images, batch_size=32):
+    def predict(self, images, disable_tqdm=True):
         if len(images) < 1:
             warnings.warn("No images found!", stacklevel=2)
             return images
@@ -248,8 +248,8 @@ class AtomsTrainer:
             cores=1,
         )
 
-        data_list = a2d.convert_all(images, disable_tqdm=True)
-        self.feature_scaler.norm(data_list)
+        data_list = a2d.convert_all(images, disable_tqdm=disable_tqdm)
+        self.feature_scaler.norm(data_list, disable_tqdm=disable_tqdm)
 
         self.net.module.eval()
         collate_fn = DataCollater(train=False, forcetraining=self.forcetraining)
