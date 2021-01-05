@@ -1,3 +1,4 @@
+import copy
 import numpy as np
 import torch
 from ase import Atoms
@@ -100,13 +101,13 @@ def test_training():
     config["model"]["get_forces"] = True
     config["optim"]["force_coefficient"] = 0.04
     config["optim"]["loss"] = "mse"
-    get_force_metrics(config)
+    get_force_metrics(copy.deepcopy(config))
     print("Train energy+forces success!")
     # energy+mae loss
     config["model"]["get_forces"] = False
     config["optim"]["force_coefficient"] = 0
     config["optim"]["loss"] = "mae"
-    get_energy_metrics(config)
+    get_energy_metrics(copy.deepcopy(config))
     print("Train energy only success!")
 
     ### train+val
@@ -115,7 +116,7 @@ def test_training():
     config["optim"]["force_coefficient"] = 0
     config["optim"]["loss"] = "mae"
     config["dataset"]["val_split"] = 0.1
-    get_energy_metrics(config)
+    get_energy_metrics(copy.deepcopy(config))
     print("Val energy only success!")
 
     # energy+forces
@@ -123,7 +124,7 @@ def test_training():
     config["optim"]["force_coefficient"] = 0.04
     config["optim"]["loss"] = "mse"
     config["dataset"]["val_split"] = 0.1
-    get_force_metrics(config)
+    get_force_metrics(copy.deepcopy(config))
     print("Val energy+forces success!")
 
 

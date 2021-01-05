@@ -25,13 +25,7 @@ class AtomsDataset(Dataset):
         self.images = images
         self.forcetraining = forcetraining
         self.scaling = scaling
-        fp_scheme, fp_params, cutoff_params, elements = descriptor_setup
-        if fp_scheme == "gaussian":
-            self.descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)
-        elif fp_scheme == "mcsh":
-            self.descriptor = AtomisticMCSH(MCSHs=fp_params, elements=elements)
-        else:
-            raise NotImplementedError
+        self.descriptor = construct_descriptor(descriptor_setup)
 
         self.a2d = AtomsToData(
             descriptor=self.descriptor,
@@ -93,3 +87,14 @@ class DataCollater:
                 ]
         else:
             return batch
+
+
+def construct_descriptor(descriptor_setup):
+    fp_scheme, fp_params, cutoff_params, elements = descriptor_setup
+    if fp_scheme == "gaussian":
+        descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)
+    elif fp_scheme == "mcsh":
+        descriptor = AtomisticMCSH(MCSHs=fp_params, elements=elements)
+    else:
+        raise NotImplementedError
+    return descriptor
