@@ -12,7 +12,7 @@ from skorch import NeuralNetRegressor
 from skorch.callbacks import LRScheduler
 from skorch.dataset import CVSplit
 
-from amptorch.dataset import AtomsDataset, DataCollater
+from amptorch.dataset import AtomsDataset, DataCollater, construct_descriptor
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.metrics import evaluator
 from amptorch.model import BPNN, CustomLoss
@@ -23,14 +23,15 @@ from amptorch.ase_utils import AMPtorch
 
 
 class AtomsTrainer:
-    def __init__(self, config):
+    def __init__(self, config={}):
         self.config = config
         self.pretrained = False
 
-    def load(self):
+    def load(self, load_dataset=True):
         self.load_config()
         self.load_rng_seed()
-        self.load_dataset()
+        if load_dataset:
+            self.load_dataset()
         self.load_model()
         self.load_criterion()
         self.load_optimizer()
@@ -79,15 +80,13 @@ class AtomsTrainer:
         elements = np.unique(elements)
         return elements
 
-    def load_dataset(self, process=True):
-        """
-        *NOTE* `process` should only be set to `False` for testing purposes (i.e. gaussian_descriptor_set_test.py)
-        This setting should not be used for any application use of Amptorch.
-        """
+    def load_dataset(self):
         training_images = self.config["dataset"]["raw_data"]
         # TODO: Scalability when dataset to large to fit into memory
         if isinstance(training_images, str):
             training_images = ase.io.read(training_images, ":")
+        del self.config["dataset"]["raw_data"]
+
         self.elements = self.config["dataset"].get(
             "elements", self.get_unique_elements(training_images)
         )
@@ -99,34 +98,37 @@ class AtomsTrainer:
         self.cutoff_params = self.config["dataset"].get(
             "cutoff_params", {"cutoff_func": "Cosine"}
         )
-
+        descriptor_setup = (
+            self.fp_scheme,
+            self.fp_params,
+            self.cutoff_params,
+            self.elements,
+        )
         self.train_dataset = AtomsDataset(
             images=training_images,
-            descriptor_setup=(
-                self.fp_scheme,
-                self.fp_params,
-                self.cutoff_params,
-                self.elements,
-            ),
+            descriptor_setup=descriptor_setup,
             forcetraining=self.forcetraining,
             save_fps=self.config["dataset"].get("save_fps", True),
             scaling=self.config["dataset"].get(
                 "scaling", {"type": "normalize", "range": (0, 1)}
             ),
-            process=process,
         )
-        if process:
-            self.feature_scaler = self.train_dataset.feature_scaler
-            self.target_scaler = self.train_dataset.target_scaler
-            if not self.debug:
-                normalizers = {
-                    "target": self.target_scaler,
-                    "feature": self.feature_scaler,
-                }
-                torch.save(normalizers, os.path.join(self.cp_dir, "normalizers.pt"))
-            self.input_dim = self.train_dataset.input_dim
-            self.val_split = self.config["dataset"].get("val_split", 0)
-            print("Loading dataset: {} images".format(len(self.train_dataset)))
+        self.feature_scaler = self.train_dataset.feature_scaler
+        self.target_scaler = self.train_dataset.target_scaler
+        self.input_dim = self.train_dataset.input_dim
+        self.val_split = self.config["dataset"].get("val_split", 0)
+        if not self.debug:
+            normalizers = {
+                "target": self.target_scaler,
+                "feature": self.feature_scaler,
+            }
+            torch.save(normalizers, os.path.join(self.cp_dir, "normalizers.pt"))
+            # clean/organize config
+            del self.config["dataset"]["fp_params"]
+            self.config["dataset"]["descriptor"] = descriptor_setup
+            self.config["dataset"]["fp_length"] = self.input_dim
+            torch.save(self.config, os.path.join(self.cp_dir, "config.pt"))
+        print("Loading dataset: {} images".format(len(self.train_dataset)))
 
     def load_model(self):
         elements = list_symbols_to_indices(self.elements)
@@ -134,6 +136,7 @@ class AtomsTrainer:
             elements=elements, input_dim=self.input_dim, **self.config["model"]
         )
         print("Loading model: {} parameters".format(self.model.num_params))
+        self.forcetraining = self.config["model"].get("get_forces", True)
         collate_fn = DataCollater(train=True, forcetraining=self.forcetraining)
         self.parallel_collater = ParallelCollater(self.gpus, collate_fn)
         if self.gpus > 0:
@@ -146,6 +149,7 @@ class AtomsTrainer:
     def load_extras(self):
         callbacks = []
         load_best_loss = train_end_load_best_loss(self.identifier)
+        self.val_split = self.config["dataset"].get("val_split", 0)
         self.split = CVSplit(cv=self.val_split) if self.val_split != 0 else 0
 
         metrics = evaluator(
@@ -160,9 +164,7 @@ class AtomsTrainer:
             callbacks.append(load_best_loss)
         scheduler = self.config["optim"].get("scheduler", None)
         if scheduler:
-            scheduler = LRScheduler(
-                scheduler, **self.config["optim"]["scheduler_params"]
-            )
+            scheduler = LRScheduler(scheduler["policy"], **scheduler["params"])
             callbacks.append(scheduler)
         if self.config["cmd"].get("logger", False):
             from skorch.callbacks import WandbLogger
@@ -229,22 +231,24 @@ class AtomsTrainer:
         elapsed_time = time.time() - stime
         print(f"Training completed in {elapsed_time}s")
 
-    def predict(self, images, batch_size=32):
+    def predict(self, images, disable_tqdm=True):
         if len(images) < 1:
             warnings.warn("No images found!", stacklevel=2)
             return images
 
+        self.descriptor = construct_descriptor(self.config["dataset"]["descriptor"])
+
         a2d = AtomsToData(
-            descriptor=self.train_dataset.descriptor,
+            descriptor=self.descriptor,
             r_energy=False,
             r_forces=False,
-            save_fps=self.save_fps,
+            save_fps=self.config["dataset"].get("save_fps", True),
             fprimes=self.forcetraining,
             cores=1,
         )
 
-        data_list = a2d.convert_all(images, disable_tqdm=True)
-        self.feature_scaler.norm(data_list)
+        data_list = a2d.convert_all(images, disable_tqdm=disable_tqdm)
+        self.feature_scaler.norm(data_list, disable_tqdm=disable_tqdm)
 
         self.net.module.eval()
         collate_fn = DataCollater(train=False, forcetraining=self.forcetraining)
@@ -267,10 +271,22 @@ class AtomsTrainer:
         return predictions
 
     def load_pretrained(self, checkpoint_path=None):
-        print(f"Loading checkpoint from {checkpoint_path}")
-        self.load()
-        self.net.initialize()
         self.pretrained = True
+        print(f"Loading checkpoint from {checkpoint_path}")
+        assert os.path.isdir(
+            checkpoint_path
+        ), f"Checkpoint: {checkpoint_path} not found!"
+        if not self.config:
+            # prediction only
+            self.config = torch.load(os.path.join(checkpoint_path, "config.pt"))
+            self.config["cmd"]["debug"] = True
+            self.elements = self.config["dataset"]["descriptor"][-1]
+            self.input_dim = self.config["dataset"]["fp_length"]
+            self.load(load_dataset=False)
+        else:
+            # prediction+retraining
+            self.load(load_dataset=True)
+        self.net.initialize()
         try:
             self.net.load_params(
                 f_params=os.path.join(checkpoint_path, "params.pt"),
@@ -278,7 +294,9 @@ class AtomsTrainer:
                 f_criterion=os.path.join(checkpoint_path, "criterion.pt"),
                 f_history=os.path.join(checkpoint_path, "history.json"),
             )
-            # TODO(mshuaibi): remove dataset load, use saved normalizers
+            normalizers = torch.load(os.path.join(checkpoint_path, "normalizers.pt"))
+            self.feature_scaler = normalizers["feature"]
+            self.target_scaler = normalizers["target"]
         except NotImplementedError:
             print("Unable to load checkpoint!")
 
