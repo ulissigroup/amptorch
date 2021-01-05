@@ -191,7 +191,6 @@ class AtomsTrainer:
             self.wandb_run = wandb.init(
                 name=self.identifier,
                 config=self.config,
-                id=self.timestamp,
             )
 
     def load_skorch(self):
