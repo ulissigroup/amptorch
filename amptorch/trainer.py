@@ -11,6 +11,7 @@ import torch
 from skorch import NeuralNetRegressor
 from skorch.callbacks import LRScheduler
 from skorch.dataset import CVSplit
+from collections import OrderedDict
 
 from amptorch.dataset import AtomsDataset, DataCollater, construct_descriptor
 from amptorch.descriptor.util import list_symbols_to_indices
@@ -270,7 +271,14 @@ class AtomsTrainer:
 
         return predictions
 
-    def load_pretrained(self, checkpoint_path=None):
+    def load_pretrained(self, checkpoint_path=None, gpu2cpu=False):
+        """
+        Args:
+            checkpoint_path: str, Path to checkpoint directory
+            gpu2cpu: bool, True if checkpoint was trained with GPUs and you
+            wish to load on cpu instead.
+        """
+
         self.pretrained = True
         print(f"Loading checkpoint from {checkpoint_path}")
         assert os.path.isdir(
@@ -287,9 +295,22 @@ class AtomsTrainer:
             # prediction+retraining
             self.load(load_dataset=True)
         self.net.initialize()
+
+        if gpu2cpu:
+            params_path = os.path.join(checkpoint_path, "params_cpu.pt")
+            if not os.path.exists(params_path):
+                params = torch.load(os.path.join(checkpoint_path, "params.pt"))
+                new_dict = OrderedDict()
+                for k, v in params.items():
+                    name = k[7:]
+                    new_dict[name] = v
+                torch.save(new_dict, params_path)
+        else:
+            params_path = os.path.join(checkpoint_path, "params.pt")
+
         try:
             self.net.load_params(
-                f_params=os.path.join(checkpoint_path, "params.pt"),
+                f_params=params_path,
                 f_optimizer=os.path.join(checkpoint_path, "optimizer.pt"),
                 f_criterion=os.path.join(checkpoint_path, "criterion.pt"),
                 f_history=os.path.join(checkpoint_path, "history.json"),
