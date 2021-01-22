@@ -290,6 +290,8 @@ class AtomsTrainer:
             self.config["cmd"]["debug"] = True
             self.elements = self.config["dataset"]["descriptor"][-1]
             self.input_dim = self.config["dataset"]["fp_length"]
+            if gpu2cpu:
+                self.config["optim"]["gpus"] = 0
             self.load(load_dataset=False)
         else:
             # prediction+retraining
