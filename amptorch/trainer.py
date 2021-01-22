@@ -301,7 +301,10 @@ class AtomsTrainer:
         if gpu2cpu:
             params_path = os.path.join(checkpoint_path, "params_cpu.pt")
             if not os.path.exists(params_path):
-                params = torch.load(os.path.join(checkpoint_path, "params.pt"))
+                params = torch.load(
+                    os.path.join(checkpoint_path, "params.pt"),
+                    map_location=torch.device("cpu"),
+                )
                 new_dict = OrderedDict()
                 for k, v in params.items():
                     name = k[7:]
