@@ -141,9 +141,9 @@ class FeatureScaler:
 
                     scale = self.scale["scale"][fp_idx_to_scale]
                     if self.transform == "standardize":
-                        _values[ids] /= scale
+                        _values /= scale
                     else:
-                        _values[ids] *= scale
+                        _values *= scale
                     _indices = data.fprimes._indices()
                     _size = data.fprimes.size()
                     data.fprimes = torch.sparse.FloatTensor(_indices, _values, _size)
