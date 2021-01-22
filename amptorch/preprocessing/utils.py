@@ -1,5 +1,13 @@
 import torch
 
+try:
+    shell = get_ipython().__class__.__name__
+    if shell == "ZMQInteractiveShell":
+        from tqdm.notebook import tqdm
+    else:
+        from tqdm import tqdm
+except NameError:
+    from tqdm import tqdm
 
 class FeatureScaler:
     """
@@ -60,9 +68,15 @@ class FeatureScaler:
                 offset = feature_range[0] - fpmin * scale
                 self.scale = {"offset": offset, "scale": scale}
 
-    def norm(self, data_list, threshold=1e-6):
+    def norm(self, data_list, threshold=1e-6, disable_tqdm=False):
         if self.elementwise:
-            for data in data_list:
+            for data in tqdm(
+                data_list,
+                desc="Scaling Feature data (%s)" % self.transform,
+                total=len(data_list),
+                unit=" scalings",
+                disable=disable_tqdm,
+            ):
                 fingerprint = data.fingerprint
                 atomic_numbers = data.atomic_numbers
                 for element in self.unique:
@@ -85,21 +99,30 @@ class FeatureScaler:
                     fp_idx_to_scale = fp_idx % data.fingerprint.shape[1]
                     element_idx = base_atoms[fp_idx].tolist()
                     _values = data.fprimes._values()
+
+                    dict_elements = {element: [] for element in set(element_idx)}
                     for i, element in enumerate(element_idx):
+                        dict_elements[element].append(i)
+
+                    for element, ids in dict_elements.items():
+                        scale = self.scales[element]["scale"][fp_idx_to_scale[ids]]
                         if self.transform == "standardize":
-                            _values[i] /= self.scales[element]["scale"][
-                                fp_idx_to_scale[i]
-                            ]
+                            _values[ids] /= scale
                         else:
-                            _values[i] *= self.scales[element]["scale"][
-                                fp_idx_to_scale[i]
-                            ]
+                            _values[ids] *= scale
+
                     _indices = data.fprimes._indices()
                     _size = data.fprimes.size()
                     data.fprimes = torch.sparse.FloatTensor(_indices, _values, _size)
 
         else:
-            for data in data_list:
+            for data in tqdm(
+                data_list,
+                desc="Scaling Feature data (%s)" % self.transform,
+                total=len(data_list),
+                unit=" scalings",
+                disable=disable_tqdm,
+            ):
                 fingerprint = data.fingerprint
                 if self.transform == "standardize":
                     fingerprint = (fingerprint - self.scale["offset"]) / self.scale[
@@ -112,16 +135,15 @@ class FeatureScaler:
                 data.fingerprint = fingerprint
 
                 if self.forcetraining:
-                    base_atoms = torch.repeat_interleave(
-                        atomic_numbers, data.fingerprint.shape[1]
-                    )
                     fp_idx = data.fprimes._indices()[0]
                     fp_idx_to_scale = fp_idx % data.fingerprint.shape[1]
                     _values = data.fprimes._values()
+
+                    scale = self.scale["scale"][fp_idx_to_scale]
                     if self.transform == "standardize":
-                        _values[i] /= self.scale["scale"][fp_idx_to_scale[i]]
+                        _values[ids] /= scale
                     else:
-                        _values[i] *= self.scale["scale"][fp_idx_to_scale[i]]
+                        _values[ids] *= scale
                     _indices = data.fprimes._indices()
                     _size = data.fprimes.size()
                     data.fprimes = torch.sparse.FloatTensor(_indices, _values, _size)
