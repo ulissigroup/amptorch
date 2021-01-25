@@ -20,9 +20,10 @@ class AtomsLMDBDataset(Dataset):
             self.target_scaler = pickle.loads(txn.get("target_scaler".encode("ascii")))
             self.length = pickle.loads(txn.get("length".encode("ascii")))
             self.elements = pickle.loads(txn.get("elements".encode("ascii")))
-            self.descriptor = self.get_descriptor(
-                pickle.loads(txn.get("descriptor_setup".encode("ascii")))
+            self.descriptor_setup = pickle.loads(
+                txn.get("descriptor_setup".encode("ascii"))
             )
+            self.descriptor = self.get_descriptor(self.descriptor_setup)
 
     def __len__(self):
         return self.length
@@ -32,13 +33,10 @@ class AtomsLMDBDataset(Dataset):
             data = txn.get(self.keys[idx])
             data_object = pickle.loads(data)
 
-            self.feature_scaler.norm([data_object])
-            self.target_scaler.norm([data_object])
-
         return data_object
 
     def get_descriptor(self, descriptor_setup):
-        fp_scheme, fp_params, elements, cutoff_params = descriptor_setup
+        fp_scheme, fp_params, cutoff_params, elements = descriptor_setup
         if fp_scheme == "gaussian":
             descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)
         elif fp_scheme == "mcsh":

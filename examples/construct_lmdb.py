@@ -11,8 +11,8 @@ from amptorch.descriptor.Gaussian import Gaussian
 
 def construct_lmdb(data_dir, lmdb_path="./data.lmdb"):
     """
-    data_dir: Directory containing traj files to construct dataset from
-    lmdb_path: Path to store LMDB dataset
+    data_dir: Directory containing traj files to construct dataset from.
+    lmdb_path: Path to store LMDB dataset.
     """
     db = lmdb.open(
         lmdb_path,
@@ -22,7 +22,11 @@ def construct_lmdb(data_dir, lmdb_path="./data.lmdb"):
         map_async=True,
     )
 
-    paths = glob.glob(os.path.join(data_dir, "*.traj"))
+    paths = glob.glob(
+        os.path.join(data_dir, "*.traj")
+    )  # Modify extension if data stored in an alternative ASE-compatible
+    # extension
+
     # Define symmetry functions
     Gs = {
         "default": {
@@ -37,8 +41,7 @@ def construct_lmdb(data_dir, lmdb_path="./data.lmdb"):
 
     elements = ["Cu", "C", "O"]
     descriptor = Gaussian(Gs=Gs, elements=elements, cutoff_func="Cosine")
-    descriptor_setup = ("gaussian", Gs, elements, {"cutoff_func": "Cosine"})
-    scaling = {"type": "normalize", "range": (0, 1)}
+    descriptor_setup = ("gaussian", Gs, {"cutoff_func": "Cosine"}, elements)
     forcetraining = True
 
     a2d = AtomsToData(
@@ -51,30 +54,31 @@ def construct_lmdb(data_dir, lmdb_path="./data.lmdb"):
 
     data_list = []
     idx = 0
-    for path in tqdm(paths[:2]):
+    for path in tqdm(paths):
         images = ase.io.read(path, ":")
         for image in images:
             do = a2d.convert(image, idx=idx)
-            txn = db.begin(write=True)
-            txn.put(f"{idx}".encode("ascii"), pickle.dumps(do, protocol=-1))
-            txn.commit()
-            data_list.append(do)  # suppress if hitting memory limits
-
-            # get summary statistics for at most 20k random data objects
-            # control percentage depending on your dataset size
-            # default: sample point with 50% probability
-
-            # unsuppress the following if using a very large dataset
-            # if random.randint(0, 100) < 50 and len(data_list) < 20000:
-            # data_list.append(do)
+            data_list.append(do)
             idx += 1
 
+    scaling = {"type": "normalize", "range": (0, 1)}
     feature_scaler = FeatureScaler(data_list, forcetraining, scaling)
+    target_scaler = TargetScaler(data_list, forcetraining)
+
+    feature_scaler.norm(data_list)
+    target_scaler.norm(data_list)
+
+    idx = 0
+    for do in tqdm(data_list, desc="Writing images to LMDB"):
+        txn = db.begin(write=True)
+        txn.put(f"{idx}".encode("ascii"), pickle.dumps(do, protocol=-1))
+        txn.commit()
+        idx += 1
+
     txn = db.begin(write=True)
     txn.put("feature_scaler".encode("ascii"), pickle.dumps(feature_scaler, protocol=-1))
     txn.commit()
 
-    target_scaler = TargetScaler(data_list, forcetraining)
     txn = db.begin(write=True)
     txn.put("target_scaler".encode("ascii"), pickle.dumps(target_scaler, protocol=-1))
     txn.commit()

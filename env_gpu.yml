@@ -18,9 +18,9 @@ dependencies:
     - wandb
     - lmdb==1.0.0
     - skorch==0.9.*
-    - torch-geometric==1.6.1
-    - -f https://pytorch-geometric.com/whl/torch-1.6.0.html
-    - torch-cluster==latest+cu102
-    - torch-scatter==latest+cu102
-    - torch-sparse==latest+cu102
-    - torch-spline-conv==latest+cu102
+    - torch-geometric
+    - -f https://pytorch-geometric.com/whl/torch-1.6.0+cu102.html
+    - torch-cluster
+    - torch-scatter
+    - torch-sparse
+    - torch-spline-conv

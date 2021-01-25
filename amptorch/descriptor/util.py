@@ -37,6 +37,16 @@ def get_hash(image):
     return hash
 
 
+def validate_image(image):
+    for number in image.get_scaled_positions().flatten():
+        if number > 1.0 or number < 0.0:
+            raise ValueError(
+                "****ERROR: scaled position not strictly between [0, 1]"
+                "Please check atom position and system cell size are set up correctly"
+            )
+    return
+
+
 def list_symbols_to_indices(list_of_symbols):
     list_indices = []
     for symbol in list_of_symbols:
