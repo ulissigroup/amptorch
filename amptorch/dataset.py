@@ -5,6 +5,7 @@ from amptorch.descriptor.Gaussian import Gaussian
 from amptorch.descriptor.MCSH import AtomisticMCSH
 from amptorch.preprocessing import (
     AtomsToData,
+    PCAReducer,
     FeatureScaler,
     TargetScaler,
     sparse_block_diag,
@@ -17,6 +18,8 @@ class AtomsDataset(Dataset):
         images,
         descriptor_setup,
         forcetraining=True,
+        pca_reduce = False,
+        pca_setting = {"num_pc": 20, "elementwise": False, "normalize": False},
         save_fps=True,
         scaling={"type": "normalize", "range": (0, 1)},
         cores=1,
@@ -24,6 +27,8 @@ class AtomsDataset(Dataset):
     ):
         self.images = images
         self.forcetraining = forcetraining
+        self.pca_reduce = pca_reduce
+        self.pca_setting = pca_setting
         self.scaling = scaling
         self.descriptor = construct_descriptor(descriptor_setup)
 
@@ -40,6 +45,10 @@ class AtomsDataset(Dataset):
 
     def process(self):
         data_list = self.a2d.convert_all(self.images)
+
+        if self.pca_reduce:
+            self.pca_reducer = PCAReducer(data_list, self.forcetraining, self.pca_setting)
+            self.pca_reducer.reduce(data_list)
 
         self.feature_scaler = FeatureScaler(data_list, self.forcetraining, self.scaling)
         self.target_scaler = TargetScaler(data_list, self.forcetraining)
