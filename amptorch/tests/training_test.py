@@ -41,7 +41,7 @@ config = {
     "optim": {
         "force_coefficient": 0.04,
         "lr": 1e-2,
-        "batch_size": 10,
+        "batch_size": 30,
         "epochs": 300,
         "loss": "mse",
         "metric": "mae",

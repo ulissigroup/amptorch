@@ -72,7 +72,7 @@ def evaluator(
     callbacks = []
     isval = val_split != 0
     if isval:
-        cp_on = "val"
+        cp_on = "valid"
     else:
         cp_on = "train"
 
@@ -104,12 +104,7 @@ def evaluator(
                 target_extractor=target_extractor,
             )
         )
-    callbacks.append(
-        Checkpoint(
-            monitor="{}_energy_{}_best".format(cp_on, metric),
-            fn_prefix="checkpoints/{}/".format(identifier),
-        )
-    )
+
     if forcetraining:
         callbacks.append(
             EpochScoring(
@@ -130,10 +125,11 @@ def evaluator(
                     target_extractor=target_extractor,
                 )
             )
-        callbacks.append(
-            Checkpoint(
-                monitor="{}_forces_{}_best".format(cp_on, metric),
-                fn_prefix="checkpoints/{}/".format(identifier),
-            )
+
+    callbacks.append(
+        Checkpoint(
+            monitor="{}_loss_best".format(cp_on),
+            fn_prefix="checkpoints/{}/".format(identifier),
         )
+    )
     return callbacks
