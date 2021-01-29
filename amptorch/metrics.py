@@ -72,7 +72,7 @@ def evaluator(
     callbacks = []
     isval = val_split != 0
     if isval:
-        cp_on = "val"
+        cp_on = "valid"
     else:
         cp_on = "train"
 
