@@ -182,7 +182,12 @@ class AtomsTrainer:
         self.criterion = self.config["optim"].get("loss_fn", CustomLoss)
 
     def load_optimizer(self):
-        self.optimizer = self.config["optim"].get("optimizer", torch.optim.Adam)
+        self.optimizer = {
+            "optimizer": self.config["optim"].get("optimizer", torch.optim.Adam)
+        }
+        optimizer_args = self.config["optim"].get("optimizer_args", False)
+        if optimizer_args:
+            self.optimizer.update(optimizer_args)
 
     def load_logger(self):
         if self.config["cmd"].get("logger", False):
@@ -203,7 +208,6 @@ class AtomsTrainer:
                 "force_coefficient", 0
             ),
             criterion__loss=self.config["optim"].get("loss", "mse"),
-            optimizer=self.optimizer,
             lr=self.config["optim"].get("lr", 1e-1),
             batch_size=self.config["optim"].get("batch_size", 32),
             max_epochs=self.config["optim"].get("epochs", 100),
@@ -217,6 +221,7 @@ class AtomsTrainer:
             train_split=self.split,
             callbacks=self.callbacks,
             verbose=self.config["cmd"].get("verbose", True),
+            **self.optimizer,
         )
         print("Loading skorch trainer")
 
