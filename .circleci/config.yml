@@ -10,7 +10,7 @@ jobs:
 
       - restore_cache:
           keys:
-          - v0.1-dependencies-{{ checksum "env_cpu.yml" }}-{{ checksum "env_gpu.yml" }}
+          - v0.2-dependencies-{{ checksum "env_cpu.yml" }}-{{ checksum "env_gpu.yml" }}
 
       - run:
           name: Install conda
