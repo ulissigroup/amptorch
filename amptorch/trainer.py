@@ -92,7 +92,7 @@ class AtomsTrainer:
         )
 
         self.forcetraining = self.config["model"].get("get_forces", True)
-        self.pca_reduce = self.config["model"].get("pca_reduce", False)
+        self.pca_reduce = self.config["dataset"].get("pca_reduce", False)
         self.fp_scheme = self.config["dataset"].get("fp_scheme", "gaussian").lower()
         self.fp_params = self.config["dataset"]["fp_params"]
         self.save_fps = self.config["dataset"].get("save_fps", True)
@@ -113,7 +113,7 @@ class AtomsTrainer:
             pca_setting = self.config["dataset"].get(
                 "pca_setting",
                 {"num_pc": 20, "elementwise": False, "normalize": False}
-            }
+            ),
             save_fps=self.config["dataset"].get("save_fps", True),
             scaling=self.config["dataset"].get(
                 "scaling",
@@ -268,9 +268,9 @@ class AtomsTrainer:
         )
 
         data_list = a2d.convert_all(images, disable_tqdm=True)
+        self.feature_scaler.norm(data_list)
         if self.pca_reduce:
             self.pca_reducer.reduce(data_list)
-        self.feature_scaler.norm(data_list)
 
         self.net.module.eval()
         collate_fn = DataCollater(train=False, forcetraining=self.forcetraining)
@@ -319,7 +319,7 @@ class AtomsTrainer:
             normalizers = torch.load(os.path.join(checkpoint_path, "normalizers.pt"))
             self.feature_scaler = normalizers["feature"]
             self.target_scaler = normalizers["target"]
-            if self.config["model"].get("pca_reduce", False):
+            if self.config["dataset"].get("pca_reduce", False):
                 self.pca_reducer = torch.load(os.path.join(checkpoint_path, "pca_reducer.pt"))
         except NotImplementedError:
             print("Unable to load checkpoint!")

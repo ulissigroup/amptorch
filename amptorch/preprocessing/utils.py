@@ -50,16 +50,16 @@ class PCAReducer:
         else:
             for data in tqdm(
                 data_list,
-                desc="PCA reducing to: {} components".format(self.pca_components) ,
+                desc="PCA reducing to: {} components".format(self.num_pc) ,
                 total=len(data_list),
                 unit=" images",
                 disable=disable_tqdm,
             ):
                 fingerprint = data.fingerprint
-                print("size before: {}".format(fingerprint.size()))
+                #print("size before: {}".format(fingerprint.size()))
 
                 fingerprint = torch.matmul(fingerprint, self.pca_components)
-                print("size after: {}".format(fingerprint.size()))
+                #print("size after: {}".format(fingerprint.size()))
                 data.fingerprint = fingerprint
 
                 if self.forcetraining:
