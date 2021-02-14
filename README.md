@@ -83,7 +83,7 @@ trainer.train()
 Previously trained models may be loaded as follows:
 ```
 trainer = AtomsTrainer(configs)
-trainer.load_checkpoint(path_to_checkpoint_dir)
+trainer.load_pretrained(path_to_checkpoint_dir)
 ```
 #### Make predictions
 ```
