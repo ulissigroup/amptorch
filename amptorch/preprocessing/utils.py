@@ -108,12 +108,11 @@ class TargetScaler:
     def __init__(self, data_list, forcetraining):
         self.forcetraining = forcetraining
 
-        if len(data_list) > 1:
-            energies = torch.tensor([data.energy for data in data_list])
+        energies = torch.tensor([data.energy for data in data_list])
+        self.target_mean = torch.mean(energies, dim=0)
+        self.target_std = torch.std(energies, dim=0)
 
-            self.target_mean = torch.mean(energies, dim=0)
-            self.target_std = torch.std(energies, dim=0)
-        else:
+        if torch.isnan(self.target_std) or self.target_std == 0:
             self.target_mean = 0
             self.target_std = 1
 
