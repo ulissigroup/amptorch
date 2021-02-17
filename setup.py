@@ -19,5 +19,6 @@ setup(
     cffi_modules=[
         "amptorch/descriptor/Gaussian/libsymf_builder.py:ffibuilder",
         "amptorch/descriptor/MCSH/libmcsh_builder.py:ffibuilder",
+        "amptorch/descriptor/GMP_align/libgmpalign_builder.py:ffibuilder",
     ],
 )
