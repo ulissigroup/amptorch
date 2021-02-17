@@ -1,6 +1,4 @@
 import pickle
-import os
-import glob
 import lmdb
 import numpy as np
 import ase.io
@@ -9,9 +7,9 @@ from amptorch.preprocessing import AtomsToData, FeatureScaler, TargetScaler
 from amptorch.descriptor.Gaussian import Gaussian
 
 
-def construct_lmdb(data_dir, lmdb_path="./data.lmdb"):
+def construct_lmdb(path, lmdb_path="./data.lmdb"):
     """
-    data_dir: Directory containing traj files to construct dataset from.
+    path: Path to trajectory/ASE-compatible file
     lmdb_path: Path to store LMDB dataset.
     """
     db = lmdb.open(
@@ -21,11 +19,6 @@ def construct_lmdb(data_dir, lmdb_path="./data.lmdb"):
         meminit=False,
         map_async=True,
     )
-
-    paths = glob.glob(
-        os.path.join(data_dir, "*.traj")
-    )  # Modify extension if data stored in an alternative ASE-compatible
-    # extension
 
     # Define symmetry functions
     Gs = {
@@ -39,7 +32,9 @@ def construct_lmdb(data_dir, lmdb_path="./data.lmdb"):
         },
     }
 
-    elements = ["Cu", "C", "O"]
+    training_atoms = ase.io.read(path, ":")
+    elements = np.array([atom.symbol for atoms in training_atoms for atom in atoms])
+    elements = np.unique(elements)
     descriptor = Gaussian(Gs=Gs, elements=elements, cutoff_func="Cosine")
     descriptor_setup = ("gaussian", Gs, {"cutoff_func": "Cosine"}, elements)
     forcetraining = True
@@ -54,12 +49,11 @@ def construct_lmdb(data_dir, lmdb_path="./data.lmdb"):
 
     data_list = []
     idx = 0
-    for path in tqdm(paths):
-        images = ase.io.read(path, ":")
-        for image in images:
-            do = a2d.convert(image, idx=idx)
-            data_list.append(do)
-            idx += 1
+    images = ase.io.read(path, ":")
+    for image in images:
+        do = a2d.convert(image, idx=idx)
+        data_list.append(do)
+        idx += 1
 
     scaling = {"type": "normalize", "range": (0, 1)}
     feature_scaler = FeatureScaler(data_list, forcetraining, scaling)
@@ -102,5 +96,5 @@ def construct_lmdb(data_dir, lmdb_path="./data.lmdb"):
 
 
 if __name__ == "__main__":
-    data_dir = "/home/jovyan/projects/amptorch/examples/data"  # directory of traj files
-    construct_lmdb(data_dir, lmdb_path="data.lmdb")
+    traj_path = "path/to/traj/file.traj"
+    construct_lmdb(traj_path, lmdb_path="data.lmdb")
