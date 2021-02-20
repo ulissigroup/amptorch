@@ -32,6 +32,7 @@ class GMPAlign(BaseDescriptor):
 
         for i in range(10):
             if str(i) in self.MCSHs["MCSHs"].keys():
+                self.MCSHs["MCSHs"][str(i)]["sigmas"].sort(reverse = True)
                 descriptor_setup += [
                     [
                         i,
@@ -43,7 +44,7 @@ class GMPAlign(BaseDescriptor):
                         cutoff,
                     ]
                     for group in self.MCSHs["MCSHs"][str(i)]["groups"]
-                    for sigma in self.MCSHs["MCSHs"][str(i)]["sigmas"].sort(reverse = True)
+                    for sigma in self.MCSHs["MCSHs"][str(i)]["sigmas"]
                 ]
 
         total_num_desc = 0
@@ -227,7 +228,7 @@ class GMPAlign(BaseDescriptor):
         # print(self.params_set['num'])
         # print(atom_indices)
 
-        size_info = np.array([atom_num, cal_num, self.params_set["num"]])
+        size_info = np.array([atom_num, cal_num, self.params_set["total_num_desc"]])
 
         if calc_derivatives:
             raise NotImplementedError

@@ -1,6 +1,10 @@
 #include <math.h>
 #include <stdio.h>
+#include <iostream>
 #include "calculate_atomistic_mcsh.h"
+using std::cout;
+using std::endl;
+
 
 // extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** scale,
 //                                         int* atom_i, int natoms, int* cal_atoms, int cal_num,
@@ -658,7 +662,7 @@ extern "C" int calculate_atomistic_mcsh_noderiv(double** cell, double** cart, do
                     }
                 }
                 M = M * weight;
-                mcsh[ii][m] += M;
+                mcsh[ii][m] = M;
             }
 
             if (mcsh_type == 2){

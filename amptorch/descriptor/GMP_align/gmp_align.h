@@ -68,6 +68,8 @@ typedef void (*AtomisticMCSHFunction) ( double, double, double, double, double, 
 void cross_product(double *vec1, double *vec2, double *result);
 double dot_product(double *vec1, double *vec2);
 double magnitude(double *vec);
+double sin_arctan(double x);
+double cos_arctan(double x);
 void normalize_quaternion(double *q);
 void find_quaternion(double *source_vec, double *target_vec, double *quaternion);
 void find_quaternion1_three(double *vec, double *quaternion_result);

@@ -105,7 +105,7 @@ def construct_descriptor(descriptor_setup):
         descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)
     elif fp_scheme == "mcsh":
         descriptor = AtomisticMCSH(MCSHs=fp_params, elements=elements)
-    elif fp_scheme == "gmp_align"
+    elif fp_scheme == "gmp_align":
         descriptor = GMPAlign(MCSHs=fp_params, elements=elements)
     else:
         raise NotImplementedError

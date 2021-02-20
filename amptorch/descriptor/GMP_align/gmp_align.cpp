@@ -1,6 +1,11 @@
 #include <math.h>
 #include <stdio.h>
-#include "atomistic_mcsh.h"
+#include <iostream>
+#include "gmp_align.h"
+
+using std::cout;
+using std::endl;
+
 
 #ifndef M_PI
     #define M_PI 3.14159265358979323846
@@ -11,7 +16,7 @@ void cross_product(double *vec1, double *vec2, double *result){
     result[0] = vec1[1] * vec2[2] - vec1[2] * vec2[1];// a2b3 - a3b2
     result[1] = vec1[2] * vec2[0] - vec1[0] * vec2[2];// a3b1 - a1b3
     result[2] = vec1[0] * vec2[1] - vec1[1] * vec2[0];// a1b2 - a2b1
-    return
+    //return
 }
 
 double dot_product(double *vec1, double *vec2){
@@ -22,13 +27,21 @@ double magnitude(double *vec){
     return sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]);
 }
 
+double sin_arctan(double x){
+    return x / sqrt((1+x*x));
+}
+
+double cos_arctan(double x){
+    return 1.0 / sqrt((1+x*x));
+}
+
 void normalize_quaternion(double *q){
     double magnitude = sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3]);
     q[0] = q[0] / magnitude;
     q[1] = q[1] / magnitude;
     q[2] = q[2] / magnitude;
     q[3] = q[3] / magnitude;
-    return
+    //return
 }
 
 void find_quaternion(double *source_vec, double *target_vec, double *quaternion){
@@ -74,57 +87,70 @@ void find_quaternion(double *source_vec, double *target_vec, double *quaternion)
         normalize_quaternion(quaternion);
     }
 
-    return
+    //return
 }
 
 void find_quaternion1_three(double *vec, double *quaternion_result){
     double target_vec[3] = {1.0, 0.0, 0.0};
     find_quaternion(vec, target_vec, quaternion_result);
-    return 
+    //return 
 }
 
 void find_quaternion2_three(double *vec, double *quaternion_result){
     double projection_onto_yz[3];
-    double target_vec[3] = [0.0, 1.0, 0.0];
+    double target_vec[3] = {0.0, 1.0, 0.0};
+    double mag = sqrt(vec[1] * vec[1] + vec[2] * vec[2]);
     projection_onto_yz[0] = 0;
-    projection_onto_yz[1] = vec[1];
-    projection_onto_yz[2] = vec[2];
+    projection_onto_yz[1] = vec[1] / mag;
+    projection_onto_yz[2] = vec[2] / mag;
 
     find_quaternion(projection_onto_yz, target_vec, quaternion_result);
+
+    if (isnan(quaternion_result[0]) || isnan(quaternion_result[1]) || isnan(quaternion_result[2])){
+        std::cout << "--------" << endl;
+        std::cout << "vec\t" << vec[0] << "\t" << vec[1] << "\t" << vec[2] << endl;
+        std::cout << "mag\t" << mag << endl;
+        std::cout << "projection\t" << projection_onto_yz[0] << "\t" << projection_onto_yz[1] << "\t" << projection_onto_yz[2] << endl;
+        std::cout << "second\t" << quaternion_result[0] << "\t" << quaternion_result[1] << "\t" << quaternion_result[2] << "\t" << quaternion_result[3] << endl;
+    }
+
 }
 
 void find_quaternion1_six_major(double *vec_six, double *quaternion_result){
     double projection_onto_yz[3];
-    double target_vec[3] = [1.0, 0.0, 0.0];
+    double target_vec[3] = {1.0, 0.0, 0.0};
 
     //projection of major_axis onto yz
-    projection_onto_yz[0] = 0;
-    projection_onto_yz[1] = vec[1];
-    projection_onto_yz[2] = vec[2];
+    double mag = sqrt(vec_six[0] * vec_six[0] + vec_six[1] * vec_six[1] + vec_six[2] * vec_six[2]);
+    projection_onto_yz[0] = vec_six[0] / mag;
+    projection_onto_yz[1] = vec_six[1] / mag;
+    projection_onto_yz[2] = vec_six[2] / mag;
 
     find_quaternion(projection_onto_yz, target_vec, quaternion_result);
 }
 
 void find_quaternion2_six_major(double *vec_six, double *quaternion_result){
     double projection_onto_yz[3];
-    double target_vec[3] = [0.0, 1.0, 0.0];
+    double target_vec[3] = {0.0, 1.0, 0.0};
 
     //projection of major_axis onto yz
+    double mag = sqrt( vec_six[1] * vec_six[1] + vec_six[2] * vec_six[2]);
     projection_onto_yz[0] = 0;
-    projection_onto_yz[1] = vec[1];
-    projection_onto_yz[2] = vec[2];
+    projection_onto_yz[1] = vec_six[1] / mag;
+    projection_onto_yz[2] = vec_six[2] / mag;
 
     find_quaternion(projection_onto_yz, target_vec, quaternion_result);
 }
 
 void find_quaternion2_six_minor(double *vec_six, double *quaternion_result){
     double projection_onto_yz[3];
-    double target_vec[3] = [0.0, 1.0, 0.0];
+    double target_vec[3] = {0.0, 1.0, 0.0};
 
     //projection of minor_axis onto yz
+    double mag = sqrt( vec_six[4] * vec_six[4] + vec_six[5] * vec_six[5]);
     projection_onto_yz[0] = 0;
-    projection_onto_yz[1] = vec[4];
-    projection_onto_yz[2] = vec[5];
+    projection_onto_yz[1] = vec_six[4] / mag;
+    projection_onto_yz[2] = vec_six[5] / mag;
 
     find_quaternion(projection_onto_yz, target_vec, quaternion_result);
 }
@@ -136,14 +162,14 @@ void find_quaternion2_six_minor(double *vec_six, double *quaternion_result){
 void hamilton_product(double *q1, double *q2, double *result){
     result[0] = q1[0]*q2[0] - q1[1]*q2[1] - q1[2]*q2[2] - q1[3]*q2[3];
     result[1] = q1[0]*q2[1] + q1[1]*q2[0] + q1[2]*q2[3] - q1[3]*q2[2];
-    result[2] = q1[0]*q2[2] - q1[1]*q2[3] + q1[2]*q2[1] + q1[3]*q2[1];
-    result[3] = q1[0]*q2[3] + q1[1]*q2[2] - q1[2]*q2[2] + q1[3]*q2[0];
-    return
+    result[2] = q1[0]*q2[2] - q1[1]*q2[3] + q1[2]*q2[0] + q1[3]*q2[1];
+    result[3] = q1[0]*q2[3] + q1[1]*q2[2] - q1[2]*q2[1] + q1[3]*q2[0];
+    //return
 }
 
 void apply_quaternion(double *vec, double *rot_quaternion){
     double result1[4], result2[4];
-    double rot_quaternion_inv[4] = {quaternion[0], -quaternion[1], -quaternion[2], -quaternion[3]};
+    double rot_quaternion_inv[4] = {rot_quaternion[0], -rot_quaternion[1], -rot_quaternion[2], -rot_quaternion[3]};
     double vec_quaternion[4] = {0, vec[0], vec[1], vec[2]};
 
     hamilton_product(rot_quaternion, vec_quaternion, result1);

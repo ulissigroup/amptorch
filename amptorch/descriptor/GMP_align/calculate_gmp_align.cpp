@@ -1,6 +1,9 @@
 #include <math.h>
 #include <stdio.h>
-#include "calculate_atomistic_mcsh.h"
+#include <iostream>
+#include "calculate_gmp_align.h"
+using std::cout;
+using std::endl;
 
 // extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** scale,
 //                                         int* atom_i, int natoms, int* cal_atoms, int cal_num,
@@ -477,8 +480,6 @@ extern "C" int calculate_gmp_align_noderiv(double** cell, double** cart, double*
     double plane_d[3], total_shift[3];
     double cross[3][3], reci[3][3], inv[3][3];//, powtwo[nsyms];
 
-    bool first_alignment_vector_calculated = false, second_alignment_vector_calculated = false;
-    double first_quaternion[4], second_quaternion[4];
 
 
     // Check for not implemented mcsh type.
@@ -575,6 +576,10 @@ extern "C" int calculate_gmp_align_noderiv(double** cell, double** cart, double*
     //for (int i=0; i < natoms; ++i) {
     for (int ii=0; ii < cal_num; ++ii) {
         int i=cal_atoms[ii];
+        bool first_alignment_vector_calculated = false, second_alignment_vector_calculated = false;
+        double first_quaternion[4], second_quaternion[4];
+
+        int desc_counter = 0;
         // calculate neighbor atoms
         double* nei_list_d = new double[max_atoms_bin * 4 * neigh_check_bins];
         int*    nei_list_i = new int[max_atoms_bin * 2 * neigh_check_bins];
@@ -638,7 +643,7 @@ extern "C" int calculate_gmp_align_noderiv(double** cell, double** cart, double*
         }
 
         for (int m = 0; m < nmcsh; ++m) {
-            int desc_counter = 0;
+            
             int mcsh_type = get_mcsh_type(params_i[m][0], params_i[m][1]);
             AtomisticMCSHFunctionNoderiv mcsh_function = get_mcsh_function_noderiv(params_i[m][0], params_i[m][1]);
 
@@ -686,6 +691,7 @@ extern "C" int calculate_gmp_align_noderiv(double** cell, double** cart, double*
                 }
 
                 double temp_vec[3] = {sum_miu1, sum_miu2, sum_miu3};
+                //std::cout << "before\t" << temp_vec[0] << "\t" << temp_vec[1] << "\t" << temp_vec[2] << endl;
                 if (first_alignment_vector_calculated && second_alignment_vector_calculated){
                     apply_quaternion(temp_vec, first_quaternion);
                     apply_quaternion(temp_vec, second_quaternion);
@@ -694,17 +700,66 @@ extern "C" int calculate_gmp_align_noderiv(double** cell, double** cart, double*
                     find_quaternion1_three(temp_vec, first_quaternion);
                     apply_quaternion(temp_vec, first_quaternion);
                     first_alignment_vector_calculated = true;
+                    //std::cout << "\tfirst\t" << first_quaternion[0] << "\t" << first_quaternion[1] << "\t" << first_quaternion[2] << "\t" << first_quaternion[3] << endl;
                 }
                 else if (first_alignment_vector_calculated && second_alignment_vector_calculated == false){
                     apply_quaternion(temp_vec, first_quaternion);
-                    find_quaternion2_three(temp_vec, second_quaternion);
-                    apply_quaternion(temp_vec, second_quaternion);
-                    second_alignment_vector_calculated = true;
+                    double mag = magnitude(temp_vec);
+                    if ( (abs(temp_vec[1]) / mag) >= 1e-4 || (abs(temp_vec[2]) / mag) >= 1e-4 ){
+                        find_quaternion2_three(temp_vec, second_quaternion);
+                        apply_quaternion(temp_vec, second_quaternion);
+                        second_alignment_vector_calculated = true;
+                        //std::cout << "\tsecond\t" << second_quaternion[0] << "\t" << second_quaternion[1] << "\t" << second_quaternion[2] << "\t" << second_quaternion[3] << endl;
+                    }
+                    else {
+                        //std::cout << "\tdidn't find second\n";
+                        //std::cout << "after\t" << temp_vec[0] << "\t" << temp_vec[1] << "\t" << temp_vec[2] << endl;
+                    }
                 }
-                mcsh[ii][desc_counter] += temp_vec[0] * weight;
-                mcsh[ii][desc_counter + 1] += temp_vec[1] * weight;
-                mcsh[ii][desc_counter + 2] += temp_vec[2] * weight;
+                //std::cout << "after\t" << temp_vec[0] << "\t" << temp_vec[1] << "\t" << temp_vec[2] << endl;
+                double mag = sqrt(temp_vec[0] * temp_vec[0] + temp_vec[1] * temp_vec[1] + temp_vec[2] * temp_vec[2]);
+                
+                // std::cout << ii << "\t"<< desc_counter << "\t" <<mcsh[ii][desc_counter] << "\t" << mcsh[ii][desc_counter+1] << "\t" << mcsh[ii][desc_counter+2]<< endl;
+                
+                mcsh[ii][desc_counter] = mag ;
+                if (mag != 0.0){
+                    double sin_theta = sin_arctan(temp_vec[1] / temp_vec[0]);
+                    // double sin_phi = sin_arctan(sqrt(temp_vec[0] * temp_vec[0] + temp_vec[1] * temp_vec[1] ) / temp_vec[2]);
+                    double cos_phi = temp_vec[2] / mag;
+                    mcsh[ii][desc_counter + 1] = sin_theta;
+                    mcsh[ii][desc_counter + 2] = cos_phi;
+                }
+                else {
+                    mcsh[ii][desc_counter + 1] = 0.0;
+                    mcsh[ii][desc_counter + 2] = 1.0;
+                }
+
+
+                //if (false){
+                if (isnan(mcsh[ii][desc_counter]) || isnan(mcsh[ii][desc_counter + 1]) || isnan(mcsh[ii][desc_counter + 2])){
+                    std::cout << "*********************" << endl;
+                    std::cout << "sum\t" << sum_miu1 << "\t" << sum_miu2 << "\t" << sum_miu3 << endl;
+                    std::cout << "\tfirst\t" << first_quaternion[0] << "\t" << first_quaternion[1] << "\t" << first_quaternion[2] << "\t" << first_quaternion[3] << endl;
+                    std::cout << "\tsecond\t" << second_quaternion[0] << "\t" << second_quaternion[1] << "\t" << second_quaternion[2] << "\t" << second_quaternion[3] << endl;
+                    std::cout << "after\t" << temp_vec[0] << "\t" << temp_vec[1] << "\t" << temp_vec[2] << endl;
+                    std::cout << "final\t" << mcsh[ii][desc_counter]  << "\t" << mcsh[ii][desc_counter+1] << "\t" << mcsh[ii][desc_counter+2] << endl;
+                }
+
+
+
+
+
+
+
                 desc_counter = desc_counter + 3;
+
+
+
+
+                // mcsh[ii][desc_counter] += temp_vec[0] * weight;
+                // mcsh[ii][desc_counter + 1] += temp_vec[1] * weight;
+                // mcsh[ii][desc_counter + 2] += temp_vec[2] * weight;
+                // desc_counter = desc_counter + 3;
 
 
                 // mcsh[ii][desc_counter] += sum_miu1 * weight;
@@ -740,6 +795,7 @@ extern "C" int calculate_gmp_align_noderiv(double** cell, double** cart, double*
                 }
 
                 double temp_vec[6] = {sum_miu1, sum_miu2, sum_miu3, sum_miu4, sum_miu5, sum_miu6};
+                //std::cout << "before\t" << temp_vec[0] << "\t" << temp_vec[1] << "\t" << temp_vec[2] << "\t" << temp_vec[3] << "\t" << temp_vec[4] << "\t" << temp_vec[5] << endl;
                 if (first_alignment_vector_calculated && second_alignment_vector_calculated){
                     apply_quaternion_six(temp_vec, first_quaternion);
                     apply_quaternion_six(temp_vec, second_quaternion);
@@ -764,6 +820,38 @@ extern "C" int calculate_gmp_align_noderiv(double** cell, double** cart, double*
                     second_alignment_vector_calculated = true;
                 }
 
+                //std::cout << "after\t" << temp_vec[0] << "\t" << temp_vec[1] << "\t" << temp_vec[2] << endl;
+                double mag = sqrt(temp_vec[0] * temp_vec[0] + temp_vec[1] * temp_vec[1] + temp_vec[2] * temp_vec[2] + temp_vec[3] * temp_vec[3] + temp_vec[4] * temp_vec[4] + temp_vec[5] * temp_vec[2]);
+                double sin_theta_major = sin_arctan(temp_vec[1] / temp_vec[0]);
+                double cos_phi_major = temp_vec[2] / mag;
+                double sin_theta_minor = sin_arctan(temp_vec[4] / temp_vec[3]);
+                double cos_phi_minor = temp_vec[5] / mag;
+
+                // std::cout << ii << "\t"<< desc_counter << "\t" <<mcsh[ii][desc_counter] << "\t" << mcsh[ii][desc_counter+1] << "\t" << mcsh[ii][desc_counter+2]<< endl;
+                mcsh[ii][desc_counter] = mag ;
+                mcsh[ii][desc_counter + 1] = sin_theta_major;
+                mcsh[ii][desc_counter + 2] = cos_phi_major;
+                mcsh[ii][desc_counter + 3] = sin_theta_minor;
+                mcsh[ii][desc_counter + 4] = cos_phi_minor;
+                mcsh[ii][desc_counter + 5] = 0.0;
+                desc_counter = desc_counter + 6;
+
+
+
+                // mcsh[ii][desc_counter] += temp_vec[0] * weight;
+                // mcsh[ii][desc_counter + 1] += temp_vec[1] * weight;
+                // mcsh[ii][desc_counter + 2] += temp_vec[2] * weight;
+                // mcsh[ii][desc_counter + 3] += temp_vec[3] * weight;
+                // mcsh[ii][desc_counter + 4] += temp_vec[4] * weight;
+                // mcsh[ii][desc_counter + 5] += temp_vec[5] * weight;
+                // desc_counter = desc_counter + 6;
+
+
+
+
+
+
+                //std::cout << "after\t" << temp_vec[0] << "\t" << temp_vec[1] << "\t" << temp_vec[2] << "\t" << temp_vec[3] << "\t" << temp_vec[4] << "\t" << temp_vec[5] << endl;
                 mcsh[ii][desc_counter] += temp_vec[0] * weight;
                 mcsh[ii][desc_counter + 1] += temp_vec[1] * weight;
                 mcsh[ii][desc_counter + 2] += temp_vec[2] * weight;
