@@ -25,7 +25,7 @@ class PCAReducer:
         self.num_pc = pca_setting.get("num_pc", 20)
         self.normalize = pca_setting.get("normalize",False)
 
-        fingerprints = torch.cat([data.fingerprint for data in data_list], dim=0).numpy()
+        fingerprints = torch.cat([data.fingerprint for data in data_list], dim=0)
         # atomic_numbers = torch.cat([data.atomic_numbers for data in data_list], dim=0)
 
         # fingerprints = normalize(fingerprints, norm='l2', axis=0)
@@ -34,7 +34,15 @@ class PCAReducer:
             raise NotImplementedError
 
         else:
-            pca_reducer = PCA(n_components=self.num_pc).fit(fingerprints)
+            if self.normalize:
+                mean = torch.mean(fingerprints, dim=0)
+                std = torch.std(fingerprints, dim=0, unbiased=False)
+                std[std < 1e-8] = 1
+                self.scale = {"offset": mean, "scale": std}
+                fingerprints_normalized = (fingerprints - self.scale["offset"]) / self.scale["scale"]
+                pca_reducer = PCA(n_components=self.num_pc).fit(fingerprints_normalized.numpy())
+            else:
+                 pca_reducer = PCA(n_components=self.num_pc).fit(fingerprints.numpy())
             self.pca_components = torch.tensor(
                 np.transpose(pca_reducer.components_), dtype=torch.get_default_dtype()
             )
@@ -57,7 +65,8 @@ class PCAReducer:
             ):
                 fingerprint = data.fingerprint
                 #print("size before: {}".format(fingerprint.size()))
-
+                if self.normalize:
+                    fingerprint = (fingerprint - self.scale["offset"]) / self.scale["scale"]
                 fingerprint = torch.matmul(fingerprint, self.pca_components)
                 #print("size after: {}".format(fingerprint.size()))
                 data.fingerprint = fingerprint
