@@ -141,8 +141,8 @@ class AtomsTrainer:
                 "feature": self.feature_scaler,
             }
             torch.save(normalizers, os.path.join(self.cp_dir, "normalizers.pt"))
-            if self.pca_reduce:
-                torch.save(self.pca_reducer, os.path.join(self.cp_dir, "pca_reducer.pt"))
+            # if self.pca_reduce:
+            #     torch.save(self.pca_reducer, os.path.join(self.cp_dir, "pca_reducer.pt"))
             # clean/organize config
             del self.config["dataset"]["fp_params"]
             self.config["dataset"]["descriptor"] = descriptor_setup
