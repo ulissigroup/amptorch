@@ -125,10 +125,10 @@ def evaluator(
                     target_extractor=target_extractor,
                 )
             )
-        # callbacks.append(
-        #     Checkpoint(
-        #         monitor="{}_forces_{}_best".format(cp_on, metric),
-        #         fn_prefix="checkpoints/{}/".format(identifier),
-        #     )
-        # )
+        callbacks.append(
+            Checkpoint(
+                monitor="{}_forces_{}_best".format(cp_on, metric),
+                fn_prefix="checkpoints/{}/".format(identifier),
+            )
+        )
     return callbacks
