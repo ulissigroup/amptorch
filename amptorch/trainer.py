@@ -144,7 +144,7 @@ class AtomsTrainer:
             # if self.pca_reduce:
             #     torch.save(self.pca_reducer, os.path.join(self.cp_dir, "pca_reducer.pt"))
             # clean/organize config
-            del self.config["dataset"]["fp_params"]
+            # del self.config["dataset"]["fp_params"]
             self.config["dataset"]["descriptor"] = descriptor_setup
             self.config["dataset"]["fp_length"] = self.input_dim
             torch.save(self.config, os.path.join(self.cp_dir, "config.pt"))
