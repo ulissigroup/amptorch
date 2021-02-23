@@ -25,9 +25,11 @@ md_work/*
 
 *wandb
 .ipynb_checkpoints
+*.ipynb
 *processed*
 *checkpoints*
 *results*
+*.lmdb*
 
 #build/compiled_files
 *build/

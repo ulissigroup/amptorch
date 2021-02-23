@@ -3,8 +3,6 @@
 
 *AMPtorch* is a PyTorch implementation of the [Atomistic Machine-learning Package](https://amp.readthedocs.io/en/latest/) (AMP) code that seeks to provide users with improved performance and flexibility as compared to the original code. The implementation does so by benefiting from state-of-the-art machine learning methods and techniques to be optimized in conjunction with high-throughput supercomputers. *AMPtorch* is built on top of [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/en/latest/) and [Skorch](https://skorch.readthedocs.io/en/stable/).
 
-This project is being developed at Carnegie Mellon University in the Department of Chemical Engineering, by Muhammed Shuaibi and Zachary Ulissi, in collaboration with Brown University's Andrew Peterson as part of the Department of Energy's *Bridging the time scale in exascale computing of chemical systems* project.
-
 ### Installation
 
 Install dependencies:
@@ -47,6 +45,9 @@ configs = {
   },
   "dataset": {
       "raw_data": str or list,      # Path to ASE trajectory or database or list of Atoms objects
+      "lmdb_path": str,             # Path to LMDB database file for dataset too large to fit in memory
+			            ## Specify either "raw_data" or "lmdb_path"
+				    ## LMDB construction can be found in examples/construct_lmdb.py
       "val_split": float,           # Proportion of training set to use for validation
       "elements": list,             # List of unique elements in dataset, optional (default: computes unique elements)
       "fp_scheme": str,             # Fingerprinting scheme to feature dataset, "gaussian" or "mcsh" (default: "gaussian")
@@ -85,7 +86,7 @@ trainer.train()
 Previously trained models may be loaded as follows:
 ```
 trainer = AtomsTrainer(configs)
-trainer.load_checkpoint(path_to_checkpoint_dir)
+trainer.load_pretrained(path_to_checkpoint_dir)
 ```
 #### Make predictions
 ```
@@ -105,6 +106,7 @@ forces = slab.get_forces()
 ```
 
 ### Acknowledgements
+- This project is being developed at Carnegie Mellon University in the Department of Chemical Engineering, by Muhammed Shuaibi and Zachary Ulissi, in collaboration with Andrew Peterson, Franklin Goldsmith, Brenda Rubenstein, Andrew Medford, and Adam Willard as part of the Department of Energy's *Bridging the time scale in exascale computing of chemical systems* project. AMPtorch developers include Xiangyun Lei, Ben Comer, Rui Qi Chen, Eric Musa, and Matt Adams.
 - Funded by the Department of Energy's Basic Enenergy Science, Computational Chemical Sciences Program Office. Award # DE-SC0019441
 - Engineering ideas have been heavily borrowed from our work on the [Open Catalyst Project](https://github.com/Open-Catalyst-Project/baselines)
 - Gaussian fingerprints have been adapted from [SIMPLE-NN](https://github.com/MDIL-SNU/SIMPLE-NN)

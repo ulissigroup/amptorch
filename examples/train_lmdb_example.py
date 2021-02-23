@@ -20,8 +20,8 @@ for dist in distances:
     image.set_cell([10, 10, 10])
     image.wrap(pbc=True)
     image.set_calculator(EMT())
+    image.get_potential_energy()
     images.append(image)
-
 
 Gs = {
     "default": {
@@ -52,7 +52,7 @@ config = {
     },
     "dataset": {
         "lmdb_path": "/home/jovyan/projects/amptorch/examples/data.lmdb",
-        "val_split": 0,
+        "val_split": 0.1,
     },
     "cmd": {
         "debug": False,

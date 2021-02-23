@@ -239,17 +239,22 @@ class TargetScaler:
     def __init__(self, data_list, forcetraining):
         self.forcetraining = forcetraining
 
-        if len(data_list) > 1:
-            energies = torch.tensor([data.energy for data in data_list])
+        energies = torch.tensor([data.energy for data in data_list])
+        self.target_mean = torch.mean(energies, dim=0)
+        self.target_std = torch.std(energies, dim=0)
 
-            self.target_mean = torch.mean(energies, dim=0)
-            self.target_std = torch.std(energies, dim=0)
-        else:
+        if torch.isnan(self.target_std) or self.target_std == 0:
             self.target_mean = 0
             self.target_std = 1
 
-    def norm(self, data_list):
-        for data in data_list:
+    def norm(self, data_list, disable_tqdm=False):
+        for data in tqdm(
+            data_list,
+            desc="Scaling Target data",
+            total=len(data_list),
+            unit=" scalings",
+            disable=disable_tqdm,
+        ):
             data.energy = (data.energy - self.target_mean) / self.target_std
 
             if self.forcetraining:

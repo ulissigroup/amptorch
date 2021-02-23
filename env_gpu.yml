@@ -4,7 +4,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - ase=3.19*
+  - ase=3.21*
   - matplotlib=3.3*
   - pip
   - pre-commit=2.2*
@@ -16,6 +16,7 @@ dependencies:
   - pip:
     - cffi
     - wandb
+    - lmdb==1.0.0
     - skorch==0.9.*
     - torch-geometric
     - -f https://pytorch-geometric.com/whl/torch-1.6.0+cu102.html
