@@ -131,8 +131,8 @@ class AtomsTrainer:
             )
         self.feature_scaler = self.train_dataset.feature_scaler
         self.target_scaler = self.train_dataset.target_scaler
-        if self.pca_reduce:
-            self.pca_reducer = self.train_dataset.pca_reducer
+        # if self.pca_reduce:
+        #     self.pca_reducer = self.train_dataset.pca_reducer
         self.input_dim = self.train_dataset.input_dim
         self.val_split = self.config["dataset"].get("val_split", 0)
         if not self.debug:
