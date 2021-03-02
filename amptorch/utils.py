@@ -2,6 +2,7 @@ import skorch
 from skorch.utils import to_numpy
 from torch_geometric.data import Batch
 from torch.nn.parallel.scatter_gather import gather
+import torch
 
 
 def target_extractor(y):
@@ -36,3 +37,7 @@ class train_end_load_best_loss(skorch.callbacks.base.Callback):
 
     def on_train_end(self, net, X, y):
         net.load_params("./checkpoints/{}/params.pt".format(self.filename))
+
+class check_memory(skorch.callbacks.base.Callback):
+    def on_batch_end(self, net, **kwargs):
+        print(f'Allocated {torch.cuda.memory_allocated() / 1e6} Mb, cached {torch.cuda.memory_cached() / 1e6} Mb'
