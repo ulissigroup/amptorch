@@ -176,8 +176,8 @@ class AtomsTrainer:
 
     def load_extras(self):
         callbacks = []
-        check_memory_callback = check_memory()
-        callbacks.append(check_memory_callback)
+        # check_memory_callback = check_memory()
+        # callbacks.append(check_memory_callback)
         load_best_loss = train_end_load_best_loss(self.identifier)
         self.val_split = self.config["dataset"].get("val_split", 0)
         self.split = CVSplit(cv=self.val_split) if self.val_split != 0 else 0
