@@ -14,7 +14,7 @@ from skorch.dataset import CVSplit
 from collections import OrderedDict
 
 from amptorch.dataset import AtomsDataset, DataCollater, construct_descriptor
-from amptorch.dataset_lmdb import AtomsLMDBDataset
+from amptorch.dataset_lmdb import AtomsLMDBDataset, AtomsLMDBDatasetCache
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.metrics import evaluator
 from amptorch.model import BPNN, CustomLoss
@@ -84,9 +84,14 @@ class AtomsTrainer:
 
     def load_dataset(self):
         if "lmdb_path" in self.config["dataset"]:
-            self.train_dataset = AtomsLMDBDataset(
-                self.config["dataset"]["lmdb_path"],
-            )
+            if self.config["dataset"].get("cache",False):
+                self.train_dataset = AtomsLMDBDatasetCache(
+                    self.config["dataset"]["lmdb_path"],
+                )
+            else:
+                self.train_dataset = AtomsLMDBDataset(
+                    self.config["dataset"]["lmdb_path"],
+                )
             self.elements = self.train_dataset.elements
             descriptor_setup = self.train_dataset.descriptor_setup
         else:
