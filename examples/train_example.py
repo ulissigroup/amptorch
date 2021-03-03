@@ -22,7 +22,6 @@ for dist in distances:
     image.set_calculator(EMT())
     images.append(image)
 
-
 Gs = {
     "default": {
         "G2": {
@@ -51,7 +50,10 @@ config = {
         "gpus": 0,
     },
     "dataset": {
-        "lmdb_path": "/home/jovyan/projects/amptorch/examples/data.lmdb",
+        "raw_data": images,
+        "fp_params": Gs,
+        "save_fps": True,
+        "scaling": {"type": "normalize", "range": (0, 1)},
         "val_split": 0,
     },
     "cmd": {

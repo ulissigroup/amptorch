@@ -74,7 +74,7 @@ class DataCollater:
         self.forcetraining = forcetraining
 
     def __call__(self, data_list):
-        if self.forcetraining:
+        if hasattr(data_list[0], "fprimes"):
             mtxs = []
             for data in data_list:
                 mtxs.append(data.fprimes)
