@@ -1,5 +1,6 @@
 import lmdb
 import pickle
+from tqdm import tqdm
 from torch.utils.data import Dataset
 from amptorch.descriptor.Gaussian import Gaussian
 from amptorch.descriptor.MCSH import AtomisticMCSH
