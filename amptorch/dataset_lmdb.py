@@ -81,7 +81,12 @@ class AtomsLMDBDatasetCache(Dataset):
             )
             self.descriptor = self.get_descriptor(self.descriptor_setup)
             self.data_list = []
-            for idx in range(self.length):
+            for idx in tqdm(
+                range(self.length),
+                desc="loading images from lmdb",
+                total=self.length,
+                unit=" images",
+            ):
                 data = txn.get(self.keys[idx])
                 data_object = pickle.loads(data)
                 self.data_list.append(data_object)
