@@ -62,6 +62,7 @@ class AtomsLMDBDataset(Dataset):
         )
         return env
 
+
 class AtomsLMDBDatasetCache(Dataset):
     def __init__(
         self,
@@ -97,7 +98,6 @@ class AtomsLMDBDatasetCache(Dataset):
 
     def __getitem__(self, idx):
         return self.data_list[idx]
-
 
     def get_descriptor(self, descriptor_setup):
         fp_scheme, fp_params, cutoff_params, elements = descriptor_setup
