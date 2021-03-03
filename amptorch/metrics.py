@@ -86,7 +86,7 @@ def evaluator(
         raise NotImplementedError(f"{metric} metric not available!")
 
     callbacks.append(
-        EpochScoring(
+        MemEffEpochScoring(
             energy_score,
             on_train=True,
             use_caching=True,
@@ -96,7 +96,7 @@ def evaluator(
     )
     if isval:
         callbacks.append(
-            EpochScoring(
+            MemEffEpochScoring(
                 energy_score,
                 on_train=False,
                 use_caching=True,
@@ -107,7 +107,7 @@ def evaluator(
 
     if forcetraining:
         callbacks.append(
-            EpochScoring(
+            MemEffEpochScoring(
                 forces_score,
                 on_train=True,
                 use_caching=True,
@@ -117,7 +117,7 @@ def evaluator(
         )
         if isval:
             callbacks.append(
-                EpochScoring(
+                MemEffEpochScoring(
                     forces_score,
                     on_train=False,
                     use_caching=True,
@@ -133,3 +133,32 @@ def evaluator(
         )
     )
     return callbacks
+
+
+def to_cpu(X):
+    if isinstance(X, (tuple, list)):
+        return type(X)(to_cpu(x) for x in X)
+    return X.detach().to("cpu")
+
+
+class MemEffEpochScoring(EpochScoring):
+    def __init__(
+        self,
+        scoring,
+        lower_is_better=True,
+        on_train=False,
+        name=None,
+        target_extractor=None,
+        use_caching=True,
+    ):
+        super().__init__(
+            scoring, lower_is_better, on_train, name, target_extractor, use_caching
+        )
+
+    def on_batch_end(self, net, y, y_pred, training, **kwargs):
+        if not self.use_caching or training != self.on_train:
+            return
+
+        if y is not None:
+            self.y_trues_.append(to_cpu(y))
+        self.y_preds_.append(to_cpu(y_pred))

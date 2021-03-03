@@ -51,8 +51,8 @@ config = {
         "gpus": 0,
     },
     "dataset": {
-        "lmdb_path": "/home/jovyan/projects/amptorch/examples/data.lmdb",
-        "val_split": 0.1,
+        "lmdb_path": "data.lmdb",
+        "val_split": 0,
     },
     "cmd": {
         "debug": False,
