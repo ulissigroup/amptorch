@@ -47,6 +47,7 @@ class AtomsLMDBDataset(Dataset):
                 self.length_list.append(temp_length)
                 feature_scaler_list.append(temp_feature_scaler)
                 target_scaler_list.append(temp_target_scaler)
+                descriptor_setup_list.append(temp_descriptor_setup)
                 descriptor_list.append(temp_descriptor)
                 elements_list.append(temp_elements)
 
@@ -60,7 +61,7 @@ class AtomsLMDBDataset(Dataset):
 
         if len(self.db_paths) > 1:
             if any(
-                feature_scalar != self.feature_scaler
+                feature_scaler != self.feature_scaler
                 for feature_scaler in feature_scaler_list
             ):
                 raise ValueError(
@@ -92,9 +93,11 @@ class AtomsLMDBDataset(Dataset):
         db_idx = bisect.bisect(self._keylen_cumulative, idx)
         if db_idx != 0:
             el_idx = idx - self._keylen_cumulative[db_idx - 1]
+        else:
+            el_idx = idx
 
         with self.envs[db_idx].begin(write=False) as txn:
-            data = txn.get(self.keys_list[el_idx][el_idx])
+            data = txn.get(self.keys_list[db_idx][el_idx])
             data_object = pickle.loads(data)
 
         return data_object
@@ -165,6 +168,7 @@ class AtomsLMDBDatasetCache(Dataset):
                 self.length_list.append(temp_length)
                 feature_scaler_list.append(temp_feature_scaler)
                 target_scaler_list.append(temp_target_scaler)
+                descriptor_setup_list.append(temp_descriptor_setup)
                 descriptor_list.append(temp_descriptor)
                 elements_list.append(temp_elements)
 
@@ -178,7 +182,7 @@ class AtomsLMDBDatasetCache(Dataset):
 
         if len(self.db_paths) > 1:
             if any(
-                feature_scalar != self.feature_scaler
+                feature_scaler != self.feature_scaler
                 for feature_scaler in feature_scaler_list
             ):
                 raise ValueError(

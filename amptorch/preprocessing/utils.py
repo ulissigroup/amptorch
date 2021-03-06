@@ -25,58 +25,45 @@ class FeatureScaler:
         self.transform = scaling["type"]
         if self.transform not in ["normalize", "standardize"]:
             raise NotImplementedError(f"{self.transform} scaling not supported.")
-        if "scales" in scaling:
-            self.scales = scaling["scales"]
-            print(
-                "Use specified feature scalar:\ntype:{}\n{}".format(
-                    self.transform, self.scales
-                )
-            )
-            # check completeness
-            atomic_numbers = torch.cat(
-                [data.atomic_numbers for data in data_list], dim=0
-            )
-            self.unique = torch.unique(atomic_numbers).tolist()
-            if any(key not in self.scales for key in self.unique):
-                raise ValueError(
-                    f"Please make sure scalers for all atoms {self.unique} are specified"
-                )
-        else:
-            if self.transform == "normalize" and "range" not in scaling:
-                raise NotImplementedError("Normalization requires desire range.")
-            if self.transform == "normalize":
-                feature_range = scaling["range"]
-            self.forcetraining = forcetraining
-            fingerprints = torch.cat([data.fingerprint for data in data_list], dim=0)
-            atomic_numbers = torch.cat(
-                [data.atomic_numbers for data in data_list], dim=0
-            )
-            self.unique = torch.unique(atomic_numbers).tolist()
-            self.scales = {}
-            for element in self.unique:
-                idx = torch.where(atomic_numbers == element)[0]
-                element_fps = fingerprints[idx]
-                if self.transform == "standardize":
-                    mean = torch.mean(element_fps, dim=0)
-                    std = torch.std(element_fps, dim=0, unbiased=False)
-                    std[std < 1e-8] = 1
-                    self.scales[element] = {"offset": mean, "scale": std}
-                else:
-                    fpmin = torch.min(element_fps, dim=0).values
-                    fpmax = torch.max(element_fps, dim=0).values
-                    data_range = fpmax - fpmin
-                    data_range[data_range < 1e-8] = 1
-                    scale = (feature_range[1] - feature_range[0]) / (data_range)
-                    offset = feature_range[0] - fpmin * scale
-                    self.scales[element] = {"offset": offset, "scale": scale}
+        if self.transform == "normalize" and "range" not in scaling:
+            raise NotImplementedError("Normalization requires desire range.")
+        if self.transform == "normalize":
+            feature_range = scaling["range"]
+        self.forcetraining = forcetraining
+        fingerprints = torch.cat([data.fingerprint for data in data_list], dim=0)
+        atomic_numbers = torch.cat([data.atomic_numbers for data in data_list], dim=0)
+        self.unique = torch.unique(atomic_numbers).tolist()
+        self.scales = {}
+        for element in self.unique:
+            idx = torch.where(atomic_numbers == element)[0]
+            element_fps = fingerprints[idx]
+            if self.transform == "standardize":
+                mean = torch.mean(element_fps, dim=0)
+                std = torch.std(element_fps, dim=0, unbiased=False)
+                std[std < 1e-8] = 1
+                self.scales[element] = {"offset": mean, "scale": std}
+            else:
+                fpmin = torch.min(element_fps, dim=0).values
+                fpmax = torch.max(element_fps, dim=0).values
+                data_range = fpmax - fpmin
+                data_range[data_range < 1e-8] = 1
+                scale = (feature_range[1] - feature_range[0]) / (data_range)
+                offset = feature_range[0] - fpmin * scale
+                self.scales[element] = {"offset": offset, "scale": scale}
 
     def __eq__(self, other):
         """Overrides the default implementation"""
         if isinstance(other, FeatureScaler):
             if self.transform != other.transform:
                 return False
-            if self.scales != other.scales:
-                return False
+            for element in self.scales:
+                if element not in other.scales:
+                    return False
+                for key in self.scales[element]:
+                    if key not in other.scales or not torch.equal(
+                        self.scales[element][key], other.scales[element][key]
+                    ):
+                        return False
             return True
         return NotImplemented
 
@@ -134,21 +121,12 @@ class TargetScaler:
     Adapted from https://github.com/Open-Catalyst-Project/baselines
     """
 
-    def __init__(self, data_list, forcetraining, target_scaling={}):
+    def __init__(self, data_list, forcetraining):
         self.forcetraining = forcetraining
 
-        if "target_mean" in target_scaling and "target_std" in target_scaling:
-            self.target_mean = target_scaling["target_mean"]
-            self.target_std = target_scaling["target_std"]
-            print(
-                "Use speficied target scaler\nmean:{}\tstd:{}".format(
-                    self.target_mean, self.target_std
-                )
-            )
-        else:
-            energies = torch.tensor([data.energy for data in data_list])
-            self.target_mean = torch.mean(energies, dim=0)
-            self.target_std = torch.std(energies, dim=0)
+        energies = torch.tensor([data.energy for data in data_list])
+        self.target_mean = torch.mean(energies, dim=0)
+        self.target_std = torch.std(energies, dim=0)
 
         if torch.isnan(self.target_std) or self.target_std == 0:
             self.target_mean = 0

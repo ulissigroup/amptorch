@@ -136,16 +136,12 @@ class AtomsTrainer:
                 "target": self.target_scaler,
                 "feature": self.feature_scaler,
             }
-            save_normalizers(normalizers, os.path.join(self.cp_dir, "normalizers.json"))
+            # save_normalizers(normalizers, os.path.join(self.cp_dir, "normalizers.json"))
             torch.save(normalizers, os.path.join(self.cp_dir, "normalizers.pt"))
             # clean/organize config
             self.config["dataset"]["descriptor"] = descriptor_setup
             self.config["dataset"]["fp_length"] = self.input_dim
             torch.save(self.config, os.path.join(self.cp_dir, "config.pt"))
-            with open(
-                os.path.join(self.cp_dir, "config.json"), "w", encoding="utf8"
-            ) as json_file:
-                json.dump(self.config, json_file, indent=4)
         print("Loading dataset: {} images".format(len(self.train_dataset)))
 
     def load_model(self):

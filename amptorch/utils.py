@@ -36,16 +36,14 @@ def save_normalizers(normalizers, path):
     tosave = {}
     tosave["feature"] = {
         "type": normalizers["feature"].transform,
-        "scales": normalizers["feature"].scales,
+        "scales": normalizers["feature"].scales.numpy(),
     }
     tosave["target"] = {
-        "mean": normalizers["target"].target_mean,
-        "stddev": normalizers["target"].target_std,
+        "mean": normalizers["target"].target_mean.numpy(),
+        "stddev": normalizers["target"].target_std.numpy(),
     }
-    with open(
-        os.path.join(self.cp_dir, "config.json"), "w", encoding="utf8"
-    ) as json_file:
-        json.dump(self.config, json_file, indent=4)
+    with open(path, "w", encoding="utf8") as json_file:
+        json.dump(tosave, json_file, indent=4)
     return
 
 

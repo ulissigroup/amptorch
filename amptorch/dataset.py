@@ -19,7 +19,6 @@ class AtomsDataset(Dataset):
         forcetraining=True,
         save_fps=True,
         scaling={"type": "normalize", "range": (0, 1)},
-        target_scaling={},
         cores=1,
         process=True,
     ):
@@ -44,9 +43,7 @@ class AtomsDataset(Dataset):
         data_list = self.a2d.convert_all(self.images)
 
         self.feature_scaler = FeatureScaler(data_list, self.forcetraining, self.scaling)
-        self.target_scaler = TargetScaler(
-            data_list, self.forcetraining, self.target_scaling
-        )
+        self.target_scaler = TargetScaler(data_list, self.forcetraining)
         self.feature_scaler.norm(data_list)
         self.target_scaler.norm(data_list)
 
