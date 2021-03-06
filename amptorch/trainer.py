@@ -3,6 +3,7 @@ import datetime
 import os
 import random
 import warnings
+import json
 
 import ase.io
 import numpy as np
@@ -19,7 +20,7 @@ from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.metrics import evaluator
 from amptorch.model import BPNN, CustomLoss
 from amptorch.preprocessing import AtomsToData
-from amptorch.utils import to_tensor, train_end_load_best_loss
+from amptorch.utils import to_tensor, train_end_load_best_loss, save_normalizers
 from amptorch.data_parallel import DataParallel, ParallelCollater
 from amptorch.ase_utils import AMPtorch
 
@@ -135,11 +136,16 @@ class AtomsTrainer:
                 "target": self.target_scaler,
                 "feature": self.feature_scaler,
             }
+            save_normalizers(normalizers, os.path.join(self.cp_dir, "normalizers.json"))
             torch.save(normalizers, os.path.join(self.cp_dir, "normalizers.pt"))
             # clean/organize config
             self.config["dataset"]["descriptor"] = descriptor_setup
             self.config["dataset"]["fp_length"] = self.input_dim
             torch.save(self.config, os.path.join(self.cp_dir, "config.pt"))
+            with open(
+                os.path.join(self.cp_dir, "config.json"), "w", encoding="utf8"
+            ) as json_file:
+                json.dump(self.config, json_file, indent=4)
         print("Loading dataset: {} images".format(len(self.train_dataset)))
 
     def load_model(self):

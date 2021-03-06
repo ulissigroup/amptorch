@@ -1,6 +1,6 @@
 import lmdb
 import pickle
-import numpt as np
+import numpy as np
 import bisect
 from tqdm import tqdm
 from torch.utils.data import Dataset
