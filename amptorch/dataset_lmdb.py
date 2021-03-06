@@ -45,7 +45,7 @@ class AtomsLMDBDataset(Dataset):
                 self.length_list.append(temp_length)
                 feature_scaler_list.append(temp_feature_scaler)
                 target_scaler_list.append(temp_target_scaler)
-                descriptor_setup.append(temp_descriptor)
+                descriptor_list.append(temp_descriptor)
                 elements_list.append(temp_elements)
 
         self._keylen_cumulative = np.cumsum(self.length_list).tolist()
