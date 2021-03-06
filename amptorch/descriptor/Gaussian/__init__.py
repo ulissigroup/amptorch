@@ -35,6 +35,20 @@ class Gaussian(BaseDescriptor):
         self.prepare_descriptor_parameters()
         self.get_descriptor_setup_hash()
 
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, BaseDescriptor):
+            if self.descriptor_type != other.descriptor_type:
+                return False
+            if self.elements != other.elemts:
+                return False
+            if self.Gs != other.Gs:
+                return False
+            if self.cutoff_func != other.cutoff_func:
+                return False
+            return True
+        return NotImplemented
+
     def prepare_descriptor_parameters(self):
         if isinstance(self.Gs, dict):
             self.descriptor_setup = {}
