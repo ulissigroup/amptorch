@@ -23,6 +23,7 @@ class AtomsLMDBDataset(Dataset):
         feature_scaler_list = []
         target_scaler_list = []
         descriptor_list = []
+        elements_list = []
         for db_path in self.db_paths:
             temp_env = self.connect_db(db_path)
             self.envs.append(temp_env)
@@ -40,16 +41,19 @@ class AtomsLMDBDataset(Dataset):
                 temp_descriptor = self.get_descriptor(
                     pickle.loads(txn.get("descriptor_setup".encode("ascii")))
                 )
+                temp_elements = pickle.loads(txn.get("elements".encode("ascii")))
                 self.length_list.append(temp_length)
                 feature_scaler_list.append(temp_feature_scaler)
                 target_scaler_list.append(temp_target_scaler)
                 descriptor_setup.append(temp_descriptor)
+                elements_list.append(temp_elements)
 
         self._keylen_cumulative = np.cumsum(self.length_list).tolist()
         self.total_length = np.sum(self.length_list)
         self.feature_scaler = feature_scaler_list[0]
         self.target_scaler = target_scaler_list[0]
         self.descriptor = descriptor_list[0]
+        self.elements = elements_list[0]
 
         if len(self.db_paths) > 1:
             if any(
@@ -68,6 +72,8 @@ class AtomsLMDBDataset(Dataset):
                 )
             if any(descriptor != self.descriptor for descriptor in descriptor_list):
                 raise ValueError("Please make sure all lmdb used the same descriptor")
+            if any(set(elements) != set(self.elements) for elements in elements_list):
+                raise ValueError("Please make sure all lmdb used the same elements")
 
     def __len__(self):
         return self.total_length

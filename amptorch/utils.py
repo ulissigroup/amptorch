@@ -1,5 +1,6 @@
 import skorch
 import json
+import os
 from skorch.utils import to_numpy
 from torch_geometric.data import Batch
 from torch.nn.parallel.scatter_gather import gather
