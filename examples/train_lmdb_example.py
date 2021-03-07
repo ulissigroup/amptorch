@@ -51,7 +51,7 @@ config = {
         "gpus": 0,
     },
     "dataset": {
-        "lmdb_path": "data.lmdb",
+        "lmdb_path": ["./data.lmdb", "./data2.lmdb"],
         "val_split": 0,
     },
     "cmd": {
