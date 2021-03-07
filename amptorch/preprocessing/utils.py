@@ -60,7 +60,7 @@ class FeatureScaler:
                 if element not in other.scales:
                     return False
                 for key in self.scales[element]:
-                    if key not in other.scales or not torch.equal(
+                    if key not in other.scales[element] or not torch.equal(
                         self.scales[element][key], other.scales[element][key]
                     ):
                         return False

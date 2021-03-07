@@ -40,10 +40,31 @@ class Gaussian(BaseDescriptor):
         if isinstance(other, BaseDescriptor):
             if self.descriptor_type != other.descriptor_type:
                 return False
-            if self.elements != other.elemts:
+            if self.elements != other.elements:
                 return False
-            if self.Gs != other.Gs:
-                return False
+            for element in self.Gs:
+                if element not in other.Gs:
+                    return False
+                if self.Gs[element]["cutoff"] != other.Gs[element]["cutoff"]:
+                    return False
+                if "G2" in self.Gs[element]:
+                    for key in self.Gs[element]["G2"]:
+                        if list(self.Gs[element]["G2"][key]) != list(
+                            other.Gs[element]["G2"][key]
+                        ):
+                            return False
+                if "G4" in self.Gs[element]:
+                    for key in self.Gs[element]["G4"]:
+                        if list(self.Gs[element]["G4"][key]) != list(
+                            other.Gs[element]["G4"][key]
+                        ):
+                            return False
+                if "G5" in self.Gs[element]:
+                    for key in self.Gs[element]["G5"]:
+                        if list(self.Gs[element]["G5"][key]) != list(
+                            other.Gs[element]["G5"][key]
+                        ):
+                            return False
             if self.cutoff_func != other.cutoff_func:
                 return False
             return True

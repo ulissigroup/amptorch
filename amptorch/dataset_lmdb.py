@@ -74,13 +74,6 @@ class AtomsLMDBDataset(Dataset):
                 raise ValueError(
                     "Please make sure all lmdb used the same target scaler"
                 )
-            if any(
-                descriptor_setup != self.descriptor_setup
-                for descriptor_setup in descriptor_setup_list
-            ):
-                raise ValueError(
-                    "Please make sure all lmdb used the same descriptor setup"
-                )
             if any(descriptor != self.descriptor for descriptor in descriptor_list):
                 raise ValueError("Please make sure all lmdb used the same descriptor")
             if any(set(elements) != set(self.elements) for elements in elements_list):
@@ -194,13 +187,6 @@ class AtomsLMDBDatasetCache(Dataset):
             ):
                 raise ValueError(
                     "Please make sure all lmdb used the same target scaler"
-                )
-            if any(
-                descriptor_setup != self.descriptor_setup
-                for descriptor_setup in descriptor_setup_list
-            ):
-                raise ValueError(
-                    "Please make sure all lmdb used the same descriptor setup"
                 )
             if any(descriptor != self.descriptor for descriptor in descriptor_list):
                 raise ValueError("Please make sure all lmdb used the same descriptor")
