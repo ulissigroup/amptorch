@@ -84,7 +84,7 @@ class AtomsTrainer:
 
     def load_dataset(self):
         if "lmdb_path" in self.config["dataset"]:
-            if self.config["dataset"].get("cache",False):
+            if self.config["dataset"].get("cache", False):
                 self.train_dataset = AtomsLMDBDatasetCache(
                     self.config["dataset"]["lmdb_path"],
                 )
