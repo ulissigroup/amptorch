@@ -13,7 +13,7 @@ from amptorch.ase_utils import AMPtorch
 from amptorch.trainer import AtomsTrainer
 
 
-def construct_lmdb(images, lmdb_path="./data.lmdb"):
+def construct_lmdb(images, scaler_path, lmdb_path="./data2.lmdb"):
     """
     images: list of ase atoms objects (or trajectory) for fingerprint calculatation
     lmdb_path: Path to store LMDB dataset.
@@ -65,18 +65,12 @@ def construct_lmdb(images, lmdb_path="./data.lmdb"):
         data_list.append(do)
         idx += 1
 
-    scaling = {"type": "normalize", "range": (0, 1)}
-    feature_scaler = FeatureScaler(data_list, forcetraining, scaling)
-    target_scaler = TargetScaler(data_list, forcetraining)
+    normalizers = torch.load(scaler_path)
+    feature_scaler = normalizers["feature"]
+    target_scaler = normalizers["target"]
 
     feature_scaler.norm(data_list)
     target_scaler.norm(data_list)
-
-    normalizers = {
-        "target": target_scaler,
-        "feature": feature_scaler,
-    }
-    torch.save(normalizers, "./normalizers.pt")
 
     idx = 0
     for do in tqdm(data_list, desc="Writing images to LMDB"):
@@ -112,9 +106,10 @@ def construct_lmdb(images, lmdb_path="./data.lmdb"):
 
 
 if __name__ == "__main__":
+    scaler_path = "./normalizers.pt"
     images = []
 
-    distances = np.linspace(2, 5, 1000)
+    distances = np.linspace(2, 5, 10000)
     for dist in distances:
         image = Atoms(
             "CuCO",
@@ -130,4 +125,4 @@ if __name__ == "__main__":
         image.get_potential_energy()
         images.append(image)
 
-    construct_lmdb(images, lmdb_path="./data.lmdb")
+    construct_lmdb(images, scaler_path, lmdb_path="./data2.lmdb")

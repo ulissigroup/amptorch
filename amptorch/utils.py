@@ -1,4 +1,6 @@
 import skorch
+import json
+import os
 from skorch.utils import to_numpy
 from torch_geometric.data import Batch
 from torch.nn.parallel.scatter_gather import gather
@@ -31,6 +33,21 @@ def to_tensor(X, device, accept_sparse=False):
         return outputs
 
 
+def save_normalizers(normalizers, path):
+    tosave = {}
+    tosave["feature"] = {
+        "type": normalizers["feature"].transform,
+        "scales": normalizers["feature"].scales.numpy(),
+    }
+    tosave["target"] = {
+        "mean": normalizers["target"].target_mean.numpy(),
+        "stddev": normalizers["target"].target_std.numpy(),
+    }
+    with open(path, "w", encoding="utf8") as json_file:
+        json.dump(tosave, json_file, indent=4)
+    return
+
+
 class train_end_load_best_loss(skorch.callbacks.base.Callback):
     def __init__(self, filename):
         self.filename = filename
@@ -38,6 +55,9 @@ class train_end_load_best_loss(skorch.callbacks.base.Callback):
     def on_train_end(self, net, X, y):
         net.load_params("./checkpoints/{}/params.pt".format(self.filename))
 
+
 class check_memory(skorch.callbacks.base.Callback):
     def on_batch_end(self, net, **kwargs):
-        print(f'Allocated {torch.cuda.memory_allocated() / 1e6} Mb, cached {torch.cuda.memory_cached() / 1e6} Mb')
+        print(
+            f"Allocated {torch.cuda.memory_allocated() / 1e6} Mb, cached {torch.cuda.memory_cached() / 1e6} Mb"
+        )

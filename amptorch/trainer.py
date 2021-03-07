@@ -3,6 +3,7 @@ import datetime
 import os
 import random
 import warnings
+import json
 
 import ase.io
 import numpy as np
@@ -19,7 +20,12 @@ from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.metrics import evaluator
 from amptorch.model import BPNN, SingleNN, CustomLoss
 from amptorch.preprocessing import AtomsToData
-from amptorch.utils import to_tensor, train_end_load_best_loss, check_memory
+from amptorch.utils import (
+    to_tensor,
+    train_end_load_best_loss,
+    check_memory,
+    save_normalizers,
+)
 from amptorch.data_parallel import DataParallel, ParallelCollater
 from amptorch.ase_utils import AMPtorch
 
@@ -123,10 +129,10 @@ class AtomsTrainer:
                 images=training_images,
                 descriptor_setup=descriptor_setup,
                 forcetraining=self.forcetraining,
-                pca_reduce = self.pca_reduce,
-                pca_setting = self.config["dataset"].get(
+                pca_reduce=self.pca_reduce,
+                pca_setting=self.config["dataset"].get(
                     "pca_setting",
-                    {"num_pc": 20, "elementwise": False, "normalize": False}
+                    {"num_pc": 20, "elementwise": False, "normalize": False},
                 ),
                 save_fps=self.config["dataset"].get("save_fps", True),
                 scaling=self.config["dataset"].get(
@@ -145,6 +151,7 @@ class AtomsTrainer:
                 "target": self.target_scaler,
                 "feature": self.feature_scaler,
             }
+            # save_normalizers(normalizers, os.path.join(self.cp_dir, "normalizers.json"))
             torch.save(normalizers, os.path.join(self.cp_dir, "normalizers.pt"))
             # if self.pca_reduce:
             #     torch.save(self.pca_reducer, os.path.join(self.cp_dir, "pca_reducer.pt"))
@@ -366,7 +373,9 @@ class AtomsTrainer:
             self.feature_scaler = normalizers["feature"]
             self.target_scaler = normalizers["target"]
             if self.config["dataset"].get("pca_reduce", False):
-                self.pca_reducer = torch.load(os.path.join(checkpoint_path, "pca_reducer.pt"))
+                self.pca_reducer = torch.load(
+                    os.path.join(checkpoint_path, "pca_reducer.pt")
+                )
         except NotImplementedError:
             print("Unable to load checkpoint!")
 

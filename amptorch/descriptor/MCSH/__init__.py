@@ -26,6 +26,16 @@ class AtomisticMCSH(BaseDescriptor):
 
         self.get_descriptor_setup_hash()
 
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, BaseDescriptor):
+            if self.descriptor_type != other.descriptor_type:
+                return False
+            if self.descriptor_setup_hash != other.descriptor_setup_hash:
+                return False
+            return True
+        return NotImplemented
+
     def prepare_descriptor_parameters(self):
         descriptor_setup = []
         cutoff = self.MCSHs["cutoff"]

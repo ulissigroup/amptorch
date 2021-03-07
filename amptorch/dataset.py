@@ -18,8 +18,8 @@ class AtomsDataset(Dataset):
         images,
         descriptor_setup,
         forcetraining=True,
-        pca_reduce = False,
-        pca_setting = {"num_pc": 20, "elementwise": False, "normalize": False},
+        pca_reduce=False,
+        pca_setting={"num_pc": 20, "elementwise": False, "normalize": False},
         save_fps=True,
         scaling={"type": "normalize", "range": (0, 1)},
         cores=1,
@@ -47,7 +47,9 @@ class AtomsDataset(Dataset):
         data_list = self.a2d.convert_all(self.images)
 
         if self.pca_reduce:
-            self.pca_reducer = PCAReducer(data_list, self.forcetraining, self.pca_setting)
+            self.pca_reducer = PCAReducer(
+                data_list, self.forcetraining, self.pca_setting
+            )
             self.pca_reducer.reduce(data_list)
 
         self.feature_scaler = FeatureScaler(data_list, self.forcetraining, self.scaling)
