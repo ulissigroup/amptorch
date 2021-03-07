@@ -50,7 +50,7 @@ configs = {
 				    ## LMDB construction can be found in examples/construct_lmdb.py
       "val_split": float,           # Proportion of training set to use for validation
       "elements": list,             # List of unique elements in dataset, optional (default: computes unique elements)
-      "fp_scheme": str,             # Fingerprinting scheme to feature dataset, "gaussian" or "mcsh" (default: "gaussian")
+      "fp_scheme": str,             # Fingerprinting scheme to feature dataset, "gaussian" or "gmp" (default: "gaussian")
       "fp_params": dict,            # Fingerprint parameters, see examples for correct layout
       "cutoff_params": dict,        # Cutoff function - polynomial or cosine,
                                     ## Polynomial - {"cutoff_func": "Polynomial", "gamma": 2.0}

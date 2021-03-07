@@ -55,7 +55,7 @@ config = {
         "raw_data": images,
         "val_split": 0,
         "elements": elements,
-        "fp_scheme": "mcsh",
+        "fp_scheme": "gmp",
         "fp_params": MCSHs,
         "save_fps": True,
     },

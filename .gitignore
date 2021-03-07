@@ -34,4 +34,4 @@ md_work/*
 #build/compiled_files
 *build/
 amptorch/descriptor/Gaussian/_libsymf.abi3.so
-amptorch/descriptor/MCSH/_libmcsh.abi3.so
+amptorch/descriptor/GMP/_libgmp.abi3.so

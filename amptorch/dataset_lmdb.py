@@ -5,7 +5,7 @@ import bisect
 from tqdm import tqdm
 from torch.utils.data import Dataset
 from amptorch.descriptor.Gaussian import Gaussian
-from amptorch.descriptor.MCSH import AtomisticMCSH
+from amptorch.descriptor.GMP import GMP
 
 
 class AtomsLMDBDataset(Dataset):
@@ -99,8 +99,8 @@ class AtomsLMDBDataset(Dataset):
         fp_scheme, fp_params, cutoff_params, elements = descriptor_setup
         if fp_scheme == "gaussian":
             descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)
-        elif fp_scheme == "mcsh":
-            descriptor = AtomisticMCSH(MCSHs=fp_params, elements=elements)
+        elif fp_scheme == "gmp":
+            descriptor = GMP(MCSHs=fp_params, elements=elements)
         else:
             raise NotImplementedError
         return descriptor
@@ -216,8 +216,8 @@ class AtomsLMDBDatasetCache(Dataset):
         fp_scheme, fp_params, cutoff_params, elements = descriptor_setup
         if fp_scheme == "gaussian":
             descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)
-        elif fp_scheme == "mcsh":
-            descriptor = AtomisticMCSH(MCSHs=fp_params, elements=elements)
+        elif fp_scheme == "gmp":
+            descriptor = GMP(MCSHs=fp_params, elements=elements)
         else:
             raise NotImplementedError
         return descriptor
