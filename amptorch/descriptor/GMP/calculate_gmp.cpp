@@ -198,7 +198,7 @@ extern "C" int calculate_gmp(double** cell, double** cart, double** scale, int* 
 
         for (int m = 0; m < nmcsh; ++m) {
             int mcsh_type = get_mcsh_type(params_i[m][0], params_i[m][1]);
-            AtomisticMCSHFunction mcsh_function = get_mcsh_function(params_i[m][0], params_i[m][1]);
+            GMPFunction mcsh_function = get_mcsh_function(params_i[m][0], params_i[m][1]);
 
             // params_d: sigma, weight, A, beta, cutoff
             double A = params_d[m][2], beta = params_d[m][3];
@@ -636,7 +636,7 @@ extern "C" int calculate_gmp_noderiv(double** cell, double** cart, double** scal
 
         for (int m = 0; m < nmcsh; ++m) {
             int mcsh_type = get_mcsh_type(params_i[m][0], params_i[m][1]);
-            AtomisticMCSHFunctionNoderiv mcsh_function = get_mcsh_function_noderiv(params_i[m][0], params_i[m][1]);
+            GMPFunctionNoderiv mcsh_function = get_mcsh_function_noderiv(params_i[m][0], params_i[m][1]);
 
             // params_d: sigma, weight, A, beta, cutoff
             double A = params_d[m][2], beta = params_d[m][3];
@@ -899,7 +899,7 @@ extern "C" int calculate_gmp_square(double** cell, double** cart, double** scale
 
         for (int m = 0; m < nmcsh; ++m) {
             int mcsh_type = get_mcsh_type(params_i[m][0], params_i[m][1]);
-            AtomisticMCSHFunction mcsh_function = get_mcsh_function(params_i[m][0], params_i[m][1]);
+            GMPFunction mcsh_function = get_mcsh_function(params_i[m][0], params_i[m][1]);
 
             // params_d: sigma, weight, A, beta, cutoff
             double A = params_d[m][2], beta = params_d[m][3];
@@ -1346,7 +1346,7 @@ extern "C" int calculate_gmp_square_noderiv(double** cell, double** cart, double
 
         for (int m = 0; m < nmcsh; ++m) {
             int mcsh_type = get_mcsh_type(params_i[m][0], params_i[m][1]);
-            AtomisticMCSHFunctionNoderiv mcsh_function = get_mcsh_function_noderiv(params_i[m][0], params_i[m][1]);
+            GMPFunctionNoderiv mcsh_function = get_mcsh_function_noderiv(params_i[m][0], params_i[m][1]);
 
             // params_d: sigma, weight, A, beta, cutoff
             double A = params_d[m][2], beta = params_d[m][3];
