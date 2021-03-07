@@ -25,7 +25,6 @@ class AtomsDataset(Dataset):
         self.images = images
         self.forcetraining = forcetraining
         self.scaling = scaling
-        self.target_scaling = target_scaling
         self.descriptor = construct_descriptor(descriptor_setup)
 
         self.a2d = AtomsToData(
