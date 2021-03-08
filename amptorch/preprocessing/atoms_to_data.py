@@ -41,7 +41,6 @@ class AtomsToData:
         natoms = len(atoms)
         image_data = self.descriptor_data[idx]
         atomic_numbers = torch.LongTensor(atoms.get_atomic_numbers())
-        image_idx = torch.full((1, natoms), idx, dtype=torch.int64).view(-1)
         image_fingerprint = torch.tensor(
             image_data["descriptors"], dtype=torch.get_default_dtype()
         )
@@ -49,9 +48,8 @@ class AtomsToData:
         # put the minimum data in torch geometric data object
         data = Data(
             fingerprint=image_fingerprint,
-            image_idx=image_idx,
             atomic_numbers=atomic_numbers,
-            natoms=natoms,
+            num_nodes=natoms,
         )
 
         # optionally include other properties
