@@ -58,6 +58,7 @@ class AtomsLMDBDataset(Dataset):
         self.descriptor_setup = descriptor_setup_list[0]
         self.descriptor = descriptor_list[0]
         self.elements = elements_list[0]
+        self.loaded_db_idx = -1
 
         if len(self.db_paths) > 1:
             if any(
@@ -82,6 +83,17 @@ class AtomsLMDBDataset(Dataset):
     def __len__(self):
         return self.total_length
 
+    def __load_dataset__(self, db_idx):
+        dataset = []
+        with self.envs[db_idx].begin(write=False) as txn:
+            for idx in range(self.length_list[db_idx]):
+                data = txn.get(self.keys_list[db_idx][idx])
+                data_object = pickle.loads(data)
+                dataset.append(data_object)
+
+        self.loaded_db_idx = db_idx
+        self.loaded_dataset = dataset
+
     def __getitem__(self, idx):
         db_idx = bisect.bisect(self._keylen_cumulative, idx)
         if db_idx != 0:
@@ -89,11 +101,10 @@ class AtomsLMDBDataset(Dataset):
         else:
             el_idx = idx
 
-        with self.envs[db_idx].begin(write=False) as txn:
-            data = txn.get(self.keys_list[db_idx][el_idx])
-            data_object = pickle.loads(data)
+        if db_idx != self.loaded_db_idx:
+            self.__load_dataset__(db_idx)
 
-        return data_object
+        return self.loaded_dataset[el_idx]
 
     def get_descriptor(self, descriptor_setup):
         fp_scheme, fp_params, cutoff_params, elements = descriptor_setup
