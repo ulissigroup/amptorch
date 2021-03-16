@@ -6,6 +6,21 @@ from torch_geometric.data import Batch
 from torch.nn.parallel.scatter_gather import gather
 
 
+class InOrderSplit:
+    def __init__(self, val_frac):
+        self.val_frac = val_frac
+
+    def __call__(self, dataset):
+        len_dataset = len(dataset)
+        len_val = int(len_dataset * self.val_frac)
+        len_train = len_dataset - len_val
+        train_idx = list(range(0, len_train))
+        val_idx = list(range(len_train, len_dataset))
+        train_dataset = torch.utils.data.Subset(dataset, train_idx)
+        val_dataset = torch.utils.data.Subset(dataset, val_idx)
+        return train_dataset, val_dataset
+
+
 def target_extractor(y):
     extracted = []
     for batch in y:
