@@ -27,13 +27,9 @@ from amptorch.preprocessing import AtomsToData
 from amptorch.utils import (
     to_tensor,
     train_end_load_best_loss,
-<<<<<<< HEAD
+    save_normalizers,
     check_memory,
-    save_normalizers,
-=======
-    save_normalizers,
     InOrderSplit,
->>>>>>> 72e8d44261416bd92f0d345589d0e6f3496c58a0
 )
 from amptorch.data_parallel import DataParallel, ParallelCollater
 from amptorch.ase_utils import AMPtorch
