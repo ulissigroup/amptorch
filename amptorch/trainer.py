@@ -248,7 +248,7 @@ class AtomsTrainer:
             batch_size=self.config["optim"].get("batch_size", 32),
             max_epochs=self.config["optim"].get("epochs", 100),
             iterator_train__collate_fn=self.parallel_collater,
-            iterator_train__shuffle=True,
+            iterator_train__shuffle=self.split_mode != "inorder",
             iterator_train__pin_memory=True,
             iterator_valid__collate_fn=self.parallel_collater,
             iterator_valid__shuffle=False,
