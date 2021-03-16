@@ -15,7 +15,11 @@ from skorch.dataset import CVSplit
 from collections import OrderedDict
 
 from amptorch.dataset import AtomsDataset, DataCollater, construct_descriptor
-from amptorch.dataset_lmdb import AtomsLMDBDataset, AtomsLMDBDatasetCache
+from amptorch.dataset_lmdb import (
+    AtomsLMDBDataset,
+    AtomsLMDBDatasetPartialCache,
+    AtomsLMDBDatasetCache,
+)
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.metrics import evaluator
 from amptorch.model import BPNN, SingleNN, CustomLoss
@@ -23,8 +27,13 @@ from amptorch.preprocessing import AtomsToData
 from amptorch.utils import (
     to_tensor,
     train_end_load_best_loss,
+<<<<<<< HEAD
     check_memory,
     save_normalizers,
+=======
+    save_normalizers,
+    InOrderSplit,
+>>>>>>> 72e8d44261416bd92f0d345589d0e6f3496c58a0
 )
 from amptorch.data_parallel import DataParallel, ParallelCollater
 from amptorch.ase_utils import AMPtorch
@@ -90,14 +99,21 @@ class AtomsTrainer:
 
     def load_dataset(self):
         if "lmdb_path" in self.config["dataset"]:
-            if self.config["dataset"].get("cache", False):
+            self.cache = self.config["dataset"].get("cache", "no")
+            if self.cache == "full":
                 self.train_dataset = AtomsLMDBDatasetCache(
                     self.config["dataset"]["lmdb_path"],
                 )
-            else:
+            elif self.cache == "partial":
+                self.train_dataset = AtomsLMDBDatasetPartialCache(
+                    self.config["dataset"]["lmdb_path"],
+                )
+            elif self.cache == "no":
                 self.train_dataset = AtomsLMDBDataset(
                     self.config["dataset"]["lmdb_path"],
                 )
+            else:
+                raise NotImplementedError
             self.elements = self.train_dataset.elements
             descriptor_setup = self.train_dataset.descriptor_setup
         else:
@@ -192,7 +208,13 @@ class AtomsTrainer:
         # callbacks.append(check_memory_callback)
         load_best_loss = train_end_load_best_loss(self.identifier)
         self.val_split = self.config["dataset"].get("val_split", 0)
-        self.split = CVSplit(cv=self.val_split) if self.val_split != 0 else 0
+        self.split_mode = self.config["dataset"].get("val_split_mode", "cv")
+        if self.split_mode == "cv":
+            self.split = CVSplit(cv=self.val_split) if self.val_split != 0 else 0
+        elif self.split_mode == "inorder":
+            self.split = InOrderSplit(self.val_split) if self.val_split != 0 else 0
+        else:
+            raise NotImplementedError
 
         metrics = evaluator(
             self.val_split,
