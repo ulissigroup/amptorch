@@ -100,8 +100,8 @@ class AtomsLMDBDataset(Dataset):
         fp_scheme, fp_params, cutoff_params, elements = descriptor_setup
         if fp_scheme == "gaussian":
             descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)
-        elif fp_scheme == "mcsh":
-            descriptor = AtomisticMCSH(MCSHs=fp_params, elements=elements)
+        elif fp_scheme == "gmp":
+            descriptor = GMP(MCSHs=fp_params, elements=elements)
         else:
             raise NotImplementedError
         return descriptor
