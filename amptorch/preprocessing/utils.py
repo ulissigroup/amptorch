@@ -158,6 +158,32 @@ class FeatureScaler:
                 offset = feature_range[0] - fpmin * scale
                 self.scale = {"offset": offset, "scale": scale}
 
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, FeatureScaler):
+            if (
+                self.transform != other.transform
+                or self.elementwise != other.elementwise
+            ):
+                return False
+            if self.elementwise:
+                for element in self.scales:
+                    if element not in other.scales:
+                        return False
+                    for key in self.scales[element]:
+                        if key not in other.scales[element] or not torch.equal(
+                            self.scales[element][key], other.scales[element][key]
+                        ):
+                            return False
+            else:
+                for key in self.scale:
+                    if key not in other.scale or not torch.equal(
+                        self.scale[key], other.scale[key]
+                    ):
+                        return False
+            return True
+        return NotImplemented
+
     def norm(self, data_list, threshold=1e-6, disable_tqdm=False):
         if self.elementwise:
             for data in tqdm(
@@ -243,7 +269,7 @@ class FeatureScaler:
 
 class TargetScaler:
     """
-    Normalizes an input tensor and later reverts it.
+    Normalizes an input tensor and later reverts it (standardize).
     Adapted from https://github.com/Open-Catalyst-Project/baselines
     """
 
@@ -257,6 +283,15 @@ class TargetScaler:
         if torch.isnan(self.target_std) or self.target_std == 0:
             self.target_mean = 0
             self.target_std = 1
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, TargetScaler):
+            return (
+                self.target_mean == other.target_mean
+                and self.target_std == other.target_std
+            )
+        return NotImplemented
 
     def norm(self, data_list, disable_tqdm=False):
         for data in tqdm(

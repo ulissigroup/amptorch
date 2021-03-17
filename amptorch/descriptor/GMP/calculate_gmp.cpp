@@ -1,6 +1,6 @@
 #include <math.h>
 #include <stdio.h>
-#include "calculate_atomistic_mcsh.h"
+#include "calculate_gmp.h"
 
 // extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** scale,
 //                                         int* atom_i, int natoms, int* cal_atoms, int cal_num,
@@ -27,7 +27,7 @@
     // params_d: sigma, weight, A, beta, cutoff
     // atom_gaussian: 2D array (dimension: [# atom types, # gaussian * 2]), i*2: B, i*2+1: alpha
     // ngaussian: number of gaussian for each atom type [n gaussian for type 1, n gaussian for type 2 ...]
-extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** scale, int* pbc_bools,
+extern "C" int calculate_gmp(double** cell, double** cart, double** scale, int* pbc_bools,
                                         int* atom_i, int natoms, int* cal_atoms, int cal_num,
                                         int** params_i, double** params_d, int nmcsh, double** atom_gaussian, int* ngaussians, int* element_index_to_order,
                                         double** mcsh, double** dmcsh) {
@@ -198,7 +198,7 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
 
         for (int m = 0; m < nmcsh; ++m) {
             int mcsh_type = get_mcsh_type(params_i[m][0], params_i[m][1]);
-            AtomisticMCSHFunction mcsh_function = get_mcsh_function(params_i[m][0], params_i[m][1]);
+            GMPFunction mcsh_function = get_mcsh_function(params_i[m][0], params_i[m][1]);
 
             // params_d: sigma, weight, A, beta, cutoff
             double A = params_d[m][2], beta = params_d[m][3];
@@ -465,7 +465,7 @@ extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** s
 
 
 
-extern "C" int calculate_atomistic_mcsh_noderiv(double** cell, double** cart, double** scale, int* pbc_bools,
+extern "C" int calculate_gmp_noderiv(double** cell, double** cart, double** scale, int* pbc_bools,
                                         int* atom_i, int natoms, int* cal_atoms, int cal_num,
                                         int** params_i, double** params_d, int nmcsh, double** atom_gaussian, int* ngaussians, int* element_index_to_order,
                                         double** mcsh) {
@@ -636,7 +636,7 @@ extern "C" int calculate_atomistic_mcsh_noderiv(double** cell, double** cart, do
 
         for (int m = 0; m < nmcsh; ++m) {
             int mcsh_type = get_mcsh_type(params_i[m][0], params_i[m][1]);
-            AtomisticMCSHFunctionNoderiv mcsh_function = get_mcsh_function_noderiv(params_i[m][0], params_i[m][1]);
+            GMPFunctionNoderiv mcsh_function = get_mcsh_function_noderiv(params_i[m][0], params_i[m][1]);
 
             // params_d: sigma, weight, A, beta, cutoff
             double A = params_d[m][2], beta = params_d[m][3];
@@ -728,7 +728,7 @@ extern "C" int calculate_atomistic_mcsh_noderiv(double** cell, double** cart, do
 
 
 
-extern "C" int calculate_atomistic_mcsh_square(double** cell, double** cart, double** scale, int* pbc_bools,
+extern "C" int calculate_gmp_square(double** cell, double** cart, double** scale, int* pbc_bools,
                                         int* atom_i, int natoms, int* cal_atoms, int cal_num,
                                         int** params_i, double** params_d, int nmcsh, double** atom_gaussian, int* ngaussians, int* element_index_to_order,
                                         double** mcsh, double** dmcsh) {
@@ -899,7 +899,7 @@ extern "C" int calculate_atomistic_mcsh_square(double** cell, double** cart, dou
 
         for (int m = 0; m < nmcsh; ++m) {
             int mcsh_type = get_mcsh_type(params_i[m][0], params_i[m][1]);
-            AtomisticMCSHFunction mcsh_function = get_mcsh_function(params_i[m][0], params_i[m][1]);
+            GMPFunction mcsh_function = get_mcsh_function(params_i[m][0], params_i[m][1]);
 
             // params_d: sigma, weight, A, beta, cutoff
             double A = params_d[m][2], beta = params_d[m][3];
@@ -1175,7 +1175,7 @@ extern "C" int calculate_atomistic_mcsh_square(double** cell, double** cart, dou
 
 
 
-extern "C" int calculate_atomistic_mcsh_square_noderiv(double** cell, double** cart, double** scale, int* pbc_bools,
+extern "C" int calculate_gmp_square_noderiv(double** cell, double** cart, double** scale, int* pbc_bools,
                                         int* atom_i, int natoms, int* cal_atoms, int cal_num,
                                         int** params_i, double** params_d, int nmcsh, double** atom_gaussian, int* ngaussians, int* element_index_to_order,
                                         double** mcsh) {
@@ -1346,7 +1346,7 @@ extern "C" int calculate_atomistic_mcsh_square_noderiv(double** cell, double** c
 
         for (int m = 0; m < nmcsh; ++m) {
             int mcsh_type = get_mcsh_type(params_i[m][0], params_i[m][1]);
-            AtomisticMCSHFunctionNoderiv mcsh_function = get_mcsh_function_noderiv(params_i[m][0], params_i[m][1]);
+            GMPFunctionNoderiv mcsh_function = get_mcsh_function_noderiv(params_i[m][0], params_i[m][1]);
 
             // params_d: sigma, weight, A, beta, cutoff
             double A = params_d[m][2], beta = params_d[m][3];

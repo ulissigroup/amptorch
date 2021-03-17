@@ -16,6 +16,7 @@ dependencies:
   - pip:
     - cffi
     - wandb
+    - lmdb==1.0.0
     - skorch==0.9.*
     - torch-geometric
     - -f https://pytorch-geometric.com/whl/torch-1.6.0+cpu.html

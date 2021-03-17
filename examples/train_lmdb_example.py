@@ -20,6 +20,7 @@ for dist in distances:
     image.set_cell([10, 10, 10])
     image.wrap(pbc=True)
     image.set_calculator(EMT())
+    image.get_potential_energy()
     images.append(image)
 
 Gs = {
@@ -50,10 +51,7 @@ config = {
         "gpus": 0,
     },
     "dataset": {
-        "raw_data": images,
-        "fp_params": Gs,
-        "save_fps": True,
-        "scaling": {"type": "normalize", "range": (0, 1)},
+        "lmdb_path": ["./data.lmdb", "./data2.lmdb"],
         "val_split": 0,
     },
     "cmd": {

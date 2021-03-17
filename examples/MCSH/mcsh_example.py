@@ -33,9 +33,9 @@ MCSHs = {
         "6": {"groups": [1, 2, 3, 4, 5, 6, 7], "sigmas": sigmas},
     },
     "atom_gaussians": {
-        "C": "./MCSH_potential/C_totaldensity_4.g",
-        "O": "./MCSH_potential/O_totaldensity_5.g",
-        "Cu": "./MCSH_potential/Cu_totaldensity_6.g",
+        "C": "./C_totaldensity_4.g",
+        "O": "./O_totaldensity_5.g",
+        "Cu": "./Cu_totaldensity_6.g",
     },
     "cutoff": 8,
 }
@@ -55,7 +55,7 @@ config = {
         "raw_data": images,
         "val_split": 0,
         "elements": elements,
-        "fp_scheme": "mcsh",
+        "fp_scheme": "gmp",
         "fp_params": MCSHs,
         "save_fps": True,
     },

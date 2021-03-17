@@ -58,14 +58,29 @@ class BaseDescriptor(ABC):
 
             # if save, then read/write from db as needed
             if save_fps:
-                temp_descriptor_list = self._compute_fingerprints(
-                    image,
-                    image_db_filename,
-                    calc_derivatives=calc_derivatives,
-                    save_fps=save_fps,
-                    cores=cores,
-                    log=log,
-                )
+                try:
+                    temp_descriptor_list = self._compute_fingerprints(
+                        image,
+                        image_db_filename,
+                        calc_derivatives=calc_derivatives,
+                        save_fps=save_fps,
+                        cores=cores,
+                        log=log,
+                    )
+                except Exception:
+                    print(
+                        "File {} not loaded properly\nProceed to compute in run-time".format(
+                            image_db_filename
+                        )
+                    )
+                    temp_descriptor_list = self._compute_fingerprints_nodb(
+                        image,
+                        image_db_filename,
+                        calc_derivatives=calc_derivatives,
+                        save_fps=save_fps,
+                        cores=cores,
+                        log=log,
+                    )
 
             # if not save, compute fps on-the-fly
             else:

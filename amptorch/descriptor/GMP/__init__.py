@@ -6,10 +6,10 @@ from scipy import sparse
 from ..base_descriptor import BaseDescriptor
 from ..constants import ATOM_SYMBOL_TO_INDEX_DICT
 from ..util import _gen_2Darray_for_ffi, list_symbols_to_indices
-from ._libmcsh import ffi, lib
+from ._libgmp import ffi, lib
 
 
-class AtomisticMCSH(BaseDescriptor):
+class GMP(BaseDescriptor):
     def __init__(
         self,
         MCSHs,
@@ -17,7 +17,7 @@ class AtomisticMCSH(BaseDescriptor):
         # mode="atom-centered",
     ):
         super().__init__()
-        self.descriptor_type = "Atomistic_MCSH"
+        self.descriptor_type = "GMP"
         self.MCSHs = MCSHs
         self.elements = elements
         self.element_indices = list_symbols_to_indices(elements)
@@ -25,6 +25,16 @@ class AtomisticMCSH(BaseDescriptor):
         self.prepare_descriptor_parameters()
 
         self.get_descriptor_setup_hash()
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, BaseDescriptor):
+            if self.descriptor_type != other.descriptor_type:
+                return False
+            if self.descriptor_setup_hash != other.descriptor_setup_hash:
+                return False
+            return True
+        return NotImplemented
 
     def prepare_descriptor_parameters(self):
         descriptor_setup = []
@@ -218,7 +228,7 @@ class AtomisticMCSH(BaseDescriptor):
             dx_p = _gen_2Darray_for_ffi(dx, ffi)
 
             if self.params_set["square"]:
-                errno = lib.calculate_atomistic_mcsh_square(
+                errno = lib.calculate_gmp_square(
                     cell_p,
                     cart_p,
                     scale_p,
@@ -237,7 +247,7 @@ class AtomisticMCSH(BaseDescriptor):
                     dx_p,
                 )
             else:
-                errno = lib.calculate_atomistic_mcsh(
+                errno = lib.calculate_gmp(
                     cell_p,
                     cart_p,
                     scale_p,
@@ -294,7 +304,7 @@ class AtomisticMCSH(BaseDescriptor):
             x_p = _gen_2Darray_for_ffi(x, ffi)
 
             if self.params_set["square"]:
-                errno = lib.calculate_atomistic_mcsh_square_noderiv(
+                errno = lib.calculate_gmp_square_noderiv(
                     cell_p,
                     cart_p,
                     scale_p,
@@ -312,7 +322,7 @@ class AtomisticMCSH(BaseDescriptor):
                     x_p,
                 )
             else:
-                errno = lib.calculate_atomistic_mcsh_noderiv(
+                errno = lib.calculate_gmp_noderiv(
                     cell_p,
                     cart_p,
                     scale_p,

@@ -2,7 +2,7 @@ from torch.utils.data import Dataset
 from torch_geometric.data import Batch
 
 from amptorch.descriptor.Gaussian import Gaussian
-from amptorch.descriptor.MCSH import AtomisticMCSH
+from amptorch.descriptor.GMP import GMP
 from amptorch.preprocessing import (
     AtomsToData,
     PCAReducer,
@@ -76,7 +76,7 @@ class DataCollater:
         self.forcetraining = forcetraining
 
     def __call__(self, data_list):
-        if self.forcetraining:
+        if hasattr(data_list[0], "fprimes"):
             mtxs = []
             for data in data_list:
                 mtxs.append(data.fprimes)
@@ -104,8 +104,8 @@ def construct_descriptor(descriptor_setup):
     fp_scheme, fp_params, cutoff_params, elements = descriptor_setup
     if fp_scheme == "gaussian":
         descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)
-    elif fp_scheme == "mcsh":
-        descriptor = AtomisticMCSH(MCSHs=fp_params, elements=elements)
+    elif fp_scheme == "gmp":
+        descriptor = GMP(MCSHs=fp_params, elements=elements)
     else:
         raise NotImplementedError
     return descriptor

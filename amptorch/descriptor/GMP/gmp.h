@@ -59,7 +59,7 @@ const int IMPLEMENTED_MCSH_TYPE[][2] = {
 
 
 
-typedef void (*AtomisticMCSHFunction) ( double, double, double, double, double, double, double, double, double *, double *);
+typedef void (*GMPFunction) ( double, double, double, double, double, double, double, double, double *, double *);
 // typedef void (*MCSHFunctionType1) ( double, double, double, double, double, double, double, double *, double *);
 // typedef void (*MCSHFunctionType2) ( double, double, double, double, double, double, double, double *, double *);
 // typedef void (*MCSHFunctionType3) ( double, double, double, double, double, double, double, double *, double *);
@@ -142,13 +142,13 @@ void calc_MCSH_9_11(double x0, double y0, double z0, double r0_sqr, double A, do
 void calc_MCSH_9_12(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv);
 
 int get_mcsh_type(int mcsh_order, int group_num);
-AtomisticMCSHFunction get_mcsh_function(int mcsh_order, int group_num);
+GMPFunction get_mcsh_function(int mcsh_order, int group_num);
 
 
 
 
 
-typedef void (*AtomisticMCSHFunctionNoderiv) ( double, double, double, double, double, double, double, double, double *);
+typedef void (*GMPFunctionNoderiv) ( double, double, double, double, double, double, double, double, double *);
 
 void calc_MCSH_0_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value);
 
@@ -213,4 +213,4 @@ void calc_MCSH_9_10_noderiv(double x0, double y0, double z0, double r0_sqr, doub
 void calc_MCSH_9_11_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value);
 void calc_MCSH_9_12_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value);
 
-AtomisticMCSHFunctionNoderiv get_mcsh_function_noderiv(int mcsh_order, int group_num);
+GMPFunctionNoderiv get_mcsh_function_noderiv(int mcsh_order, int group_num);

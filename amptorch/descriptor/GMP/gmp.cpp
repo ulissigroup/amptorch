@@ -1,6 +1,6 @@
 #include <math.h>
 #include <stdio.h>
-#include "atomistic_mcsh.h"
+#include "gmp.h"
 
 #ifndef M_PI
     #define M_PI 3.14159265358979323846
@@ -8733,9 +8733,9 @@ int get_mcsh_type(int mcsh_order, int group_num)
 }
 
 
-AtomisticMCSHFunction get_mcsh_function(int mcsh_order, int group_num)
+GMPFunction get_mcsh_function(int mcsh_order, int group_num)
 {
-    AtomisticMCSHFunction result;
+    GMPFunction result;
 
     if (mcsh_order == 0) {
         if (group_num == 1) {
@@ -8869,9 +8869,9 @@ AtomisticMCSHFunction get_mcsh_function(int mcsh_order, int group_num)
 }
 
 
-AtomisticMCSHFunctionNoderiv get_mcsh_function_noderiv(int mcsh_order, int group_num)
+GMPFunctionNoderiv get_mcsh_function_noderiv(int mcsh_order, int group_num)
 {
-    AtomisticMCSHFunctionNoderiv result;
+    GMPFunctionNoderiv result;
 
     if (mcsh_order == 0) {
         if (group_num == 1) {
