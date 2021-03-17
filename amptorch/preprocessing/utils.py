@@ -12,6 +12,7 @@ try:
 except NameError:
     from tqdm import tqdm
 
+
 class PCAReducer:
     def __init__(
         self,
@@ -23,7 +24,7 @@ class PCAReducer:
         self.forcetraining = forcetraining
         self.elementwise = pca_setting.get("elementwise", False)
         self.num_pc = pca_setting.get("num_pc", 20)
-        self.normalize = pca_setting.get("normalize",False)
+        self.normalize = pca_setting.get("normalize", False)
 
         fingerprints = torch.cat([data.fingerprint for data in data_list], dim=0)
         # atomic_numbers = torch.cat([data.atomic_numbers for data in data_list], dim=0)
@@ -39,17 +40,24 @@ class PCAReducer:
                 std = torch.std(fingerprints, dim=0, unbiased=False)
                 std[std < 1e-8] = 1
                 self.scale = {"offset": mean, "scale": std}
-                fingerprints_normalized = (fingerprints - self.scale["offset"]) / self.scale["scale"]
-                pca_reducer = PCA(n_components=self.num_pc).fit(fingerprints_normalized.numpy())
+                fingerprints_normalized = (
+                    fingerprints - self.scale["offset"]
+                ) / self.scale["scale"]
+                pca_reducer = PCA(n_components=self.num_pc).fit(
+                    fingerprints_normalized.numpy()
+                )
             else:
-                 pca_reducer = PCA(n_components=self.num_pc).fit(fingerprints.numpy())
+                pca_reducer = PCA(n_components=self.num_pc).fit(fingerprints.numpy())
             self.pca_components = torch.tensor(
                 np.transpose(pca_reducer.components_), dtype=torch.get_default_dtype()
             )
             self.explained_variance = pca_reducer.explained_variance_
             self.explained_variance_ratio = pca_reducer.explained_variance_ratio_
-            print("explained variance ratio: {}\n total: {}".format(self.explained_variance_ratio, np.sum(self.explained_variance_ratio)))
-
+            print(
+                "explained variance ratio: {}\n total: {}".format(
+                    self.explained_variance_ratio, np.sum(self.explained_variance_ratio)
+                )
+            )
 
     def reduce(self, data_list, disable_tqdm=False):
         if self.elementwise:
@@ -58,17 +66,19 @@ class PCAReducer:
         else:
             for data in tqdm(
                 data_list,
-                desc="PCA reducing to: {} components".format(self.num_pc) ,
+                desc="PCA reducing to: {} components".format(self.num_pc),
                 total=len(data_list),
                 unit=" images",
                 disable=disable_tqdm,
             ):
                 fingerprint = data.fingerprint
-                #print("size before: {}".format(fingerprint.size()))
+                # print("size before: {}".format(fingerprint.size()))
                 if self.normalize:
-                    fingerprint = (fingerprint - self.scale["offset"]) / self.scale["scale"]
+                    fingerprint = (fingerprint - self.scale["offset"]) / self.scale[
+                        "scale"
+                    ]
                 fingerprint = torch.matmul(fingerprint, self.pca_components)
-                #print("size after: {}".format(fingerprint.size()))
+                # print("size after: {}".format(fingerprint.size()))
                 data.fingerprint = fingerprint
 
                 if self.forcetraining:
@@ -87,6 +97,7 @@ class PCAReducer:
                     # data.fprimes = torch.sparse.FloatTensor(_indices, _values, _size)
 
         return data_list
+
 
 class FeatureScaler:
     """
@@ -239,17 +250,22 @@ class TargetScaler:
     def __init__(self, data_list, forcetraining):
         self.forcetraining = forcetraining
 
-        if len(data_list) > 1:
-            energies = torch.tensor([data.energy for data in data_list])
+        energies = torch.tensor([data.energy for data in data_list])
+        self.target_mean = torch.mean(energies, dim=0)
+        self.target_std = torch.std(energies, dim=0)
 
-            self.target_mean = torch.mean(energies, dim=0)
-            self.target_std = torch.std(energies, dim=0)
-        else:
+        if torch.isnan(self.target_std) or self.target_std == 0:
             self.target_mean = 0
             self.target_std = 1
 
-    def norm(self, data_list):
-        for data in data_list:
+    def norm(self, data_list, disable_tqdm=False):
+        for data in tqdm(
+            data_list,
+            desc="Scaling Target data",
+            total=len(data_list),
+            unit=" scalings",
+            disable=disable_tqdm,
+        ):
             data.energy = (data.energy - self.target_mean) / self.target_std
 
             if self.forcetraining:

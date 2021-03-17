@@ -103,8 +103,7 @@ class BPNN(nn.Module):
             atomic_numbers = batch.atomic_numbers
             fingerprints = batch.fingerprint
             fingerprints.requires_grad = True
-            image_idx = batch.image_idx
-            sorted_image_idx = torch.unique_consecutive(image_idx)
+            image_idx = batch.batch
             mask = self.element_mask(atomic_numbers)
             o = torch.sum(
                 mask
@@ -113,7 +112,7 @@ class BPNN(nn.Module):
                 ),
                 dim=1,
             )
-            energy = scatter(o, image_idx, dim=0)[sorted_image_idx]
+            energy = scatter(o, image_idx, dim=0)
 
             if self.get_forces:
                 gradients = grad(

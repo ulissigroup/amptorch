@@ -11,6 +11,7 @@ import torch
 from skorch import NeuralNetRegressor
 from skorch.callbacks import LRScheduler
 from skorch.dataset import CVSplit
+from collections import OrderedDict
 
 from amptorch.dataset import AtomsDataset, DataCollater, construct_descriptor
 from amptorch.descriptor.util import list_symbols_to_indices
@@ -109,10 +110,9 @@ class AtomsTrainer:
             images=training_images,
             descriptor_setup=descriptor_setup,
             forcetraining=self.forcetraining,
-            pca_reduce = self.pca_reduce,
-            pca_setting = self.config["dataset"].get(
-                "pca_setting",
-                {"num_pc": 20, "elementwise": False, "normalize": False}
+            pca_reduce=self.pca_reduce,
+            pca_setting=self.config["dataset"].get(
+                "pca_setting", {"num_pc": 20, "elementwise": False, "normalize": False}
             ),
             save_fps=self.config["dataset"].get("save_fps", True),
             scaling=self.config["dataset"].get(
@@ -133,7 +133,9 @@ class AtomsTrainer:
             }
             torch.save(normalizers, os.path.join(self.cp_dir, "normalizers.pt"))
             if self.pca_reduce:
-                torch.save(self.pca_reducer, os.path.join(self.cp_dir, "pca_reducer.pt"))
+                torch.save(
+                    self.pca_reducer, os.path.join(self.cp_dir, "pca_reducer.pt")
+                )
             # clean/organize config
             del self.config["dataset"]["fp_params"]
             self.config["dataset"]["descriptor"] = descriptor_setup
@@ -201,7 +203,12 @@ class AtomsTrainer:
         self.criterion = self.config["optim"].get("loss_fn", CustomLoss)
 
     def load_optimizer(self):
-        self.optimizer = self.config["optim"].get("optimizer", torch.optim.Adam)
+        self.optimizer = {
+            "optimizer": self.config["optim"].get("optimizer", torch.optim.Adam)
+        }
+        optimizer_args = self.config["optim"].get("optimizer_args", False)
+        if optimizer_args:
+            self.optimizer.update(optimizer_args)
 
     def load_logger(self):
         if self.config["cmd"].get("logger", False):
@@ -210,7 +217,6 @@ class AtomsTrainer:
             self.wandb_run = wandb.init(
                 name=self.identifier,
                 config=self.config,
-                id=self.timestamp,
             )
 
     def load_skorch(self):
@@ -223,7 +229,6 @@ class AtomsTrainer:
                 "force_coefficient", 0
             ),
             criterion__loss=self.config["optim"].get("loss", "mse"),
-            optimizer=self.optimizer,
             lr=self.config["optim"].get("lr", 1e-1),
             batch_size=self.config["optim"].get("batch_size", 32),
             max_epochs=self.config["optim"].get("epochs", 100),
@@ -237,6 +242,7 @@ class AtomsTrainer:
             train_split=self.split,
             callbacks=self.callbacks,
             verbose=self.config["cmd"].get("verbose", True),
+            **self.optimizer,
         )
         print("Loading skorch trainer")
 
@@ -251,7 +257,7 @@ class AtomsTrainer:
         elapsed_time = time.time() - stime
         print(f"Training completed in {elapsed_time}s")
 
-    def predict(self, images, batch_size=32):
+    def predict(self, images, disable_tqdm=True):
         if len(images) < 1:
             warnings.warn("No images found!", stacklevel=2)
             return images
@@ -267,7 +273,7 @@ class AtomsTrainer:
             cores=1,
         )
 
-        data_list = a2d.convert_all(images, disable_tqdm=True)
+        data_list = a2d.convert_all(images, disable_tqdm=disable_tqdm)
 
         if self.pca_reduce:
             self.pca_reducer.reduce(data_list)
@@ -293,7 +299,14 @@ class AtomsTrainer:
 
         return predictions
 
-    def load_pretrained(self, checkpoint_path=None):
+    def load_pretrained(self, checkpoint_path=None, gpu2cpu=False):
+        """
+        Args:
+            checkpoint_path: str, Path to checkpoint directory
+            gpu2cpu: bool, True if checkpoint was trained with GPUs and you
+            wish to load on cpu instead.
+        """
+
         self.pretrained = True
         print(f"Loading checkpoint from {checkpoint_path}")
         assert os.path.isdir(
@@ -305,14 +318,32 @@ class AtomsTrainer:
             self.config["cmd"]["debug"] = True
             self.elements = self.config["dataset"]["descriptor"][-1]
             self.input_dim = self.config["dataset"]["fp_length"]
+            if gpu2cpu:
+                self.config["optim"]["gpus"] = 0
             self.load(load_dataset=False)
         else:
             # prediction+retraining
             self.load(load_dataset=True)
         self.net.initialize()
+
+        if gpu2cpu:
+            params_path = os.path.join(checkpoint_path, "params_cpu.pt")
+            if not os.path.exists(params_path):
+                params = torch.load(
+                    os.path.join(checkpoint_path, "params.pt"),
+                    map_location=torch.device("cpu"),
+                )
+                new_dict = OrderedDict()
+                for k, v in params.items():
+                    name = k[7:]
+                    new_dict[name] = v
+                torch.save(new_dict, params_path)
+        else:
+            params_path = os.path.join(checkpoint_path, "params.pt")
+
         try:
             self.net.load_params(
-                f_params=os.path.join(checkpoint_path, "params.pt"),
+                f_params=params_path,
                 f_optimizer=os.path.join(checkpoint_path, "optimizer.pt"),
                 f_criterion=os.path.join(checkpoint_path, "criterion.pt"),
                 f_history=os.path.join(checkpoint_path, "history.json"),
@@ -321,7 +352,9 @@ class AtomsTrainer:
             self.feature_scaler = normalizers["feature"]
             self.target_scaler = normalizers["target"]
             if self.config["dataset"].get("pca_reduce", False):
-                self.pca_reducer = torch.load(os.path.join(checkpoint_path, "pca_reducer.pt"))
+                self.pca_reducer = torch.load(
+                    os.path.join(checkpoint_path, "pca_reducer.pt")
+                )
         except NotImplementedError:
             print("Unable to load checkpoint!")
 
