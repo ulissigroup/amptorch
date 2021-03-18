@@ -124,7 +124,7 @@ class AtomsTrainer:
             )
 
             self.forcetraining = self.config["model"].get("get_forces", True)
-            self.pca_reduce = self.config["dataset"].get("pca_reduce", False)
+            # self.pca_reduce = self.config["dataset"].get("pca_reduce", False)
             self.fp_scheme = self.config["dataset"].get("fp_scheme", "gaussian").lower()
             self.fp_params = self.config["dataset"]["fp_params"]
             self.save_fps = self.config["dataset"].get("save_fps", True)
@@ -141,11 +141,11 @@ class AtomsTrainer:
                 images=training_images,
                 descriptor_setup=descriptor_setup,
                 forcetraining=self.forcetraining,
-                pca_reduce=self.pca_reduce,
-                pca_setting=self.config["dataset"].get(
-                    "pca_setting",
-                    {"num_pc": 20, "elementwise": False, "normalize": False},
-                ),
+                # pca_reduce=self.pca_reduce,
+                # pca_setting=self.config["dataset"].get(
+                #     "pca_setting",
+                #     {"num_pc": 20, "elementwise": False, "normalize": False},
+                # ),
                 save_fps=self.config["dataset"].get("save_fps", True),
                 scaling=self.config["dataset"].get(
                     "scaling",
@@ -390,10 +390,10 @@ class AtomsTrainer:
             normalizers = torch.load(os.path.join(checkpoint_path, "normalizers.pt"))
             self.feature_scaler = normalizers["feature"]
             self.target_scaler = normalizers["target"]
-            if self.config["dataset"].get("pca_reduce", False):
-                self.pca_reducer = torch.load(
-                    os.path.join(checkpoint_path, "pca_reducer.pt")
-                )
+            # if self.config["dataset"].get("pca_reduce", False):
+            #     self.pca_reducer = torch.load(
+            #         os.path.join(checkpoint_path, "pca_reducer.pt")
+            #     )
         except NotImplementedError:
             print("Unable to load checkpoint!")
 
