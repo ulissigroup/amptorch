@@ -124,7 +124,6 @@ class AtomsTrainer:
             )
 
             self.forcetraining = self.config["model"].get("get_forces", True)
-            # self.pca_reduce = self.config["dataset"].get("pca_reduce", False)
             self.fp_scheme = self.config["dataset"].get("fp_scheme", "gaussian").lower()
             self.fp_params = self.config["dataset"]["fp_params"]
             self.save_fps = self.config["dataset"].get("save_fps", True)
@@ -141,11 +140,6 @@ class AtomsTrainer:
                 images=training_images,
                 descriptor_setup=descriptor_setup,
                 forcetraining=self.forcetraining,
-                # pca_reduce=self.pca_reduce,
-                # pca_setting=self.config["dataset"].get(
-                #     "pca_setting",
-                #     {"num_pc": 20, "elementwise": False, "normalize": False},
-                # ),
                 save_fps=self.config["dataset"].get("save_fps", True),
                 scaling=self.config["dataset"].get(
                     "scaling",
@@ -154,8 +148,6 @@ class AtomsTrainer:
             )
         self.feature_scaler = self.train_dataset.feature_scaler
         self.target_scaler = self.train_dataset.target_scaler
-        # if self.pca_reduce:
-        #     self.pca_reducer = self.train_dataset.pca_reducer
         self.input_dim = self.train_dataset.input_dim
         self.val_split = self.config["dataset"].get("val_split", 0)
         if not self.debug:
@@ -163,12 +155,7 @@ class AtomsTrainer:
                 "target": self.target_scaler,
                 "feature": self.feature_scaler,
             }
-            # save_normalizers(normalizers, os.path.join(self.cp_dir, "normalizers.json"))
             torch.save(normalizers, os.path.join(self.cp_dir, "normalizers.pt"))
-            # if self.pca_reduce:
-            #     torch.save(self.pca_reducer, os.path.join(self.cp_dir, "pca_reducer.pt"))
-            # clean/organize config
-            # del self.config["dataset"]["fp_params"]
             self.config["dataset"]["descriptor"] = descriptor_setup
             self.config["dataset"]["fp_length"] = self.input_dim
             torch.save(self.config, os.path.join(self.cp_dir, "config.pt"))
@@ -200,8 +187,6 @@ class AtomsTrainer:
 
     def load_extras(self):
         callbacks = []
-        # check_memory_callback = check_memory()
-        # callbacks.append(check_memory_callback)
         load_best_loss = train_end_load_best_loss(self.identifier)
         self.val_split = self.config["dataset"].get("val_split", 0)
         self.split_mode = self.config["dataset"].get("val_split_mode", "cv")
@@ -312,10 +297,8 @@ class AtomsTrainer:
             cores=1,
         )
 
-        data_list = a2d.convert_all(images, disable_tqdm=True)
+        data_list = a2d.convert_all(images, disable_tqdm=disable_tqdm)
 
-        # if self.pca_reduce:
-        #     self.pca_reducer.reduce(data_list)
         self.feature_scaler.norm(data_list)
 
         self.net.module.eval()
@@ -390,10 +373,6 @@ class AtomsTrainer:
             normalizers = torch.load(os.path.join(checkpoint_path, "normalizers.pt"))
             self.feature_scaler = normalizers["feature"]
             self.target_scaler = normalizers["target"]
-            # if self.config["dataset"].get("pca_reduce", False):
-            #     self.pca_reducer = torch.load(
-            #         os.path.join(checkpoint_path, "pca_reducer.pt")
-            #     )
         except NotImplementedError:
             print("Unable to load checkpoint!")
 

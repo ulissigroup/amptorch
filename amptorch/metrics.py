@@ -131,12 +131,6 @@ def evaluator(
                 )
             )
 
-    # callbacks.append(
-    #     Checkpoint(
-    #         monitor="{}_loss_best".format(cp_on),
-    #         fn_prefix="checkpoints/{}/".format(identifier),
-    #     )
-    # )
     return callbacks
 
 
