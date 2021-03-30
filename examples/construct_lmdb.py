@@ -1,3 +1,4 @@
+import os
 import pickle
 import lmdb
 import numpy as np
@@ -13,10 +14,11 @@ from amptorch.ase_utils import AMPtorch
 from amptorch.trainer import AtomsTrainer
 
 
-def construct_lmdb(images, lmdb_path="./data.lmdb"):
+def construct_lmdb(images, lmdb_path="./data.lmdb", normaliers_path="./normalizers.pt"):
     """
     images: list of ase atoms objects (or trajectory) for fingerprint calculatation
     lmdb_path: Path to store LMDB dataset.
+    normaliers_path: path of the scalers, create and store them if not exist
     """
     db = lmdb.open(
         lmdb_path,
@@ -65,18 +67,23 @@ def construct_lmdb(images, lmdb_path="./data.lmdb"):
         data_list.append(do)
         idx += 1
 
-    scaling = {"type": "normalize", "range": (0, 1)}
-    feature_scaler = FeatureScaler(data_list, forcetraining, scaling)
-    target_scaler = TargetScaler(data_list, forcetraining)
+    if os.path.isfile(normaliers_path):
+        normalizers = torch.load(normaliers_path)
+        feature_scaler = normalizers["feature"]
+        target_scaler = normalizers["target"]
+
+    else:
+        scaling = {"type": "normalize", "range": (0, 1)}
+        feature_scaler = FeatureScaler(data_list, forcetraining, scaling)
+        target_scaler = TargetScaler(data_list, forcetraining)
+        normalizers = {
+            "target": target_scaler,
+            "feature": feature_scaler,
+        }
+        torch.save(normalizers, normaliers_path)
 
     feature_scaler.norm(data_list)
     target_scaler.norm(data_list)
-
-    normalizers = {
-        "target": target_scaler,
-        "feature": feature_scaler,
-    }
-    torch.save(normalizers, "./normalizers.pt")
 
     idx = 0
     for do in tqdm(data_list, desc="Writing images to LMDB"):
@@ -130,4 +137,4 @@ if __name__ == "__main__":
         image.get_potential_energy()
         images.append(image)
 
-    construct_lmdb(images, lmdb_path="./data.lmdb")
+    construct_lmdb(images, lmdb_path="./data.lmdb", normaliers_path="./normalizers.pt")

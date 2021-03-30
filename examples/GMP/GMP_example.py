@@ -21,21 +21,21 @@ for dist in distances:
     images.append(image)
 
 
-sigmas = np.logspace(np.log10(0.02), np.log10(1.0), num=5)
+sigmas = [0.02, 0.2, 0.4, 0.69, 1.1, 1.66, 2.66, 4.4]
 MCSHs = {
     "MCSHs": {
         "0": {"groups": [1], "sigmas": sigmas},
         "1": {"groups": [1], "sigmas": sigmas},
         "2": {"groups": [1, 2], "sigmas": sigmas},
         "3": {"groups": [1, 2, 3], "sigmas": sigmas},
-        "4": {"groups": [1, 2, 3, 4], "sigmas": sigmas},
-        "5": {"groups": [1, 2, 3, 4, 5], "sigmas": sigmas},
-        "6": {"groups": [1, 2, 3, 4, 5, 6, 7], "sigmas": sigmas},
+        # "4": {"groups": [1, 2, 3, 4], "sigmas": sigmas},
+        # "5": {"groups": [1, 2, 3, 4, 5], "sigmas": sigmas},
+        # "6": {"groups": [1, 2, 3, 4, 5, 6, 7], "sigmas": sigmas},
     },
     "atom_gaussians": {
-        "C": "./C_totaldensity_4.g",
-        "O": "./O_totaldensity_5.g",
-        "Cu": "./Cu_totaldensity_6.g",
+        "C": "./valence_gaussians/C_pseudodensity_4.g",
+        "O": "./valence_gaussians/O_pseudodensity_4.g",
+        "Cu": "./valence_gaussians/Cu_pseudodensity_4.g",
     },
     "cutoff": 8,
 }
