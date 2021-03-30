@@ -19,6 +19,7 @@ from amptorch.dataset_lmdb import (
     AtomsLMDBDataset,
     AtomsLMDBDatasetPartialCache,
     AtomsLMDBDatasetCache,
+    get_lmdb_dataset,
 )
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.metrics import evaluator
@@ -96,20 +97,9 @@ class AtomsTrainer:
     def load_dataset(self):
         if "lmdb_path" in self.config["dataset"]:
             self.cache = self.config["dataset"].get("cache", "no")
-            if self.cache == "full":
-                self.train_dataset = AtomsLMDBDatasetCache(
-                    self.config["dataset"]["lmdb_path"],
-                )
-            elif self.cache == "partial":
-                self.train_dataset = AtomsLMDBDatasetPartialCache(
-                    self.config["dataset"]["lmdb_path"],
-                )
-            elif self.cache == "no":
-                self.train_dataset = AtomsLMDBDataset(
-                    self.config["dataset"]["lmdb_path"],
-                )
-            else:
-                raise NotImplementedError
+            self.train_dataset = get_lmdb_dataset(
+                self.config["dataset"]["lmdb_path"], self.cache
+            )
             self.elements = self.train_dataset.elements
             descriptor_setup = self.train_dataset.descriptor_setup
         else:
@@ -299,7 +289,7 @@ class AtomsTrainer:
 
         data_list = a2d.convert_all(images, disable_tqdm=disable_tqdm)
 
-        self.feature_scaler.norm(data_list)
+        self.feature_scaler.norm(data_list, disable_tqdm=disable_tqdm)
 
         self.net.module.eval()
         collate_fn = DataCollater(train=False, forcetraining=self.forcetraining)

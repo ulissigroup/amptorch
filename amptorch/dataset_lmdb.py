@@ -9,6 +9,19 @@ from amptorch.descriptor.GMP import GMP
 
 
 class AtomsLMDBDataset(Dataset):
+    """
+    lmdb dataset with no cache
+
+    This is the straight forward yet slow way of using lmdb files
+    To access a given image of lmdb files (i.e. the __getitem__ function), it has to go to disk,
+    connect to the corresponding lmdb file, and access the desired image.
+    Since this is random access for each image, the performance is slow.
+
+    It does support large amount of data, limited only by disk space, and NOT memory (RAM)
+
+    It should be avoid for bad access performance if possible
+    """
+
     def __init__(
         self,
         db_paths,
@@ -53,6 +66,8 @@ class AtomsLMDBDataset(Dataset):
 
         self._keylen_cumulative = np.cumsum(self.length_list).tolist()
         self.total_length = np.sum(self.length_list)
+
+        # use the scaler/setups from the first lmdb file, but check for consistency across all lmdb files
         self.feature_scaler = feature_scaler_list[0]
         self.target_scaler = target_scaler_list[0]
         self.descriptor_setup = descriptor_setup_list[0]
@@ -124,6 +139,23 @@ class AtomsLMDBDataset(Dataset):
 
 
 class AtomsLMDBDatasetPartialCache(Dataset):
+    """
+    lmdb dataset with partial cache
+
+    This is the optimized way for training with multiple lmdb files
+    that CAN NOT be fitted into RAM all at once.
+    It assumes the trainer to sequentially look at the images and lmdb files (i.e., first the
+    images in lmdb_file1 in order, then images in lmdb_file2 in order, and so on)
+    With the above assumption, the dataset load and cache all the images of the current accessing
+    lmdb file into RAM, and access the desired image (__getitem__ ) from RAM.
+    This is ~ 1-2 orders of magnitudes faster than no cache, because of serial acess of lmdb_files.
+
+    It does support large amount of data, limited only by disk space,
+    as long as each lmdb file can be loaded into RAM entirely.
+
+    It has to be used with in-order spliter and randomized dataset.
+    """
+
     def __init__(
         self,
         db_paths,
@@ -168,6 +200,8 @@ class AtomsLMDBDatasetPartialCache(Dataset):
 
         self._keylen_cumulative = np.cumsum(self.length_list).tolist()
         self.total_length = np.sum(self.length_list)
+
+        # use the scaler/setups from the first lmdb file, but check for consistency across all lmdb files
         self.feature_scaler = feature_scaler_list[0]
         self.target_scaler = target_scaler_list[0]
         self.descriptor_setup = descriptor_setup_list[0]
@@ -249,6 +283,18 @@ class AtomsLMDBDatasetPartialCache(Dataset):
 
 
 class AtomsLMDBDatasetCache(Dataset):
+    """
+    lmdb dataset with full cache
+
+    This is the fastest way for training with multiple lmdb files
+    in case they CAN be fitted into RAM all at once.
+    It loads all images into RAM from disk up front.
+
+    It does not large amount of data, as it's limited by RAM size.
+
+    It is the fastest way among the three for trianing, ~3x faster than partial caching.
+    """
+
     def __init__(
         self,
         db_paths,
@@ -293,6 +339,8 @@ class AtomsLMDBDatasetCache(Dataset):
 
         self._keylen_cumulative = np.cumsum(self.length_list).tolist()
         self.total_length = np.sum(self.length_list)
+
+        # use the scaler/setups from the first lmdb file, but check for consistency across all lmdb files
         self.feature_scaler = feature_scaler_list[0]
         self.target_scaler = target_scaler_list[0]
         self.descriptor_setup = descriptor_setup_list[0]
@@ -363,3 +411,14 @@ class AtomsLMDBDatasetCache(Dataset):
             max_readers=1,
         )
         return env
+
+
+def get_lmdb_dataset(lmdb_paths, cache_type):
+    if cache_type == "full":
+        return AtomsLMDBDatasetCache(lmdb_paths)
+    elif cache_type == "partial":
+        return AtomsLMDBDatasetPartialCache(lmdb_paths)
+    elif cache_type == "no":
+        return AtomsLMDBDataset(lmdb_paths)
+    else:
+        raise NotImplementedError
