@@ -43,7 +43,12 @@ MCSHs = {
 
 elements = ["Cu", "C", "O"]
 config = {
-    "model": {"get_forces": False, "num_layers": 3, "num_nodes": 20},
+    "model": {
+        "name": "singlenn",
+        "get_forces": False,
+        "num_layers": 3,
+        "num_nodes": 20,
+    },
     "optim": {
         "device": "cpu",
         "force_coefficient": 0.0,
