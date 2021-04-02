@@ -61,7 +61,7 @@ class ParallelCollater:
         else:
             num_devices = min(self.num_gpus, len(data_list))
 
-            count = torch.tensor([data.natoms for data in data_list])
+            count = torch.tensor([data.num_nodes for data in data_list])
             cumsum = count.cumsum(0)
             cumsum = torch.cat([cumsum.new_zeros(1), cumsum], dim=0)
             device_id = num_devices * cumsum.to(torch.float) / cumsum[-1].item()
