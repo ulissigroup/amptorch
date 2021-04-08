@@ -19,6 +19,7 @@ from amptorch.dataset_lmdb import (
     AtomsLMDBDataset,
     AtomsLMDBDatasetPartialCache,
     AtomsLMDBDatasetCache,
+    PartialCacheSampler,
     get_lmdb_dataset,
 )
 from amptorch.descriptor.util import list_symbols_to_indices
@@ -236,28 +237,52 @@ class AtomsTrainer:
     def load_skorch(self):
         skorch.net.to_tensor = to_tensor
 
-        self.net = NeuralNetRegressor(
-            module=self.model,
-            criterion=self.criterion,
-            criterion__force_coefficient=self.config["optim"].get(
-                "force_coefficient", 0
-            ),
-            criterion__loss=self.config["optim"].get("loss", "mse"),
-            lr=self.config["optim"].get("lr", 1e-1),
-            batch_size=self.config["optim"].get("batch_size", 32),
-            max_epochs=self.config["optim"].get("epochs", 100),
-            iterator_train__collate_fn=self.parallel_collater,
-            iterator_train__shuffle=self.config["dataset"] != "partial",
-            iterator_train__pin_memory=True,
-            iterator_valid__collate_fn=self.parallel_collater,
-            iterator_valid__shuffle=False,
-            iterator_valid__pin_memory=True,
-            device=self.device,
-            train_split=self.split,
-            callbacks=self.callbacks,
-            verbose=self.config["cmd"].get("verbose", True),
-            **self.optimizer,
-        )
+        if self.config["dataset"] == "partial":
+            self.net = NeuralNetRegressor(
+                module=self.model,
+                criterion=self.criterion,
+                criterion__force_coefficient=self.config["optim"].get(
+                    "force_coefficient", 0
+                ),
+                criterion__loss=self.config["optim"].get("loss", "mse"),
+                lr=self.config["optim"].get("lr", 1e-1),
+                batch_size=self.config["optim"].get("batch_size", 32),
+                max_epochs=self.config["optim"].get("epochs", 100),
+                iterator_train__collate_fn=self.parallel_collater,
+                iterator_train__sampler=PartialCacheSampler(self.train_dataset.get_length_list, self.config["dataset"].get("val_split", 0)),
+                iterator_train__pin_memory=True,
+                iterator_valid__collate_fn=self.parallel_collater,
+                iterator_valid__shuffle=False,
+                iterator_valid__pin_memory=True,
+                device=self.device,
+                train_split=self.split,
+                callbacks=self.callbacks,
+                verbose=self.config["cmd"].get("verbose", True),
+                **self.optimizer,
+            )
+        else:
+            self.net = NeuralNetRegressor(
+                module=self.model,
+                criterion=self.criterion,
+                criterion__force_coefficient=self.config["optim"].get(
+                    "force_coefficient", 0
+                ),
+                criterion__loss=self.config["optim"].get("loss", "mse"),
+                lr=self.config["optim"].get("lr", 1e-1),
+                batch_size=self.config["optim"].get("batch_size", 32),
+                max_epochs=self.config["optim"].get("epochs", 100),
+                iterator_train__collate_fn=self.parallel_collater,
+                iterator_train__shuffle=True,
+                iterator_train__pin_memory=True,
+                iterator_valid__collate_fn=self.parallel_collater,
+                iterator_valid__shuffle=False,
+                iterator_valid__pin_memory=True,
+                device=self.device,
+                train_split=self.split,
+                callbacks=self.callbacks,
+                verbose=self.config["cmd"].get("verbose", True),
+                **self.optimizer,
+            )
         print("Loading skorch trainer")
 
     def train(self, raw_data=None):
