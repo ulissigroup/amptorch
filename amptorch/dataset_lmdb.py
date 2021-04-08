@@ -265,7 +265,7 @@ class AtomsLMDBDatasetPartialCache(Dataset):
         else:
             raise NotImplementedError
         return descriptor
-    
+
     def get_length_list(self):
         return self.length_list
 
@@ -418,7 +418,6 @@ class AtomsLMDBDatasetCache(Dataset):
 
 
 class PartialCacheSampler(Sampler):
-    
     def __init__(self, length_list, val_frac):
         len_cumulative = np.cumsum(length_list)
         len_dataset = np.sum(length_list)
@@ -426,7 +425,7 @@ class PartialCacheSampler(Sampler):
         len_train = len_dataset - len_val
         for i, cum_len in enumerate(len_cumulative):
             if cum_len >= len_train:
-                self.length_list = length_list[:i+1]
+                self.length_list = length_list[: i + 1]
                 self.length_list[-1] -= cum_len - len_train
                 break
 
@@ -438,9 +437,13 @@ class PartialCacheSampler(Sampler):
         dataset_order = [i for i in torch.randperm(self.num_datasets)]
         for dataset_idx in dataset_order:
             start_idx = self.start_idx_list[dataset_idx]
-            datapoint_order += [i+current_start_idx for i in torch.randperm(self.length_list[dataset_idx])]
+            datapoint_order += [
+                i + current_start_idx
+                for i in torch.randperm(self.length_list[dataset_idx])
+            ]
 
         return datapoint_order
+
 
 def get_lmdb_dataset(lmdb_paths, cache_type):
     if cache_type == "full":

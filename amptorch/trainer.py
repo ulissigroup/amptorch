@@ -249,7 +249,10 @@ class AtomsTrainer:
                 batch_size=self.config["optim"].get("batch_size", 32),
                 max_epochs=self.config["optim"].get("epochs", 100),
                 iterator_train__collate_fn=self.parallel_collater,
-                iterator_train__sampler=PartialCacheSampler(self.train_dataset.get_length_list, self.config["dataset"].get("val_split", 0)),
+                iterator_train__sampler=PartialCacheSampler(
+                    self.train_dataset.get_length_list,
+                    self.config["dataset"].get("val_split", 0),
+                ),
                 iterator_train__pin_memory=True,
                 iterator_valid__collate_fn=self.parallel_collater,
                 iterator_valid__shuffle=False,
