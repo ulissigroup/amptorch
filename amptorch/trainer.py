@@ -237,7 +237,7 @@ class AtomsTrainer:
     def load_skorch(self):
         skorch.net.to_tensor = to_tensor
 
-        if self.config["dataset"] == "partial":
+        if self.config["dataset"].get("cache", None) == "partial":
             self.net = NeuralNetRegressor(
                 module=self.model,
                 criterion=self.criterion,
@@ -250,9 +250,10 @@ class AtomsTrainer:
                 max_epochs=self.config["optim"].get("epochs", 100),
                 iterator_train__collate_fn=self.parallel_collater,
                 iterator_train__sampler=PartialCacheSampler(
-                    self.train_dataset.get_length_list,
-                    self.config["dataset"].get("val_split", 0),
+                    self.train_dataset.get_length_list(),
+                    self.val_split,
                 ),
+                iterator_train__shuffle=False,
                 iterator_train__pin_memory=True,
                 iterator_valid__collate_fn=self.parallel_collater,
                 iterator_valid__shuffle=False,

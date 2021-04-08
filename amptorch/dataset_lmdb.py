@@ -2,6 +2,7 @@ import lmdb
 import pickle
 import numpy as np
 import bisect
+import torch
 from tqdm import tqdm
 from torch.utils.data import Dataset
 from amptorch.descriptor.Gaussian import Gaussian
@@ -421,7 +422,7 @@ class PartialCacheSampler(Sampler):
     def __init__(self, length_list, val_frac):
         len_cumulative = np.cumsum(length_list)
         len_dataset = np.sum(length_list)
-        len_val = int(len_dataset * self.val_frac)
+        len_val = int(len_dataset * val_frac)
         len_train = len_dataset - len_val
         for i, cum_len in enumerate(len_cumulative):
             if cum_len >= len_train:
@@ -429,20 +430,20 @@ class PartialCacheSampler(Sampler):
                 self.length_list[-1] -= cum_len - len_train
                 break
 
-        self.num_datasets = len(length_list)
+        self.num_datasets = len(self.length_list)
         self.start_idx_list = [0] + np.cumsum(self.length_list).tolist()
+        self.total_length = np.sum(self.length_list)
 
     def __iter__(self):
         datapoint_order = []
-        dataset_order = [i for i in torch.randperm(self.num_datasets)]
+        dataset_order = torch.randperm(self.num_datasets).tolist()
         for dataset_idx in dataset_order:
             start_idx = self.start_idx_list[dataset_idx]
             datapoint_order += [
-                i + current_start_idx
-                for i in torch.randperm(self.length_list[dataset_idx])
+                i + start_idx
+                for i in torch.randperm(self.length_list[dataset_idx]).tolist()
             ]
-
-        return datapoint_order
+        return iter(datapoint_order)
 
 
 def get_lmdb_dataset(lmdb_paths, cache_type):
