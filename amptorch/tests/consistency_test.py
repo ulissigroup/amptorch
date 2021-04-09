@@ -155,6 +155,6 @@ def test_energy_force_consistency():
 
 
 if __name__ == "__main__":
-    print('\n\n--------- Gaussian Consistency Test ---------\n')
+    print("\n\n--------- Gaussian Consistency Test ---------\n")
     test_energy_force_consistency()
     print("Success! Energy/Forces are physically consistent: F = -dE/dx")

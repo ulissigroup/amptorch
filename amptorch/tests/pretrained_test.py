@@ -115,6 +115,6 @@ def test_pretrained_no_config():
 
 
 if __name__ == "__main__":
-    print('\n\n--------- Pre Trained Test ---------\n')
+    print("\n\n--------- Pre Trained Test ---------\n")
     test_pretrained()
     test_pretrained_no_config()

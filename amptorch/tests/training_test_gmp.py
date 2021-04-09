@@ -132,5 +132,5 @@ def test_training_gmp():
 
 
 if __name__ == "__main__":
-    print('\n\n--------- GMP Training Test ---------\n')
+    print("\n\n--------- GMP Training Test ---------\n")
     test_training_gmp()

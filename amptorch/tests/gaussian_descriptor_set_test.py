@@ -87,5 +87,5 @@ def test_gaussian_descriptor_set():
 
 
 if __name__ == "__main__":
-    print('\n\n--------- Gaussian Descriptor Set Test ---------\n')
+    print("\n\n--------- Gaussian Descriptor Set Test ---------\n")
     test_gaussian_descriptor_set()

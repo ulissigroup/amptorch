@@ -205,12 +205,16 @@ def test_lmdb_pretrained_no_config():
     trainer_2.load_pretrained(trained_cpdir)
     e_mae_2, f_mae_2 = get_metrics(trainer_2)
 
-    assert e_mae_1 == e_mae_2, "configless - lmdb pretrained energy metrics inconsistent!"
-    assert f_mae_1 == f_mae_2, "configless - lmdb pretrained force metrics inconsistent!"
+    assert (
+        e_mae_1 == e_mae_2
+    ), "configless - lmdb pretrained energy metrics inconsistent!"
+    assert (
+        f_mae_1 == f_mae_2
+    ), "configless - lmdb pretrained force metrics inconsistent!"
 
 
 if __name__ == "__main__":
-    print('\n\n--------- LMDB Pretrained Test ---------\n')
+    print("\n\n--------- LMDB Pretrained Test ---------\n")
     construct_lmdb(images, "./data1.lmdb")
     construct_lmdb(images, "./data2.lmdb")
     test_pretrained()
