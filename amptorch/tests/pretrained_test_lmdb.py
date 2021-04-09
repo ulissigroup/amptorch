@@ -171,6 +171,9 @@ def get_metrics(trainer):
 
 
 def test_lmdb_pretrained():
+    construct_lmdb(images, "./data1.lmdb")
+    construct_lmdb(images, "./data2.lmdb")
+
     torch.set_num_threads(1)
     config_1 = copy.deepcopy(config)
     config_2 = copy.deepcopy(config)
@@ -195,6 +198,9 @@ def test_lmdb_pretrained():
 
 
 def test_lmdb_pretrained_no_config():
+    construct_lmdb(images, "./data1.lmdb")
+    construct_lmdb(images, "./data2.lmdb")
+    
     config_1 = copy.deepcopy(config)
     trainer = AtomsTrainer(config_1)
     trainer.train()
@@ -215,7 +221,5 @@ def test_lmdb_pretrained_no_config():
 
 if __name__ == "__main__":
     print("\n\n--------- LMDB Pretrained Test ---------\n")
-    construct_lmdb(images, "./data1.lmdb")
-    construct_lmdb(images, "./data2.lmdb")
     test_pretrained()
     test_pretrained_no_config()
