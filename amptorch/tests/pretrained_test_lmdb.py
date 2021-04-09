@@ -170,7 +170,7 @@ def get_metrics(trainer):
     return e_mae, f_mae
 
 
-def test_pretrained():
+def test_lmdb_pretrained():
     torch.set_num_threads(1)
     config_1 = copy.deepcopy(config)
     config_2 = copy.deepcopy(config)
@@ -185,8 +185,8 @@ def test_pretrained():
     pretrained_trainer.load_pretrained(trained_cpdir)
     e_mae_2, f_mae_2 = get_metrics(pretrained_trainer)
 
-    assert e_mae_1 == e_mae_2, "config - pretrained energy metrics inconsistent!"
-    assert f_mae_1 == f_mae_2, "config - pretrained force metrics inconsistent!"
+    assert e_mae_1 == e_mae_2, "config - lmdb pretrained energy metrics inconsistent!"
+    assert f_mae_1 == f_mae_2, "config - lmdb pretrained force metrics inconsistent!"
 
     pretrained_trainer.train()
     e_mae_3, f_mae_3 = get_metrics(pretrained_trainer)
@@ -194,7 +194,7 @@ def test_pretrained():
     assert f_mae_3 < f_mae_2, "Retrained metrics are larger!"
 
 
-def test_pretrained_no_config():
+def test_lmdb_pretrained_no_config():
     config_1 = copy.deepcopy(config)
     trainer = AtomsTrainer(config_1)
     trainer.train()
@@ -205,11 +205,12 @@ def test_pretrained_no_config():
     trainer_2.load_pretrained(trained_cpdir)
     e_mae_2, f_mae_2 = get_metrics(trainer_2)
 
-    assert e_mae_1 == e_mae_2, "configless - pretrained energy metrics inconsistent!"
-    assert f_mae_1 == f_mae_2, "configless - pretrained force metrics inconsistent!"
+    assert e_mae_1 == e_mae_2, "configless - lmdb pretrained energy metrics inconsistent!"
+    assert f_mae_1 == f_mae_2, "configless - lmdb pretrained force metrics inconsistent!"
 
 
 if __name__ == "__main__":
+    print('\n\n--------- LMDB Pretrained Test ---------\n')
     construct_lmdb(images, "./data1.lmdb")
     construct_lmdb(images, "./data2.lmdb")
     test_pretrained()

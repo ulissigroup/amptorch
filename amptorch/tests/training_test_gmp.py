@@ -96,7 +96,7 @@ def get_force_metrics(config):
     assert f_mae < 0.06
 
 
-def test_training():
+def test_training_gmp():
     torch.set_num_threads(1)
 
     ### train only
@@ -132,4 +132,5 @@ def test_training():
 
 
 if __name__ == "__main__":
-    test_training()
+    print('\n\n--------- GMP Training Test ---------\n')
+    test_training_gmp()

@@ -113,4 +113,5 @@ def test_cutoff_funcs():
 
 
 if __name__ == "__main__":
+    print('\n\n--------- Gaussian Cutoff Functions Test ---------\n')
     test_cutoff_funcs()
