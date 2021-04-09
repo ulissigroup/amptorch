@@ -1,6 +1,7 @@
 import copy
 import numpy as np
 import torch
+import lmdb
 from ase import Atoms
 from ase.calculators.emt import EMT
 
@@ -47,10 +48,9 @@ config = {
         "metric": "mae",
     },
     "dataset": {
-        "raw_data": images,
+        "lmdb_path": ["./data1.lmdb", "./data2.lmdb"],
         "val_split": 0,
-        "elements": elements,
-        "fp_params": Gs,
+        "cache": "full",
     },
     "cmd": {
         "debug": False,
@@ -63,6 +63,101 @@ config = {
 
 true_energies = np.array([image.get_potential_energy() for image in images])
 true_forces = np.concatenate(np.array([image.get_forces() for image in images]))
+
+
+def construct_lmdb(images, lmdb_path, normaliers_path="./normalizers.pt"):
+    """
+    images: list of ase atoms objects (or trajectory) for fingerprint calculatation
+    lmdb_path: Path to store LMDB dataset.
+    normaliers_path: path of the scalers, create and store them if not exist
+    """
+    db = lmdb.open(
+        lmdb_path,
+        map_size=1099511627776 * 2,
+        subdir=False,
+        meminit=False,
+        map_async=True,
+    )
+
+    # Define symmetry functions
+    Gs_1 = copy.deepcopy(Gs)
+
+    training_atoms = images
+    elements = np.array([atom.symbol for atoms in training_atoms for atom in atoms])
+    elements = np.unique(elements)
+    descriptor = Gaussian(Gs=Gs_1, elements=elements, cutoff_func="Cosine")
+    descriptor_setup = ("gaussian", Gs_1, {"cutoff_func": "Cosine"}, elements)
+    forcetraining = True
+
+    a2d = AtomsToData(
+        descriptor=descriptor,
+        r_energy=True,
+        r_forces=True,
+        save_fps=False,
+        fprimes=forcetraining,
+    )
+
+    data_list = []
+    idx = 0
+    for image in tqdm(
+        images,
+        desc="calculating fps",
+        total=len(images),
+        unit=" images",
+    ):
+        do = a2d.convert(image, idx=idx)
+        data_list.append(do)
+        idx += 1
+
+    if os.path.isfile(normaliers_path):
+        normalizers = torch.load(normaliers_path)
+        feature_scaler = normalizers["feature"]
+        target_scaler = normalizers["target"]
+
+    else:
+        scaling = {"type": "normalize", "range": (0, 1)}
+        feature_scaler = FeatureScaler(data_list, forcetraining, scaling)
+        target_scaler = TargetScaler(data_list, forcetraining)
+        normalizers = {
+            "target": target_scaler,
+            "feature": feature_scaler,
+        }
+        torch.save(normalizers, normaliers_path)
+
+    feature_scaler.norm(data_list)
+    target_scaler.norm(data_list)
+
+    idx = 0
+    for do in tqdm(data_list, desc="Writing images to LMDB"):
+        txn = db.begin(write=True)
+        txn.put(f"{idx}".encode("ascii"), pickle.dumps(do, protocol=-1))
+        txn.commit()
+        idx += 1
+
+    txn = db.begin(write=True)
+    txn.put("feature_scaler".encode("ascii"), pickle.dumps(feature_scaler, protocol=-1))
+    txn.commit()
+
+    txn = db.begin(write=True)
+    txn.put("target_scaler".encode("ascii"), pickle.dumps(target_scaler, protocol=-1))
+    txn.commit()
+
+    txn = db.begin(write=True)
+    txn.put("length".encode("ascii"), pickle.dumps(idx, protocol=-1))
+    txn.commit()
+
+    txn = db.begin(write=True)
+    txn.put("elements".encode("ascii"), pickle.dumps(elements, protocol=-1))
+    txn.commit()
+
+    txn = db.begin(write=True)
+    txn.put(
+        "descriptor_setup".encode("ascii"), pickle.dumps(descriptor_setup, protocol=-1)
+    )
+    txn.commit()
+
+    db.sync()
+    db.close()
 
 
 def get_metrics(trainer):
@@ -115,5 +210,7 @@ def test_pretrained_no_config():
 
 
 if __name__ == "__main__":
+    construct_lmdb(images, "./data1.lmdb")
+    construct_lmdb(images, "./data2.lmdb")
     test_pretrained()
     test_pretrained_no_config()
