@@ -1,4 +1,6 @@
 import os
+import pickle
+import ase.io
 import copy
 import numpy as np
 import torch
