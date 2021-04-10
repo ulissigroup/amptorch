@@ -2,11 +2,14 @@ import copy
 import numpy as np
 import torch
 import lmdb
+from tqdm import tqdm
 from ase import Atoms
 from ase.calculators.emt import EMT
 
 from amptorch.trainer import AtomsTrainer
+from amptorch.preprocessing import AtomsToData, FeatureScaler, TargetScaler
 from amptorch.descriptor.Gaussian import Gaussian
+
 
 ### Construct test data
 distances = np.linspace(2, 5, 100)
