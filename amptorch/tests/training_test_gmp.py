@@ -33,9 +33,9 @@ MCSHs = {
         "3": {"groups": [1, 2, 3], "sigmas": sigmas},
     },
     "atom_gaussians": {
-        "C": "GMP_params/C_pseudodensity_4.g",
-        "O": "GMP_params/O_pseudodensity_4.g",
-        "Cu": "GMP_params/Cu_pseudodensity_4.g",
+        "C": "./GMP_params/C_pseudodensity_4.g",
+        "O": "./GMP_params/O_pseudodensity_4.g",
+        "Cu": "./GMP_params/Cu_pseudodensity_4.g",
     },
     "cutoff": 10,
 }

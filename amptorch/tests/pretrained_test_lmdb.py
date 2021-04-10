@@ -6,6 +6,7 @@ from ase import Atoms
 from ase.calculators.emt import EMT
 
 from amptorch.trainer import AtomsTrainer
+from amptorch.descriptor.Gaussian import Gaussian
 
 ### Construct test data
 distances = np.linspace(2, 5, 100)
@@ -200,7 +201,7 @@ def test_lmdb_pretrained():
 def test_lmdb_pretrained_no_config():
     construct_lmdb(images, "./data1.lmdb")
     construct_lmdb(images, "./data2.lmdb")
-    
+
     config_1 = copy.deepcopy(config)
     trainer = AtomsTrainer(config_1)
     trainer.train()
