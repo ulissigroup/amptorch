@@ -193,6 +193,7 @@ class AtomsTrainer:
             self.config["optim"].get("metric", "mae"),
             self.identifier,
             self.forcetraining,
+            self.config["optim"].get("cp_metric", "energy")
         )
         callbacks.extend(metrics)
 

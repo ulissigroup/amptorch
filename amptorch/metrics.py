@@ -67,6 +67,7 @@ def evaluator(
     metric,
     identifier,
     forcetraining,
+    cp_metric,
 ):
 
     callbacks = []
@@ -84,6 +85,9 @@ def evaluator(
         forces_score = mse_forces_score
     else:
         raise NotImplementedError(f"{metric} metric not available!")
+    
+    if not cp_metric in ["energy", "forces"]:
+        raise NotImplementedError(f"{cp_metric} value not valid!")
 
     callbacks.append(
         MemEffEpochScoring(
@@ -104,12 +108,7 @@ def evaluator(
                 target_extractor=target_extractor,
             )
         )
-    callbacks.append(
-        Checkpoint(
-            monitor="{}_energy_{}_best".format(cp_on, metric),
-            fn_prefix="checkpoints/{}/".format(identifier),
-        )
-    )
+
     if forcetraining:
         callbacks.append(
             MemEffEpochScoring(
@@ -130,6 +129,13 @@ def evaluator(
                     target_extractor=target_extractor,
                 )
             )
+
+    callbacks.append(
+        Checkpoint(
+            monitor="{}_{}_{}_best".format(cp_on, cp_mertic, metric),
+            fn_prefix="checkpoints/{}/".format(identifier),
+        )
+    )
 
     return callbacks
 

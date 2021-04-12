@@ -40,6 +40,7 @@ configs = {
       "loss_fn": object,            # Loss function to optimize (default: CustomLoss)
       "loss": str,                  # Control loss function criterion, "mse" or "mae" (default: "mse")
       "metric": str,                # Metrics to be reported by, "mse" or "mae" (default: "mae")
+      "cp_metric": str,             # Property based on which the model is saved. "energy" or "forces" (default: "energy")
       "scheduler": dict,            # Learning rate scheduler to use
 				    ##            - {"policy": "StepLR", "params": {"step_size": 10, "gamma": 0.1}}
   },
