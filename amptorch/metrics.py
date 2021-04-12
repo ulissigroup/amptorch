@@ -85,7 +85,7 @@ def evaluator(
         forces_score = mse_forces_score
     else:
         raise NotImplementedError(f"{metric} metric not available!")
-    
+
     if not cp_metric in ["energy", "forces"]:
         raise NotImplementedError(f"{cp_metric} value not valid!")
 
