@@ -1,4 +1,5 @@
 ATOM_INDEX_TO_SYMBOL_DICT = {
+    0: "X"
     1: "H",
     2: "He",
     3: "Li",
@@ -120,6 +121,7 @@ ATOM_INDEX_TO_SYMBOL_DICT = {
 }
 
 ATOM_SYMBOL_TO_INDEX_DICT = {
+    "X": 0
     "H": 1,
     "He": 2,
     "Li": 3,
