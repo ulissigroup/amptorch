@@ -132,7 +132,7 @@ def evaluator(
 
     callbacks.append(
         Checkpoint(
-            monitor="{}_{}_{}_best".format(cp_on, cp_mertic, metric),
+            monitor="{}_{}_{}_best".format(cp_on, cp_metric, metric),
             fn_prefix="checkpoints/{}/".format(identifier),
         )
     )
