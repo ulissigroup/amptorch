@@ -650,6 +650,7 @@ extern "C" int calculate_gmp_noderiv(double** cell, double** cart, double** scal
 
                     int neigh_atom_element_index = nei_list_i[j*2];
                     int neigh_atom_element_order = element_index_to_order[neigh_atom_element_index];
+                    if (neigh_atom_element_index == 0) continue;
                     double x0 = nei_list_d[j*4], y0 = nei_list_d[j*4+1], z0 = nei_list_d[j*4+2], r0_sqr = nei_list_d[j*4+3];
                     for (int g = 0; g < ngaussians[neigh_atom_element_order]; ++g){
                         double B = atom_gaussian[neigh_atom_element_order][g*2], alpha = atom_gaussian[neigh_atom_element_order][g*2+1];
@@ -668,6 +669,7 @@ extern "C" int calculate_gmp_noderiv(double** cell, double** cart, double** scal
                 for (int j = 0; j < nneigh; ++j) {
                     int neigh_atom_element_index = nei_list_i[j*2];
                     int neigh_atom_element_order = element_index_to_order[neigh_atom_element_index];
+                    if (neigh_atom_element_index == 0) continue;
                     double x0 = nei_list_d[j*4], y0 = nei_list_d[j*4+1], z0 = nei_list_d[j*4+2], r0_sqr = nei_list_d[j*4+3];
                     for (int g = 0; g < ngaussians[neigh_atom_element_order]; ++g){
                         double B = atom_gaussian[neigh_atom_element_order][g*2], alpha = atom_gaussian[neigh_atom_element_order][g*2+1];
@@ -691,6 +693,7 @@ extern "C" int calculate_gmp_noderiv(double** cell, double** cart, double** scal
                 for (int j = 0; j < nneigh; ++j) {
                     int neigh_atom_element_index = nei_list_i[j*2];
                     int neigh_atom_element_order = element_index_to_order[neigh_atom_element_index];
+                    if (neigh_atom_element_index == 0) continue;
                     double x0 = nei_list_d[j*4], y0 = nei_list_d[j*4+1], z0 = nei_list_d[j*4+2], r0_sqr = nei_list_d[j*4+3];
                     for (int g = 0; g < ngaussians[neigh_atom_element_order]; ++g){
                         double B = atom_gaussian[neigh_atom_element_order][g*2], alpha = atom_gaussian[neigh_atom_element_order][g*2+1];
