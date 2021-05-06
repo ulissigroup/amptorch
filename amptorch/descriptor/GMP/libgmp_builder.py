@@ -13,7 +13,7 @@ ffibuilder.cdef(
                                 double**, double**);
 
         int calculate_gmp_noderiv(double **, double **, double **, int*,
-                                    int *, int, int*, int,
+                                    int *, int, int*, int, int* , int,
                                     int**, double **, int, double **, int*, int*,
                                     double**);
 

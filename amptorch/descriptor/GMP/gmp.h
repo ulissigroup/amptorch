@@ -1,7 +1,8 @@
 #include <math.h>
 
-const int NUM_IMPLEMENTED_TYPE = 53;
+const int NUM_IMPLEMENTED_TYPE = 54;
 const int IMPLEMENTED_MCSH_TYPE[][2] = {
+    {-1, 1},
     {0, 1},
     {1, 1},
     {2, 1},
@@ -78,6 +79,8 @@ double dy0dy();
 
 double dz0dz();
 
+void calc_density(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv);
+
 void calc_MCSH_0_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv);
 
 void calc_MCSH_1_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv);
@@ -149,6 +152,8 @@ GMPFunction get_mcsh_function(int mcsh_order, int group_num);
 
 
 typedef void (*GMPFunctionNoderiv) ( double, double, double, double, double, double, double, double, double *);
+
+void calc_density_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value);
 
 void calc_MCSH_0_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value);
 

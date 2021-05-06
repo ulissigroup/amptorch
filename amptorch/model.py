@@ -197,6 +197,110 @@ class SingleNN(nn.Module):
         return sum(p.numel() for p in self.parameters())
 
 
+class MLPRho(nn.Module):
+    def __init__(
+        self,
+        n_input_nodes,
+        n_layers,
+        n_hidden_size,
+        activation,
+        batchnorm,
+        dropout,
+        dropout_rate,
+        n_output_nodes=1,
+    ):
+        super(MLP, self).__init__()
+        if isinstance(n_hidden_size, int):
+            n_hidden_size = [n_hidden_size] * (n_layers)
+        self.n_neurons = [n_input_nodes] + n_hidden_size + [n_output_nodes]
+        self.activation = activation
+        layers = []
+        for _ in range(n_layers - 1):
+            layers.append(nn.Linear(self.n_neurons[_], self.n_neurons[_ + 1]))
+            if batchnorm:
+                layers.append(nn.BatchNorm1d(self.n_neurons[_ + 1]))
+            layers.append(activation())
+            if dropout:
+                layers.append(nn.Dropout(p=dropout_rate))
+
+        layers.append(nn.Linear(self.n_neurons[-2], self.n_neurons[-1]))
+        self.model_net = nn.Sequential(*layers)
+
+        # TODO: identify optimal initialization scheme
+        # self.reset_parameters()
+
+    def reset_parameters(self):
+        for m in self.model_net:
+            if isinstance(m, torch.nn.Linear):
+                torch.nn.init.xavier_uniform_(m.weight)
+                m.bias.data.fill_(0)
+
+    def forward(self, inputs):
+        return self.model_net(inputs) * inputs[:,0][:,None]
+
+class SingleNNRho(nn.Module):
+    def __init__(
+        self,
+        elements,
+        input_dim,
+        num_nodes,
+        num_layers,
+        get_forces=True,
+        batchnorm=False,
+        dropout=False,
+        dropout_rate=0.5,
+        activation=Tanh,
+        name="singlennrho",
+    ):
+        super(SingleNN, self).__init__()
+        self.get_forces = get_forces
+        self.activation_fn = activation
+
+        self.model = MLPRho(
+            n_input_nodes=input_dim,
+            n_layers=num_layers,
+            n_hidden_size=num_nodes,
+            activation=activation,
+            batchnorm=batchnorm,
+            dropout=dropout,
+            dropout_rate=dropout_rate,
+        )
+
+    def forward(self, batch):
+        if isinstance(batch, list):
+            batch = batch[0]
+        with torch.enable_grad():
+            fingerprints = batch.fingerprint.float()
+            fingerprints.requires_grad = True
+            image_idx = batch.batch
+            sorted_image_idx = torch.unique_consecutive(image_idx)
+            o = torch.sum(self.model(fingerprints), dim=1)
+            energy = scatter(o, image_idx, dim=0)
+
+            if self.get_forces:
+                gradients = grad(
+                    energy,
+                    fingerprints,
+                    grad_outputs=torch.ones_like(energy),
+                    create_graph=True,
+                )[0].view(1, -1)
+
+                forces = -1 * torch.sparse.mm(batch.fprimes.t(), gradients.t()).view(
+                    -1, 3
+                )
+
+            else:
+                forces = torch.tensor([], device=energy.device)
+
+            return energy, forces
+
+    @property
+    def num_params(self):
+        return sum(p.numel() for p in self.parameters())
+
+
+
+
 class CustomLoss(nn.Module):
     def __init__(self, force_coefficient=0, loss="mae"):
         super(CustomLoss, self).__init__()

@@ -24,7 +24,7 @@ from amptorch.dataset_lmdb import (
 )
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.metrics import evaluator
-from amptorch.model import BPNN, SingleNN, CustomLoss
+from amptorch.model import BPNN, SingleNN, SingleNNRho,CustomLoss
 from amptorch.preprocessing import AtomsToData
 from amptorch.utils import (
     to_tensor,
@@ -114,6 +114,14 @@ class AtomsTrainer:
                 "elements", self.get_unique_elements(training_images)
             )
 
+            self.fp_elements = self.config["dataset"].get(
+                "fp_elements", self.elements
+            )
+
+            self.ref_elements = self.config["dataset"].get(
+                "ref_elements", self.elements
+            )
+
             self.forcetraining = self.config["model"].get("get_forces", True)
             self.fp_scheme = self.config["dataset"].get("fp_scheme", "gaussian").lower()
             self.fp_params = self.config["dataset"]["fp_params"]
@@ -126,6 +134,8 @@ class AtomsTrainer:
                 self.fp_params,
                 self.cutoff_params,
                 self.elements,
+                self.fp_elements,
+                self.ref_elements,
             )
             self.train_dataset = AtomsDataset(
                 images=training_images,
@@ -161,6 +171,10 @@ class AtomsTrainer:
             )
         elif model == "singlenn":
             self.model = SingleNN(
+                elements=elements, input_dim=self.input_dim, **self.config["model"]
+            )
+        elif model == "singlennrho":
+            self.model = SingleNNRho(
                 elements=elements, input_dim=self.input_dim, **self.config["model"]
             )
         else:
@@ -358,7 +372,9 @@ class AtomsTrainer:
             # prediction only
             self.config = torch.load(os.path.join(checkpoint_path, "config.pt"))
             self.config["cmd"]["debug"] = True
-            self.elements = self.config["dataset"]["descriptor"][-1]
+            self.elements = self.config["dataset"]["descriptor"][-3]
+            self.fp_elements = self.config["dataset"]["descriptor"][-2]
+            self.ref_elements = self.config["dataset"]["descriptor"][-1]
             self.input_dim = self.config["dataset"]["fp_length"]
             if gpu2cpu:
                 self.config["optim"]["gpus"] = 0

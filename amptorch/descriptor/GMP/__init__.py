@@ -14,13 +14,19 @@ class GMP(BaseDescriptor):
         self,
         MCSHs,
         elements,
-        # mode="atom-centered",
+        fp_elements,
+        ref_elements,
     ):
         super().__init__()
         self.descriptor_type = "GMP"
         self.MCSHs = MCSHs
         self.elements = elements
         self.element_indices = list_symbols_to_indices(elements)
+
+        self.fp_elements = fp_elements
+        self.ref_elements = ref_elements
+        self.fp_element_indices = list_symbols_to_indices(fp_elements)
+        self.ref_element_indices = list_symbols_to_indices(ref_elements)
 
         self.prepare_descriptor_parameters()
 
@@ -40,6 +46,8 @@ class GMP(BaseDescriptor):
         descriptor_setup = []
         cutoff = self.MCSHs["cutoff"]
 
+        if self.MCSHs.get("get_density", False):
+            descriptor_setup +=  [[-1, 1, 0, 0, 0, 0, cutoff]]
         for i in range(20):
             if str(i) in self.MCSHs["MCSHs"].keys():
                 descriptor_setup += [
@@ -58,25 +66,31 @@ class GMP(BaseDescriptor):
         self.descriptor_setup = np.array(descriptor_setup)
 
         atomic_gaussian_setup = {}
-        for element in self.elements:
+        for element in self.ref_elements:
             params = list()
-            # count = 0
             filename = self.MCSHs["atom_gaussians"][element]
             with open(filename, "r") as fil:
                 for line in fil:
                     tmp = line.split()
                     params += [float(tmp[0]), float(tmp[1])]
-                    # count += 1
             element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
             params = np.asarray(params, dtype=np.float64, order="C")
             atomic_gaussian_setup[element_index] = params
+
+        #structure:
+        # atomic_gaussian_setup = 
+        # {
+        #     1: [0.1, 1.0, 2.2, 0.2 ],             // 2 gaussians for H
+        #     6: [0.3, 2.0, 3.0, 0.5, 8.0, 0.5],    // 3 gaussians for C
+        #     ...
+        # }
 
         self.atomic_gaussian_setup = atomic_gaussian_setup
 
         max_gaussian_count = 0
         ngaussian_list = list()
         self.params_set = dict()
-        for element_index in self.element_indices:
+        for element_index in self.ref_element_indices:
             self.params_set[element_index] = dict()
             self.params_set[element_index][
                 "gaussian_params"
@@ -99,8 +113,7 @@ class GMP(BaseDescriptor):
             overall_gaussian_params.append(temp)
 
         element_index_to_order_list = np.zeros(120, dtype=np.intc)
-        for i, element_index in enumerate(self.element_indices):
-            # element_index_to_order_list.append(element_index)
+        for i, element_index in enumerate(self.ref_element_indices):
             element_index_to_order_list[element_index] = i
 
         # element_index_to_order_list = np.asarray(element_index_to_order_list, dtype=np.intc, order='C')
@@ -178,6 +191,11 @@ class GMP(BaseDescriptor):
         atom_indices = list_symbols_to_indices(symbols)
         unique_atom_indices = np.unique(atom_indices)
 
+        ref_atom_indices = np.where(np.isin(atom_indices, self.ref_element_indices))[0]
+        ref_atom_num = len(ref_atom_indices)
+
+        ref_atom_indices_p = ffi.cast("int *", ref_atom_indices.ctypes.data)
+
         type_num = dict()
         type_idx = dict()
 
@@ -206,97 +224,74 @@ class GMP(BaseDescriptor):
         # print("calculate atom length: {}\ttotal:{}".format(cal_num, atom_num))
         cal_atoms_p = ffi.cast("int *", cal_atoms.ctypes.data)
 
-        # print(self.params_set['i'])
-        # print(self.params_set['d'])
-        # print(self.params_set['gaussian_params'])
-        # print(self.params_set['ngaussians'])
-        # print(self.params_set['element_index_to_order'])
-        # print(self.params_set['num'])
-        # print(atom_indices)
-
         size_info = np.array([atom_num, cal_num, self.params_set["num"]])
 
         if calc_derivatives:
-            x = np.zeros([cal_num, self.params_set["num"]], dtype=np.float64, order="C")
-            dx = np.zeros(
-                [cal_num * self.params_set["num"], atom_num * 3],
-                dtype=np.float64,
-                order="C",
-            )
+            raise NotImplementedError("force not supported yet")
+            # x = np.zeros([cal_num, self.params_set["num"]], dtype=np.float64, order="C")
+            # dx = np.zeros(
+            #     [cal_num * self.params_set["num"], atom_num * 3],
+            #     dtype=np.float64,
+            #     order="C",
+            # )
 
-            x_p = _gen_2Darray_for_ffi(x, ffi)
-            dx_p = _gen_2Darray_for_ffi(dx, ffi)
+            # x_p = _gen_2Darray_for_ffi(x, ffi)
+            # dx_p = _gen_2Darray_for_ffi(dx, ffi)
 
-            if self.params_set["square"]:
-                errno = lib.calculate_gmp_square(
-                    cell_p,
-                    cart_p,
-                    scale_p,
-                    pbc_p,
-                    atom_indices_p,
-                    atom_num,
-                    cal_atoms_p,
-                    cal_num,
-                    self.params_set["ip"],
-                    self.params_set["dp"],
-                    self.params_set["num"],
-                    self.params_set["gaussian_params_p"],
-                    self.params_set["ngaussians_p"],
-                    self.params_set["element_index_to_order_p"],
-                    x_p,
-                    dx_p,
-                )
-            else:
-                errno = lib.calculate_gmp(
-                    cell_p,
-                    cart_p,
-                    scale_p,
-                    pbc_p,
-                    atom_indices_p,
-                    atom_num,
-                    cal_atoms_p,
-                    cal_num,
-                    self.params_set["ip"],
-                    self.params_set["dp"],
-                    self.params_set["num"],
-                    self.params_set["gaussian_params_p"],
-                    self.params_set["ngaussians_p"],
-                    self.params_set["element_index_to_order_p"],
-                    x_p,
-                    dx_p,
-                )
+            # if self.params_set["square"]:
+            #     errno = lib.calculate_gmp_square(
+            #         cell_p,
+            #         cart_p,
+            #         scale_p,
+            #         pbc_p,
+            #         atom_indices_p,
+            #         atom_num,
+            #         cal_atoms_p,
+            #         cal_num,
+            #         self.params_set["ip"],
+            #         self.params_set["dp"],
+            #         self.params_set["num"],
+            #         self.params_set["gaussian_params_p"],
+            #         self.params_set["ngaussians_p"],
+            #         self.params_set["element_index_to_order_p"],
+            #         x_p,
+            #         dx_p,
+            #     )
+            # else:
+            #     errno = lib.calculate_gmp(
+            #         cell_p,
+            #         cart_p,
+            #         scale_p,
+            #         pbc_p,
+            #         atom_indices_p,
+            #         atom_num,
+            #         cal_atoms_p,
+            #         cal_num,
+            #         self.params_set["ip"],
+            #         self.params_set["dp"],
+            #         self.params_set["num"],
+            #         self.params_set["gaussian_params_p"],
+            #         self.params_set["ngaussians_p"],
+            #         self.params_set["element_index_to_order_p"],
+            #         x_p,
+            #         dx_p,
+            #     )
 
-            if errno == 1:
-                raise NotImplementedError("Descriptor not implemented!")
-            fp = np.array(x)
-            fp_prime = np.array(dx)
+            # if errno == 1:
+            #     raise NotImplementedError("Descriptor not implemented!")
+            # fp = np.array(x)
+            # fp_prime = np.array(dx)
 
-            # if "prime_threshold" in self.params_set:
-            #     threshold = self.params_set["prime_threshold"]
-            #     super_threshold_indices = np.abs(fp_prime) < threshold
-            #     print("threshhold: {} \tnum points set to zero:{} \t outof: {}".format(threshold, np.sum(super_threshold_indices), fp_prime.shape[0] * fp_prime.shape[1]))
-            #     fp_prime[super_threshold_indices] = 0.0
+            # scipy_sparse_fp_prime = sparse.coo_matrix(fp_prime)
 
-            # threshold = 1e-9
-            # super_threshold_indices_prime = np.abs(fp_prime) < threshold
-            # print("threshhold: {} \tnum points set to zero:{} \t outof: {}".format(threshold, np.sum(super_threshold_indices_prime), fp_prime.shape[0] * fp_prime.shape[1]))
-            # fp_prime[super_threshold_indices_prime] = 0.0
-
-            scipy_sparse_fp_prime = sparse.coo_matrix(fp_prime)
-            # print(fp)
-            # print(fp.shape)
-            # print(np.sum(super_threshold_indices))
-            # print(np.min(np.abs(scipy_sparse_fp_prime.data)))
-            # print("density: {}% \n\n----------------------".format(100*len(scipy_sparse_fp_prime.data) / (fp_prime.shape[0] * fp_prime.shape[1])))
-
-            return (
-                size_info,
-                fp,
-                scipy_sparse_fp_prime.data,
-                scipy_sparse_fp_prime.row,
-                scipy_sparse_fp_prime.col,
-                np.array(fp_prime.shape),
-            )
+            # return (
+            #     size_info,
+            #     fp,
+            #     scipy_sparse_fp_prime.data,
+            #     scipy_sparse_fp_prime.row,
+            #     scipy_sparse_fp_prime.col,
+            #     np.array(fp_prime.shape),
+            # )
 
         else:
             x = np.zeros([cal_num, self.params_set["num"]], dtype=np.float64, order="C")
@@ -304,23 +299,24 @@ class GMP(BaseDescriptor):
             x_p = _gen_2Darray_for_ffi(x, ffi)
 
             if self.params_set["square"]:
-                errno = lib.calculate_gmp_square_noderiv(
-                    cell_p,
-                    cart_p,
-                    scale_p,
-                    pbc_p,
-                    atom_indices_p,
-                    atom_num,
-                    cal_atoms_p,
-                    cal_num,
-                    self.params_set["ip"],
-                    self.params_set["dp"],
-                    self.params_set["num"],
-                    self.params_set["gaussian_params_p"],
-                    self.params_set["ngaussians_p"],
-                    self.params_set["element_index_to_order_p"],
-                    x_p,
-                )
+                raise NotImplementedError("square not implemented")
+                # errno = lib.calculate_gmp_square_noderiv(
+                #     cell_p,
+                #     cart_p,
+                #     scale_p,
+                #     pbc_p,
+                #     atom_indices_p,
+                #     atom_num,
+                #     cal_atoms_p,
+                #     cal_num,
+                #     self.params_set["ip"],
+                #     self.params_set["dp"],
+                #     self.params_set["num"],
+                #     self.params_set["gaussian_params_p"],
+                #     self.params_set["ngaussians_p"],
+                #     self.params_set["element_index_to_order_p"],
+                #     x_p,
+                # )
             else:
                 errno = lib.calculate_gmp_noderiv(
                     cell_p,
@@ -331,6 +327,8 @@ class GMP(BaseDescriptor):
                     atom_num,
                     cal_atoms_p,
                     cal_num,
+                    ref_atom_indices, 
+                    ref_atom_num,
                     self.params_set["ip"],
                     self.params_set["dp"],
                     self.params_set["num"],
