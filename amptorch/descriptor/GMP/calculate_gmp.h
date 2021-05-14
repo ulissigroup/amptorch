@@ -3,7 +3,7 @@
 #include "gmp.h"
 
 extern "C" int calculate_gmp(double **, double **, double **, int*,
-                                        int *, int, int*, int,
+                                        int *, int, int*, int, int* , int,
                                         int**, double **, int, double **, int *, int *,
                                         double**, double**);
 
