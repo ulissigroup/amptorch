@@ -227,55 +227,58 @@ class GMP(BaseDescriptor):
         size_info = np.array([atom_num, cal_num, self.params_set["num"]])
 
         if calc_derivatives:
-            raise NotImplementedError("force not supported yet")
+            # raise NotImplementedError("force not supported yet")
             # x = np.zeros([cal_num, self.params_set["num"]], dtype=np.float64, order="C")
-            # dx = np.zeros(
-            #     [cal_num * self.params_set["num"], atom_num * 3],
-            #     dtype=np.float64,
-            #     order="C",
-            # )
+            dx = np.zeros(
+                [cal_num * self.params_set["num"], ref_atom_num * 3],
+                dtype=np.float64,
+                order="C",
+            )
 
-            # x_p = _gen_2Darray_for_ffi(x, ffi)
-            # dx_p = _gen_2Darray_for_ffi(dx, ffi)
+            x_p = _gen_2Darray_for_ffi(x, ffi)
+            dx_p = _gen_2Darray_for_ffi(dx, ffi)
 
-            # if self.params_set["square"]:
-            #     errno = lib.calculate_gmp_square(
-            #         cell_p,
-            #         cart_p,
-            #         scale_p,
-            #         pbc_p,
-            #         atom_indices_p,
-            #         atom_num,
-            #         cal_atoms_p,
-            #         cal_num,
-            #         self.params_set["ip"],
-            #         self.params_set["dp"],
-            #         self.params_set["num"],
-            #         self.params_set["gaussian_params_p"],
-            #         self.params_set["ngaussians_p"],
-            #         self.params_set["element_index_to_order_p"],
-            #         x_p,
-            #         dx_p,
-            #     )
-            # else:
-            #     errno = lib.calculate_gmp(
-            #         cell_p,
-            #         cart_p,
-            #         scale_p,
-            #         pbc_p,
-            #         atom_indices_p,
-            #         atom_num,
-            #         cal_atoms_p,
-            #         cal_num,
-            #         self.params_set["ip"],
-            #         self.params_set["dp"],
-            #         self.params_set["num"],
-            #         self.params_set["gaussian_params_p"],
-            #         self.params_set["ngaussians_p"],
-            #         self.params_set["element_index_to_order_p"],
-            #         x_p,
-            #         dx_p,
-            #     )
+            if self.params_set["square"]:
+                errno = lib.calculate_gmp_square(
+                    cell_p,
+                    cart_p,
+                    scale_p,
+                    pbc_p,
+                    atom_indices_p,
+                    atom_num,
+                    cal_atoms_p,
+                    cal_num,
+                    ref_atom_indices_p, 
+                    ref_atom_num,
+                    self.params_set["ip"],
+                    self.params_set["dp"],
+                    self.params_set["num"],
+                    self.params_set["gaussian_params_p"],
+                    self.params_set["ngaussians_p"],
+                    self.params_set["element_index_to_order_p"],
+                    x_p,
+                    dx_p,
+                )
+            else:
+                raise NotImplementedError("not implemented")
+                # errno = lib.calculate_gmp(
+                #     cell_p,
+                #     cart_p,
+                #     scale_p,
+                #     pbc_p,
+                #     atom_indices_p,
+                #     atom_num,
+                #     cal_atoms_p,
+                #     cal_num,
+                #     self.params_set["ip"],
+                #     self.params_set["dp"],
+                #     self.params_set["num"],
+                #     self.params_set["gaussian_params_p"],
+                #     self.params_set["ngaussians_p"],
+                #     self.params_set["element_index_to_order_p"],
+                #     x_p,
+                #     dx_p,
+                # )
 
             # if errno == 1:
             #     raise NotImplementedError("Descriptor not implemented!")
@@ -327,7 +330,7 @@ class GMP(BaseDescriptor):
                     atom_num,
                     cal_atoms_p,
                     cal_num,
-                    ref_atom_indices, 
+                    ref_atom_indices_p, 
                     ref_atom_num,
                     self.params_set["ip"],
                     self.params_set["dp"],

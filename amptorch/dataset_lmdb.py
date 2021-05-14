@@ -114,11 +114,11 @@ class AtomsLMDBDataset(Dataset):
         return data_object
 
     def get_descriptor(self, descriptor_setup):
-        fp_scheme, fp_params, cutoff_params, elements = descriptor_setup
+        fp_scheme, fp_params, cutoff_params, elements, fp_elements, ref_elements = descriptor_setup
         if fp_scheme == "gaussian":
             descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)
         elif fp_scheme == "gmp":
-            descriptor = GMP(MCSHs=fp_params, elements=elements)
+            descriptor = GMP(MCSHs=fp_params, elements=elements, ref_elements=ref_elements, fp_elements=fp_elements)
         else:
             raise NotImplementedError
         return descriptor
@@ -258,11 +258,11 @@ class AtomsLMDBDatasetPartialCache(Dataset):
         return self.loaded_dataset[el_idx]
 
     def get_descriptor(self, descriptor_setup):
-        fp_scheme, fp_params, cutoff_params, elements = descriptor_setup
+        fp_scheme, fp_params, cutoff_params, elements, fp_elements, ref_elements = descriptor_setup
         if fp_scheme == "gaussian":
             descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)
         elif fp_scheme == "gmp":
-            descriptor = GMP(MCSHs=fp_params, elements=elements)
+            descriptor = GMP(MCSHs=fp_params, elements=elements, ref_elements=ref_elements, fp_elements=fp_elements)
         else:
             raise NotImplementedError
         return descriptor
@@ -392,11 +392,11 @@ class AtomsLMDBDatasetCache(Dataset):
         return self.data_list[idx]
 
     def get_descriptor(self, descriptor_setup):
-        fp_scheme, fp_params, cutoff_params, elements = descriptor_setup
+        fp_scheme, fp_params, cutoff_params, elements, fp_elements, ref_elements = descriptor_setup
         if fp_scheme == "gaussian":
             descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)
         elif fp_scheme == "gmp":
-            descriptor = GMP(MCSHs=fp_params, elements=elements)
+            descriptor = GMP(MCSHs=fp_params, elements=elements, ref_elements=ref_elements, fp_elements=fp_elements)
         else:
             raise NotImplementedError
         return descriptor

@@ -8594,7 +8594,13 @@ void calc_MCSH_9_12_noderiv(double x0, double y0, double z0, double r0_sqr, doub
 
 int get_mcsh_type(int mcsh_order, int group_num)
 {
-    if (mcsh_order == 0) {
+    if (mcsh_order == -1) {
+        if (group_num == 1) {
+            return 1;
+        } else {
+            return 0;
+        }
+    } else if (mcsh_order == 0) {
         if (group_num == 1) {
             return 1;
         } else {
@@ -8753,7 +8759,7 @@ GMPFunction get_mcsh_function(int mcsh_order, int group_num)
         if (group_num == 1) {
             result = calc_density;
         }
-    if (mcsh_order == 0) {
+    } else if (mcsh_order == 0) {
         if (group_num == 1) {
             result = calc_MCSH_0_1;
         }
@@ -8893,7 +8899,7 @@ GMPFunctionNoderiv get_mcsh_function_noderiv(int mcsh_order, int group_num)
         if (group_num == 1) {
             result = calc_density_noderiv;
         }
-    if (mcsh_order == 0) {
+    } else if (mcsh_order == 0) {
         if (group_num == 1) {
             result = calc_MCSH_0_1_noderiv;
         }

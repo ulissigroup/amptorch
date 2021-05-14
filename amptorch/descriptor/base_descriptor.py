@@ -428,7 +428,8 @@ class BaseDescriptor(ABC):
             image_dict = {}
 
             symbol_arr = np.array(image.get_chemical_symbols())
-            atom_indices = list_symbols_to_indices(symbols_arr)
+            atom_indices = list_symbols_to_indices(symbol_arr)
+            num_atoms = len(symbol_arr)
             num_fp_atoms = 0
 
             try:
@@ -592,7 +593,8 @@ class BaseDescriptor(ABC):
         image_dict = {}
 
         symbol_arr = np.array(image.get_chemical_symbols())
-        atom_indices = list_symbols_to_indices(symbols_arr)
+        atom_indices = list_symbols_to_indices(symbol_arr)
+        num_atoms = len(symbol_arr)
         num_fp_atoms = 0
 
         num_desc_list = []
