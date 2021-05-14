@@ -105,7 +105,7 @@ class GMP(BaseDescriptor):
         ngaussian_list = np.asarray(ngaussian_list, dtype=np.intc, order="C")
         max_gaussian_count = np.max(ngaussian_list)
         overall_gaussian_params = list()
-        for element_index in self.element_indices:
+        for element_index in self.ref_element_indices:
             temp = np.zeros(max_gaussian_count * 2)
             temp[
                 : self.params_set[element_index]["gaussian_count"] * 2
