@@ -133,7 +133,7 @@ def test_energy_force_consistency():
             "scaling": {"type": "normalize", "range": (-1, 1)},
         },
         "cmd": {
-            "debug": False,
+            "debug": True,
             "run_dir": "./",
             "seed": 1,
             "identifier": "test",
