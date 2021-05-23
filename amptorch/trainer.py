@@ -118,6 +118,7 @@ class AtomsTrainer:
         self.target_scaler = self.train_dataset.target_scaler
         self.input_dim = self.train_dataset.input_dim
         self.val_split = self.config["dataset"].get("val_split", 0)
+        self.config["dataset"]["descriptor"] = descriptor_setup
         if not self.debug:
             normalizers = {
                 "target": self.target_scaler,
@@ -125,7 +126,6 @@ class AtomsTrainer:
             }
             torch.save(normalizers, os.path.join(self.cp_dir, "normalizers.pt"))
             # clean/organize config
-            self.config["dataset"]["descriptor"] = descriptor_setup
             self.config["dataset"]["fp_length"] = self.input_dim
             torch.save(self.config, os.path.join(self.cp_dir, "config.pt"))
         print("Loading dataset: {} images".format(len(self.train_dataset)))

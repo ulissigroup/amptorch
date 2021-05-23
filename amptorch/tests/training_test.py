@@ -124,6 +124,7 @@ def test_training():
     config["optim"]["force_coefficient"] = 0.04
     config["optim"]["loss"] = "mse"
     config["dataset"]["val_split"] = 0.1
+    config["cmd"]["debug"] = True
     get_force_metrics(copy.deepcopy(config))
     print("Val energy+forces success!")
 
