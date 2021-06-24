@@ -105,7 +105,7 @@ class AtomsLMDBDataset(Dataset):
                 raise ValueError("Please make sure all lmdb used the same descriptor")
             if any(set(elements) != set(self.elements) for elements in elements_list):
                 raise ValueError("Please make sure all lmdb used the same elements")
-            if any(set(ref_elements) != set(self.fp_elements) for ref_elements in ref_elements_list):
+            if any(set(ref_elements) != set(self.ref_elements) for ref_elements in ref_elements_list):
                 raise ValueError("Please make sure all lmdb used the same ref_elements")
             if any(set(fp_elements) != set(self.fp_elements) for fp_elements in fp_elements_list):
                 raise ValueError("Please make sure all lmdb used the same fp_elements")
@@ -251,7 +251,7 @@ class AtomsLMDBDatasetPartialCache(Dataset):
                 raise ValueError("Please make sure all lmdb used the same descriptor")
             if any(set(elements) != set(self.elements) for elements in elements_list):
                 raise ValueError("Please make sure all lmdb used the same elements")
-            if any(set(ref_elements) != set(self.fp_elements) for ref_elements in ref_elements_list):
+            if any(set(ref_elements) != set(self.ref_elements) for ref_elements in ref_elements_list):
                 raise ValueError("Please make sure all lmdb used the same ref_elements")
             if any(set(fp_elements) != set(self.fp_elements) for fp_elements in fp_elements_list):
                 raise ValueError("Please make sure all lmdb used the same fp_elements")
@@ -404,7 +404,7 @@ class AtomsLMDBDatasetCache(Dataset):
                 raise ValueError("Please make sure all lmdb used the same descriptor")
             if any(set(elements) != set(self.elements) for elements in elements_list):
                 raise ValueError("Please make sure all lmdb used the same elements")
-            if any(set(ref_elements) != set(self.fp_elements) for ref_elements in ref_elements_list):
+            if any(set(ref_elements) != set(self.ref_elements) for ref_elements in ref_elements_list):
                 raise ValueError("Please make sure all lmdb used the same ref_elements")
             if any(set(fp_elements) != set(self.fp_elements) for fp_elements in fp_elements_list):
                 raise ValueError("Please make sure all lmdb used the same fp_elements")

@@ -31,9 +31,11 @@ class AtomsDataset(Dataset):
         # self.pca_setting = pca_setting
         self.scaling = scaling
         self.descriptor = construct_descriptor(descriptor_setup)
+        self.fp_elements = descriptor_setup[-2]
 
         self.a2d = AtomsToData(
             descriptor=self.descriptor,
+            fp_elements=self.fp_elements,
             r_energy=True,
             r_forces=self.forcetraining,
             save_fps=save_fps,

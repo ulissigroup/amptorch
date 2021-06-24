@@ -20,6 +20,7 @@ class AtomsToData:
     def __init__(
         self,
         descriptor,
+        fp_elements,
         r_energy=False,
         r_forces=False,
         save_fps=True,
@@ -29,6 +30,7 @@ class AtomsToData:
         self.r_energy = r_energy
         self.r_forces = r_forces
         self.descriptor = descriptor
+        self.fp_elements = fp_elements
         self.save_fps = save_fps
         self.fprimes = fprimes
         self.cores = cores
@@ -48,9 +50,17 @@ class AtomsToData:
         )
         self.descriptor_data = descriptor_calculator.prepare_descriptors()
 
-        natoms = len(atoms)
+        fp_atom_indices_arr = np.where(np.isin(atoms.get_chemical_symbols(), self.fp_element))[0]
+        natoms = len(fp_atom_indices_arr)
+        # natoms = len(atoms)
         image_data = self.descriptor_data[0]
-        atomic_numbers = torch.LongTensor(atoms.get_atomic_numbers())
+
+        # symbol_arr = np.array(image.get_chemical_symbols())
+        # atom_indices = list_symbols_to_indices(symbol_arr)
+        # fp_atom_indices_arr = np.where(np.isin(atoms.get_atomic_numbers(), self.fp_element_indices))[0]
+        # image_fp_array = temp_image_fp_array[fp_atom_indices_arr]
+
+        atomic_numbers = torch.LongTensor(atoms.get_atomic_numbers()[fp_atom_indices_arr])
         image_fingerprint = torch.tensor(
             image_data["descriptors"], dtype=torch.get_default_dtype()
         )

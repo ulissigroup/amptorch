@@ -326,6 +326,7 @@ class AtomsTrainer:
 
         a2d = AtomsToData(
             descriptor=self.descriptor,
+            fp_elements=self.fp_elements,
             r_energy=False,
             r_forces=False,
             save_fps=self.config["dataset"].get("save_fps", True),
