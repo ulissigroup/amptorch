@@ -102,6 +102,8 @@ class AtomsTrainer:
                 self.config["dataset"]["lmdb_path"], self.cache
             )
             self.elements = self.train_dataset.elements
+            self.ref_elements = self.train_dataset.ref_elements
+            self.fp_elements = self.train_dataset.fp_elements
             descriptor_setup = self.train_dataset.descriptor_setup
         else:
             training_images = self.config["dataset"]["raw_data"]

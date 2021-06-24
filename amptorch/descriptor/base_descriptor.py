@@ -652,6 +652,8 @@ class BaseDescriptor(ABC):
                 pass
                 # print("element not in current image: {}".format(element))
 
+        num_desc_max = np.max(num_desc_list)
+        temp_image_fp_array = np.zeros((num_atoms, num_desc_max))
         for element in fp_dict.keys():
             temp_image_fp_array[
                 index_arr_dict[element], : num_desc_dict[element]

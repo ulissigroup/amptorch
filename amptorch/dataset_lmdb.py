@@ -40,6 +40,8 @@ class AtomsLMDBDataset(Dataset):
         descriptor_setup_list = []
         descriptor_list = []
         elements_list = []
+        ref_elements_list = []
+        fp_elements_list = []
         for db_path in self.db_paths:
             temp_env = self.connect_db(db_path)
             self.envs.append(temp_env)
@@ -59,12 +61,17 @@ class AtomsLMDBDataset(Dataset):
                 )
                 temp_descriptor = self.get_descriptor(temp_descriptor_setup)
                 temp_elements = pickle.loads(txn.get("elements".encode("ascii")))
+                temp_refelements = pickle.loads(txn.get("ref_elements".encode("ascii")))
+                temp_fpelements = pickle.loads(txn.get("fp_elements".encode("ascii")))
                 self.length_list.append(temp_length)
                 feature_scaler_list.append(temp_feature_scaler)
                 target_scaler_list.append(temp_target_scaler)
                 descriptor_setup_list.append(temp_descriptor_setup)
                 descriptor_list.append(temp_descriptor)
                 elements_list.append(temp_elements)
+                ref_elements_list.append(temp_refelements)
+                fp_elements_list.append(temp_fpelements)
+                
 
         self._keylen_cumulative = np.cumsum(self.length_list).tolist()
         self.total_length = np.sum(self.length_list)
@@ -75,6 +82,8 @@ class AtomsLMDBDataset(Dataset):
         self.descriptor_setup = descriptor_setup_list[0]
         self.descriptor = descriptor_list[0]
         self.elements = elements_list[0]
+        self.ref_elements = ref_elements_list[0]
+        self.fp_elements = fp_elements_list[0]
         self.loaded_db_idx = -1
 
         if len(self.db_paths) > 1:
@@ -96,6 +105,10 @@ class AtomsLMDBDataset(Dataset):
                 raise ValueError("Please make sure all lmdb used the same descriptor")
             if any(set(elements) != set(self.elements) for elements in elements_list):
                 raise ValueError("Please make sure all lmdb used the same elements")
+            if any(set(ref_elements) != set(self.fp_elements) for ref_elements in ref_elements_list):
+                raise ValueError("Please make sure all lmdb used the same ref_elements")
+            if any(set(fp_elements) != set(self.fp_elements) for fp_elements in fp_elements_list):
+                raise ValueError("Please make sure all lmdb used the same fp_elements")
 
     def __len__(self):
         return self.total_length
@@ -174,6 +187,8 @@ class AtomsLMDBDatasetPartialCache(Dataset):
         descriptor_setup_list = []
         descriptor_list = []
         elements_list = []
+        ref_elements_list = []
+        fp_elements_list = []
         for db_path in self.db_paths:
             temp_env = self.connect_db(db_path)
             self.envs.append(temp_env)
@@ -193,12 +208,16 @@ class AtomsLMDBDatasetPartialCache(Dataset):
                 )
                 temp_descriptor = self.get_descriptor(temp_descriptor_setup)
                 temp_elements = pickle.loads(txn.get("elements".encode("ascii")))
+                temp_refelements = pickle.loads(txn.get("ref_elements".encode("ascii")))
+                temp_fpelements = pickle.loads(txn.get("fp_elements".encode("ascii")))
                 self.length_list.append(temp_length)
                 feature_scaler_list.append(temp_feature_scaler)
                 target_scaler_list.append(temp_target_scaler)
                 descriptor_setup_list.append(temp_descriptor_setup)
                 descriptor_list.append(temp_descriptor)
                 elements_list.append(temp_elements)
+                ref_elements_list.append(temp_refelements)
+                fp_elements_list.append(temp_fpelements)
 
         self._keylen_cumulative = np.cumsum(self.length_list).tolist()
         self.total_length = np.sum(self.length_list)
@@ -209,6 +228,8 @@ class AtomsLMDBDatasetPartialCache(Dataset):
         self.descriptor_setup = descriptor_setup_list[0]
         self.descriptor = descriptor_list[0]
         self.elements = elements_list[0]
+        self.ref_elements = ref_elements_list[0]
+        self.fp_elements = fp_elements_list[0]
         self.loaded_db_idx = -1
 
         if len(self.db_paths) > 1:
@@ -230,6 +251,10 @@ class AtomsLMDBDatasetPartialCache(Dataset):
                 raise ValueError("Please make sure all lmdb used the same descriptor")
             if any(set(elements) != set(self.elements) for elements in elements_list):
                 raise ValueError("Please make sure all lmdb used the same elements")
+            if any(set(ref_elements) != set(self.fp_elements) for ref_elements in ref_elements_list):
+                raise ValueError("Please make sure all lmdb used the same ref_elements")
+            if any(set(fp_elements) != set(self.fp_elements) for fp_elements in fp_elements_list):
+                raise ValueError("Please make sure all lmdb used the same fp_elements")
 
     def __len__(self):
         return self.total_length
@@ -316,6 +341,8 @@ class AtomsLMDBDatasetCache(Dataset):
         descriptor_setup_list = []
         descriptor_list = []
         elements_list = []
+        ref_elements_list = []
+        fp_elements_list = []
         for db_path in self.db_paths:
             temp_env = self.connect_db(db_path)
             self.envs.append(temp_env)
@@ -335,12 +362,16 @@ class AtomsLMDBDatasetCache(Dataset):
                 )
                 temp_descriptor = self.get_descriptor(temp_descriptor_setup)
                 temp_elements = pickle.loads(txn.get("elements".encode("ascii")))
+                temp_refelements = pickle.loads(txn.get("ref_elements".encode("ascii")))
+                temp_fpelements = pickle.loads(txn.get("fp_elements".encode("ascii")))
                 self.length_list.append(temp_length)
                 feature_scaler_list.append(temp_feature_scaler)
                 target_scaler_list.append(temp_target_scaler)
                 descriptor_setup_list.append(temp_descriptor_setup)
                 descriptor_list.append(temp_descriptor)
                 elements_list.append(temp_elements)
+                ref_elements_list.append(temp_refelements)
+                fp_elements_list.append(temp_fpelements)
 
         self._keylen_cumulative = np.cumsum(self.length_list).tolist()
         self.total_length = np.sum(self.length_list)
@@ -351,6 +382,8 @@ class AtomsLMDBDatasetCache(Dataset):
         self.descriptor_setup = descriptor_setup_list[0]
         self.descriptor = descriptor_list[0]
         self.elements = elements_list[0]
+        self.ref_elements = ref_elements_list[0]
+        self.fp_elements = fp_elements_list[0]
 
         if len(self.db_paths) > 1:
             if any(
@@ -371,7 +404,10 @@ class AtomsLMDBDatasetCache(Dataset):
                 raise ValueError("Please make sure all lmdb used the same descriptor")
             if any(set(elements) != set(self.elements) for elements in elements_list):
                 raise ValueError("Please make sure all lmdb used the same elements")
-
+            if any(set(ref_elements) != set(self.fp_elements) for ref_elements in ref_elements_list):
+                raise ValueError("Please make sure all lmdb used the same ref_elements")
+            if any(set(fp_elements) != set(self.fp_elements) for fp_elements in fp_elements_list):
+                raise ValueError("Please make sure all lmdb used the same fp_elements")
         self.data_list = []
         for i, env in enumerate(self.envs):
             with self.envs[i].begin(write=False) as txn:
