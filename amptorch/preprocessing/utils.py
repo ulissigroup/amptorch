@@ -32,6 +32,7 @@ class FeatureScaler:
             feature_range = scaling["range"]
         self.forcetraining = forcetraining
         self.elementwise = scaling.get("elementwise", True)
+        self.threshold = scaling.get("threshold", 1e-6)
         fingerprints = torch.cat([data.fingerprint for data in data_list], dim=0)
         atomic_numbers = torch.cat([data.atomic_numbers for data in data_list], dim=0)
 
@@ -44,13 +45,13 @@ class FeatureScaler:
                 if self.transform == "standardize":
                     mean = torch.mean(element_fps, dim=0)
                     std = torch.std(element_fps, dim=0, unbiased=False)
-                    std[std < 1e-8] = 1
+                    std[std < self.threshold] = 1
                     self.scales[element] = {"offset": mean, "scale": std}
                 else:
                     fpmin = torch.min(element_fps, dim=0).values
                     fpmax = torch.max(element_fps, dim=0).values
                     data_range = fpmax - fpmin
-                    data_range[data_range < 1e-8] = 1
+                    data_range[data_range < self.threshold] = 1
                     scale = (feature_range[1] - feature_range[0]) / (data_range)
                     offset = feature_range[0] - fpmin * scale
                     self.scales[element] = {"offset": offset, "scale": scale}
@@ -59,13 +60,13 @@ class FeatureScaler:
             if self.transform == "standardize":
                 mean = torch.mean(fingerprints, dim=0)
                 std = torch.std(fingerprints, dim=0, unbiased=False)
-                std[std < 1e-8] = 1
+                std[std < self.threshold] = 1
                 self.scale = {"offset": mean, "scale": std}
             else:
                 fpmin = torch.min(fingerprints, dim=0).values
                 fpmax = torch.max(fingerprints, dim=0).values
                 data_range = fpmax - fpmin
-                data_range[data_range < 1e-8] = 1
+                data_range[data_range < self.threshold] = 1
                 scale = (feature_range[1] - feature_range[0]) / (data_range)
                 offset = feature_range[0] - fpmin * scale
                 self.scale = {"offset": offset, "scale": scale}
@@ -96,7 +97,7 @@ class FeatureScaler:
             return True
         return NotImplemented
 
-    def norm(self, data_list, threshold=1e-6, disable_tqdm=False):
+    def norm(self, data_list, disable_tqdm=False):
         if self.elementwise:
             for data in tqdm(
                 data_list,

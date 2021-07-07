@@ -21,7 +21,7 @@ class AtomsDataset(Dataset):
         # pca_reduce=False,
         # pca_setting={"num_pc": 20, "elementwise": False, "normalize": False},
         save_fps=True,
-        scaling={"type": "normalize", "range": (0, 1)},
+        scaling={"type": "normalize", "range": (0, 1), "threshold": 1e-6},
         cores=1,
         process=True,
     ):
