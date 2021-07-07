@@ -349,6 +349,8 @@ class GMP(BaseDescriptor):
 
             fp = np.array(x, dtype=np.float64)
             if self.params_set["log"]:
-                fp = np.log10(np.abs(fp))
+                fp = np.abs(fp)
+                fp[fp < 1e-8] = 1e-8
+                fp = np.log10(fp)
 
             return size_info, fp, None, None, None, None
