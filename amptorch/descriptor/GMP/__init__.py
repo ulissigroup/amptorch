@@ -142,6 +142,8 @@ class GMP(BaseDescriptor):
 
         self.params_set["square"] = self.MCSHs.get("square", False)
 
+        self.params_set["log"] = self.MCSHs.get("log", False)
+
         return
 
     def get_descriptor_setup_hash(self):
@@ -268,8 +270,8 @@ class GMP(BaseDescriptor):
 
             if errno == 1:
                 raise NotImplementedError("Descriptor not implemented!")
-            fp = np.array(x)
-            fp_prime = np.array(dx)
+            fp = np.array(x, dtype=np.float64)
+            fp_prime = np.array(dx, dtype=np.float64)
 
             # if "prime_threshold" in self.params_set:
             #     threshold = self.params_set["prime_threshold"]
@@ -288,6 +290,8 @@ class GMP(BaseDescriptor):
             # print(np.sum(super_threshold_indices))
             # print(np.min(np.abs(scipy_sparse_fp_prime.data)))
             # print("density: {}% \n\n----------------------".format(100*len(scipy_sparse_fp_prime.data) / (fp_prime.shape[0] * fp_prime.shape[1])))
+            if self.params_set["log"]:
+                raise NotImplementedError
 
             return (
                 size_info,
@@ -343,6 +347,8 @@ class GMP(BaseDescriptor):
             if errno == 1:
                 raise NotImplementedError("Descriptor not implemented!")
 
-            fp = np.array(x)
+            fp = np.array(x, dtype=np.float64)
+            if self.params_set["log"]:
+                fp = np.log10(np.abs(fp))
 
             return size_info, fp, None, None, None, None
