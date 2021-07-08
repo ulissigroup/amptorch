@@ -168,7 +168,7 @@ class SingleNN(nn.Module):
         if isinstance(batch, list):
             batch = batch[0]
         with torch.enable_grad():
-            fingerprints = batch.fingerprint.float()
+            fingerprints = batch.fingerprint
             fingerprints.requires_grad = True
             image_idx = batch.batch
             sorted_image_idx = torch.unique_consecutive(image_idx)
