@@ -40,21 +40,36 @@ class GMP(BaseDescriptor):
         descriptor_setup = []
         cutoff = self.MCSHs["cutoff"]
 
-        for i in range(20):
-            if str(i) in self.MCSHs["MCSHs"].keys():
-                descriptor_setup += [
-                    [
-                        i,
-                        group,
-                        sigma,
-                        1.0,
-                        1 / (sigma * np.sqrt(2 * np.pi)),
-                        1 / (2 * sigma * sigma),
-                        cutoff,
+        if "MCSH_detailed" in self.MCSHs:
+            for detail_setup in self.MCSHs["MCSH_detailed"]:
+                sigma = descriptor_setup["sigma"]
+                descriptor_setup.append([
+                    descriptor_setup["order"],
+                    descriptor_setup["order"],
+                    sigma,
+                    1.0,
+                    1.0 / (sigma * np.sqrt(2.0 * np.pi)),
+                    1.0 / (2 * sigma * sigma),
+                    cutoff,
+                ])
+
+        else:
+            for i in range(20):
+                if str(i) in self.MCSHs["MCSHs"].keys():
+                    descriptor_setup += [
+                        [
+                            i,
+                            group,
+                            sigma,
+                            1.0,
+                            1.0 / (sigma * np.sqrt(2.0 * np.pi)),
+                            1.0 / (2.0 * sigma * sigma),
+                            cutoff,
+                        ]
+                        for group in self.MCSHs["MCSHs"][str(i)]["groups"]
+                        for sigma in self.MCSHs["MCSHs"][str(i)]["sigmas"]
                     ]
-                    for group in self.MCSHs["MCSHs"][str(i)]["groups"]
-                    for sigma in self.MCSHs["MCSHs"][str(i)]["sigmas"]
-                ]
+
         self.descriptor_setup = np.array(descriptor_setup)
 
         atomic_gaussian_setup = {}
