@@ -40,12 +40,12 @@ class GMP(BaseDescriptor):
         descriptor_setup = []
         cutoff = self.MCSHs["cutoff"]
 
-        if "MCSH_detailed" in self.MCSHs:
-            for detail_setup in self.MCSHs["MCSH_detailed"]:
-                sigma = descriptor_setup["sigma"]
+        if "MCSHs_detailed_list" in self.MCSHs:
+            for detail_setup in self.MCSHs["MCSHs_detailed_list"]:
+                sigma = detail_setup["sigma"]
                 descriptor_setup.append([
-                    descriptor_setup["order"],
-                    descriptor_setup["order"],
+                    detail_setup["order"],
+                    detail_setup["order"],
                     sigma,
                     1.0,
                     1.0 / (sigma * np.sqrt(2.0 * np.pi)),
