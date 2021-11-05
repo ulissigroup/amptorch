@@ -171,9 +171,7 @@ class AtomsTrainer:
         self.parallel_collater = ParallelCollater(self.gpus, collate_fn)
         if self.gpus > 0:
             self.model = DataParallel(
-                self.model,
-                output_device=self.output_device,
-                num_gpus=self.gpus,
+                self.model, output_device=self.output_device, num_gpus=self.gpus,
             )
 
     def load_extras(self):
@@ -207,11 +205,7 @@ class AtomsTrainer:
             from skorch.callbacks import WandbLogger
 
             callbacks.append(
-                WandbLogger(
-                    self.wandb_run,
-                    save_model=False,
-                    keys_ignored="dur",
-                )
+                WandbLogger(self.wandb_run, save_model=False, keys_ignored="dur",)
             )
         self.callbacks = callbacks
 
@@ -230,10 +224,7 @@ class AtomsTrainer:
         if self.config["cmd"].get("logger", False):
             import wandb
 
-            self.wandb_run = wandb.init(
-                name=self.identifier,
-                config=self.config,
-            )
+            self.wandb_run = wandb.init(name=self.identifier, config=self.config,)
 
     def load_skorch(self):
         skorch.net.to_tensor = to_tensor
@@ -252,8 +243,7 @@ class AtomsTrainer:
                     max_epochs=self.config["optim"].get("epochs", 100),
                     iterator_train__collate_fn=self.parallel_collater,
                     iterator_train__sampler=PartialCacheSampler(
-                        self.train_dataset.get_length_list(),
-                        self.val_split,
+                        self.train_dataset.get_length_list(), self.val_split,
                     ),
                     iterator_train__shuffle=False,
                     iterator_train__pin_memory=True,

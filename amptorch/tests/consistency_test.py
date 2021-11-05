@@ -98,10 +98,7 @@ def test_energy_force_consistency():
     # Parameters
     Gs = {
         "default": {
-            "G2": {
-                "etas": [0.2],
-                "rs_s": [0],
-            },
+            "G2": {"etas": [0.2], "rs_s": [0],},
             "G4": {"etas": [0.4], "zetas": [1], "gammas": [1]},
             "cutoff": 6.5,
         },

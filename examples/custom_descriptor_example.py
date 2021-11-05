@@ -58,12 +58,7 @@ gds.batch_add_descriptors(4, g4_etas, g4_zetas, g4_gammas)
 # this opens opportunities for creating finely-tuned descriptor sets
 
 config = {
-    "model": {
-        "get_forces": True,
-        "num_layers": 3,
-        "num_nodes": 5,
-        "batchnorm": False,
-    },
+    "model": {"get_forces": True, "num_layers": 3, "num_nodes": 5, "batchnorm": False,},
     "optim": {
         "force_coefficient": 0.04,
         "lr": 1e-2,

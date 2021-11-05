@@ -15,12 +15,13 @@ class MLP(nn.Module):
         batchnorm,
         dropout,
         dropout_rate,
+        hidden_layers=None,
         n_output_nodes=1,
     ):
         super(MLP, self).__init__()
-        if isinstance(n_hidden_size, int):
-            n_hidden_size = [n_hidden_size] * (n_layers)
-        self.n_neurons = [n_input_nodes] + n_hidden_size + [n_output_nodes]
+        if hidden_layers is None and isinstance(n_hidden_size, int):
+            hidden_layers = [n_hidden_size] * (n_layers)
+        self.n_neurons = [n_input_nodes] + hidden_layers + [n_output_nodes]
         self.activation = activation
         layers = []
         for _ in range(n_layers - 1):
@@ -66,8 +67,9 @@ class BPNN(nn.Module):
         self,
         elements,
         input_dim,
-        num_nodes,
-        num_layers,
+        num_nodes=20,
+        num_layers=5,
+        hidden_layers=None,
         get_forces=True,
         batchnorm=False,
         dropout=False,
@@ -87,6 +89,7 @@ class BPNN(nn.Module):
                     n_input_nodes=input_dim,
                     n_layers=num_layers,
                     n_hidden_size=num_nodes,
+                    hidden_layers=hidden_layers,
                     activation=activation,
                     batchnorm=batchnorm,
                     dropout=dropout,
@@ -141,8 +144,9 @@ class SingleNN(nn.Module):
         self,
         elements,
         input_dim,
-        num_nodes,
-        num_layers,
+        num_nodes=20,
+        num_layers=5,
+        hidden_layers=None,
         get_forces=True,
         batchnorm=False,
         dropout=False,
@@ -158,6 +162,7 @@ class SingleNN(nn.Module):
             n_input_nodes=input_dim,
             n_layers=num_layers,
             n_hidden_size=num_nodes,
+            hidden_layers=hidden_layers,
             activation=activation,
             batchnorm=batchnorm,
             dropout=dropout,
