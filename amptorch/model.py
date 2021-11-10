@@ -21,10 +21,12 @@ class MLP(nn.Module):
         super(MLP, self).__init__()
         if hidden_layers is None and isinstance(n_hidden_size, int):
             hidden_layers = [n_hidden_size] * (n_layers)
+        else:
+            n_layers = len(hidden_layers)
         self.n_neurons = [n_input_nodes] + hidden_layers + [n_output_nodes]
         self.activation = activation
         layers = []
-        for _ in range(n_layers - 1):
+        for _ in range(n_layers):
             layers.append(nn.Linear(self.n_neurons[_], self.n_neurons[_ + 1]))
             if batchnorm:
                 layers.append(nn.BatchNorm1d(self.n_neurons[_ + 1]))
