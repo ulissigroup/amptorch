@@ -42,8 +42,8 @@ class GMP(BaseDescriptor):
 
         if "MCSHs_detailed_list" in self.MCSHs:
             for detail_setup in self.MCSHs["MCSHs_detailed_list"]:
-                sigma = detail_setup["sigma"]
-                descriptor_setup.append(
+                sigmas = detail_setup["sigmas"]
+                descriptor_setup += [
                     [
                         detail_setup["order"],
                         detail_setup["group"],
@@ -53,7 +53,8 @@ class GMP(BaseDescriptor):
                         1.0 / (2 * sigma * sigma),
                         cutoff,
                     ]
-                )
+                    for sigma in sigmas
+                ]
 
         else:
             for i in range(20):
