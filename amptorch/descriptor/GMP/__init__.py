@@ -39,6 +39,11 @@ class GMP(BaseDescriptor):
     def prepare_descriptor_parameters(self):
         descriptor_setup = []
         cutoff = self.MCSHs["cutoff"]
+        rs_setup = self.MCSHs.get("rs_setup", {"setup": "constant"})
+        if rs_setup["setup"] == "scale":
+            rs_scale = rs_setup["scale_factor"]
+        else:
+            rs_scale = -1.0
 
         if "MCSHs_detailed_list" in self.MCSHs:
             for detail_setup in self.MCSHs["MCSHs_detailed_list"]:
@@ -52,6 +57,7 @@ class GMP(BaseDescriptor):
                         1.0 / (sigma * np.sqrt(2.0 * np.pi)),
                         1.0 / (2 * sigma * sigma),
                         cutoff,
+                        1.0 / (rs_scale * sigma) if rs_scale > 0 else 1.0,
                     ]
                     for sigma in sigmas
                 ]
@@ -68,12 +74,14 @@ class GMP(BaseDescriptor):
                             1.0 / (sigma * np.sqrt(2.0 * np.pi)),
                             1.0 / (2.0 * sigma * sigma),
                             cutoff,
+                            1.0 / (rs_scale * sigma) if rs_scale > 0 else 1.0,
                         ]
                         for group in self.MCSHs["MCSHs"][str(i)]["groups"]
                         for sigma in self.MCSHs["MCSHs"][str(i)]["sigmas"]
                     ]
 
         self.descriptor_setup = np.array(descriptor_setup)
+        print(self.descriptor_setup)
 
         atomic_gaussian_setup = {}
         for element in self.elements:

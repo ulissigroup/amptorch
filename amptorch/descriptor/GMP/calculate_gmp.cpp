@@ -200,8 +200,8 @@ extern "C" int calculate_gmp(double** cell, double** cart, double** scale, int* 
             int mcsh_type = get_mcsh_type(params_i[m][0], params_i[m][1]);
             GMPFunction mcsh_function = get_mcsh_function(params_i[m][0], params_i[m][1]);
 
-            // params_d: sigma, weight, A, beta, cutoff
-            double A = params_d[m][2], beta = params_d[m][3];
+            // params_d: sigma, weight, A, alpha, cutoff, inv_rs
+            double A = params_d[m][2], alpha = params_d[m][3], inv_rs = params_d[m][5];
             double weight = 1.0;
             // double weight = params_d[m][1];
             double M = 0;
@@ -215,8 +215,8 @@ extern "C" int calculate_gmp(double** cell, double** cart, double** scale, int* 
                     int neigh_atom_element_order = element_index_to_order[neigh_atom_element_index];
                     double x0 = nei_list_d[j*4], y0 = nei_list_d[j*4+1], z0 = nei_list_d[j*4+2], r0_sqr = nei_list_d[j*4+3];
                     for (int g = 0; g < ngaussians[neigh_atom_element_order]; ++g){
-                        double B = atom_gaussian[neigh_atom_element_order][g*2], alpha = atom_gaussian[neigh_atom_element_order][g*2+1];
-                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, m_desc, deriv);
+                        double B = atom_gaussian[neigh_atom_element_order][g*2], beta = atom_gaussian[neigh_atom_element_order][g*2+1];
+                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, inv_rs, m_desc, deriv);
                         M += m_desc[0];
                         dMdx += deriv[0];
                         dMdy += deriv[1];
@@ -268,8 +268,8 @@ extern "C" int calculate_gmp(double** cell, double** cart, double** scale, int* 
                     int neigh_atom_element_order = element_index_to_order[neigh_atom_element_index];
                     double x0 = nei_list_d[j*4], y0 = nei_list_d[j*4+1], z0 = nei_list_d[j*4+2], r0_sqr = nei_list_d[j*4+3];
                     for (int g = 0; g < ngaussians[neigh_atom_element_order]; ++g){
-                        double B = atom_gaussian[neigh_atom_element_order][g*2], alpha = atom_gaussian[neigh_atom_element_order][g*2+1];
-                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, miu, deriv);
+                        double B = atom_gaussian[neigh_atom_element_order][g*2], beta = atom_gaussian[neigh_atom_element_order][g*2+1];
+                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, inv_rs, miu, deriv);
                         // miu: miu_1, miu_2, miu_3
                         // deriv: dmiu1_dxj, dmiu1_dyj, dmiu1_dzj, dmiu2_dxj, dmiu2_dyj, dmiu2_dzj, dmiu3_dxj, dmiu3_dyj, dmiu3_dzj
                         sum_miu1 += miu[0];
@@ -369,8 +369,8 @@ extern "C" int calculate_gmp(double** cell, double** cart, double** scale, int* 
                     int neigh_atom_element_order = element_index_to_order[neigh_atom_element_index];
                     double x0 = nei_list_d[j*4], y0 = nei_list_d[j*4+1], z0 = nei_list_d[j*4+2], r0_sqr = nei_list_d[j*4+3];
                     for (int g = 0; g < ngaussians[neigh_atom_element_order]; ++g){
-                        double B = atom_gaussian[neigh_atom_element_order][g*2], alpha = atom_gaussian[neigh_atom_element_order][g*2+1];
-                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, miu, deriv);
+                        double B = atom_gaussian[neigh_atom_element_order][g*2], beta = atom_gaussian[neigh_atom_element_order][g*2+1];
+                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, inv_rs, miu, deriv);
                         // miu: miu_1, miu_2, miu_3
                         // deriv: dmiu1_dxj, dmiu1_dyj, dmiu1_dzj, dmiu2_dxj, dmiu2_dyj, dmiu2_dzj, dmiu3_dxj, dmiu3_dyj, dmiu3_dzj
                         sum_miu1 += miu[0];
@@ -638,8 +638,8 @@ extern "C" int calculate_gmp_noderiv(double** cell, double** cart, double** scal
             int mcsh_type = get_mcsh_type(params_i[m][0], params_i[m][1]);
             GMPFunctionNoderiv mcsh_function = get_mcsh_function_noderiv(params_i[m][0], params_i[m][1]);
 
-            // params_d: sigma, weight, A, beta, cutoff
-            double A = params_d[m][2], beta = params_d[m][3];
+            // params_d: sigma, weight, A, alpha, cutoff, inv_rs
+            double A = params_d[m][2], alpha = params_d[m][3], inv_rs = params_d[m][5];
             double weight = 1.0;
             // double weight = params_d[m][1];
             double M = 0.0;
@@ -652,8 +652,8 @@ extern "C" int calculate_gmp_noderiv(double** cell, double** cart, double** scal
                     int neigh_atom_element_order = element_index_to_order[neigh_atom_element_index];
                     double x0 = nei_list_d[j*4], y0 = nei_list_d[j*4+1], z0 = nei_list_d[j*4+2], r0_sqr = nei_list_d[j*4+3];
                     for (int g = 0; g < ngaussians[neigh_atom_element_order]; ++g){
-                        double B = atom_gaussian[neigh_atom_element_order][g*2], alpha = atom_gaussian[neigh_atom_element_order][g*2+1];
-                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, m_desc);
+                        double B = atom_gaussian[neigh_atom_element_order][g*2], beta = atom_gaussian[neigh_atom_element_order][g*2+1];
+                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, inv_rs, m_desc);
                         M += m_desc[0];
                     }
                 }
@@ -670,8 +670,8 @@ extern "C" int calculate_gmp_noderiv(double** cell, double** cart, double** scal
                     int neigh_atom_element_order = element_index_to_order[neigh_atom_element_index];
                     double x0 = nei_list_d[j*4], y0 = nei_list_d[j*4+1], z0 = nei_list_d[j*4+2], r0_sqr = nei_list_d[j*4+3];
                     for (int g = 0; g < ngaussians[neigh_atom_element_order]; ++g){
-                        double B = atom_gaussian[neigh_atom_element_order][g*2], alpha = atom_gaussian[neigh_atom_element_order][g*2+1];
-                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, miu);
+                        double B = atom_gaussian[neigh_atom_element_order][g*2], beta = atom_gaussian[neigh_atom_element_order][g*2+1];
+                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, inv_rs, miu);
                         // miu: miu_1, miu_2, miu_3
                         // deriv: dmiu1_dxj, dmiu1_dyj, dmiu1_dzj, dmiu2_dxj, dmiu2_dyj, dmiu2_dzj, dmiu3_dxj, dmiu3_dyj, dmiu3_dzj
                         sum_miu1 += miu[0];
@@ -693,8 +693,8 @@ extern "C" int calculate_gmp_noderiv(double** cell, double** cart, double** scal
                     int neigh_atom_element_order = element_index_to_order[neigh_atom_element_index];
                     double x0 = nei_list_d[j*4], y0 = nei_list_d[j*4+1], z0 = nei_list_d[j*4+2], r0_sqr = nei_list_d[j*4+3];
                     for (int g = 0; g < ngaussians[neigh_atom_element_order]; ++g){
-                        double B = atom_gaussian[neigh_atom_element_order][g*2], alpha = atom_gaussian[neigh_atom_element_order][g*2+1];
-                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, miu);
+                        double B = atom_gaussian[neigh_atom_element_order][g*2], beta = atom_gaussian[neigh_atom_element_order][g*2+1];
+                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, inv_rs, miu);
                         // miu: miu_1, miu_2, miu_3
                         // deriv: dmiu1_dxj, dmiu1_dyj, dmiu1_dzj, dmiu2_dxj, dmiu2_dyj, dmiu2_dzj, dmiu3_dxj, dmiu3_dyj, dmiu3_dzj
                         sum_miu1 += miu[0];
@@ -901,8 +901,8 @@ extern "C" int calculate_gmp_square(double** cell, double** cart, double** scale
             int mcsh_type = get_mcsh_type(params_i[m][0], params_i[m][1]);
             GMPFunction mcsh_function = get_mcsh_function(params_i[m][0], params_i[m][1]);
 
-            // params_d: sigma, weight, A, beta, cutoff
-            double A = params_d[m][2], beta = params_d[m][3];
+            // params_d: sigma, weight, A, beta, cutoff, inv_rs
+            double A = params_d[m][2], alpha = params_d[m][3], inv_rs = params_d[m][5];
             double weight = 1.0;
             // double weight = params_d[m][1];
             double M = 0;
@@ -916,8 +916,8 @@ extern "C" int calculate_gmp_square(double** cell, double** cart, double** scale
                     int neigh_atom_element_order = element_index_to_order[neigh_atom_element_index];
                     double x0 = nei_list_d[j*4], y0 = nei_list_d[j*4+1], z0 = nei_list_d[j*4+2], r0_sqr = nei_list_d[j*4+3];
                     for (int g = 0; g < ngaussians[neigh_atom_element_order]; ++g){
-                        double B = atom_gaussian[neigh_atom_element_order][g*2], alpha = atom_gaussian[neigh_atom_element_order][g*2+1];
-                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, m_desc, deriv);
+                        double B = atom_gaussian[neigh_atom_element_order][g*2], beta = atom_gaussian[neigh_atom_element_order][g*2+1];
+                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, inv_rs, m_desc, deriv);
                         M += m_desc[0];
                         dMdx += deriv[0];
                         dMdy += deriv[1];
@@ -972,8 +972,8 @@ extern "C" int calculate_gmp_square(double** cell, double** cart, double** scale
                     int neigh_atom_element_order = element_index_to_order[neigh_atom_element_index];
                     double x0 = nei_list_d[j*4], y0 = nei_list_d[j*4+1], z0 = nei_list_d[j*4+2], r0_sqr = nei_list_d[j*4+3];
                     for (int g = 0; g < ngaussians[neigh_atom_element_order]; ++g){
-                        double B = atom_gaussian[neigh_atom_element_order][g*2], alpha = atom_gaussian[neigh_atom_element_order][g*2+1];
-                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, miu, deriv);
+                        double B = atom_gaussian[neigh_atom_element_order][g*2], beta = atom_gaussian[neigh_atom_element_order][g*2+1];
+                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, inv_rs, miu, deriv);
                         // miu: miu_1, miu_2, miu_3
                         // deriv: dmiu1_dxj, dmiu1_dyj, dmiu1_dzj, dmiu2_dxj, dmiu2_dyj, dmiu2_dzj, dmiu3_dxj, dmiu3_dyj, dmiu3_dzj
                         sum_miu1 += miu[0];
@@ -1071,8 +1071,8 @@ extern "C" int calculate_gmp_square(double** cell, double** cart, double** scale
                     int neigh_atom_element_order = element_index_to_order[neigh_atom_element_index];
                     double x0 = nei_list_d[j*4], y0 = nei_list_d[j*4+1], z0 = nei_list_d[j*4+2], r0_sqr = nei_list_d[j*4+3];
                     for (int g = 0; g < ngaussians[neigh_atom_element_order]; ++g){
-                        double B = atom_gaussian[neigh_atom_element_order][g*2], alpha = atom_gaussian[neigh_atom_element_order][g*2+1];
-                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, miu, deriv);
+                        double B = atom_gaussian[neigh_atom_element_order][g*2], beta = atom_gaussian[neigh_atom_element_order][g*2+1];
+                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, inv_rs, miu, deriv);
                         // miu: miu_1, miu_2, miu_3
                         // deriv: dmiu1_dxj, dmiu1_dyj, dmiu1_dzj, dmiu2_dxj, dmiu2_dyj, dmiu2_dzj, dmiu3_dxj, dmiu3_dyj, dmiu3_dzj
                         sum_miu1 += miu[0];
@@ -1348,8 +1348,8 @@ extern "C" int calculate_gmp_square_noderiv(double** cell, double** cart, double
             int mcsh_type = get_mcsh_type(params_i[m][0], params_i[m][1]);
             GMPFunctionNoderiv mcsh_function = get_mcsh_function_noderiv(params_i[m][0], params_i[m][1]);
 
-            // params_d: sigma, weight, A, beta, cutoff
-            double A = params_d[m][2], beta = params_d[m][3];
+            // params_d: sigma, weight, A, alpha, cutoff, inv_rs
+            double A = params_d[m][2], alpha = params_d[m][3], inv_rs = params_d[m][5];
             double weight = 1.0;
             // double weight = params_d[m][1];
             double M = 0.0;
@@ -1362,8 +1362,8 @@ extern "C" int calculate_gmp_square_noderiv(double** cell, double** cart, double
                     int neigh_atom_element_order = element_index_to_order[neigh_atom_element_index];
                     double x0 = nei_list_d[j*4], y0 = nei_list_d[j*4+1], z0 = nei_list_d[j*4+2], r0_sqr = nei_list_d[j*4+3];
                     for (int g = 0; g < ngaussians[neigh_atom_element_order]; ++g){
-                        double B = atom_gaussian[neigh_atom_element_order][g*2], alpha = atom_gaussian[neigh_atom_element_order][g*2+1];
-                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, m_desc);
+                        double B = atom_gaussian[neigh_atom_element_order][g*2], beta = atom_gaussian[neigh_atom_element_order][g*2+1];
+                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, inv_rs, m_desc);
                         M += m_desc[0];
                     }
                 }
@@ -1381,8 +1381,8 @@ extern "C" int calculate_gmp_square_noderiv(double** cell, double** cart, double
                     int neigh_atom_element_order = element_index_to_order[neigh_atom_element_index];
                     double x0 = nei_list_d[j*4], y0 = nei_list_d[j*4+1], z0 = nei_list_d[j*4+2], r0_sqr = nei_list_d[j*4+3];
                     for (int g = 0; g < ngaussians[neigh_atom_element_order]; ++g){
-                        double B = atom_gaussian[neigh_atom_element_order][g*2], alpha = atom_gaussian[neigh_atom_element_order][g*2+1];
-                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, miu);
+                        double B = atom_gaussian[neigh_atom_element_order][g*2], beta = atom_gaussian[neigh_atom_element_order][g*2+1];
+                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, inv_rs, miu);
                         // miu: miu_1, miu_2, miu_3
                         // deriv: dmiu1_dxj, dmiu1_dyj, dmiu1_dzj, dmiu2_dxj, dmiu2_dyj, dmiu2_dzj, dmiu3_dxj, dmiu3_dyj, dmiu3_dzj
                         sum_miu1 += miu[0];
@@ -1405,8 +1405,8 @@ extern "C" int calculate_gmp_square_noderiv(double** cell, double** cart, double
                     int neigh_atom_element_order = element_index_to_order[neigh_atom_element_index];
                     double x0 = nei_list_d[j*4], y0 = nei_list_d[j*4+1], z0 = nei_list_d[j*4+2], r0_sqr = nei_list_d[j*4+3];
                     for (int g = 0; g < ngaussians[neigh_atom_element_order]; ++g){
-                        double B = atom_gaussian[neigh_atom_element_order][g*2], alpha = atom_gaussian[neigh_atom_element_order][g*2+1];
-                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, miu);
+                        double B = atom_gaussian[neigh_atom_element_order][g*2], beta = atom_gaussian[neigh_atom_element_order][g*2+1];
+                        mcsh_function(x0, y0, z0, r0_sqr, A, B, alpha, beta, inv_rs, miu);
                         // miu: miu_1, miu_2, miu_3
                         // deriv: dmiu1_dxj, dmiu1_dyj, dmiu1_dzj, dmiu2_dxj, dmiu2_dyj, dmiu2_dzj, dmiu3_dxj, dmiu3_dyj, dmiu3_dzj
                         sum_miu1 += miu[0];
