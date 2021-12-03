@@ -3,6 +3,7 @@ from torch_geometric.data import Batch
 
 from amptorch.descriptor.Gaussian import Gaussian
 from amptorch.descriptor.GMP import GMP
+from amptorch.descriptor.GMPOrderNorm import GMPOrderNorm
 from amptorch.preprocessing import (
     AtomsToData,
     PCAReducer,
@@ -104,6 +105,8 @@ def construct_descriptor(descriptor_setup):
         descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)
     elif fp_scheme == "gmp":
         descriptor = GMP(MCSHs=fp_params, elements=elements)
+    elif fp_scheme == "gmpordernorm":
+        descriptor = GMPOrderNorm(MCSHs=fp_params, elements=elements)
     else:
         raise NotImplementedError
     return descriptor
