@@ -1403,7 +1403,6 @@ void calc_MCSH_3_3_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
 
 void calc_MCSH_4_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value)
 {
-    // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
     double C1 = calc_C1(A,B,alpha,beta);
     double C2 = calc_C2(alpha, beta);
 
@@ -1420,8 +1419,8 @@ void calc_MCSH_4_1_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
     double lambda_z0_sqr = lambda_z0 * lambda_z0;
 
     double lambda_x0_4 = lambda_x0_sqr * lambda_x0_sqr;
-    double lambda_y0_4 = lambda_y0_sqr * lambda_x0_sqr;
-    double lambda_z0_4 = lambda_z0_sqr * lambda_x0_sqr;
+    double lambda_y0_4 = lambda_y0_sqr * lambda_y0_sqr;
+    double lambda_z0_4 = lambda_z0_sqr * lambda_z0_sqr;
 
     double gamma = calc_gamma(alpha, beta);
     double C3 = ((315.0 * inv_rs_4) / gamma) - (90.0 * inv_rs_2);
@@ -1866,30 +1865,44 @@ double get_group_coefficients(int mcsh_order, int group_num){
         }
     } else if (mcsh_order == 4) {
         if (group_num == 1) {
-            return 1.0;
+            return 1.0; // 4 0 0 -> 24.0 / (24.0 * 1.0 * 1.0)
         } else if (group_num == 2){
-            return 4.0;
+            return 4.0; // 3 1 0 -> 24.0 / (6.0 * 1.0 * 1.0)
         } else if (group_num == 3){
-            return 6.0;
+            return 6.0; // 2 2 0 -> 24.0 / (2.0 * 2.0 * 1.0)
         } else if (group_num == 4){
-            return 12.0;
+            return 12.0; // 2 1 1 -> 24.0 / (2.0 * 1.0 * 1.0)
         } else {
             return 0.0;
         }
     } else if (mcsh_order == 5) {
         if (group_num == 1) {
-            return 1.0;
+            return 1.0; // 5 0 0 -> 120.0 / (120.0 * 1.0 * 1.0)
         } else if (group_num == 2){
-            return 5.0;
+            return 5.0; // 4 1 0 -> 120.0 / (24.0 * 1.0 * 1.0)
         } else if (group_num == 3){
-            return 10.0;
+            return 10.0; // 3 2 0 -> 120.0 / (6.0 * 2.0 * 1.0)
         } else if (group_num == 4){
-            return 20.0;
+            return 20.0; // 3 1 1 -> 120.0 / (6.0 * 1.0 * 1.0)
         } else if (group_num == 5){
-            return 30.0;
+            return 3.0; // 3 1 1 -> 120.0 / (2.0 * 2.0 * 1.0)
         } else {
             return 0.0;
         }
+        // else if (mcsh_order == 5) {
+        // if (group_num == 1) {
+        //     return 1.0;
+        // } else if (group_num == 2){
+        //     return 5.0;
+        // } else if (group_num == 3){
+        //     return 10.0;
+        // } else if (group_num == 4){
+        //     return 20.0;
+        // } else if (group_num == 5){
+        //     return 30.0;
+        // } else {
+        //     return 0.0;
+        // }
     } else {
         return 0.0;
     }

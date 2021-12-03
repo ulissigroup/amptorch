@@ -67,23 +67,22 @@ class GMPOrderNorm(BaseDescriptor):
                 ]
 
         else:
-            for i in range(20):
-                if str(i) in self.MCSHs["MCSHs"].keys():
-                    descriptor_setup += [
-                        [
-                            i,
-                            1,  # place holder
-                            sigma,
-                            1.0,
-                            1.0 / (sigma * np.sqrt(2.0 * np.pi)),
-                            1.0 / (2.0 * sigma * sigma),
-                            cutoff,
-                            (1.0 / (rs_scale * sigma))
-                            if rs_scale > 0
-                            else (1.0 / (-1.0 * rs_scale)),
-                        ]
-                        for sigma in self.MCSHs["MCSHs"][str(i)]["sigmas"]
+            for i in self.MCSHs["MCSHs"]["orders"]:
+                descriptor_setup += [
+                    [
+                        i,
+                        1,  # place holder
+                        sigma,
+                        1.0,
+                        1.0 / (sigma * np.sqrt(2.0 * np.pi)),
+                        1.0 / (2.0 * sigma * sigma),
+                        cutoff,
+                        (1.0 / (rs_scale * sigma))
+                        if rs_scale > 0
+                        else (1.0 / (-1.0 * rs_scale)),
                     ]
+                    for sigma in self.MCSHs["MCSHs"]["sigmas"]
+                ]
 
         self.descriptor_setup = np.array(descriptor_setup)
         # print(self.descriptor_setup)

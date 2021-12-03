@@ -1,7 +1,7 @@
 #include <math.h>
 #include <stdio.h>
 #include "calculate_gmpordernorm.h"
-
+#include <iostream>
 // extern "C" int calculate_atomistic_mcsh(double** cell, double** cart, double** scale,
 //                                         int* atom_i, int natoms, int* cal_atoms, int cal_num,
 //                                         int** params_i, double** params_d, int nsyms,
@@ -641,12 +641,15 @@ extern "C" int calculate_gmpordernorm_noderiv(double** cell, double** cart, doub
             double A = params_d[m][2], alpha = params_d[m][3], inv_rs = params_d[m][5];
             double weight = 1.0;
             // double weight = params_d[m][1];
-            double sum_square = 0;
-
+            double sum_square = 0.0;
+            // std::cout << "------------" << std::endl;
+            // std::cout << mcsh_order << "\t" << num_groups  << std::endl;
             for (int group_index = 1; group_index < (num_groups+1); ++group_index){
                 GMPFunctionNoderiv mcsh_function = get_mcsh_function_noderiv(mcsh_order, group_index);
                 double group_coefficient = get_group_coefficients(mcsh_order, group_index);
                 int mcsh_type = get_mcsh_type(mcsh_order, group_index);
+
+                // std::cout << "\t" << group_index  << "\t"<< mcsh_type << "\t" << group_coefficient<< std::endl;
 
                 double M = 0.0;
                 if (mcsh_type == 1){
@@ -713,7 +716,7 @@ extern "C" int calculate_gmpordernorm_noderiv(double** cell, double** cart, doub
                                                        sum_miu4*sum_miu4 + sum_miu5*sum_miu5 + sum_miu6*sum_miu6);
                 }
             }
-            sum_square = sum_square * weight;
+            // sum_square = sum_square * weight;
             mcsh[ii][m] = sum_square;
 
         }
