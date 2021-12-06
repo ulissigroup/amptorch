@@ -339,7 +339,14 @@ class AtomsTrainer:
         collate_fn = DataCollater(train=False, forcetraining=self.forcetraining)
 
         predictions = {"energy": [], "forces": []}
-        for data in data_list:
+        # for data in data_list:
+        for idx, data in tqdm(
+            enumerate(data_list),
+            desc="Predicting",
+            total=len(data_list),
+            unit=" systems",
+            disable=disable_tqdm,
+        ):
             collated = collate_fn([data]).to(self.device)
             energy, forces = self.net.module([collated])
 
