@@ -3209,13 +3209,13 @@ void calc_MCSH_8_5(double x0, double y0, double z0, double r0_sqr, double A, dou
     double temp_dterm1_dy = 2027025.0 * temp_dy_5 - 1351350.0 * temp_dy_3 + 155925.0 * lambda;
     double temp_dterm1_dz = 2027025.0 * temp_dz_5 - 1351350.0 * temp_dz_3 + 155925.0 * lambda;
 
-    double temp_term2_x = -405405.0 * temp_x_5 + 311805.0 * temp_x_3 - 42525.0 * lambda_x0;
-    double temp_term2_y = -405405.0 * temp_y_5 + 311805.0 * temp_y_3 - 42525.0 * lambda_y0;
-    double temp_term2_z = -405405.0 * temp_z_5 + 311805.0 * temp_z_3 - 42525.0 * lambda_z0;
+    double temp_term2_x = -405405.0 * temp_x_5 + 311850.0 * temp_x_3 - 42525.0 * lambda_x0;
+    double temp_term2_y = -405405.0 * temp_y_5 + 311850.0 * temp_y_3 - 42525.0 * lambda_y0;
+    double temp_term2_z = -405405.0 * temp_z_5 + 311850.0 * temp_z_3 - 42525.0 * lambda_z0;
 
-    double temp_dterm2_dx = -405405.0 * temp_dx_5 + 311805.0 * temp_dx_3 - 42525.0 * lambda;
-    double temp_dterm2_dy = -405405.0 * temp_dy_5 + 311805.0 * temp_dy_3 - 42525.0 * lambda;
-    double temp_dterm2_dz = -405405.0 * temp_dz_5 + 311805.0 * temp_dz_3 - 42525.0 * lambda;
+    double temp_dterm2_dx = -405405.0 * temp_dx_5 + 311850.0 * temp_dx_3 - 42525.0 * lambda;
+    double temp_dterm2_dy = -405405.0 * temp_dy_5 + 311850.0 * temp_dy_3 - 42525.0 * lambda;
+    double temp_dterm2_dz = -405405.0 * temp_dz_5 + 311850.0 * temp_dz_3 - 42525.0 * lambda;
 
     double temp_miu1 = temp_y_3 * temp_term1_x + lambda_y0 * temp_term2_x;
     double temp_miu2 = temp_x_3 * temp_term1_y + lambda_x0 * temp_term2_y;
@@ -7333,9 +7333,9 @@ void calc_MCSH_8_5_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
     double temp_term1_y = 2027025.0 * temp_y_5 - 1351350.0 * temp_y_3 + 155925.0 * lambda_y0;
     double temp_term1_z = 2027025.0 * temp_z_5 - 1351350.0 * temp_z_3 + 155925.0 * lambda_z0;
 
-    double temp_term2_x = -405405.0 * temp_x_5 + 311805.0 * temp_x_3 - 42525.0 * lambda_x0;
-    double temp_term2_y = -405405.0 * temp_y_5 + 311805.0 * temp_y_3 - 42525.0 * lambda_y0;
-    double temp_term2_z = -405405.0 * temp_z_5 + 311805.0 * temp_z_3 - 42525.0 * lambda_z0;
+    double temp_term2_x = -405405.0 * temp_x_5 + 311850.0 * temp_x_3 - 42525.0 * lambda_x0;
+    double temp_term2_y = -405405.0 * temp_y_5 + 311850.0 * temp_y_3 - 42525.0 * lambda_y0;
+    double temp_term2_z = -405405.0 * temp_z_5 + 311850.0 * temp_z_3 - 42525.0 * lambda_z0;
 
     double temp_miu1 = temp_y_3 * temp_term1_x + lambda_y0 * temp_term2_x;
     double temp_miu2 = temp_x_3 * temp_term1_y + lambda_x0 * temp_term2_y;
