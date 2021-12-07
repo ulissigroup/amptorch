@@ -36,6 +36,15 @@ from amptorch.utils import (
 from amptorch.data_parallel import DataParallel, ParallelCollater
 from amptorch.ase_utils import AMPtorch
 
+try:
+    shell = get_ipython().__class__.__name__
+    if shell == "ZMQInteractiveShell":
+        from tqdm.notebook import tqdm
+    else:
+        from tqdm import tqdm
+except NameError:
+    from tqdm import tqdm
+
 
 class AtomsTrainer:
     def __init__(self, config={}):
