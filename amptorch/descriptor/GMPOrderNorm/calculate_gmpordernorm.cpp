@@ -635,7 +635,7 @@ extern "C" int calculate_gmpordernorm_noderiv(double** cell, double** cart, doub
         }
 
         for (int m = 0; m < nmcsh; ++m) {
-            int mcsh_order = params_i[m][0];
+            int mcsh_order = params_i[m][0], square = params_i[m][1];
             int num_groups = get_num_groups(mcsh_order);
             // params_d: sigma, weight, A, alpha, cutoff, inv_rs
             double A = params_d[m][2], alpha = params_d[m][3], inv_rs = params_d[m][5];
@@ -717,7 +717,12 @@ extern "C" int calculate_gmpordernorm_noderiv(double** cell, double** cart, doub
                 }
             }
             // sum_square = sum_square * weight;
-            mcsh[ii][m] = sum_square;
+            if (square != 0){
+                mcsh[ii][m] = sum_square;
+            }
+            else {
+                mcsh[ii][m] = sqrt(sum_square);
+            }
 
         }
         delete[] nei_list_d;

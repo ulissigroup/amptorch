@@ -39,6 +39,8 @@ class GMPOrderNorm(BaseDescriptor):
     def prepare_descriptor_parameters(self):
         descriptor_setup = []
         cutoff = self.MCSHs["cutoff"]
+        square = self.MCSHs.get("square",True)
+        square_i = 1 if square else 0 
         rs_setup = self.MCSHs.get("rs_setup", {"setup": "constant", "rs": 1.0})
         if rs_setup["setup"] == "scale":
             rs_scale = rs_setup["scale_factor"]
@@ -53,7 +55,7 @@ class GMPOrderNorm(BaseDescriptor):
                 descriptor_setup += [
                     [
                         detail_setup["order"],
-                        1,  # place holder
+                        square_i,  # place holder
                         sigma,
                         1.0,
                         1.0 / (sigma * np.sqrt(2.0 * np.pi)),
@@ -71,7 +73,7 @@ class GMPOrderNorm(BaseDescriptor):
                 descriptor_setup += [
                     [
                         i,
-                        1,  # place holder
+                        square_i,  # place holder
                         sigma,
                         1.0,
                         1.0 / (sigma * np.sqrt(2.0 * np.pi)),
