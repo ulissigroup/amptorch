@@ -98,6 +98,37 @@ double calc_gamma(double alpha, double beta);
 
 // double dz0dz();
 
+double P1(double lambda, double x0, double gamma);
+double P2(double lambda, double x0, double gamma);
+double P3(double lambda, double x0, double gamma);
+double P4(double lambda, double x0, double gamma);
+double P5(double lambda, double x0, double gamma);
+double P6(double lambda, double x0, double gamma);
+double P7(double lambda, double x0, double gamma);
+double P8(double lambda, double x0, double gamma);
+double P9(double lambda, double x0, double gamma);
+
+double dP1(double lambda, double x0, double gamma);
+double dP2(double lambda, double x0, double gamma);
+double dP3(double lambda, double x0, double gamma);
+double dP4(double lambda, double x0, double gamma);
+double dP5(double lambda, double x0, double gamma);
+double dP6(double lambda, double x0, double gamma);
+double dP7(double lambda, double x0, double gamma);
+double dP8(double lambda, double x0, double gamma);
+double dP9(double lambda, double x0, double gamma);
+
+double dP1_exp(double P, double C2, double lambda, double x0, double gamma);
+double dP2_exp(double P, double C2, double lambda, double x0, double gamma);
+double dP3_exp(double P, double C2, double lambda, double x0, double gamma);
+double dP4_exp(double P, double C2, double lambda, double x0, double gamma);
+double dP5_exp(double P, double C2, double lambda, double x0, double gamma);
+double dP6_exp(double P, double C2, double lambda, double x0, double gamma);
+double dP7_exp(double P, double C2, double lambda, double x0, double gamma);
+double dP8_exp(double P, double C2, double lambda, double x0, double gamma);
+double dP9_exp(double P, double C2, double lambda, double x0, double gamma);
+
+
 void calc_MCSH_0_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
 
 void calc_MCSH_1_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
@@ -120,13 +151,13 @@ void calc_MCSH_5_3(double x0, double y0, double z0, double r0_sqr, double A, dou
 void calc_MCSH_5_4(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
 void calc_MCSH_5_5(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
 
-// void calc_MCSH_6_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_6_2(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_6_3(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_6_4(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_6_5(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_6_6(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_6_7(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_6_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_6_2(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_6_3(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_6_4(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_6_5(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_6_6(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_6_7(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
 
 // void calc_MCSH_7_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
 // void calc_MCSH_7_2(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
