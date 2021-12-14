@@ -474,12 +474,23 @@ extern "C" int calculate_gmpordernorm(double** cell, double** cart, double** sca
             }
             else {
                 double temp = sqrt(sum_square);
-                mcsh[ii][m] = temp;
-                for (int j = 0; j < nneigh; ++j) {
+                if (fabs(temp) < 1e-8){
+                    mcsh[ii][m] = 0.0;
+                    for (int j = 0; j < nneigh; ++j) {
 
-                    dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3] *= (0.5 / temp);
-                    dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3 + 1] *= (0.5 / temp);
-                    dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3 + 2] *= (0.5 / temp);
+                        dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3] = 0.0;
+                        dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3 + 1] = 0.0;
+                        dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3 + 2] = 0.0;
+                    }
+                }
+                else {
+                    mcsh[ii][m] = temp;
+                    for (int j = 0; j < nneigh; ++j) {
+
+                        dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3] *= (0.5 / temp);
+                        dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3 + 1] *= (0.5 / temp);
+                        dmcsh[ii*nmcsh + m][nei_list_i[j*2 + 1]*3 + 2] *= (0.5 / temp);
+                    }
 
                 }
             }

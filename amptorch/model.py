@@ -39,7 +39,7 @@ class MLP(nn.Module):
 
         # TODO: identify optimal initialization scheme
         self.reset_parameters()
-        print(self.model_net)
+        # print(self.model_net)
 
     def reset_parameters(self):
         for m in self.model_net:
