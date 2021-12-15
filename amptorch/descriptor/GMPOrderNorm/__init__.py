@@ -22,6 +22,9 @@ class GMPOrderNorm(BaseDescriptor):
         self.elements = elements
         self.element_indices = list_symbols_to_indices(elements)
 
+        if "cutoff" not in self.MCSHs:
+            self.default_cutoff()
+
         self.prepare_descriptor_parameters()
 
         self.get_descriptor_setup_hash()
@@ -35,6 +38,27 @@ class GMPOrderNorm(BaseDescriptor):
                 return False
             return True
         return NotImplemented
+
+    def default_cutoff(self, threshold=1e-8):
+        max_sigma = 0.0
+        if "MCSHs_detailed_list" in self.MCSHs:
+            for detail_setup in self.MCSHs["MCSHs_detailed_list"]:
+                sigmas = detail_setup["sigmas"]
+                max_sigma = max(max(sigmas), max_sigma)
+
+        else:
+            sigmas = self.MCSHs["MCSHs"]["sigmas"]
+            max_sigma = max(max(sigmas), max_sigma)
+
+        A = 1.0 / (max_sigma * np.sqrt(2.0 * np.pi))
+        alpha = 1.0 / (2.0 * max_sigma * max_sigma)
+
+        cutoff = round(np.sqrt(np.log(threshold / A) / (-alpha)), 2)
+        print("default cutoff distance: {} A".format(cutoff))
+
+        self.MCSHs["cutoff"] = cutoff
+
+        return 
 
     def prepare_descriptor_parameters(self):
         descriptor_setup = []
@@ -55,7 +79,7 @@ class GMPOrderNorm(BaseDescriptor):
                 descriptor_setup += [
                     [
                         detail_setup["order"],
-                        square_i,  # place holder
+                        square_i,
                         sigma,
                         1.0,
                         1.0 / (sigma * np.sqrt(2.0 * np.pi)),
@@ -73,7 +97,7 @@ class GMPOrderNorm(BaseDescriptor):
                 descriptor_setup += [
                     [
                         i,
-                        square_i,  # place holder
+                        square_i,
                         sigma,
                         1.0,
                         1.0 / (sigma * np.sqrt(2.0 * np.pi)),
@@ -283,15 +307,9 @@ class GMPOrderNorm(BaseDescriptor):
             fp = np.array(x, dtype=np.float64)
             fp_prime = np.array(dx, dtype=np.float64)
 
-            # if "prime_threshold" in self.params_set:
-            #     threshold = self.params_set["prime_threshold"]
-            #     super_threshold_indices = np.abs(fp_prime) < threshold
-            #     print("threshhold: {} \tnum points set to zero:{} \t outof: {}".format(threshold, np.sum(super_threshold_indices), fp_prime.shape[0] * fp_prime.shape[1]))
-            #     fp_prime[super_threshold_indices] = 0.0
-
             # threshold = 1e-9
             # super_threshold_indices_prime = np.abs(fp_prime) < threshold
-            # print("threshhold: {} \tnum points set to zero:{} \t outof: {}".format(threshold, np.sum(super_threshold_indices_prime), fp_prime.shape[0] * fp_prime.shape[1]))
+            # print("threshold: {} \tnum points set to zero:{} \t outof: {}".format(threshold, np.sum(super_threshold_indices_prime), fp_prime.shape[0] * fp_prime.shape[1]))
             # fp_prime[super_threshold_indices_prime] = 0.0
 
             scipy_sparse_fp_prime = sparse.coo_matrix(fp_prime)
