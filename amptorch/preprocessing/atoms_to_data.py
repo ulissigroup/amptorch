@@ -24,6 +24,7 @@ class AtomsToData:
         r_forces=False,
         save_fps=True,
         fprimes=True,
+        auto_center_atoms=True,
         cores=1,
     ):
         self.r_energy = r_energy
@@ -31,11 +32,15 @@ class AtomsToData:
         self.descriptor = descriptor
         self.save_fps = save_fps
         self.fprimes = fprimes
+        self.auto_center_atoms = auto_center_atoms
         self.cores = cores
 
     def convert(
         self, atoms, idx,
     ):
+        if self.auto_center_atoms:
+            atoms.center()
+
         descriptor_calculator = DescriptorCalculator(
             images=[atoms],
             descriptor=self.descriptor,

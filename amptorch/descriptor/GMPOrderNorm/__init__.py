@@ -58,7 +58,7 @@ class GMPOrderNorm(BaseDescriptor):
 
         self.MCSHs["cutoff"] = cutoff
 
-        return 
+        return
 
     def prepare_descriptor_parameters(self):
         descriptor_setup = []
