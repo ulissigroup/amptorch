@@ -141,7 +141,7 @@ class AtomsTrainer:
                 descriptor_setup=descriptor_setup,
                 forcetraining=self.forcetraining,
                 save_fps=self.config["dataset"].get("save_fps", True),
-                auto_center_atoms=self.config["dataset"].get("auto_center_atoms", True),
+                auto_center_atoms=self.config["dataset"].get("auto_center_atoms", False),
                 scaling=self.config["dataset"].get(
                     "scaling",
                     {"type": "normalize", "range": (0, 1), "elementwise": True},
@@ -338,7 +338,7 @@ class AtomsTrainer:
             r_forces=False,
             save_fps=self.config["dataset"].get("save_fps", True),
             fprimes=self.forcetraining,
-            auto_center_atoms=self.config["dataset"].get("auto_center_atoms", True),
+            auto_center_atoms=self.config["dataset"].get("auto_center_atoms", False),
             cores=1,
         )
 
