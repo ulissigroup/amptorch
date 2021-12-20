@@ -1,18 +1,25 @@
 import cffi
 
+# """int calculate_gmpordernorm(double **, double **, double **, int*,
+#                         int *, int, int*, int,
+#                         int**, double **, int, double **, int*, int*,
+#                         double**, double**);
+
+#         int calculate_gmpordernorm_noderiv(double **, double **, double **, int*,
+#                                     int *, int, int*, int,
+#                                     int**, double **, int, double **, int*, int*,
+#                                     double**);
+
+#     """
+
 ffibuilder = cffi.FFI()
 ffibuilder.cdef(
-    """int calculate_gmpordernorm(double **, double **, double **, int*,
-                        int *, int, int*, int,
-                        int**, double **, int, double **, int*, int*,
-                        double**, double**);
+    """
 
-        int calculate_gmpordernorm_noderiv(double **, double **, double **, int*,
-                                    int *, int, int*, int,
-                                    int**, double **, int, double **, int*, int*,
-                                    double**);
-
-
+        int calculate_gmpordernorm_noderiv(double**, double**, double**, double**, double**, int*,
+                                        int*, int, int,
+                                        int**, double**, int, double**, int*, int*,
+                                        double**);
     """
 )
 ffibuilder.set_source(

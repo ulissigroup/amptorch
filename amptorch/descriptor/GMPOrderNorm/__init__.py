@@ -225,25 +225,27 @@ class GMPOrderNorm(BaseDescriptor):
                     )
                 )
 
-    def calculate_fingerprints(self, atoms, element, calc_derivatives, log):
+    def calculate_fingerprints(self, atoms, ref_positions, calc_derivatives, log):
 
-        element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
+        # element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
 
         symbols = np.array(atoms.get_chemical_symbols())
         atom_num = len(symbols)
         atom_indices = list_symbols_to_indices(symbols)
-        unique_atom_indices = np.unique(atom_indices)
+        cell = atoms.cell
+        scaled_ref_positions = cell.scaled_positions(ref_positions)
+        # unique_atom_indices = np.unique(atom_indices)
 
-        type_num = dict()
-        type_idx = dict()
+        # type_num = dict()
+        # type_idx = dict()
 
-        for atom_index in unique_atom_indices:
-            tmp = atom_indices == atom_index
-            type_num[atom_index] = np.sum(tmp).astype(np.int64)
-            # if atom indexs are sorted by atom type,
-            # indexs are sorted in this part.
-            # if not, it could generate bug in training process for force training
-            type_idx[atom_index] = np.arange(atom_num)[tmp]
+        # for atom_index in unique_atom_indices:
+        #     tmp = atom_indices == atom_index
+        #     type_num[atom_index] = np.sum(tmp).astype(np.int64)
+        #     # if atom indexs are sorted by atom type,
+        #     # indexs are sorted in this part.
+        #     # if not, it could generate bug in training process for force training
+        #     type_idx[atom_index] = np.arange(atom_num)[tmp]
 
         atom_indices_p = ffi.cast("int *", atom_indices.ctypes.data)
 
@@ -257,18 +259,15 @@ class GMPOrderNorm(BaseDescriptor):
         cell_p = _gen_2Darray_for_ffi(cell, ffi)
         pbc_p = ffi.cast("int *", pbc.ctypes.data)
 
-        cal_atoms = np.asarray(type_idx[element_index], dtype=np.intc, order="C")
-        cal_num = len(cal_atoms)
-        # print("calculate atom length: {}\ttotal:{}".format(cal_num, atom_num))
-        cal_atoms_p = ffi.cast("int *", cal_atoms.ctypes.data)
+        ref_cart_p = _gen_2Darray_for_ffi(np.copy(scale), ffi)
+        ref_scale_p = _gen_2Darray_for_ffi(np.copy(scaled_ref_positions), ffi)
+        cal_num = len(ref_positions)
 
-        # print(self.params_set['i'])
-        # print(self.params_set['d'])
-        # print(self.params_set['gaussian_params'])
-        # print(self.params_set['ngaussians'])
-        # print(self.params_set['element_index_to_order'])
-        # print(self.params_set['num'])
-        # print(atom_indices)
+        # cal_atoms = np.asarray(type_idx[element_index], dtype=np.intc, order="C")
+        # cal_num = len(cal_atoms)
+        # print("calculate atom length: {}\ttotal:{}".format(cal_num, atom_num))
+        # cal_atoms_p = ffi.cast("int *", cal_atoms.ctypes.data)
+
 
         size_info = np.array([atom_num, cal_num, self.params_set["num"]])
 
