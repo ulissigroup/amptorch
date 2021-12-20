@@ -82,7 +82,7 @@ class GMPOrderNorm(BaseDescriptor):
                         square_i,
                         sigma,
                         1.0,
-                        1.0 / (sigma * np.sqrt(2.0 * np.pi)),
+                        (1.0 / (sigma * np.sqrt(2.0 * np.pi))) ** 3,
                         1.0 / (2.0 * sigma * sigma),
                         cutoff,
                         (1.0 / (rs_scale * sigma))
@@ -100,7 +100,7 @@ class GMPOrderNorm(BaseDescriptor):
                         square_i,
                         sigma,
                         1.0,
-                        1.0 / (sigma * np.sqrt(2.0 * np.pi)),
+                        (1.0 / (sigma * np.sqrt(2.0 * np.pi))) ** 3,
                         1.0 / (2.0 * sigma * sigma),
                         cutoff,
                         (1.0 / (rs_scale * sigma))
