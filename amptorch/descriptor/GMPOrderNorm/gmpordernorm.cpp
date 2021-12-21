@@ -6425,10 +6425,6 @@ void calc_MCSH_8_9_noderiv(double x0, double y0, double z0, double r0_sqr, doubl
     double inv_rs_6 = inv_rs_4 * inv_rs_2;
     double inv_rs_8 = inv_rs_6 * inv_rs_2;
 
-    double P1x = P1(lambda, x0, gamma);
-    double P1y = P1(lambda, y0, gamma);
-    double P1z = P1(lambda, z0, gamma);
-
     double P2x = P2(lambda, x0, gamma);
     double P2y = P2(lambda, y0, gamma);
     double P2z = P2(lambda, z0, gamma);
@@ -7083,6 +7079,22 @@ void calc_MCSH_9_12_noderiv(double x0, double y0, double z0, double r0_sqr, doub
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 int get_num_groups(int mcsh_order){
     if (mcsh_order == 0) { return 1;}
     else if (mcsh_order == 1) { return 1;}
@@ -7669,6 +7681,683 @@ GMPFunctionNoderiv get_mcsh_function_noderiv(int mcsh_order, int group_num)
         } else if (group_num == 12){
             result = calc_MCSH_9_12_noderiv;
         }
+    }
+
+    return result;
+}
+
+
+
+
+
+
+
+
+void calc_solid_MCSH_0_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value)
+{
+    // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
+    double C1 = calc_C1(A,B,alpha,beta);
+    double C2 = calc_C2(alpha, beta);
+    double m_0_1 = C1 * exp( C2 * r0_sqr);
+
+    value[0] = m_0_1;
+}
+
+void calc_solid_MCSH_1_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value)
+{
+    // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
+    double C1 = calc_C1(A,B,alpha,beta);
+    double C2 = calc_C2(alpha, beta);
+    double lambda = calc_lambda(alpha, beta);
+
+    double temp = C1 * exp( C2 * r0_sqr);
+
+    double temp_x = lambda * x0;
+    double temp_y = lambda * y0;
+    double temp_z = lambda * z0;
+
+    double miu_1_1_1 = temp * temp_x;
+    double miu_1_1_2 = temp * temp_y;
+    double miu_1_1_3 = temp * temp_z;
+
+    value[0] = miu_1_1_1;
+    value[1] = miu_1_1_2;
+    value[2] = miu_1_1_3;
+
+}
+
+void calc_solid_MCSH_2_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value)
+{
+    double C1 = calc_C1(A,B,alpha,beta);
+    double C2 = calc_C2(alpha, beta);
+    double temp = C1 * exp( C2 * r0_sqr);
+
+    double lambda = calc_lambda(alpha, beta);
+    double gamma = calc_gamma(alpha, beta);
+
+    double P2x = P2(lambda, x0, gamma);
+    double P2y = P2(lambda, y0, gamma);
+    double P2z = P2(lambda, z0, gamma);
+
+    double term_x = (2.0 * P2x) - (P2y + P2z);
+    double term_y = (2.0 * P2y) - (P2x + P2z);
+    double term_z = (2.0 * P2z) - (P2x + P2y);
+
+    double miu_1 = temp * term_x;
+    double miu_2 = temp * term_y;
+    double miu_3 = temp * term_z;
+
+    value[0] = miu_1;
+    value[1] = miu_2;
+    value[2] = miu_3;
+}
+
+void calc_solid_MCSH_2_2_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value)
+{
+    // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
+    double C1 = calc_C1(A,B,alpha,beta);
+    double C2 = calc_C2(alpha, beta);
+
+    double lambda = calc_lambda(alpha, beta);
+
+    double temp = C1 * exp( C2 * r0_sqr) * lambda * lambda * 3.0;
+
+    double miu_2_2_1 = temp * x0 * y0;
+    double miu_2_2_2 = temp * x0 * z0;
+    double miu_2_2_3 = temp * y0 * z0;
+
+    value[0] = miu_2_2_1;
+    value[1] = miu_2_2_2;
+    value[2] = miu_2_2_3;
+}
+
+void calc_solid_MCSH_3_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value)
+{
+    double C1 = calc_C1(A,B,alpha,beta);
+    double C2 = calc_C2(alpha, beta);
+    double temp = C1 * exp( C2 * r0_sqr);
+
+    double lambda = calc_lambda(alpha, beta);
+    double gamma = calc_gamma(alpha, beta);
+
+    double P1x = P1(lambda, x0, gamma);
+    double P1y = P1(lambda, y0, gamma);
+    double P1z = P1(lambda, z0, gamma);
+
+    double P2x = P2(lambda, x0, gamma);
+    double P2y = P2(lambda, y0, gamma);
+    double P2z = P2(lambda, z0, gamma);
+
+    double P3x = P3(lambda, x0, gamma);
+    double P3y = P3(lambda, y0, gamma);
+    double P3z = P3(lambda, z0, gamma);
+
+    double term_x = (6.0 * P3x) - (9.0 * P1x * (P2y + P2z));
+    double term_y = (6.0 * P3y) - (9.0 * P1y * (P2x + P2z));
+    double term_z = (6.0 * P3z) - (9.0 * P1z * (P2x + P2y));
+
+    double miu_1 = temp * term_x;
+    double miu_2 = temp * term_y;
+    double miu_3 = temp * term_z;
+
+    value[0] = miu_1;
+    value[1] = miu_2;
+    value[2] = miu_3;
+}
+
+void calc_solid_MCSH_3_2_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value)
+{
+    // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
+    double C1 = calc_C1(A,B,alpha,beta);
+    double C2 = calc_C2(alpha, beta);
+    double temp = C1 * exp( C2 * r0_sqr);
+
+    double lambda = calc_lambda(alpha, beta);
+    double gamma = calc_gamma(alpha, beta);
+
+    double P1x = P1(lambda, x0, gamma);
+    double P1y = P1(lambda, y0, gamma);
+    double P1z = P1(lambda, z0, gamma);
+
+    double P2x = P2(lambda, x0, gamma);
+    double P2y = P2(lambda, y0, gamma);
+    double P2z = P2(lambda, z0, gamma);
+
+    double P3x = P3(lambda, x0, gamma);
+    double P3y = P3(lambda, y0, gamma);
+    double P3z = P3(lambda, z0, gamma);
+
+    double term_1 = (12.0 * P2x * P1y) - (3.0 * P3y) - (3.0 * P1y * P2z);
+    double term_2 = (12.0 * P2y * P1x) - (3.0 * P3x) - (3.0 * P1x * P2z);
+    double term_3 = (12.0 * P2x * P1z) - (3.0 * P3z) - (3.0 * P1z * P2y);
+    double term_4 = (12.0 * P2z * P1x) - (3.0 * P3x) - (3.0 * P1x * P2y);
+    double term_5 = (12.0 * P2y * P1z) - (3.0 * P3z) - (3.0 * P1z * P2x);
+    double term_6 = (12.0 * P2z * P1y) - (3.0 * P3y) - (3.0 * P1y * P2x);
+
+    double miu_1 = temp * term_1;
+    double miu_2 = temp * term_2;
+    double miu_3 = temp * term_3;
+    double miu_4 = temp * term_4;
+    double miu_5 = temp * term_5;
+    double miu_6 = temp * term_6;
+
+    value[0] = miu_1;
+    value[1] = miu_2;
+    value[2] = miu_3;
+    value[3] = miu_4;
+    value[4] = miu_5;
+    value[5] = miu_6;
+}
+
+void calc_solid_MCSH_3_3_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value)
+{
+    // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
+    double C1 = calc_C1(A,B,alpha,beta);
+    double C2 = calc_C2(alpha, beta);
+    double lambda = calc_lambda(alpha, beta);
+
+    double temp =  C1 * exp( C2 * r0_sqr) * lambda * lambda * lambda * 15.0 ;
+    double m_3_3 = temp * x0 * y0 * z0;
+
+    value[0] = m_3_3;
+}
+
+void calc_solid_MCSH_4_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value)
+{
+    double C1 = calc_C1(A,B,alpha,beta);
+    double C2 = calc_C2(alpha, beta);
+    double temp = C1 * exp( C2 * r0_sqr);
+
+    double lambda = calc_lambda(alpha, beta);
+    double gamma = calc_gamma(alpha, beta);
+
+    double P2x = P2(lambda, x0, gamma);
+    double P2y = P2(lambda, y0, gamma);
+    double P2z = P2(lambda, z0, gamma);
+
+    double P4x = P4(lambda, x0, gamma);
+    double P4y = P4(lambda, y0, gamma);
+    double P4z = P4(lambda, z0, gamma);
+
+    double term_x = (24.0 * P4x) + (9.0 * (P4y + P4z)) - (72.0 * P2x * (P2y + P2z)) + (18.0 * P2y * P2z);
+    double term_y = (24.0 * P4y) + (9.0 * (P4x + P4z)) - (72.0 * P2y * (P2x + P2z)) + (18.0 * P2x * P2z);
+    double term_z = (24.0 * P4z) + (9.0 * (P4x + P4y)) - (72.0 * P2z * (P2x + P2y)) + (18.0 * P2x * P2y);
+
+    double miu_1 = temp * term_x;
+    double miu_2 = temp * term_y;
+    double miu_3 = temp * term_z;
+
+    value[0] = miu_1;
+    value[1] = miu_2;
+    value[2] = miu_3;
+}
+
+void calc_solid_MCSH_4_2_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value)
+{
+    // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
+    double C1 = calc_C1(A,B,alpha,beta);
+    double C2 = calc_C2(alpha, beta);
+    double temp = C1 * exp( C2 * r0_sqr);
+
+    double lambda = calc_lambda(alpha, beta);
+    double gamma = calc_gamma(alpha, beta);
+
+    double P1x = P1(lambda, x0, gamma);
+    double P1y = P1(lambda, y0, gamma);
+    double P1z = P1(lambda, z0, gamma);
+
+    double P2x = P2(lambda, x0, gamma);
+    double P2y = P2(lambda, y0, gamma);
+    double P2z = P2(lambda, z0, gamma);
+
+    double P3x = P3(lambda, x0, gamma);
+    double P3y = P3(lambda, y0, gamma);
+    double P3z = P3(lambda, z0, gamma);
+
+    double term_1 = (60.0 * P3x * P1y) - (45.0 * (P1x * P3y + P1x * P1y * P2z));
+    double term_2 = (60.0 * P3y * P1x) - (45.0 * (P1y * P3x + P1y * P1x * P2z));
+    double term_3 = (60.0 * P3x * P1z) - (45.0 * (P1x * P3z + P1x * P1z * P2y));
+    double term_4 = (60.0 * P3z * P1x) - (45.0 * (P1z * P3x + P1z * P1x * P2y));
+    double term_5 = (60.0 * P3y * P1z) - (45.0 * (P1y * P3z + P1y * P1z * P2x));
+    double term_6 = (60.0 * P3z * P1y) - (45.0 * (P1z * P3y + P1z * P1y * P2x));
+
+    double miu_1 = temp * term_1;
+    double miu_2 = temp * term_2;
+    double miu_3 = temp * term_3;
+    double miu_4 = temp * term_4;
+    double miu_5 = temp * term_5;
+    double miu_6 = temp * term_6;
+
+    value[0] = miu_1;
+    value[1] = miu_2;
+    value[2] = miu_3;
+    value[3] = miu_4;
+    value[4] = miu_5;
+    value[5] = miu_6;
+}
+
+
+
+void calc_solid_MCSH_4_3_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value)
+{
+    double C1 = calc_C1(A,B,alpha,beta);
+    double C2 = calc_C2(alpha, beta);
+    double temp = C1 * exp( C2 * r0_sqr);
+
+    double lambda = calc_lambda(alpha, beta);
+    double gamma = calc_gamma(alpha, beta);
+
+    double P2x = P2(lambda, x0, gamma);
+    double P2y = P2(lambda, y0, gamma);
+    double P2z = P2(lambda, z0, gamma);
+
+    double P4x = P4(lambda, x0, gamma);
+    double P4y = P4(lambda, y0, gamma);
+    double P4z = P4(lambda, z0, gamma);
+
+    double term_1 = (81.0 * P2x * P2y) - (12.0 * (P4x + P4y)) + (3.0 * P4z) - (9.0 * P2z * (P2x + P2y));
+    double term_2 = (81.0 * P2x * P2z) - (12.0 * (P4x + P4z)) + (3.0 * P4y) - (9.0 * P2y * (P2x + P2z));
+    double term_3 = (81.0 * P2y * P2z) - (12.0 * (P4y + P4z)) + (3.0 * P4x) - (9.0 * P2x * (P2y + P2z));
+
+    double miu_1 = temp * term_1;
+    double miu_2 = temp * term_2;
+    double miu_3 = temp * term_3;
+
+    value[0] = miu_1;
+    value[1] = miu_2;
+    value[2] = miu_3;
+}
+
+void calc_solid_MCSH_4_4_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value)
+{
+    double C1 = calc_C1(A,B,alpha,beta);
+    double C2 = calc_C2(alpha, beta);
+    double temp = C1 * exp( C2 * r0_sqr);
+
+    double lambda = calc_lambda(alpha, beta);
+    double gamma = calc_gamma(alpha, beta);
+
+    double P1x = P1(lambda, x0, gamma);
+    double P1y = P1(lambda, y0, gamma);
+    double P1z = P1(lambda, z0, gamma);
+
+    double P2x = P2(lambda, x0, gamma);
+    double P2y = P2(lambda, y0, gamma);
+    double P2z = P2(lambda, z0, gamma);
+
+    double P3x = P3(lambda, x0, gamma);
+    double P3y = P3(lambda, y0, gamma);
+    double P3z = P3(lambda, z0, gamma);
+
+    double term_1 = 90.0 * P2x * P1y * P1z - 15.0 * (P3y * P1z + P1y * P3z);
+    double term_2 = 90.0 * P2y * P1x * P1z - 15.0 * (P3x * P1z + P1x * P3z);
+    double term_3 = 90.0 * P2z * P1x * P1y - 15.0 * (P3x * P1y + P1x * P3y);
+
+    double miu_1 = temp * term_1;
+    double miu_2 = temp * term_2;
+    double miu_3 = temp * term_3;
+
+    value[0] = miu_1;
+    value[1] = miu_2;
+    value[2] = miu_3;
+}
+
+void calc_solid_MCSH_5_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value)
+{
+    double C1 = calc_C1(A,B,alpha,beta);
+    double C2 = calc_C2(alpha, beta);
+    double temp = C1 * exp( C2 * r0_sqr);
+
+    double lambda = calc_lambda(alpha, beta);
+    double gamma = calc_gamma(alpha, beta);
+
+    double P1x = P1(lambda, x0, gamma);
+    double P1y = P1(lambda, y0, gamma);
+    double P1z = P1(lambda, z0, gamma);
+
+    double P2x = P2(lambda, x0, gamma);
+    double P2y = P2(lambda, y0, gamma);
+    double P2z = P2(lambda, z0, gamma);
+
+    double P3x = P3(lambda, x0, gamma);
+    double P3y = P3(lambda, y0, gamma);
+    double P3z = P3(lambda, z0, gamma);
+
+    double P4x = P4(lambda, x0, gamma);
+    double P4y = P4(lambda, y0, gamma);
+    double P4z = P4(lambda, z0, gamma);
+
+    double P5x = P5(lambda, x0, gamma);
+    double P5y = P5(lambda, y0, gamma);
+    double P5z = P5(lambda, z0, gamma);
+
+    double term_x = (120.0 * P5x) - (600.0 * P3x * (P2y + P2z)) + (225.0 * P1x * (P4y + P4z)) + (450.0 * P1x * P2y * P2z);
+    double term_y = (120.0 * P5y) - (600.0 * P3y * (P2x + P2z)) + (225.0 * P1y * (P4x + P4z)) + (450.0 * P1y * P2x * P2z);
+    double term_z = (120.0 * P5z) - (600.0 * P3z * (P2x + P2y)) + (225.0 * P1z * (P4x + P4y)) + (450.0 * P1z * P2x * P2y);
+
+    double miu_1 = temp * term_x;
+    double miu_2 = temp * term_y;
+    double miu_3 = temp * term_z;
+
+    value[0] = miu_1;
+    value[1] = miu_2;
+    value[2] = miu_3;
+}
+
+void calc_solid_MCSH_5_2_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value)
+{
+    // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
+    double C1 = calc_C1(A,B,alpha,beta);
+    double C2 = calc_C2(alpha, beta);
+    double temp = C1 * exp( C2 * r0_sqr);
+
+    double lambda = calc_lambda(alpha, beta);
+    double gamma = calc_gamma(alpha, beta);
+
+    double P1x = P1(lambda, x0, gamma);
+    double P1y = P1(lambda, y0, gamma);
+    double P1z = P1(lambda, z0, gamma);
+
+    double P2x = P2(lambda, x0, gamma);
+    double P2y = P2(lambda, y0, gamma);
+    double P2z = P2(lambda, z0, gamma);
+
+    double P3x = P3(lambda, x0, gamma);
+    double P3y = P3(lambda, y0, gamma);
+    double P3z = P3(lambda, z0, gamma);
+
+    double P4x = P4(lambda, x0, gamma);
+    double P4y = P4(lambda, y0, gamma);
+    double P4z = P4(lambda, z0, gamma);
+
+    double P5x = P5(lambda, x0, gamma);
+    double P5y = P5(lambda, y0, gamma);
+    double P5z = P5(lambda, z0, gamma);
+
+    double term_1 = (360.0 * P4x * P1y) - (540.0 * P2x * (P3y + P1y * P2z)) + (45.0 * (P5y + P1y * P4z)) + (90.0 * P3y * P2z);
+    double term_2 = (360.0 * P4y * P1x) - (540.0 * P2y * (P3x + P1x * P2z)) + (45.0 * (P5x + P1x * P4z)) + (90.0 * P3x * P2z);
+    double term_3 = (360.0 * P4x * P1z) - (540.0 * P2x * (P3z + P1z * P2y)) + (45.0 * (P5z + P1z * P4y)) + (90.0 * P3z * P2y);
+    double term_4 = (360.0 * P4z * P1x) - (540.0 * P2z * (P3x + P1x * P2y)) + (45.0 * (P5x + P1x * P4y)) + (90.0 * P3x * P2y);
+    double term_5 = (360.0 * P4y * P1z) - (540.0 * P2y * (P3z + P1z * P2x)) + (45.0 * (P5z + P1z * P4x)) + (90.0 * P3z * P2x);
+    double term_6 = (360.0 * P4z * P1y) - (540.0 * P2z * (P3y + P1y * P2x)) + (45.0 * (P5y + P1y * P4x)) + (90.0 * P3y * P2x);
+
+    double miu_1 = temp * term_1;
+    double miu_2 = temp * term_2;
+    double miu_3 = temp * term_3;
+    double miu_4 = temp * term_4;
+    double miu_5 = temp * term_5;
+    double miu_6 = temp * term_6;
+
+    value[0] = miu_1;
+    value[1] = miu_2;
+    value[2] = miu_3;
+    value[3] = miu_4;
+    value[4] = miu_5;
+    value[5] = miu_6;
+}
+
+
+
+void calc_solid_MCSH_5_3_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value)
+{
+    // double r0_sqr = x0*x0 + y0*y0 + z0*z0;
+    double C1 = calc_C1(A,B,alpha,beta);
+    double C2 = calc_C2(alpha, beta);
+    double temp = C1 * exp( C2 * r0_sqr);
+
+    double lambda = calc_lambda(alpha, beta);
+    double gamma = calc_gamma(alpha, beta);
+
+    double P1x = P1(lambda, x0, gamma);
+    double P1y = P1(lambda, y0, gamma);
+    double P1z = P1(lambda, z0, gamma);
+
+    double P2x = P2(lambda, x0, gamma);
+    double P2y = P2(lambda, y0, gamma);
+    double P2z = P2(lambda, z0, gamma);
+
+    double P3x = P3(lambda, x0, gamma);
+    double P3y = P3(lambda, y0, gamma);
+    double P3z = P3(lambda, z0, gamma);
+
+    double P4x = P4(lambda, x0, gamma);
+    double P4y = P4(lambda, y0, gamma);
+    double P4z = P4(lambda, z0, gamma);
+
+    double P5x = P5(lambda, x0, gamma);
+    double P5y = P5(lambda, y0, gamma);
+    double P5z = P5(lambda, z0, gamma);
+
+    double term_1 = (615.0 * P3x * P2y) - (60.0 * P5x) - (15.0 * P3x * P2z) - (270.0 * P1x * P4y) + (45.0 * P1x * P4z) - (225.0 * P1x * P2y * P2z);
+    double term_2 = (615.0 * P3y * P2x) - (60.0 * P5y) - (15.0 * P3y * P2z) - (270.0 * P1y * P4x) + (45.0 * P1y * P4z) - (225.0 * P1y * P2x * P2z);
+    double term_3 = (615.0 * P3x * P2z) - (60.0 * P5x) - (15.0 * P3x * P2y) - (270.0 * P1x * P4z) + (45.0 * P1x * P4y) - (225.0 * P1x * P2z * P2y);
+    double term_4 = (615.0 * P3z * P2x) - (60.0 * P5z) - (15.0 * P3z * P2y) - (270.0 * P1z * P4x) + (45.0 * P1z * P4y) - (225.0 * P1z * P2x * P2y);
+    double term_5 = (615.0 * P3y * P2z) - (60.0 * P5y) - (15.0 * P3y * P2x) - (270.0 * P1y * P4z) + (45.0 * P1y * P4x) - (225.0 * P1y * P2z * P2x);
+    double term_6 = (615.0 * P3z * P2y) - (60.0 * P5z) - (15.0 * P3z * P2x) - (270.0 * P1z * P4y) + (45.0 * P1z * P4x) - (225.0 * P1z * P2y * P2x);
+
+    double miu_1 = temp * term_1;
+    double miu_2 = temp * term_2;
+    double miu_3 = temp * term_3;
+    double miu_4 = temp * term_4;
+    double miu_5 = temp * term_5;
+    double miu_6 = temp * term_6;
+
+    value[0] = miu_1;
+    value[1] = miu_2;
+    value[2] = miu_3;
+    value[3] = miu_4;
+    value[4] = miu_5;
+    value[5] = miu_6;
+}
+
+void calc_solid_MCSH_5_4_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value)
+{
+    double C1 = calc_C1(A,B,alpha,beta);
+    double C2 = calc_C2(alpha, beta);
+    double temp = C1 * exp( C2 * r0_sqr);
+
+    double lambda = calc_lambda(alpha, beta);
+    double gamma = calc_gamma(alpha, beta);
+
+    double P1x = P1(lambda, x0, gamma);
+    double P1y = P1(lambda, y0, gamma);
+    double P1z = P1(lambda, z0, gamma);
+
+    double P2x = P2(lambda, x0, gamma);
+    double P2y = P2(lambda, y0, gamma);
+    double P2z = P2(lambda, z0, gamma);
+
+    double P3x = P3(lambda, x0, gamma);
+    double P3y = P3(lambda, y0, gamma);
+    double P3z = P3(lambda, z0, gamma);
+
+    double term_1 = (630.0 * P3x * P1y * P1z) - (315 * P1x * (P3y * P1z + P1y * P3z));
+    double term_2 = (630.0 * P3y * P1x * P1z) - (315 * P1y * (P3x * P1z + P1x * P3z));
+    double term_3 = (630.0 * P3z * P1x * P1y) - (315 * P1z * (P3x * P1y + P1x * P3y));
+
+    double miu_1 = temp * term_1;
+    double miu_2 = temp * term_2;
+    double miu_3 = temp * term_3;
+
+    value[0] = miu_1;
+    value[1] = miu_2;
+    value[2] = miu_3;
+}
+
+void calc_solid_MCSH_5_5_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value)
+{
+    double C1 = calc_C1(A,B,alpha,beta);
+    double C2 = calc_C2(alpha, beta);
+    double temp = C1 * exp( C2 * r0_sqr);
+
+    double lambda = calc_lambda(alpha, beta);
+    double gamma = calc_gamma(alpha, beta);
+
+    double P1x = P1(lambda, x0, gamma);
+    double P1y = P1(lambda, y0, gamma);
+    double P1z = P1(lambda, z0, gamma);
+
+    double P2x = P2(lambda, x0, gamma);
+    double P2y = P2(lambda, y0, gamma);
+    double P2z = P2(lambda, z0, gamma);
+
+    double P3x = P3(lambda, x0, gamma);
+    double P3y = P3(lambda, y0, gamma);
+    double P3z = P3(lambda, z0, gamma);
+
+    double P4x = P4(lambda, x0, gamma);
+    double P4y = P4(lambda, y0, gamma);
+    double P4z = P4(lambda, z0, gamma);
+
+    double P5x = P5(lambda, x0, gamma);
+    double P5y = P5(lambda, y0, gamma);
+    double P5z = P5(lambda, z0, gamma);
+
+    double term_1 = (765.0 * P2x * P2y * P1z) - (90.0 * P1z * (P4x + P4y)) - (75.0 * P3z * (P2x + P2y)) + (15.0 * P5z);
+    double term_2 = (765.0 * P2x * P2z * P1y) - (90.0 * P1y * (P4x + P4z)) - (75.0 * P3y * (P2x + P2z)) + (15.0 * P5y);
+    double term_3 = (765.0 * P2y * P2z * P1x) - (90.0 * P1x * (P4y + P4z)) - (75.0 * P3x * (P2y + P2z)) + (15.0 * P5x);
+
+    double miu_1 = temp * term_1;
+    double miu_2 = temp * term_2;
+    double miu_3 = temp * term_3;
+
+    value[0] = miu_1;
+    value[1] = miu_2;
+    value[2] = miu_3;
+}
+
+
+
+SolidGMPFunctionNoderiv get_solid_mcsh_function_noderiv(int mcsh_order, int group_num)
+{
+    SolidGMPFunctionNoderiv result;
+
+    if (mcsh_order == 0) {
+        if (group_num == 1) {
+            result = calc_solid_MCSH_0_1_noderiv;
+        }
+    } else if (mcsh_order == 1) {
+        if (group_num == 1) {
+            result = calc_solid_MCSH_1_1_noderiv;
+        }
+    } else if (mcsh_order == 2) {
+        if (group_num == 1) {
+            result = calc_solid_MCSH_2_1_noderiv;
+        } else if (group_num == 2){
+            result = calc_solid_MCSH_2_2_noderiv;
+        }
+    } else if (mcsh_order == 3) {
+        if (group_num == 1) {
+            result = calc_solid_MCSH_3_1_noderiv;
+        } else if (group_num == 2){
+            result = calc_solid_MCSH_3_2_noderiv;
+        } else if (group_num == 3){
+            result = calc_solid_MCSH_3_3_noderiv;
+        }
+    } else if (mcsh_order == 4) {
+        if (group_num == 1) {
+            result = calc_solid_MCSH_4_1_noderiv;
+        } else if (group_num == 2){
+            result = calc_solid_MCSH_4_2_noderiv;
+        } else if (group_num == 3){
+            result = calc_solid_MCSH_4_3_noderiv;
+        } else if (group_num == 4){
+            result = calc_solid_MCSH_4_4_noderiv;
+        }
+    } else if (mcsh_order == 5) {
+        if (group_num == 1) {
+            result = calc_solid_MCSH_5_1_noderiv;
+        } else if (group_num == 2){
+            result = calc_solid_MCSH_5_2_noderiv;
+        } else if (group_num == 3){
+            result = calc_solid_MCSH_5_3_noderiv;
+        } else if (group_num == 4){
+            result = calc_solid_MCSH_5_4_noderiv;
+        } else if (group_num == 5){
+            result = calc_solid_MCSH_5_5_noderiv;
+        }
+    // } else if (mcsh_order == 6) {
+    //     if (group_num == 1) {
+    //         result = calc_MCSH_6_1_noderiv;
+    //     } else if (group_num == 2){
+    //         result = calc_MCSH_6_2_noderiv;
+    //     } else if (group_num == 3){
+    //         result = calc_MCSH_6_3_noderiv;
+    //     } else if (group_num == 4){
+    //         result = calc_MCSH_6_4_noderiv;
+    //     } else if (group_num == 5){
+    //         result = calc_MCSH_6_5_noderiv;
+    //     } else if (group_num == 6){
+    //         result = calc_MCSH_6_6_noderiv;
+    //     } else if (group_num == 7){
+    //         result = calc_MCSH_6_7_noderiv;
+    //     }
+    // } else if (mcsh_order == 7) {
+    //     if (group_num == 1) {
+    //         result = calc_MCSH_7_1_noderiv;
+    //     } else if (group_num == 2){
+    //         result = calc_MCSH_7_2_noderiv;
+    //     } else if (group_num == 3){
+    //         result = calc_MCSH_7_3_noderiv;
+    //     } else if (group_num == 4){
+    //         result = calc_MCSH_7_4_noderiv;
+    //     } else if (group_num == 5){
+    //         result = calc_MCSH_7_5_noderiv;
+    //     } else if (group_num == 6){
+    //         result = calc_MCSH_7_6_noderiv;
+    //     } else if (group_num == 7){
+    //         result = calc_MCSH_7_7_noderiv;
+    //     } else if (group_num == 8){
+    //         result = calc_MCSH_7_8_noderiv;
+    //     }
+    // } else if (mcsh_order == 8) {
+    //     if (group_num == 1) {
+    //         result = calc_MCSH_8_1_noderiv;
+    //     } else if (group_num == 2){
+    //         result = calc_MCSH_8_2_noderiv;
+    //     } else if (group_num == 3){
+    //         result = calc_MCSH_8_3_noderiv;
+    //     } else if (group_num == 4){
+    //         result = calc_MCSH_8_4_noderiv;
+    //     } else if (group_num == 5){
+    //         result = calc_MCSH_8_5_noderiv;
+    //     } else if (group_num == 6){
+    //         result = calc_MCSH_8_6_noderiv;
+    //     } else if (group_num == 7){
+    //         result = calc_MCSH_8_7_noderiv;
+    //     } else if (group_num == 8){
+    //         result = calc_MCSH_8_8_noderiv;
+    //     } else if (group_num == 9){
+    //         result = calc_MCSH_8_9_noderiv;
+    //     } else if (group_num == 10){
+    //         result = calc_MCSH_8_10_noderiv;
+    //     }
+    // } else if (mcsh_order == 9) {
+    //     if (group_num == 1) {
+    //         result = calc_MCSH_9_1_noderiv;
+    //     } else if (group_num == 2){
+    //         result = calc_MCSH_9_2_noderiv;
+    //     } else if (group_num == 3){
+    //         result = calc_MCSH_9_3_noderiv;
+    //     } else if (group_num == 4){
+    //         result = calc_MCSH_9_4_noderiv;
+    //     } else if (group_num == 5){
+    //         result = calc_MCSH_9_5_noderiv;
+    //     } else if (group_num == 6){
+    //         result = calc_MCSH_9_6_noderiv;
+    //     } else if (group_num == 7){
+    //         result = calc_MCSH_9_7_noderiv;
+    //     } else if (group_num == 8){
+    //         result = calc_MCSH_9_8_noderiv;
+    //     } else if (group_num == 9){
+    //         result = calc_MCSH_9_9_noderiv;
+    //     } else if (group_num == 10){
+    //         result = calc_MCSH_9_10_noderiv;
+    //     } else if (group_num == 11){
+    //         result = calc_MCSH_9_11_noderiv;
+    //     } else if (group_num == 12){
+    //         result = calc_MCSH_9_12_noderiv;
+    //     }
     }
 
     return result;

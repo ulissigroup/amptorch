@@ -63,6 +63,8 @@ class GMPOrderNorm(BaseDescriptor):
     def prepare_descriptor_parameters(self):
         descriptor_setup = []
         cutoff = self.MCSHs["cutoff"]
+        self.solid_harmonic = self.MCSHs.get("solid_harmonics", False)
+        solid_harmonic_i = 1 if self.solid_harmonic else 0
         square = self.MCSHs.get("square", True)
         square_i = 1 if square else 0
         rs_setup = self.MCSHs.get("rs_setup", {"setup": "constant", "rs": 1.0})
@@ -80,6 +82,7 @@ class GMPOrderNorm(BaseDescriptor):
                     [
                         detail_setup["order"],
                         square_i,
+                        solid_harmonic_i,
                         sigma,
                         1.0,
                         (1.0 / (sigma * np.sqrt(2.0 * np.pi))) ** 3,
@@ -98,6 +101,7 @@ class GMPOrderNorm(BaseDescriptor):
                     [
                         i,
                         square_i,
+                        solid_harmonic_i,
                         sigma,
                         1.0,
                         (1.0 / (sigma * np.sqrt(2.0 * np.pi))) ** 3,
@@ -178,10 +182,10 @@ class GMPOrderNorm(BaseDescriptor):
         # print("gaussian_params: {}".format(self.params_set["gaussian_params"]))
 
         params_i = np.asarray(
-            self.descriptor_setup[:, :2].copy(), dtype=np.intc, order="C"
+            self.descriptor_setup[:, :3].copy(), dtype=np.intc, order="C"
         )
         params_d = np.asarray(
-            self.descriptor_setup[:, 2:].copy(), dtype=np.float64, order="C"
+            self.descriptor_setup[:, 3:].copy(), dtype=np.float64, order="C"
         )
         self.params_set["i"] = params_i
         self.params_set["d"] = params_d
@@ -273,6 +277,8 @@ class GMPOrderNorm(BaseDescriptor):
         size_info = np.array([atom_num, cal_num, self.params_set["num"]])
 
         if calc_derivatives:
+            if self.solid_harmonic:
+                raise NotImplementedError
             x = np.zeros([cal_num, self.params_set["num"]], dtype=np.float64, order="C")
             dx = np.zeros(
                 [cal_num * self.params_set["num"], atom_num * 3],
@@ -335,23 +341,43 @@ class GMPOrderNorm(BaseDescriptor):
 
             x_p = _gen_2Darray_for_ffi(x, ffi)
 
-            errno = lib.calculate_gmpordernorm_noderiv(
-                cell_p,
-                cart_p,
-                scale_p,
-                pbc_p,
-                atom_indices_p,
-                atom_num,
-                cal_atoms_p,
-                cal_num,
-                self.params_set["ip"],
-                self.params_set["dp"],
-                self.params_set["num"],
-                self.params_set["gaussian_params_p"],
-                self.params_set["ngaussians_p"],
-                self.params_set["element_index_to_order_p"],
-                x_p,
-            )
+            if self.solid_harmonic:
+                errno = lib.calculate_solid_gmpordernorm_noderiv(
+                    cell_p,
+                    cart_p,
+                    scale_p,
+                    pbc_p,
+                    atom_indices_p,
+                    atom_num,
+                    cal_atoms_p,
+                    cal_num,
+                    self.params_set["ip"],
+                    self.params_set["dp"],
+                    self.params_set["num"],
+                    self.params_set["gaussian_params_p"],
+                    self.params_set["ngaussians_p"],
+                    self.params_set["element_index_to_order_p"],
+                    x_p,
+                )
+            
+            else:
+                errno = lib.calculate_gmpordernorm_noderiv(
+                    cell_p,
+                    cart_p,
+                    scale_p,
+                    pbc_p,
+                    atom_indices_p,
+                    atom_num,
+                    cal_atoms_p,
+                    cal_num,
+                    self.params_set["ip"],
+                    self.params_set["dp"],
+                    self.params_set["num"],
+                    self.params_set["gaussian_params_p"],
+                    self.params_set["ngaussians_p"],
+                    self.params_set["element_index_to_order_p"],
+                    x_p,
+                )
 
             if errno == 1:
                 raise NotImplementedError("Descriptor not implemented!")
