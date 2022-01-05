@@ -15,8 +15,8 @@ from .training_test_gmp import test_training_gmp
 
 
 class TestMethods(unittest.TestCase):
-    def test_consistency(self):
-        test_energy_force_consistency()
+    # def test_consistency(self):
+    #     test_energy_force_consistency()
 
     def test_cosine_and_polynomial_cutoff_funcs(self):
         test_cutoff_funcs()
