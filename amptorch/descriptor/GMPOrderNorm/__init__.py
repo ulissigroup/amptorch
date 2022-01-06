@@ -277,8 +277,7 @@ class GMPOrderNorm(BaseDescriptor):
         size_info = np.array([atom_num, cal_num, self.params_set["num"]])
 
         if calc_derivatives:
-            if self.solid_harmonic:
-                raise NotImplementedError
+            
             x = np.zeros([cal_num, self.params_set["num"]], dtype=np.float64, order="C")
             dx = np.zeros(
                 [cal_num * self.params_set["num"], atom_num * 3],
@@ -289,24 +288,46 @@ class GMPOrderNorm(BaseDescriptor):
             x_p = _gen_2Darray_for_ffi(x, ffi)
             dx_p = _gen_2Darray_for_ffi(dx, ffi)
 
-            errno = lib.calculate_gmpordernorm(
-                cell_p,
-                cart_p,
-                scale_p,
-                pbc_p,
-                atom_indices_p,
-                atom_num,
-                cal_atoms_p,
-                cal_num,
-                self.params_set["ip"],
-                self.params_set["dp"],
-                self.params_set["num"],
-                self.params_set["gaussian_params_p"],
-                self.params_set["ngaussians_p"],
-                self.params_set["element_index_to_order_p"],
-                x_p,
-                dx_p,
-            )
+
+            if self.solid_harmonic:
+                errno = lib.calculate_solid_gmpordernorm(
+                    cell_p,
+                    cart_p,
+                    scale_p,
+                    pbc_p,
+                    atom_indices_p,
+                    atom_num,
+                    cal_atoms_p,
+                    cal_num,
+                    self.params_set["ip"],
+                    self.params_set["dp"],
+                    self.params_set["num"],
+                    self.params_set["gaussian_params_p"],
+                    self.params_set["ngaussians_p"],
+                    self.params_set["element_index_to_order_p"],
+                    x_p,
+                    dx_p,
+                )
+            
+            else:
+                errno = lib.calculate_gmpordernorm(
+                    cell_p,
+                    cart_p,
+                    scale_p,
+                    pbc_p,
+                    atom_indices_p,
+                    atom_num,
+                    cal_atoms_p,
+                    cal_num,
+                    self.params_set["ip"],
+                    self.params_set["dp"],
+                    self.params_set["num"],
+                    self.params_set["gaussian_params_p"],
+                    self.params_set["ngaussians_p"],
+                    self.params_set["element_index_to_order_p"],
+                    x_p,
+                    dx_p,
+                )
 
             if errno == 1:
                 raise NotImplementedError("Descriptor not implemented!")
