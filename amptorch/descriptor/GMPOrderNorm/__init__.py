@@ -263,7 +263,7 @@ class GMPOrderNorm(BaseDescriptor):
         cell_p = _gen_2Darray_for_ffi(cell, ffi)
         pbc_p = ffi.cast("int *", pbc.ctypes.data)
 
-        ref_cart_p = _gen_2Darray_for_ffi(np.copy(scale), ffi)
+        ref_cart_p = _gen_2Darray_for_ffi(np.copy(ref_positions), ffi)
         ref_scale_p = _gen_2Darray_for_ffi(np.copy(scaled_ref_positions), ffi)
         cal_num = len(ref_positions)
 
@@ -276,85 +276,86 @@ class GMPOrderNorm(BaseDescriptor):
         size_info = np.array([atom_num, cal_num, self.params_set["num"]])
 
         if calc_derivatives:
+            raise NotImplementedError
             
-            x = np.zeros([cal_num, self.params_set["num"]], dtype=np.float64, order="C")
-            dx = np.zeros(
-                [cal_num * self.params_set["num"], atom_num * 3],
-                dtype=np.float64,
-                order="C",
-            )
+            # x = np.zeros([cal_num, self.params_set["num"]], dtype=np.float64, order="C")
+            # dx = np.zeros(
+            #     [cal_num * self.params_set["num"], atom_num * 3],
+            #     dtype=np.float64,
+            #     order="C",
+            # )
 
-            x_p = _gen_2Darray_for_ffi(x, ffi)
-            dx_p = _gen_2Darray_for_ffi(dx, ffi)
+            # x_p = _gen_2Darray_for_ffi(x, ffi)
+            # dx_p = _gen_2Darray_for_ffi(dx, ffi)
 
 
-            if self.solid_harmonic:
-                errno = lib.calculate_solid_gmpordernorm(
-                    cell_p,
-                    cart_p,
-                    scale_p,
-                    pbc_p,
-                    atom_indices_p,
-                    atom_num,
-                    cal_atoms_p,
-                    cal_num,
-                    self.params_set["ip"],
-                    self.params_set["dp"],
-                    self.params_set["num"],
-                    self.params_set["gaussian_params_p"],
-                    self.params_set["ngaussians_p"],
-                    self.params_set["element_index_to_order_p"],
-                    x_p,
-                    dx_p,
-                )
+            # if self.solid_harmonic:
+            #     errno = lib.calculate_solid_gmpordernorm(
+            #         cell_p,
+            #         cart_p,
+            #         scale_p,
+            #         pbc_p,
+            #         atom_indices_p,
+            #         atom_num,
+            #         cal_atoms_p,
+            #         cal_num,
+            #         self.params_set["ip"],
+            #         self.params_set["dp"],
+            #         self.params_set["num"],
+            #         self.params_set["gaussian_params_p"],
+            #         self.params_set["ngaussians_p"],
+            #         self.params_set["element_index_to_order_p"],
+            #         x_p,
+            #         dx_p,
+            #     )
             
-            else:
-                errno = lib.calculate_gmpordernorm(
-                    cell_p,
-                    cart_p,
-                    scale_p,
-                    pbc_p,
-                    atom_indices_p,
-                    atom_num,
-                    cal_atoms_p,
-                    cal_num,
-                    self.params_set["ip"],
-                    self.params_set["dp"],
-                    self.params_set["num"],
-                    self.params_set["gaussian_params_p"],
-                    self.params_set["ngaussians_p"],
-                    self.params_set["element_index_to_order_p"],
-                    x_p,
-                    dx_p,
-                )
+            # else:
+            #     errno = lib.calculate_gmpordernorm(
+            #         cell_p,
+            #         cart_p,
+            #         scale_p,
+            #         pbc_p,
+            #         atom_indices_p,
+            #         atom_num,
+            #         cal_atoms_p,
+            #         cal_num,
+            #         self.params_set["ip"],
+            #         self.params_set["dp"],
+            #         self.params_set["num"],
+            #         self.params_set["gaussian_params_p"],
+            #         self.params_set["ngaussians_p"],
+            #         self.params_set["element_index_to_order_p"],
+            #         x_p,
+            #         dx_p,
+            #     )
 
-            if errno == 1:
-                raise NotImplementedError("Descriptor not implemented!")
-            fp = np.array(x, dtype=np.float64)
-            fp_prime = np.array(dx, dtype=np.float64)
+            # if errno == 1:
+            #     raise NotImplementedError("Descriptor not implemented!")
+            # fp = np.array(x, dtype=np.float64)
+            # fp_prime = np.array(dx, dtype=np.float64)
 
-            # threshold = 1e-9
-            # super_threshold_indices_prime = np.abs(fp_prime) < threshold
-            # print("threshold: {} \tnum points set to zero:{} \t outof: {}".format(threshold, np.sum(super_threshold_indices_prime), fp_prime.shape[0] * fp_prime.shape[1]))
-            # fp_prime[super_threshold_indices_prime] = 0.0
+            # # threshold = 1e-9
+            # # super_threshold_indices_prime = np.abs(fp_prime) < threshold
+            # # print("threshold: {} \tnum points set to zero:{} \t outof: {}".format(threshold, np.sum(super_threshold_indices_prime), fp_prime.shape[0] * fp_prime.shape[1]))
+            # # fp_prime[super_threshold_indices_prime] = 0.0
 
-            scipy_sparse_fp_prime = sparse.coo_matrix(fp_prime)
-            # print(fp)
-            # print(fp.shape)
-            # print(np.sum(super_threshold_indices))
-            # print(np.min(np.abs(scipy_sparse_fp_prime.data)))
-            # print("density: {}% \n\n----------------------".format(100*len(scipy_sparse_fp_prime.data) / (fp_prime.shape[0] * fp_prime.shape[1])))
-            if self.params_set["log"]:
-                raise NotImplementedError
+            # scipy_sparse_fp_prime = sparse.coo_matrix(fp_prime)
+            # # print(fp)
+            # # print(fp.shape)
+            # # print(np.sum(super_threshold_indices))
+            # # print(np.min(np.abs(scipy_sparse_fp_prime.data)))
+            # # print("density: {}% \n\n----------------------".format(100*len(scipy_sparse_fp_prime.data) / (fp_prime.shape[0] * fp_prime.shape[1])))
+            # if self.params_set["log"]:
+            #     raise NotImplementedError
 
-            return (
-                size_info,
-                fp,
-                scipy_sparse_fp_prime.data,
-                scipy_sparse_fp_prime.row,
-                scipy_sparse_fp_prime.col,
-                np.array(fp_prime.shape),
-            )
+            # return (
+            #     size_info,
+            #     fp,
+            #     scipy_sparse_fp_prime.data,
+            #     scipy_sparse_fp_prime.row,
+            #     scipy_sparse_fp_prime.col,
+            #     np.array(fp_prime.shape),
+            # )
 
         else:
             x = np.zeros([cal_num, self.params_set["num"]], dtype=np.float64, order="C")
@@ -365,11 +366,12 @@ class GMPOrderNorm(BaseDescriptor):
                 errno = lib.calculate_solid_gmpordernorm_noderiv(
                     cell_p,
                     cart_p,
+                    ref_cart_p,
                     scale_p,
+                    ref_scale_p,
                     pbc_p,
                     atom_indices_p,
                     atom_num,
-                    cal_atoms_p,
                     cal_num,
                     self.params_set["ip"],
                     self.params_set["dp"],
@@ -384,11 +386,12 @@ class GMPOrderNorm(BaseDescriptor):
                 errno = lib.calculate_gmpordernorm_noderiv(
                     cell_p,
                     cart_p,
+                    ref_cart_p,
                     scale_p,
+                    ref_scale_p,
                     pbc_p,
                     atom_indices_p,
                     atom_num,
-                    cal_atoms_p,
                     cal_num,
                     self.params_set["ip"],
                     self.params_set["dp"],
