@@ -7,6 +7,7 @@ from tqdm import tqdm
 from torch.utils.data import Dataset
 from amptorch.descriptor.Gaussian import Gaussian
 from amptorch.descriptor.GMP import GMP
+from amptorch.descriptor.GMPOrderNorm import GMPOrderNorm
 from torch.utils.data.sampler import Sampler
 
 
@@ -118,6 +119,8 @@ class AtomsLMDBDataset(Dataset):
             descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)
         elif fp_scheme == "gmp":
             descriptor = GMP(MCSHs=fp_params, elements=elements)
+        elif fp_scheme == "gmpordernorm":
+            descriptor = GMPOrderNorm(MCSHs=fp_params, elements=elements)
         else:
             raise NotImplementedError
         return descriptor
@@ -261,6 +264,8 @@ class AtomsLMDBDatasetPartialCache(Dataset):
             descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)
         elif fp_scheme == "gmp":
             descriptor = GMP(MCSHs=fp_params, elements=elements)
+        elif fp_scheme == "gmpordernorm":
+            descriptor = GMPOrderNorm(MCSHs=fp_params, elements=elements)
         else:
             raise NotImplementedError
         return descriptor
@@ -394,6 +399,8 @@ class AtomsLMDBDatasetCache(Dataset):
             descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)
         elif fp_scheme == "gmp":
             descriptor = GMP(MCSHs=fp_params, elements=elements)
+        elif fp_scheme == "gmpordernorm":
+            descriptor = GMPOrderNorm(MCSHs=fp_params, elements=elements)
         else:
             raise NotImplementedError
         return descriptor

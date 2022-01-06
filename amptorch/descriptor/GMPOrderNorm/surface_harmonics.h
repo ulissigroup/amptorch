@@ -1,133 +1,8 @@
-#include <math.h>
-
-const int NUM_IMPLEMENTED_TYPE = 53;
-const int IMPLEMENTED_MCSH_TYPE[][2] = {
-    {0, 0},
-    {1, 0},
-    {2, 0},
-    {3, 0},
-    {4, 0},
-    {5, 0},
-    {6, 0},
-    {7, 0},
-    {8, 0},
-    {9, 0},
-    {0, 1},
-    {1, 1},
-    {2, 1},
-    {3, 1},
-    {4, 1},
-    {5, 1},
-    {6, 1},
-    {7, 1},
-    {8, 1},
-    {9, 1},
-    // {0, 1},
-    // {1, 1},
-    // {2, 1},
-    // {2, 2},
-    // {3, 1},
-    // {3, 2},
-    // {3, 3},
-    // {4, 1},
-    // {4, 2},
-    // {4, 3},
-    // {4, 4},
-    // {5, 1},
-    // {5, 2},
-    // {5, 3},
-    // {5, 4},
-    // {5, 5},
-    // {6, 1},
-    // {6, 2},
-    // {6, 3},
-    // {6, 4},
-    // {6, 5},
-    // {6, 6},
-    // {6, 7},
-    // {7, 1},
-    // {7, 2},
-    // {7, 3},
-    // {7, 4},
-    // {7, 5},
-    // {7, 6},
-    // {7, 7},
-    // {7, 8},
-    // {8, 1},
-    // {8, 2},
-    // {8, 3},
-    // {8, 4},
-    // {8, 5},
-    // {8, 6},
-    // {8, 7},
-    // {8, 8},
-    // {8, 9},
-    // {8, 10},
-    // {9, 1},
-    // {9, 2},
-    // {9, 3},
-    // {9, 4},
-    // {9, 5},
-    // {9, 6},
-    // {9, 7},
-    // {9, 8},
-    // {9, 9},
-    // {9, 10},
-    // {9, 11},
-    // {9, 12}
-}; // Change this when you implement new type!
-
+#include "helper.h"
 
 
 typedef void (*GMPFunction) (double, double, double, double, double, double, double, double, double, double *, double *);
-// typedef void (*MCSHFunctionType1) ( double, double, double, double, double, double, double, double *, double *);
-// typedef void (*MCSHFunctionType2) ( double, double, double, double, double, double, double, double *, double *);
-// typedef void (*MCSHFunctionType3) ( double, double, double, double, double, double, double, double *, double *);
-
-double calc_C1(double A, double B, double alpha, double beta);
-
-double calc_C2(double alpha, double beta);
-
-double calc_lambda(double alpha, double beta);
-
-double calc_gamma(double alpha, double beta);
-
-// double dx0dx();
-
-// double dy0dy();
-
-// double dz0dz();
-
-double P1(double lambda, double x0, double gamma);
-double P2(double lambda, double x0, double gamma);
-double P3(double lambda, double x0, double gamma);
-double P4(double lambda, double x0, double gamma);
-double P5(double lambda, double x0, double gamma);
-double P6(double lambda, double x0, double gamma);
-double P7(double lambda, double x0, double gamma);
-double P8(double lambda, double x0, double gamma);
-double P9(double lambda, double x0, double gamma);
-
-double dP1(double lambda, double x0, double gamma);
-double dP2(double lambda, double x0, double gamma);
-double dP3(double lambda, double x0, double gamma);
-double dP4(double lambda, double x0, double gamma);
-double dP5(double lambda, double x0, double gamma);
-double dP6(double lambda, double x0, double gamma);
-double dP7(double lambda, double x0, double gamma);
-double dP8(double lambda, double x0, double gamma);
-double dP9(double lambda, double x0, double gamma);
-
-double dP1_exp(double P, double C2, double lambda, double x0, double gamma);
-double dP2_exp(double P, double C2, double lambda, double x0, double gamma);
-double dP3_exp(double P, double C2, double lambda, double x0, double gamma);
-double dP4_exp(double P, double C2, double lambda, double x0, double gamma);
-double dP5_exp(double P, double C2, double lambda, double x0, double gamma);
-double dP6_exp(double P, double C2, double lambda, double x0, double gamma);
-double dP7_exp(double P, double C2, double lambda, double x0, double gamma);
-double dP8_exp(double P, double C2, double lambda, double x0, double gamma);
-double dP9_exp(double P, double C2, double lambda, double x0, double gamma);
-
+GMPFunction get_mcsh_function(int mcsh_order, int group_num);
 
 void calc_MCSH_0_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
 
@@ -159,58 +34,42 @@ void calc_MCSH_6_5(double x0, double y0, double z0, double r0_sqr, double A, dou
 void calc_MCSH_6_6(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
 void calc_MCSH_6_7(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
 
-// void calc_MCSH_7_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_7_2(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_7_3(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_7_4(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_7_5(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_7_6(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_7_7(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_7_8(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_7_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_7_2(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_7_3(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_7_4(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_7_5(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_7_6(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_7_7(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_7_8(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
 
-// void calc_MCSH_8_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_8_2(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_8_3(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_8_4(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_8_5(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_8_6(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_8_7(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_8_8(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_8_9(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_8_10(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_8_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_8_2(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_8_3(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_8_4(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_8_5(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_8_6(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_8_7(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_8_8(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_8_9(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_8_10(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
 
-// void calc_MCSH_9_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_9_2(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_9_3(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_9_4(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_9_5(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_9_6(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_9_7(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_9_8(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_9_9(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_9_10(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_9_11(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-// void calc_MCSH_9_12(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
-
-
-GMPFunction get_mcsh_function(int mcsh_order, int group_num);
-
-
-
-
-double P1(double lambda, double x0, double gamma);
-double P2(double lambda, double x0, double gamma);
-double P3(double lambda, double x0, double gamma);
-double P4(double lambda, double x0, double gamma);
-double P5(double lambda, double x0, double gamma);
-double P6(double lambda, double x0, double gamma);
-double P7(double lambda, double x0, double gamma);
-double P8(double lambda, double x0, double gamma);
-double P9(double lambda, double x0, double gamma);
-
+void calc_MCSH_9_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_9_2(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_9_3(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_9_4(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_9_5(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_9_6(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_9_7(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_9_8(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_9_9(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_9_10(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_9_11(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+void calc_MCSH_9_12(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
 
 
 typedef void (*GMPFunctionNoderiv) (double, double, double, double, double, double, double, double, double, double *);
+GMPFunctionNoderiv get_mcsh_function_noderiv(int mcsh_order, int group_num);
 
 void calc_MCSH_0_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value);
 
@@ -275,8 +134,3 @@ void calc_MCSH_9_10_noderiv(double x0, double y0, double z0, double r0_sqr, doub
 void calc_MCSH_9_11_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value);
 void calc_MCSH_9_12_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value);
 
-GMPFunctionNoderiv get_mcsh_function_noderiv(int mcsh_order, int group_num);
-
-double get_group_coefficients(int mcsh_order, int group_num);
-int get_num_groups(int mcsh_order);
-int get_mcsh_type(int mcsh_order, int group_num);
