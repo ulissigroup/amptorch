@@ -93,7 +93,7 @@ class AtomsToData:
         return data
 
     def convert_all(
-        self, atoms_collection, disable_tqdm=False,
+        self, atoms_collection, ref_positions_list=None, disable_tqdm=False,
     ):
         """Convert all atoms objects in a list or in an ase.db to graphs.
 
@@ -108,27 +108,32 @@ class AtomsToData:
 
         if isinstance(atoms_collection, list):
             atoms_iter = atoms_collection
-        elif isinstance(atoms_collection, ase.db.sqlite.SQLite3Database):
-            atoms_iter = atoms_collection.select()
-        elif isinstance(
-            atoms_collection, ase.io.trajectory.SlicedTrajectory
-        ) or isinstance(atoms_collection, ase.io.trajectory.TrajectoryReader):
-            atoms_iter = atoms_collection
+        # elif isinstance(atoms_collection, ase.db.sqlite.SQLite3Database):
+        #     atoms_iter = atoms_collection.select()
+        # elif isinstance(
+        #     atoms_collection, ase.io.trajectory.SlicedTrajectory
+        # ) or isinstance(atoms_collection, ase.io.trajectory.TrajectoryReader):
+        #     atoms_iter = atoms_collection
         else:
             raise NotImplementedError
+        
+        if ref_positions_list is None:
+            ref_positions_list = [atoms.get_positions(wrap=True) for atoms in atoms_iter]
+        
+        assert len(ref_positions_list) == len(atoms_iter)
 
         # list for all data
         data_list = []
-        for idx, atoms in tqdm(
-            enumerate(atoms_iter),
+        for idx, (atoms, ref_positions) in tqdm(
+            enumerate(zip(atoms_iter, ref_positions_list)),
             desc="converting ASE atoms collection to Data objects",
             total=len(atoms_collection),
             unit=" systems",
             disable=disable_tqdm,
         ):
-            # check if atoms is an ASE Atoms object this for the ase.db case
-            if not isinstance(atoms, ase.atoms.Atoms):
-                atoms = atoms.toatoms()
+            # # check if atoms is an ASE Atoms object this for the ase.db case
+            # if not isinstance(atoms, ase.atoms.Atoms):
+            #     atoms = atoms.toatoms()
             data = self.convert(atoms, idx)
             data_list.append(data)
 
