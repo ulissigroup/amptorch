@@ -39,7 +39,14 @@ class BaseDescriptor(ABC):
         pass
 
     def prepare_fingerprints(
-        self, images, ref_positions_list, calc_derivatives, save_fps, verbose, cores, log
+        self,
+        images,
+        ref_positions_list,
+        calc_derivatives,
+        save_fps,
+        verbose,
+        cores,
+        log,
     ):
         images_descriptor_list = []
 
@@ -99,7 +106,14 @@ class BaseDescriptor(ABC):
         return images_descriptor_list
 
     def _compute_fingerprints(
-        self, image, ref_positions, image_db_filename, calc_derivatives, save_fps, cores, log
+        self,
+        image,
+        ref_positions,
+        image_db_filename,
+        calc_derivatives,
+        save_fps,
+        cores,
+        log,
     ):
         descriptor_list = []
 
@@ -111,23 +125,14 @@ class BaseDescriptor(ABC):
             except Exception:
                 current_snapshot_grp = db.create_group(str(0))
 
-
             if calc_derivatives:
                 try:
                     size_info = np.array(current_snapshot_grp["size_info"])
                     fps = np.array(current_snapshot_grp["fps"])
-                    fp_primes_val = np.array(
-                        current_snapshot_grp["fp_primes_val"]
-                    )
-                    fp_primes_row = np.array(
-                        current_snapshot_grp["fp_primes_row"]
-                    )
-                    fp_primes_col = np.array(
-                        current_snapshot_grp["fp_primes_col"]
-                    )
-                    fp_primes_size = np.array(
-                        current_snapshot_grp["fp_primes_size"]
-                    )
+                    fp_primes_val = np.array(current_snapshot_grp["fp_primes_val"])
+                    fp_primes_row = np.array(current_snapshot_grp["fp_primes_row"])
+                    fp_primes_col = np.array(current_snapshot_grp["fp_primes_col"])
+                    fp_primes_size = np.array(current_snapshot_grp["fp_primes_size"])
                 except Exception:
                     (
                         size_info,
@@ -144,9 +149,7 @@ class BaseDescriptor(ABC):
                     )
 
                     if save_fps:
-                        current_snapshot_grp.create_dataset(
-                            "size_info", data=size_info
-                        )
+                        current_snapshot_grp.create_dataset("size_info", data=size_info)
                         current_snapshot_grp.create_dataset("fps", data=fps)
                         current_snapshot_grp.create_dataset(
                             "fp_primes_val", data=fp_primes_val
@@ -181,9 +184,7 @@ class BaseDescriptor(ABC):
                     )
 
                     if save_fps:
-                        current_snapshot_grp.create_dataset(
-                            "size_info", data=size_info
-                        )
+                        current_snapshot_grp.create_dataset("size_info", data=size_info)
                         current_snapshot_grp.create_dataset("fps", data=fps)
 
                 image_dict["descriptors"] = fps
@@ -209,10 +210,7 @@ class BaseDescriptor(ABC):
                 fp_primes_col,
                 fp_primes_size,
             ) = self.calculate_fingerprints(
-                image,
-                ref_positions,
-                calc_derivatives=calc_derivatives,
-                log=log,
+                image, ref_positions, calc_derivatives=calc_derivatives, log=log,
             )
 
             image_dict["descriptors"] = fps
@@ -223,12 +221,9 @@ class BaseDescriptor(ABC):
             image_dict["descriptor_primes"] = fp_prime_dict
 
         else:
-            
+
             size_info, fps, _, _, _, _ = self.calculate_fingerprints(
-                image,
-                ref_positions,
-                calc_derivatives=calc_derivatives,
-                log=log,
+                image, ref_positions, calc_derivatives=calc_derivatives, log=log,
             )
 
             image_dict["descriptors"] = fps

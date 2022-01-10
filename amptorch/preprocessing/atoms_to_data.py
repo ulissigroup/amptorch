@@ -120,10 +120,12 @@ class AtomsToData:
         #     atoms_iter = atoms_collection
         else:
             raise NotImplementedError
-        
+
         if ref_positions_list is None:
-            ref_positions_list = [atoms.get_positions(wrap=True) for atoms in atoms_iter]
-        
+            ref_positions_list = [
+                atoms.get_positions(wrap=True) for atoms in atoms_iter
+            ]
+
         assert len(ref_positions_list) == len(atoms_iter)
 
         # list for all data
