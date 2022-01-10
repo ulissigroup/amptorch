@@ -7,6 +7,7 @@ class DescriptorCalculator:
     def __init__(
         self,
         images,
+        ref_positions,
         descriptor,
         calc_derivatives=True,
         save_fps=True,
@@ -18,6 +19,7 @@ class DescriptorCalculator:
         ), "Descriptor must be instance of BaseDescriptor!"
 
         self.images = images
+        self.ref_positions = ref_positions
         self.descriptor = descriptor
         self.calc_derivatives = calc_derivatives
         self.save_fps = save_fps
@@ -30,6 +32,7 @@ class DescriptorCalculator:
     def prepare_descriptors(self):
         self.calculated_descriptor_list = self.descriptor.prepare_fingerprints(
             self.images,
+            self.ref_positions,
             calc_derivatives=self.calc_derivatives,
             save_fps=self.save_fps,
             cores=self.cores,

@@ -17,6 +17,7 @@ class AtomsDataset(Dataset):
     def __init__(
         self,
         images,
+        ref_positions_list,
         descriptor_setup,
         forcetraining=True,
         # pca_reduce=False,
@@ -27,6 +28,7 @@ class AtomsDataset(Dataset):
         process=True,
     ):
         self.images = images
+        self.ref_positions_list = ref_positions_list
         self.forcetraining = forcetraining
         # self.pca_reduce = pca_reduce
         # self.pca_setting = pca_setting
@@ -45,7 +47,7 @@ class AtomsDataset(Dataset):
         self.data_list = self.process() if process else None
 
     def process(self):
-        data_list = self.a2d.convert_all(self.images)
+        data_list = self.a2d.convert_all(self.images, self.ref_positions_list)
 
         # if self.pca_reduce:
         #     self.pca_reducer = PCAReducer(

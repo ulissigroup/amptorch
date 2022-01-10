@@ -114,6 +114,7 @@ class AtomsTrainer:
             descriptor_setup = self.train_dataset.descriptor_setup
         else:
             training_images = self.config["dataset"]["raw_data"]
+            ref_positions_list = self.config["dataset"].get("ref_positions", None)
             # TODO: Scalability when dataset to large to fit into memory
             if isinstance(training_images, str):
                 training_images = ase.io.read(training_images, ":")
@@ -324,7 +325,7 @@ class AtomsTrainer:
         elapsed_time = time.time() - stime
         print(f"Training completed in {elapsed_time}s")
 
-    def predict(self, images, disable_tqdm=True):
+    def predict(self, images, ref_positions_list=None, disable_tqdm=True):
         if len(images) < 1:
             warnings.warn("No images found!", stacklevel=2)
             return images
@@ -339,6 +340,8 @@ class AtomsTrainer:
             fprimes=self.forcetraining,
             cores=1,
         )
+
+        assert len(ref_positions_list) == len(images)
 
         data_list = a2d.convert_all(images, disable_tqdm=disable_tqdm)
 

@@ -622,7 +622,7 @@ extern "C" int calculate_gmpordernorm_noderiv(double** cell, double** cart, doub
         nneigh = 0;
 
         for (int j=0; j < 3; ++j) {
-            temp_bin_i = ref_scale[i][j] * (double) nbins[j];
+            int temp_bin_i = ref_scale[ii][j] * (double) nbins[j];
             max_bin[j] = temp_bin_i + bin_range[j];
             min_bin[j] = temp_bin_i - bin_range[j];
             // max_bin[j] = bin_i[i][j] + bin_range[j];
@@ -658,7 +658,7 @@ extern "C" int calculate_gmpordernorm_noderiv(double** cell, double** cart, doub
 
                         for (int a=0; a < 3; ++a) {
                             total_shift[a] = cell_shift[0]*cell[0][a] + cell_shift[1]*cell[1][a] + cell_shift[2]*cell[2][a]
-                                             + ref_cart[ii][a] - ref_cart[ii][a];
+                                             + cart[j][a] - ref_cart[ii][a];
                         }
 
                         // tmp = sqrt(total_shift[0]*total_shift[0] + total_shift[1]*total_shift[1] + total_shift[2]*total_shift[2]);
@@ -1546,7 +1546,7 @@ extern "C" int calculate_solid_gmpordernorm_noderiv(double** cell, double** cart
                                         int* atom_i, int natoms, /*int* cal_atoms,*/ int cal_num,
                                         int** params_i, double** params_d, int nmcsh, double** atom_gaussian, int* ngaussians, int* element_index_to_order,
                                         double** mcsh) {
-    // std::cout << " running solid version" << std::endl;
+
     int total_bins, max_atoms_bin, bin_num, neigh_check_bins, nneigh;
     int bin_range[3], nbins[3], cell_shift[3], max_bin[3], min_bin[3], pbc_bin[3];
     //int bin_i[natoms][4];
@@ -1648,14 +1648,16 @@ extern "C" int calculate_solid_gmpordernorm_noderiv(double** cell, double** cart
 
     //for (int i=0; i < natoms; ++i) {
     for (int ii=0; ii < cal_num; ++ii) {
-        int i=cal_atoms[ii];
+        // int i=cal_atoms[ii];
         // calculate neighbor atoms
         double* nei_list_d = new double[max_atoms_bin * 4 * neigh_check_bins];
         int*    nei_list_i = new int[max_atoms_bin * 2 * neigh_check_bins];
         nneigh = 0;
-
         for (int j=0; j < 3; ++j) {
-            temp_bin_i = ref_scale[i][j] * (double) nbins[j];
+            
+            // std::cout << mcsh_order << "\t" << num_groups  << std::endl;
+            int temp_bin_i = ref_scale[ii][j] * (double) nbins[j];
+            // std::cout << ref_scale[ii][j] << "\t"<<temp_bin_i << std::endl;
             max_bin[j] = temp_bin_i + bin_range[j];
             min_bin[j] = temp_bin_i - bin_range[j];
             // max_bin[j] = bin_i[i][j] + bin_range[j];
@@ -1673,7 +1675,6 @@ extern "C" int calculate_solid_gmpordernorm_noderiv(double** cell, double** cart
                     cell_shift[2] = (dz-pbc_bin[2]) / nbins[2];
 
                     bin_num = pbc_bin[0] + nbins[0]*pbc_bin[1] + nbins[0]*nbins[1]*pbc_bin[2];
-
                     for (int j=0; j < natoms; ++j) {
                         if (bin_i[j][3] != bin_num)
                             continue;
@@ -1694,11 +1695,13 @@ extern "C" int calculate_solid_gmpordernorm_noderiv(double** cell, double** cart
 
                         for (int a=0; a < 3; ++a) {
                             total_shift[a] = cell_shift[0]*cell[0][a] + cell_shift[1]*cell[1][a] + cell_shift[2]*cell[2][a]
-                                             + cart[j][a] - cart[i][a];
+                                             + cart[j][a] - ref_cart[ii][a];
                         }
 
                         // tmp = sqrt(total_shift[0]*total_shift[0] + total_shift[1]*total_shift[1] + total_shift[2]*total_shift[2]);
                         tmp_r2 = total_shift[0]*total_shift[0] + total_shift[1]*total_shift[1] + total_shift[2]*total_shift[2];
+
+
 
                         // if (tmp < cutoff) {
                         if (tmp_r2 < cutoff_sqr) {

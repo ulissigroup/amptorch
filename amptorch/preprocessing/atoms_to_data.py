@@ -34,10 +34,17 @@ class AtomsToData:
         self.cores = cores
 
     def convert(
-        self, atoms, idx,
+        self, atoms, idx, ref_positions=None,
     ):
+        if ref_positions is None:
+            ref_positions = atoms.get_positions(wrap=True)
+
+        assert isinstance(ref_positions, np.ndarray)
+        assert ref_positions.dtype == "float64"
+
         descriptor_calculator = DescriptorCalculator(
             images=[atoms],
+            ref_positions=[ref_positions],
             descriptor=self.descriptor,
             calc_derivatives=self.fprimes,
             save_fps=self.save_fps,
@@ -47,6 +54,7 @@ class AtomsToData:
         self.descriptor_data = descriptor_calculator.prepare_descriptors()
 
         natoms = len(atoms)
+        nrefs = len(ref_positions)
         image_data = self.descriptor_data[0]
         atomic_numbers = torch.LongTensor(atoms.get_atomic_numbers())
         image_fingerprint = torch.tensor(
@@ -57,7 +65,7 @@ class AtomsToData:
         data = Data(
             fingerprint=image_fingerprint,
             atomic_numbers=atomic_numbers,
-            num_nodes=natoms,
+            num_nodes=nrefs,
         )
 
         # optionally include other properties
@@ -79,6 +87,7 @@ class AtomsToData:
             indices = np.vstack((fp_prime_row, fp_prime_col))
             torch_indices = torch.LongTensor(indices)
             torch_values = torch.tensor(fp_prime_val, dtype=torch.get_default_dtype())
+            # TODO: check how to do double tensor here
             fp_primes = torch.sparse.FloatTensor(
                 torch_indices, torch_values, torch.Size(fp_prime_size)
             )
