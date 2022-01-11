@@ -127,7 +127,6 @@ class AtomsToData:
             ]
 
         assert len(ref_positions_list) == len(atoms_iter)
-
         # list for all data
         data_list = []
         for idx, (atoms, ref_positions) in tqdm(
@@ -140,7 +139,7 @@ class AtomsToData:
             # # check if atoms is an ASE Atoms object this for the ase.db case
             # if not isinstance(atoms, ase.atoms.Atoms):
             #     atoms = atoms.toatoms()
-            data = self.convert(atoms, idx)
+            data = self.convert(atoms, idx, ref_positions=ref_positions)
             data_list.append(data)
 
         return data_list

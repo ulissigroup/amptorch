@@ -47,7 +47,7 @@ class AtomsDataset(Dataset):
         self.data_list = self.process() if process else None
 
     def process(self):
-        data_list = self.a2d.convert_all(self.images, self.ref_positions_list)
+        data_list = self.a2d.convert_all(self.images, ref_positions_list=self.ref_positions_list)
 
         # if self.pca_reduce:
         #     self.pca_reducer = PCAReducer(

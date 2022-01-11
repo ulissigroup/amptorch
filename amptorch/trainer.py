@@ -139,6 +139,7 @@ class AtomsTrainer:
             )
             self.train_dataset = AtomsDataset(
                 images=training_images,
+                ref_positions_list=ref_positions_list,
                 descriptor_setup=descriptor_setup,
                 forcetraining=self.forcetraining,
                 save_fps=self.config["dataset"].get("save_fps", True),
@@ -343,7 +344,7 @@ class AtomsTrainer:
 
         assert len(ref_positions_list) == len(images)
 
-        data_list = a2d.convert_all(images, disable_tqdm=disable_tqdm)
+        data_list = a2d.convert_all(images, ref_positions_list, disable_tqdm=disable_tqdm)
 
         self.feature_scaler.norm(data_list, disable_tqdm=disable_tqdm)
 
