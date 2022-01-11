@@ -344,7 +344,9 @@ class AtomsTrainer:
 
         assert len(ref_positions_list) == len(images)
 
-        data_list = a2d.convert_all(images, ref_positions_list, disable_tqdm=disable_tqdm)
+        data_list = a2d.convert_all(
+            images, ref_positions_list, disable_tqdm=disable_tqdm
+        )
 
         self.feature_scaler.norm(data_list, disable_tqdm=disable_tqdm)
 
