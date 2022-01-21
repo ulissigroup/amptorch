@@ -35,3 +35,5 @@ md_work/*
 *build/
 amptorch/descriptor/Gaussian/_libsymf.abi3.so
 amptorch/descriptor/GMP/_libgmp.abi3.so
+amptorch/descriptor/GMPOrderNorm/_libgmpordernorm.abi3.so
+
