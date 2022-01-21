@@ -9,18 +9,19 @@ dependencies:
   - pip
   - pre-commit=2.2*
   - python=3.6.*
-  - pytorch=1.6.0
+  - pytorch=1.9.0
   - tqdm=4.45.*
-  - cudatoolkit=10.2
+  - cudatoolkit=11.1
   - h5py
   - pip:
     - cffi
     - wandb
     - lmdb==1.0.0
-    - skorch==0.9.*
-    - torch-geometric
-    - -f https://pytorch-geometric.com/whl/torch-1.6.0+cu102.html
-    - torch-cluster
+    - skorch==0.10.*
     - torch-scatter
+    - -f https://data.pyg.org/whl/torch-1.9.0+cu111.html
     - torch-sparse
+    - -f https://data.pyg.org/whl/torch-1.9.0+cu111.html
+    - torch-cluster
     - torch-spline-conv
+    - torch-geometric
