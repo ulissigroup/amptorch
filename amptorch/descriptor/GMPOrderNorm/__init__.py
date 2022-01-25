@@ -277,7 +277,7 @@ class GMPOrderNorm(BaseDescriptor):
         size_info = np.array([atom_num, cal_num, self.params_set["num"]])
 
         if calc_derivatives:
-            
+
             x = np.zeros([cal_num, self.params_set["num"]], dtype=np.float64, order="C")
             dx = np.zeros(
                 [cal_num * self.params_set["num"], atom_num * 3],
@@ -287,7 +287,6 @@ class GMPOrderNorm(BaseDescriptor):
 
             x_p = _gen_2Darray_for_ffi(x, ffi)
             dx_p = _gen_2Darray_for_ffi(dx, ffi)
-
 
             if self.solid_harmonic:
                 errno = lib.calculate_solid_gmpordernorm(
@@ -308,7 +307,7 @@ class GMPOrderNorm(BaseDescriptor):
                     x_p,
                     dx_p,
                 )
-            
+
             else:
                 errno = lib.calculate_gmpordernorm(
                     cell_p,
@@ -380,7 +379,7 @@ class GMPOrderNorm(BaseDescriptor):
                     self.params_set["element_index_to_order_p"],
                     x_p,
                 )
-            
+
             else:
                 errno = lib.calculate_gmpordernorm_noderiv(
                     cell_p,

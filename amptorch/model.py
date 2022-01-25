@@ -53,7 +53,7 @@ class MLP(nn.Module):
             print("Use constant zero initialization")
             for m in self.model_net:
                 if isinstance(m, torch.nn.Linear):
-                    torch.nn.init.constant_(m.weight,0.0)
+                    torch.nn.init.constant_(m.weight, 0.0)
                     m.bias.data.fill_(0)
         else:
             print("Warning: unrecognized initialization, use default")

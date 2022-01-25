@@ -12,7 +12,7 @@ def mae_energy_score(net, X, y):
     if isinstance(X, torch.utils.data.Subset):
         X = X.dataset
     # TODO: investigate the np.concatenate part in skorch 0.10
-    # site-packages/skorch/callbacks/scoring.py Line 625 
+    # site-packages/skorch/callbacks/scoring.py Line 625
     # as shown by the following test, it's concatenate the y_target
     # oiginal value
     # it is probably skorch's fault here, nothing much we can do
