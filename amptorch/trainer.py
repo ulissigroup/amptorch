@@ -216,6 +216,15 @@ class AtomsTrainer:
             callbacks.append(
                 WandbLogger(self.wandb_run, save_model=False, keys_ignored="dur",)
             )
+
+        # early stopping
+        if self.config["cmd"].get("early_stopping", False):
+            from skorch.callbacks import EarlyStopping
+
+            callbacks.append(
+                EarlyStopping(patience=self.config["cmd"].get("early_stoppping_patience", 5))
+                )
+
         self.callbacks = callbacks
 
     def load_criterion(self):
