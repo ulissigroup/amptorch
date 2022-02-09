@@ -257,7 +257,7 @@ class Gaussian(BaseDescriptor):
         atom_indices_p = ffi.cast("int *", atom_indices.ctypes.data)
 
         cart = np.copy(atoms.get_positions(wrap=True), order="C")
-        scale = np.copy(atoms.get_scaled_positions(), order="C")
+        scale = np.copy(atoms.get_scaled_positions(wrap=True), order="C")
         cell = np.copy(atoms.cell, order="C")
         pbc = np.copy(atoms.get_pbc()).astype(np.intc)
 

@@ -65,7 +65,7 @@ configs = {
   },
   "cmd": {
       "debug": bool,                # Debug mode, does not write/save checkpoints/results (default: False)
-      "dtype": object,              # Pytorch level of precision (default: torch.FloatTensor)
+      "dtype": object,              # Pytorch level of precision (default: torch.DoubleTensor)
       "run_dir": str,               # Path to run trainer, where logs are to be saved (default: "./")
       "seed": int,                  # Random seed (default: 0)
       "identifier": str,            # Unique identifer to experiment, optional

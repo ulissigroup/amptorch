@@ -11,6 +11,13 @@ def mae_energy_score(net, X, y):
     energy_pred, _ = net.forward(X)
     if isinstance(X, torch.utils.data.Subset):
         X = X.dataset
+    # TODO: investigate the np.concatenate part in skorch 0.10
+    # site-packages/skorch/callbacks/scoring.py Line 625
+    # as shown by the following test, it's concatenate the y_target
+    # oiginal value
+    # it is probably skorch's fault here, nothing much we can do
+    # so might worth trying new versions of it
+    # print(np.concatenate([i[0] for i in y]))
     energy_pred = X.target_scaler.denorm(energy_pred, pred="energy")
     energy_target = X.target_scaler.denorm(
         torch.FloatTensor(np.concatenate([i[0] for i in y])), pred="energy"
@@ -65,7 +72,7 @@ def mse_forces_score(net, X, y):
 def evaluator(
     val_split, metric, identifier, forcetraining, cp_metric,
 ):
-
+    # print("evaluator")
     callbacks = []
     isval = val_split != 0
     if isval:

@@ -28,7 +28,7 @@ def get_hash(image):
         string += "%.15f" % number
     for number in image.get_atomic_numbers():
         string += "%3d" % number
-    for number in image.get_positions().flatten():
+    for number in image.get_positions(wrap=True).flatten():
         string += "%.15f" % number
 
     md5 = hashlib.md5(string.encode("utf-8"))
@@ -38,7 +38,7 @@ def get_hash(image):
 
 
 def validate_image(image):
-    for number in image.get_scaled_positions().flatten():
+    for number in image.get_scaled_positions(wrap=True).flatten():
         if number > 1.0 or number < 0.0:
             raise ValueError(
                 "****ERROR: scaled position not strictly between [0, 1]"

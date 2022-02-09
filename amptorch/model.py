@@ -17,6 +17,7 @@ class MLP(nn.Module):
         dropout_rate,
         hidden_layers=None,
         n_output_nodes=1,
+        initialization="xavier",
     ):
         super(MLP, self).__init__()
         if hidden_layers is None and isinstance(n_hidden_size, int):
@@ -38,14 +39,24 @@ class MLP(nn.Module):
         self.model_net = nn.Sequential(*layers)
 
         # TODO: identify optimal initialization scheme
-        self.reset_parameters()
+        self.reset_parameters(initialization.lower())
         # print(self.model_net)
 
-    def reset_parameters(self):
-        for m in self.model_net:
-            if isinstance(m, torch.nn.Linear):
-                torch.nn.init.xavier_uniform_(m.weight)
-                m.bias.data.fill_(0)
+    def reset_parameters(self, initialization):
+        if initialization == "xavier":
+            print("Use Xavier initialization")
+            for m in self.model_net:
+                if isinstance(m, torch.nn.Linear):
+                    torch.nn.init.xavier_uniform_(m.weight)
+                    m.bias.data.fill_(0)
+        elif initialization == "zero":
+            print("Use constant zero initialization")
+            for m in self.model_net:
+                if isinstance(m, torch.nn.Linear):
+                    torch.nn.init.constant_(m.weight, 0.0)
+                    m.bias.data.fill_(0)
+        else:
+            print("Warning: unrecognized initialization, use default")
 
     def forward(self, inputs):
         return self.model_net(inputs)
@@ -79,6 +90,7 @@ class BPNN(nn.Module):
         dropout_rate=0.5,
         activation=Tanh,
         name="bpnn",
+        initialization="xavier",
     ):
         super(BPNN, self).__init__()
         self.get_forces = get_forces
@@ -97,6 +109,7 @@ class BPNN(nn.Module):
                     batchnorm=batchnorm,
                     dropout=dropout,
                     dropout_rate=dropout_rate,
+                    initialization=initialization,
                 )
             )
 
@@ -156,6 +169,7 @@ class SingleNN(nn.Module):
         dropout_rate=0.5,
         activation=Tanh,
         name="singlenn",
+        initialization="xavier",
     ):
         super(SingleNN, self).__init__()
         self.get_forces = get_forces
@@ -170,6 +184,7 @@ class SingleNN(nn.Module):
             batchnorm=batchnorm,
             dropout=dropout,
             dropout_rate=dropout_rate,
+            initialization=initialization,
         )
 
     def forward(self, batch):
