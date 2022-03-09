@@ -474,7 +474,7 @@ extern "C" int calculate_gmpordernorm(double** cell, double** cart, double** sca
             }
             else {
                 double temp = sqrt(sum_square);
-                if (fabs(temp) < 1e-8){
+                if (fabs(temp) < 1e-2){
                     mcsh[ii][m] = 0.0;
                     for (int j = 0; j < nneigh; ++j) {
 
@@ -1231,7 +1231,7 @@ extern "C" int calculate_solid_gmpordernorm(double** cell, double** cart, double
             }
             else {
                 double temp = sqrt(sum_square);
-                if (fabs(temp) < 1e-8){
+                if (fabs(temp) < 1e-2){
                     mcsh[ii][m] = 0.0;
                     for (int j = 0; j < nneigh; ++j) {
 

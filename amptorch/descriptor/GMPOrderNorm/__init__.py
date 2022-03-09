@@ -333,6 +333,8 @@ class GMPOrderNorm(BaseDescriptor):
             fp = np.array(x, dtype=np.float64)
             fp_prime = np.array(dx, dtype=np.float64)
 
+            fp_prime[np.abs(fp_prime) < 1e-5] = 0.0
+
             # threshold = 1e-9
             # super_threshold_indices_prime = np.abs(fp_prime) < threshold
             # print("threshold: {} \tnum points set to zero:{} \t outof: {}".format(threshold, np.sum(super_threshold_indices_prime), fp_prime.shape[0] * fp_prime.shape[1]))
