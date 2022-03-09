@@ -333,7 +333,7 @@ class AtomsTrainer:
         elapsed_time = time.time() - stime
         print(f"Training completed in {elapsed_time}s")
 
-    def predict(self, images, disable_tqdm=True, get_latent_layer=None):
+    def predict(self, images, disable_tqdm=True, get_latent=None, get_descriptors=False):
         if len(images) < 1:
             warnings.warn("No images found!", stacklevel=2)
             return images
@@ -368,14 +368,24 @@ class AtomsTrainer:
                 predictions["latent"].append(_latent_mean)
             
             # implement as get_latent_layer are the big-picture-sense of latent layer
-            if get_latent_layer is True:
-                latent_layer = -2
-            else: 
-                latent_layer = -1
-                latent_layer += get_latent_layer * 3 + 2
+            # if get_latent_layer is True:
+            #     latent_layer = -2
+            # else: 
+            #     latent_layer = -1
+            #     latent_layer += get_latent_layer * 3 + 2
+            # latent layer as the absolute latent layer in MLP
+            latent_layer = get_latent
 
             print("latent layer {}".format(latent_layer))
             self.net.module.model.model_net[latent_layer].register_forward_hook(hook2get_latent)
+
+        # get descriptor for every image in the trajectory by averaging over atoms.
+        if get_descriptors:
+            predictions["descriptors"] = []
+            for data in data_list:
+                _feature = data.fingerprint.cpu().detach().numpy()
+                _feature_mean = np.mean(_feature, axis=0)
+                predictions["descriptors"].append(_feature_mean)
 
         # for data in data_list:
         for idx, data in tqdm(
