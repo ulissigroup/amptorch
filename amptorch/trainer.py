@@ -360,20 +360,13 @@ class AtomsTrainer:
 
 
         # get the latent layer
-        if get_latent_layer is not None:
+        if get_latent is not None:
             predictions["latent"] = []
             def hook2get_latent(self, input, output):
                 _latent = output.detach().numpy()
                 _latent_mean = np.mean(_latent, axis=0)
                 predictions["latent"].append(_latent_mean)
-            
-            # implement as get_latent_layer are the big-picture-sense of latent layer
-            # if get_latent_layer is True:
-            #     latent_layer = -2
-            # else: 
-            #     latent_layer = -1
-            #     latent_layer += get_latent_layer * 3 + 2
-            # latent layer as the absolute latent layer in MLP
+
             latent_layer = get_latent
 
             print("latent layer {}".format(latent_layer))
