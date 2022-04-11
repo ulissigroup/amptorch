@@ -192,11 +192,13 @@ class SingleNN(nn.Module):
             batch = batch[0]
         with torch.enable_grad():
             fingerprints = batch.fingerprint
+            weights = batch.weights
             fingerprints.requires_grad = True
             image_idx = batch.batch
             sorted_image_idx = torch.unique_consecutive(image_idx)
-            o = torch.sum(self.model(fingerprints), dim=1)
-            energy = scatter(o, image_idx, dim=0)
+            model_out = torch.sum(self.model(fingerprints), dim=1)
+            weighted_model_out = torch.mul(model_out, weights)
+            energy = scatter(weighted_model_out, image_idx, dim=0, reduce="sum")
 
             if self.get_forces:
                 gradients = grad(

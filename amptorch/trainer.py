@@ -115,6 +115,7 @@ class AtomsTrainer:
         else:
             training_images = self.config["dataset"]["raw_data"]
             ref_positions_list = self.config["dataset"].get("ref_positions", None)
+            weights_list = self.config["dataset"].get("weights", None)
             # TODO: Scalability when dataset to large to fit into memory
             if isinstance(training_images, str):
                 training_images = ase.io.read(training_images, ":")
@@ -140,6 +141,7 @@ class AtomsTrainer:
             self.train_dataset = AtomsDataset(
                 images=training_images,
                 ref_positions_list=ref_positions_list,
+                weights_list=weights_list,
                 descriptor_setup=descriptor_setup,
                 forcetraining=self.forcetraining,
                 save_fps=self.config["dataset"].get("save_fps", True),
@@ -326,7 +328,9 @@ class AtomsTrainer:
         elapsed_time = time.time() - stime
         print(f"Training completed in {elapsed_time}s")
 
-    def predict(self, images, ref_positions_list=None, disable_tqdm=True):
+    def predict(
+        self, images, ref_positions_list=None, weights_list=None, disable_tqdm=True
+    ):
         if len(images) < 1:
             warnings.warn("No images found!", stacklevel=2)
             return images
@@ -342,10 +346,11 @@ class AtomsTrainer:
             cores=1,
         )
 
-        assert len(ref_positions_list) == len(images)
-
         data_list = a2d.convert_all(
-            images, ref_positions_list, disable_tqdm=disable_tqdm
+            images,
+            ref_positions_list=ref_positions_list,
+            weights_list=weights_list,
+            disable_tqdm=disable_tqdm,
         )
 
         self.feature_scaler.norm(data_list, disable_tqdm=disable_tqdm)

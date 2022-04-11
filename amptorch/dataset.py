@@ -18,6 +18,7 @@ class AtomsDataset(Dataset):
         self,
         images,
         ref_positions_list,
+        weights_list,
         descriptor_setup,
         forcetraining=True,
         # pca_reduce=False,
@@ -29,6 +30,7 @@ class AtomsDataset(Dataset):
     ):
         self.images = images
         self.ref_positions_list = ref_positions_list
+        self.weights_list = weights_list
         self.forcetraining = forcetraining
         # self.pca_reduce = pca_reduce
         # self.pca_setting = pca_setting
@@ -48,7 +50,9 @@ class AtomsDataset(Dataset):
 
     def process(self):
         data_list = self.a2d.convert_all(
-            self.images, ref_positions_list=self.ref_positions_list
+            self.images,
+            ref_positions_list=self.ref_positions_list,
+            weights_list=self.weights_list,
         )
 
         # if self.pca_reduce:
