@@ -33,9 +33,7 @@ class AtomsToData:
         self.fprimes = fprimes
         self.cores = cores
 
-    def convert(
-        self, atoms, idx, ref_positions=None,
-    ):
+    def convert(self, atoms, idx, ref_positions=None, weights=None):
         if ref_positions is None:
             ref_positions = atoms.get_positions(wrap=True)
 
