@@ -4,6 +4,8 @@
 typedef void (*SolidGMPFunction) (double, double, double, double, double, double, double, double, double *, double *);
 SolidGMPFunction get_solid_mcsh_function(int mcsh_order, int group_num);
 
+void calc_solid_MCSH_n1_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv);
+
 void calc_solid_MCSH_0_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv);
 
 void calc_solid_MCSH_1_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value, double *deriv);
@@ -71,6 +73,8 @@ void calc_solid_MCSH_9_12(double x0, double y0, double z0, double r0_sqr, double
 
 typedef void (*SolidGMPFunctionNoderiv) (double, double, double, double, double, double, double, double, double *);
 SolidGMPFunctionNoderiv get_solid_mcsh_function_noderiv(int mcsh_order, int group_num);
+
+void calc_solid_MCSH_n1_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value);
 
 void calc_solid_MCSH_0_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double *value);
 

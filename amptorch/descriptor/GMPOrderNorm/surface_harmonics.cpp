@@ -7,7 +7,11 @@ GMPFunction get_mcsh_function(int mcsh_order, int group_num)
 {
     GMPFunction result;
 
-    if (mcsh_order == 0) {
+    if (mcsh_order == -1) {
+        if (group_num == 1) {
+            result = calc_MCSH_n1_1;
+        }
+    } else if (mcsh_order == 0) {
         if (group_num == 1) {
             result = calc_MCSH_0_1;
         }
@@ -138,7 +142,15 @@ GMPFunction get_mcsh_function(int mcsh_order, int group_num)
     return result;
 }
 
+void calc_MCSH_n1_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv)
+{
+    double density = B * exp(-beta * r0_sqr);
+    deriv[0] = density * (-2.0 * beta * x0);
+    deriv[1] = density * (-2.0 * beta * y0);
+    deriv[2] = density * (-2.0 * beta * z0);
 
+    value[0] = density;
+}
 
 void calc_MCSH_0_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv)
 {
@@ -4766,7 +4778,11 @@ GMPFunctionNoderiv get_mcsh_function_noderiv(int mcsh_order, int group_num)
 {
     GMPFunctionNoderiv result;
 
-    if (mcsh_order == 0) {
+    if (mcsh_order == -1) {
+        if (group_num == 1) {
+            result = calc_MCSH_n1_1_noderiv;
+        }
+    } else if (mcsh_order == 0) {
         if (group_num == 1) {
             result = calc_MCSH_0_1_noderiv;
         }
@@ -4897,6 +4913,13 @@ GMPFunctionNoderiv get_mcsh_function_noderiv(int mcsh_order, int group_num)
     return result;
 }
 
+
+void calc_MCSH_n1_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value)
+{
+    double density = B * exp(-beta * r0_sqr);
+
+    value[0] = density;
+}
 
 void calc_MCSH_0_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value)
 {

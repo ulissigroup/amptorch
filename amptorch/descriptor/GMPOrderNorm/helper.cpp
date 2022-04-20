@@ -212,7 +212,8 @@ double dP9_exp(double P, double C2, double lambda, double x0, double gamma){
 
 
 int get_num_groups(int mcsh_order){
-    if (mcsh_order == 0) { return 1;}
+    if (mcsh_order == -1) { return 1;}
+    else if (mcsh_order == 0) { return 1;}
     else if (mcsh_order == 1) { return 1;}
     else if (mcsh_order == 2) { return 2;}
     else if (mcsh_order == 3) { return 3;}
@@ -226,7 +227,13 @@ int get_num_groups(int mcsh_order){
 }
 
 double get_group_coefficients(int mcsh_order, int group_num){
-    if (mcsh_order == 0) {
+    if (mcsh_order == -1) {
+        if (group_num == 1) {
+            return 1.0;
+        } else {
+            return 0.0;
+        }
+    } else if (mcsh_order == 0) {
         if (group_num == 1) {
             return 1.0;
         } else {
@@ -380,7 +387,13 @@ double get_group_coefficients(int mcsh_order, int group_num){
 
 int get_mcsh_type(int mcsh_order, int group_num)
 {
-    if (mcsh_order == 0) {
+    if (mcsh_order == -1) {
+        if (group_num == 1) {
+            return 1;
+        } else {
+            return 0;
+        }
+    } else if (mcsh_order == 0) {
         if (group_num == 1) {
             return 1;
         } else {

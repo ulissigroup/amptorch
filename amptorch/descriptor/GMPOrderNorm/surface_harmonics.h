@@ -4,6 +4,8 @@
 typedef void (*GMPFunction) (double, double, double, double, double, double, double, double, double, double *, double *);
 GMPFunction get_mcsh_function(int mcsh_order, int group_num);
 
+void calc_MCSH_n1_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
+
 void calc_MCSH_0_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
 
 void calc_MCSH_1_1(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value, double *deriv);
@@ -70,6 +72,8 @@ void calc_MCSH_9_12(double x0, double y0, double z0, double r0_sqr, double A, do
 
 typedef void (*GMPFunctionNoderiv) (double, double, double, double, double, double, double, double, double, double *);
 GMPFunctionNoderiv get_mcsh_function_noderiv(int mcsh_order, int group_num);
+
+void calc_MCSH_n1_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value);
 
 void calc_MCSH_0_1_noderiv(double x0, double y0, double z0, double r0_sqr, double A, double B, double alpha, double beta, double inv_rs, double *value);
 

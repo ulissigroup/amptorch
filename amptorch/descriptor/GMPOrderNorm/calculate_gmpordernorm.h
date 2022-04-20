@@ -38,6 +38,7 @@ extern "C" int calculate_gmpordernorm_noderiv(double**, double**, double**, doub
 
 const int NUM_IMPLEMENTED_TYPE = 73;
 const int IMPLEMENTED_MCSH_TYPE[][2] = {
+    {-1,0},
     {0, 0},
     {1, 0},
     {2, 0},
@@ -48,6 +49,7 @@ const int IMPLEMENTED_MCSH_TYPE[][2] = {
     {7, 0},
     {8, 0},
     {9, 0},
+    {-1,1},
     {0, 1},
     {1, 1},
     {2, 1},

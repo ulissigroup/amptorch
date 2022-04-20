@@ -76,7 +76,8 @@ class GMPOrderNorm(BaseDescriptor):
             rs_scale = -1.0
 
         if "MCSHs_detailed_list" in self.MCSHs:
-            for detail_setup in self.MCSHs["MCSHs_detailed_list"]:
+            for key in sorted(self.MCSHs["MCSHs_detailed_list"].keys()):
+                detail_setup = self.MCSHs["MCSHs_detailed_list"][key]
                 sigmas = detail_setup["sigmas"]
                 descriptor_setup += [
                     [
@@ -97,22 +98,37 @@ class GMPOrderNorm(BaseDescriptor):
 
         else:
             for i in self.MCSHs["MCSHs"]["orders"]:
-                descriptor_setup += [
-                    [
-                        i,
-                        square_i,
-                        solid_harmonic_i,
-                        sigma,
-                        1.0,
-                        (1.0 / (sigma * np.sqrt(2.0 * np.pi))) ** 3,
-                        1.0 / (2.0 * sigma * sigma),
-                        cutoff,
-                        (1.0 / (rs_scale * sigma))
-                        if rs_scale > 0
-                        else (1.0 / (-1.0 * rs_scale)),
+                if i == -1:
+                    descriptor_setup += [
+                        [
+                            i,
+                            square_i,
+                            solid_harmonic_i,
+                            0.0,
+                            1.0,
+                            1.0,  # A
+                            0.0,  # alpha
+                            cutoff,
+                            1.0,  # inv_Rs
+                        ]
                     ]
-                    for sigma in self.MCSHs["MCSHs"]["sigmas"]
-                ]
+                else:
+                    descriptor_setup += [
+                        [
+                            i,
+                            square_i,
+                            solid_harmonic_i,
+                            sigma,
+                            1.0,
+                            (1.0 / (sigma * np.sqrt(2.0 * np.pi))) ** 3,
+                            1.0 / (2.0 * sigma * sigma),
+                            cutoff,
+                            (1.0 / (rs_scale * sigma))
+                            if rs_scale > 0
+                            else (1.0 / (-1.0 * rs_scale)),
+                        ]
+                        for sigma in self.MCSHs["MCSHs"]["sigmas"]
+                    ]
 
         self.descriptor_setup = np.array(descriptor_setup)
         # print(self.descriptor_setup)
