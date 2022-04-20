@@ -192,11 +192,131 @@ class SingleNN(nn.Module):
             batch = batch[0]
         with torch.enable_grad():
             fingerprints = batch.fingerprint
+            print("============")
+            print(fingerprints)
             weights = batch.weights
             fingerprints.requires_grad = True
             image_idx = batch.batch
             sorted_image_idx = torch.unique_consecutive(image_idx)
             model_out = torch.sum(self.model(fingerprints), dim=1)
+            weighted_model_out = torch.mul(model_out, weights)
+            energy = scatter(weighted_model_out, image_idx, dim=0, reduce="sum")
+
+            if self.get_forces:
+                gradients = grad(
+                    energy,
+                    fingerprints,
+                    grad_outputs=torch.ones_like(energy),
+                    create_graph=True,
+                )[0].view(1, -1)
+
+                forces = -1 * torch.sparse.mm(batch.fprimes.t(), gradients.t()).view(
+                    -1, 3
+                )
+
+            else:
+                forces = torch.tensor([], device=energy.device)
+
+            return energy, forces
+
+    @property
+    def num_params(self):
+        return sum(p.numel() for p in self.parameters())
+
+
+class VWN(nn.Module):
+    def __init__(self):
+
+        super().__init__()
+        # initialize parameters with original parameters
+
+        vwn_parameters = torch.tensor(
+            [-0.45816529, 0.031091, 0.21370, 7.5957, 3.5876, 1.6382, 0.49294]
+        )
+        self.vwn_parameters = nn.Parameter(vwn_parameters)
+
+    def forward(self, inputs):
+        """
+        VWN formalism
+        """
+
+        rho = inputs[:, 0]
+        print(inputs)
+        print(rho)
+
+        C1, gamma, alpha1, beta1, beta2, beta3, beta4 = self.vwn_parameters
+        C0I = 0.23873241
+
+        rs = torch.pow(torch.div(C0I, rho), (1.0 / 3.0))
+        rtrs = torch.pow(rs, 0.5)
+
+        ex = C1 / rs
+
+        Q0 = -2.0 * gamma * (1.0 + alpha1 * rs)
+        Q1 = (
+            2.0
+            * gamma
+            * rtrs
+            * (beta1 + rtrs * (beta2 + rtrs * (beta3 + rtrs * beta4)))
+        )
+        ec = torch.mul(Q0, torch.log(1.0 + torch.div(1.0, Q1)))
+
+        return torch.mul(rho, torch.add(ex, ec))
+
+
+class SingleNN_deltaLDA(nn.Module):
+    def __init__(
+        self,
+        elements,
+        input_dim,
+        num_nodes=20,
+        num_layers=5,
+        hidden_layers=None,
+        get_forces=True,
+        batchnorm=False,
+        dropout=False,
+        dropout_rate=0.5,
+        activation=Tanh,
+        name="singlenn_deltalda",
+        initialization="xavier",
+        LDA_type="vwn",
+    ):
+        super(SingleNN_deltaLDA, self).__init__()
+        self.get_forces = get_forces
+        self.activation_fn = activation
+
+        self.model = MLP(
+            n_input_nodes=input_dim,
+            n_layers=num_layers,
+            n_hidden_size=num_nodes,
+            hidden_layers=hidden_layers,
+            activation=activation,
+            batchnorm=batchnorm,
+            dropout=dropout,
+            dropout_rate=dropout_rate,
+            initialization=initialization,
+        )
+
+        if LDA_type == "vwn":
+            self.LDA = VWN()
+        else:
+            raise NotImplementedError
+
+    def forward(self, batch):
+        if isinstance(batch, list):
+            batch = batch[0]
+        with torch.enable_grad():
+            fingerprints = batch.fingerprint
+            weights = batch.weights
+            fingerprints.requires_grad = True
+            image_idx = batch.batch
+            sorted_image_idx = torch.unique_consecutive(image_idx)
+            
+            NN_model_out = torch.sum(self.model(fingerprints), dim=1)
+
+            LDA_out = self.LDA(fingerprints)
+
+            model_out = torch.add(NN_model_out, LDA_out)
             weighted_model_out = torch.mul(model_out, weights)
             energy = scatter(weighted_model_out, image_idx, dim=0, reduce="sum")
 

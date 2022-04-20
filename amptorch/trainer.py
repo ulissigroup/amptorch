@@ -24,7 +24,7 @@ from amptorch.dataset_lmdb import (
 )
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.metrics import evaluator
-from amptorch.model import BPNN, SingleNN, CustomLoss
+from amptorch.model import BPNN, SingleNN, SingleNN_deltaLDA, CustomLoss
 from amptorch.preprocessing import AtomsToData
 from amptorch.utils import (
     to_tensor,
@@ -149,6 +149,9 @@ class AtomsTrainer:
                     "scaling",
                     {"type": "normalize", "range": (0, 1), "elementwise": True},
                 ),
+                target_scaling=self.config["dataset"].get(
+                    "target_scaling", {"type": "standardize"}
+                ),
             )
         self.feature_scaler = self.train_dataset.feature_scaler
         self.target_scaler = self.train_dataset.target_scaler
@@ -174,6 +177,10 @@ class AtomsTrainer:
             )
         elif model == "singlenn":
             self.model = SingleNN(
+                elements=elements, input_dim=self.input_dim, **self.config["model"]
+            )
+        elif model.lower() == "singlenn_deltalda":
+            self.model = SingleNN_deltaLDA(
                 elements=elements, input_dim=self.input_dim, **self.config["model"]
             )
         else:

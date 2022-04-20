@@ -25,6 +25,7 @@ class AtomsDataset(Dataset):
         # pca_setting={"num_pc": 20, "elementwise": False, "normalize": False},
         save_fps=True,
         scaling={"type": "normalize", "range": (0, 1), "threshold": 1e-6},
+        target_scaling={"type": "standardize"},
         cores=1,
         process=True,
     ):
@@ -35,6 +36,7 @@ class AtomsDataset(Dataset):
         # self.pca_reduce = pca_reduce
         # self.pca_setting = pca_setting
         self.scaling = scaling
+        self.target_scaling = target_scaling
         self.descriptor = construct_descriptor(descriptor_setup)
 
         self.a2d = AtomsToData(
@@ -62,7 +64,9 @@ class AtomsDataset(Dataset):
         #     self.pca_reducer.reduce(data_list)
 
         self.feature_scaler = FeatureScaler(data_list, self.forcetraining, self.scaling)
-        self.target_scaler = TargetScaler(data_list, self.forcetraining)
+        self.target_scaler = TargetScaler(
+            data_list, self.forcetraining, self.target_scaling
+        )
         self.feature_scaler.norm(data_list)
         self.target_scaler.norm(data_list)
 

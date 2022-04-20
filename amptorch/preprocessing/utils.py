@@ -21,8 +21,10 @@ class FeatureScaler:
         self, data_list, forcetraining, scaling,
     ):
         self.transform = scaling["type"]
-        if self.transform not in ["normalize", "standardize"]:
+        if self.transform not in ["normalize", "standardize", "none"]:
             raise NotImplementedError(f"{self.transform} scaling not supported.")
+        if self.transform == "none":
+            return
         if self.transform == "normalize" and "range" not in scaling:
             raise NotImplementedError("Normalization requires desire range.")
         if self.transform == "normalize":
@@ -71,6 +73,9 @@ class FeatureScaler:
     def __eq__(self, other):
         """Overrides the default implementation"""
         if isinstance(other, FeatureScaler):
+            if self.transform == "none" and other.transform == "none":
+                return True
+
             if (
                 self.transform != other.transform
                 or self.elementwise != other.elementwise
@@ -95,6 +100,9 @@ class FeatureScaler:
         return NotImplemented
 
     def norm(self, data_list, disable_tqdm=False):
+        if self.transform == "none":
+            return data_list
+
         if self.elementwise:
             for data in tqdm(
                 data_list,
@@ -183,8 +191,14 @@ class TargetScaler:
     Adapted from https://github.com/Open-Catalyst-Project/baselines
     """
 
-    def __init__(self, data_list, forcetraining):
+    def __init__(self, data_list, forcetraining, scaling):
         self.forcetraining = forcetraining
+
+        self.transform = scaling["type"]
+        if self.transform not in ["standardize", "none"]:
+            raise NotImplementedError(f"{self.transform} scaling not supported.")
+        if self.transform == "none":
+            return
 
         energies = torch.tensor([data.energy for data in data_list])
         self.target_mean = torch.mean(energies, dim=0)
@@ -196,6 +210,8 @@ class TargetScaler:
 
     def __eq__(self, other):
         """Overrides the default implementation"""
+        if self.transform == "none" and other.transform == "none":
+            return True
         if isinstance(other, TargetScaler):
             return (
                 self.target_mean == other.target_mean
@@ -204,6 +220,9 @@ class TargetScaler:
         return NotImplemented
 
     def norm(self, data_list, disable_tqdm=False):
+        if self.transform == "none":
+            return data_list
+
         for data in tqdm(
             data_list,
             desc="Scaling Target data",
@@ -218,6 +237,9 @@ class TargetScaler:
         return data_list
 
     def denorm(self, tensor, pred="energy"):
+        if self.transform == "none":
+            return tensor
+
         if pred == "energy":
             tensor = (tensor * self.target_std) + self.target_mean
         elif pred == "forces":
