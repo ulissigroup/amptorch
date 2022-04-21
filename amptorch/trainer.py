@@ -24,7 +24,7 @@ from amptorch.dataset_lmdb import (
 )
 from amptorch.descriptor.util import list_symbols_to_indices
 from amptorch.metrics import evaluator
-from amptorch.model import BPNN, SingleNN, SingleNN_deltaLDA, CustomLoss
+from amptorch.model import BPNN, SingleNN, SingleNN_deltaLDA, LDA, CustomLoss
 from amptorch.preprocessing import AtomsToData
 from amptorch.utils import (
     to_tensor,
@@ -179,9 +179,16 @@ class AtomsTrainer:
             self.model = SingleNN(
                 elements=elements, input_dim=self.input_dim, **self.config["model"]
             )
-        elif model.lower() == "singlenn_deltalda":
+        elif model == "singlenn_deltalda":
             self.model = SingleNN_deltaLDA(
                 elements=elements, input_dim=self.input_dim, **self.config["model"]
+            )
+        elif model == "lda":
+            self.model = LDA(
+                elements=elements,
+                input_dim=self.input_dim,
+                LDA_type=self.config["model"].get("lda_type", "vwn"),
+                get_forces=self.config["model"].get("get_forces", False),
             )
         else:
             raise NotImplementedError(f"{model} not supported!")

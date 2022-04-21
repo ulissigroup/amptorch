@@ -192,8 +192,6 @@ class SingleNN(nn.Module):
             batch = batch[0]
         with torch.enable_grad():
             fingerprints = batch.fingerprint
-            print("============")
-            print(fingerprints)
             weights = batch.weights
             fingerprints.requires_grad = True
             image_idx = batch.batch
@@ -241,8 +239,8 @@ class VWN(nn.Module):
         """
 
         rho = inputs[:, 0]
-        print(inputs)
-        print(rho)
+        # print(inputs)
+        # print(rho)
 
         C1, gamma, alpha1, beta1, beta2, beta3, beta4 = self.vwn_parameters
         C0I = 0.23873241
@@ -262,6 +260,53 @@ class VWN(nn.Module):
         ec = torch.mul(Q0, torch.log(1.0 + torch.div(1.0, Q1)))
 
         return torch.mul(rho, torch.add(ex, ec))
+
+
+class LDA(nn.Module):
+    def __init__(
+        self, elements, input_dim, get_forces=True, name="lda", LDA_type="vwn",
+    ):
+        super(LDA, self).__init__()
+        self.get_forces = get_forces
+
+        if LDA_type == "vwn":
+            self.LDA = VWN()
+        else:
+            raise NotImplementedError
+
+    def forward(self, batch):
+        if isinstance(batch, list):
+            batch = batch[0]
+        with torch.enable_grad():
+            fingerprints = batch.fingerprint
+            weights = batch.weights
+            fingerprints.requires_grad = True
+            image_idx = batch.batch
+
+            model_out = self.LDA(fingerprints)
+            weighted_model_out = torch.mul(model_out, weights)
+            energy = scatter(weighted_model_out, image_idx, dim=0, reduce="sum")
+
+            # if self.get_forces:
+            #     gradients = grad(
+            #         energy,
+            #         fingerprints,
+            #         grad_outputs=torch.ones_like(energy),
+            #         create_graph=True,
+            #     )[0].view(1, -1)
+
+            #     forces = -1 * torch.sparse.mm(batch.fprimes.t(), gradients.t()).view(
+            #         -1, 3
+            #     )
+
+            # else:
+            forces = torch.tensor([], device=energy.device)
+
+            return energy, forces
+
+    @property
+    def num_params(self):
+        return sum(p.numel() for p in self.parameters())
 
 
 class SingleNN_deltaLDA(nn.Module):
@@ -311,7 +356,7 @@ class SingleNN_deltaLDA(nn.Module):
             fingerprints.requires_grad = True
             image_idx = batch.batch
             sorted_image_idx = torch.unique_consecutive(image_idx)
-            
+
             NN_model_out = torch.sum(self.model(fingerprints), dim=1)
 
             LDA_out = self.LDA(fingerprints)
