@@ -268,6 +268,9 @@ class LDA(nn.Module):
     ):
         super(LDA, self).__init__()
         self.get_forces = get_forces
+        
+        if self.get_forces:
+            raise NotImplementedError
 
         if LDA_type == "vwn":
             self.LDA = VWN()
@@ -345,6 +348,9 @@ class SingleNN_deltaLDA(nn.Module):
         if LDA_type == "vwn":
             self.LDA = VWN()
         else:
+            raise NotImplementedError
+
+        if self.get_forces:
             raise NotImplementedError
 
     def forward(self, batch):
