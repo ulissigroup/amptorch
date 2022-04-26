@@ -24,6 +24,16 @@ ffibuilder.cdef(
                                         int*, int, int,
                                         int**, double**, int, double**, int*, int*,
                                         double**);
+
+        int calculate_solid_gmpordernorm(double**, double**, double**, double**, double**, int*,
+                                        int*, int, int,
+                                        int**, double**, int, double**, int*, int*,
+                                        double**, double**);
+        
+        int calculate_gmpordernorm(double**, double**, double**, double**, double**, int*,
+                                    int*, int, int,
+                                    int**, double**, int, double**, int*, int*,
+                                    double**, double**);
     """
 )
 ffibuilder.set_source(

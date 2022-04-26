@@ -268,7 +268,7 @@ class LDA(nn.Module):
     ):
         super(LDA, self).__init__()
         self.get_forces = get_forces
-        
+
         if self.get_forces:
             raise NotImplementedError
 
