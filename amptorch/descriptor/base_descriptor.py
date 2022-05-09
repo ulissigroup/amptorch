@@ -215,6 +215,8 @@ class BaseDescriptor(ABC):
 
             image_dict["descriptors"] = fps
             # image_dict["num_descriptors"] = size_info[2]
+            fp_prime_dict = {}
+            fp_prime_dict["size"] = fp_primes_size
             fp_prime_dict["row"] = fp_primes_row
             fp_prime_dict["col"] = fp_primes_col
             fp_prime_dict["val"] = fp_primes_val
