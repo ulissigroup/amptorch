@@ -333,18 +333,19 @@ class AtomsTrainer:
         elapsed_time = time.time() - stime
         print(f"Training completed in {elapsed_time}s")
 
-    def predict(self, images, disable_tqdm=True, get_latent=None, get_descriptors=False):
+    def predict(self, images, disable_tqdm=True, get_latent=None, get_descriptors=False, save_fps=False, get_datalist=False, get_atomic_descriptors=False):
         if len(images) < 1:
             warnings.warn("No images found!", stacklevel=2)
             return images
 
         self.descriptor = construct_descriptor(self.config["dataset"]["descriptor"])
 
+        t0 = time.time()
         a2d = AtomsToData(
             descriptor=self.descriptor,
             r_energy=False,
             r_forces=False,
-            save_fps=self.config["dataset"].get("save_fps", True),
+            save_fps=save_fps,
             fprimes=self.forcetraining,
             cores=1,
         )
@@ -352,12 +353,14 @@ class AtomsTrainer:
         data_list = a2d.convert_all(images, disable_tqdm=disable_tqdm)
 
         self.feature_scaler.norm(data_list, disable_tqdm=disable_tqdm)
+        t_fingerPrint = time.time() - t0
 
         self.net.module.eval()
         collate_fn = DataCollater(train=False, forcetraining=self.forcetraining)
 
         predictions = {"energy": [], "forces": []}
 
+        t_forwardPass = 0
 
         # get the latent layer
         if get_latent is not None:
@@ -380,6 +383,15 @@ class AtomsTrainer:
                 _feature_mean = np.mean(_feature, axis=0)
                 predictions["descriptors"].append(_feature_mean)
 
+        if get_atomic_descriptors:
+            predictions["descriptors"] = []
+            for data in data_list:
+                _feature = data.fingerprint.cpu().detach().numpy()
+                predictions["descriptors"].append(_feature)
+
+        if get_datalist:
+            predictions["data_list"] = data_list
+
         # for data in data_list:
         for idx, data in tqdm(
             enumerate(data_list),
@@ -389,17 +401,23 @@ class AtomsTrainer:
             disable=disable_tqdm,
         ):
             collated = collate_fn([data]).to(self.device)
-            energy, forces = self.net.module([collated])
 
+            t0 = time.time()
+            energy, forces = self.net.module([collated])
             energy = self.target_scaler.denorm(
                 energy.detach().cpu(), pred="energy"
             ).tolist()
             forces = self.target_scaler.denorm(
                 forces.detach().cpu(), pred="forces"
             ).numpy()
+            t_forwardPass += time.time() - t0
+
 
             predictions["energy"].extend(energy)
             predictions["forces"].append(forces)
+        
+        predictions["t_fingerPrint"] = t_fingerPrint
+        predictions["t_forwardPass"] = t_forwardPass
 
         return predictions
 

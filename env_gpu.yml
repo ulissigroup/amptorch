@@ -1,4 +1,4 @@
-name: amptorch
+name: amptorch_gpu
 channels:
   - pytorch
   - conda-forge
