@@ -148,6 +148,8 @@ class AtomsTrainer:
             )
         self.feature_scaler = self.train_dataset.feature_scaler
         self.target_scaler = self.train_dataset.target_scaler
+        self.atomic_correction_scaler = None
+        # self.atomic_correction_scaler = self.train_dataset.atomic_correction_scaler
         self.input_dim = self.train_dataset.input_dim
         self.val_split = self.config["dataset"].get("val_split", 0)
         if not self.debug:
@@ -407,6 +409,8 @@ class AtomsTrainer:
             energy = self.target_scaler.denorm(
                 energy.detach().cpu(), pred="energy"
             ).tolist()
+            # if self.atomic_correction_scaler is not None:
+            #     energy = self.atomic_correction_scaler.denorm(energy, data_list[idx])
             forces = self.target_scaler.denorm(
                 forces.detach().cpu(), pred="forces"
             ).numpy()

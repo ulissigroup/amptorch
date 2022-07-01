@@ -9,6 +9,7 @@ from amptorch.preprocessing import (
     PCAReducer,
     FeatureScaler,
     TargetScaler,
+    AtomicCorrectionScaler,
     sparse_block_diag,
 )
 
@@ -54,8 +55,13 @@ class AtomsDataset(Dataset):
         #     self.pca_reducer.reduce(data_list)
 
         self.feature_scaler = FeatureScaler(data_list, self.forcetraining, self.scaling)
+        # scaling by atomic energy correction
+        # self.atomic_correction_scaler = AtomicCorrectionScaler(data_list)
+        self.atomic_correction_scaler = None
         self.target_scaler = TargetScaler(data_list, self.forcetraining)
         self.feature_scaler.norm(data_list)
+        if self.atomic_correction_scaler is not None:
+            self.atomic_correction_scaler.norm(data_list)
         self.target_scaler.norm(data_list)
 
         return data_list

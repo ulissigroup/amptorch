@@ -226,6 +226,66 @@ class TargetScaler:
         return tensor
 
 
+class AtomicCorrectionScaler:
+    """
+    Fit an linear model based on energy and atomic compositions.
+    """
+
+    def __init__(self, data_list, load_correction_dictionary=None):
+        
+        atom_list = []
+        for data in data_list:
+            atom_list.extend(data.atomic_numbers.numpy())
+            
+        atom_list = np.unique(atom_list)
+
+        atom_dict = {atom:i for i, atom in enumerate(atom_list)}
+        atom_dict_rev = {i:atom for i, atom in enumerate(atom_list)}
+
+        print("start preparing linear system")
+        num_atom_mat = np.zeros((len(data_list), len(atom_list)))
+        energy_vec = np.zeros((len(data_list),)) 
+        for i, data in enumerate(data_list):
+            energy_vec[i] = data.energy
+            atom_numbers_list = data.atomic_numbers.numpy()
+            for atom in atom_numbers_list:
+                num_atom_mat[i, atom_dict[atom]] += 1
+
+        # print(num_atom_mat)
+        # print(energy_vec)
+        lr_result = np.linalg.lstsq(num_atom_mat, energy_vec,rcond=None)
+        linear_regression_result = lr_result[0].flatten()
+        self.correction_dict = {atom_dict_rev[i]: correction for i, correction in enumerate(linear_regression_result)}
+        # print(self.correction_dict)
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, AtomicCorrectionScaler):
+            return (
+                self.correction_dict == other.correction_dict
+            )
+        return NotImplemented
+
+    def norm(self, data_list, disable_tqdm=False):
+        for data in tqdm(
+            data_list,
+            desc="Scaling Target data by atomic corrections",
+            total=len(data_list),
+            unit=" scalings",
+            disable=disable_tqdm,
+        ):
+            atom_numbers_list = data.atomic_numbers.numpy()
+            for atom in atom_numbers_list:
+                data.energy -= self.correction_dict[atom]
+        return data_list
+
+    def denorm(self, tensor, data):
+        atom_numbers_list = data.atomic_numbers.numpy()
+        for atom in atom_numbers_list:
+            tensor += self.correction_dict[atom]
+        return tensor
+
+
 def sparse_block_diag(arrs):
     # TODO CUDA support
     r = []
