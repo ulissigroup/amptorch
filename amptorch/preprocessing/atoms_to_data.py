@@ -92,8 +92,11 @@ class AtomsToData:
             torch_indices = torch.LongTensor(indices)
             torch_values = torch.tensor(fp_prime_val, dtype=torch.get_default_dtype())
             # TODO: check how to do double tensor here
-            fp_primes = torch.sparse.FloatTensor(
-                torch_indices, torch_values, torch.Size(fp_prime_size)
+            fp_primes = torch.sparse_coo_tensor(
+                torch_indices,
+                torch_values,
+                torch.Size(fp_prime_size),
+                dtype=torch.get_default_dtype(),
             )
 
             data.fprimes = fp_primes
