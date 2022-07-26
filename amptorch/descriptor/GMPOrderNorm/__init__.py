@@ -252,6 +252,10 @@ class GMPOrderNorm(BaseDescriptor):
         atom_indices = list_symbols_to_indices(symbols)
         cell = atoms.cell
         scaled_ref_positions = cell.scaled_positions(ref_positions)
+        scaled_ref_positions = np.array(
+            [np.array(v, dtype="float64") for v in scaled_ref_positions],
+            dtype="float64",
+        )
 
         atom_indices_p = ffi.cast("int *", atom_indices.ctypes.data)
 
