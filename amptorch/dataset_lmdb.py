@@ -237,11 +237,20 @@ class AtomsLMDBDatasetPartialCache(Dataset):
 
     def __load_dataset__(self, db_idx):
         dataset = []
-        with self.envs[db_idx].begin(write=False) as txn:
-            for idx in range(self.length_list[db_idx]):
-                data = txn.get(self.keys_list[db_idx][idx])
-                data_object = pickle.loads(data)
-                dataset.append(data_object)
+        with self.envs[db_idx].begin(write=False,buffers=True) as txn:
+            for key, value in tqdm(txn.cursor().iternext(), total=self.length_list[db_idx]):
+                try:
+                    int(key)
+                    data_object = pickle.loads(value)
+                    dataset.append(data_object)
+                except:
+                    pass
+
+        # with self.envs[db_idx].begin(write=False) as txn:
+        #     for idx in range(self.length_list[db_idx]):
+        #         data = txn.get(self.keys_list[db_idx][idx])
+        #         data_object = pickle.loads(data)
+        #         dataset.append(data_object)
 
         self.loaded_db_idx = db_idx
         self.loaded_dataset = dataset
@@ -283,9 +292,9 @@ class AtomsLMDBDatasetPartialCache(Dataset):
             subdir=False,
             readonly=True,
             lock=False,
-            readahead=False,
+            readahead=True,
             meminit=False,
-            max_readers=1,
+            max_readers=8,
         )
         return env
 
@@ -415,9 +424,9 @@ class AtomsLMDBDatasetCache(Dataset):
             subdir=False,
             readonly=True,
             lock=False,
-            readahead=False,
+            readahead=True,
             meminit=False,
-            max_readers=1,
+            max_readers=8,
         )
         return env
 
