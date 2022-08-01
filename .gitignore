@@ -30,6 +30,8 @@ md_work/*
 *checkpoints*
 *results*
 *.lmdb*
+.vscode/
+
 
 #build/compiled_files
 *build/

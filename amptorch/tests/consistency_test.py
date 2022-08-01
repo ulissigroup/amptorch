@@ -2,7 +2,7 @@ import numpy as np
 import torch
 from ase import Atoms
 from ase.calculators.emt import EMT
-from amptorch import AtomsTrainer, AMPtorch
+from amptorch import AtomsTrainer, AmpTorch
 
 
 # adapted from https://gitlab.com/ase/ase/-/blob/master/ase/calculators/test.py#L186-202
@@ -98,7 +98,10 @@ def test_energy_force_consistency():
     # Parameters
     Gs = {
         "default": {
-            "G2": {"etas": [0.2], "rs_s": [0],},
+            "G2": {
+                "etas": [0.2],
+                "rs_s": [0],
+            },
             "G4": {"etas": [0.4], "zetas": [1], "gammas": [1]},
             "cutoff": 6.5,
         },
@@ -145,7 +148,7 @@ def test_energy_force_consistency():
     trainer = AtomsTrainer(config)
     trainer.load()
     trainer.net.initialize()
-    calc = AMPtorch(trainer)
+    calc = AmpTorch(trainer)
     for image in images:
         image.set_calculator(calc)
         f, fn = gradient_test(image)

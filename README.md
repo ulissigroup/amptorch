@@ -1,7 +1,7 @@
 [![ulissigroup](https://circleci.com/gh/ulissigroup/amptorch.svg?style=svg)](https://app.circleci.com/pipelines/github/ulissigroup/amptorch)
-## *AMPtorch*: Atomistic Machine-learning Package - PyTorch
+## *AmpTorch*: Atomistic Machine-learning Package - PyTorch
 
-*AMPtorch* is a PyTorch implementation of the [Atomistic Machine-learning Package](https://amp.readthedocs.io/en/latest/) (AMP) code that seeks to provide users with improved performance and flexibility as compared to the original code. The implementation does so by benefiting from state-of-the-art machine learning methods and techniques to be optimized in conjunction with high-throughput supercomputers. *AMPtorch* is built on top of [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/en/latest/) and [Skorch](https://skorch.readthedocs.io/en/stable/).
+*AmpTorch* is a PyTorch implementation of the [Atomistic Machine-learning Package](https://amp.readthedocs.io/en/latest/) (AMP) code that seeks to provide users with improved performance and flexibility as compared to the original code. The implementation does so by benefiting from state-of-the-art machine learning methods and techniques to be optimized in conjunction with high-throughput supercomputers. *AmpTorch* is built on top of [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/en/latest/) and [Skorch](https://skorch.readthedocs.io/en/stable/).
 
 ### Installation
 
@@ -95,30 +95,30 @@ predictions = trainer.predict(list_of_atoms_objects)
 energies = predictions["energy"]
 forces = predictions["forces"]
 ```
-#### Construct AMPtorch-ASE calculator
+#### Construct AmpTorch-ASE calculator
 To interface with ASE, an ASE calculator may be constructed as follows:
 ```
-from amptorch import AMPtorch
+from amptorch import AmpTorch
 
-calc = AMPtorch(trainer)
+calc = AmpTorch(trainer)
 slab.set_calculator(calc)
 energy = slab.get_potential_energy()
 forces = slab.get_forces()
 ```
 
-### Additional AMPtorch Methods
+### Additional AmpTorch Methods
 #### Gaussian Multiple (GMP) Descriptors
-In addition to conventional Atom-centered Symmetry Functions as fingerprinting scheme, AMPtorch also support GMP descriptors that uses multipole expansions to describe the reconstructed electronic density around every central atom and its neighbors to encode local environments. Because the formulation of symmetry functions does not take into element types into account, the interactions among different elements are divided into different columns as input. As a result, the number of feature dimensions undesirably increases with the number of elements present. A major advantage of GMPs is that the input dimensions remain constant regardless of the number of chemical elements, and therefore can be adopted for complex datasets. For more technical details and theorical backgrounds, please refer to *Lei, X., & Medford, A. J. (2021). A Universal Framework for Featurization of Atomistic Systems. http://arxiv.org/abs/2102.02390*
+In addition to conventional Atom-centered Symmetry Functions as fingerprinting scheme, AmpTorch also support GMP descriptors that uses multipole expansions to describe the reconstructed electronic density around every central atom and its neighbors to encode local environments. Because the formulation of symmetry functions does not take into element types into account, the interactions among different elements are divided into different columns as input. As a result, the number of feature dimensions undesirably increases with the number of elements present. A major advantage of GMPs is that the input dimensions remain constant regardless of the number of chemical elements, and therefore can be adopted for complex datasets. For more technical details and theorical backgrounds, please refer to *Lei, X., & Medford, A. J. (2021). A Universal Framework for Featurization of Atomistic Systems. http://arxiv.org/abs/2102.02390*
 
-For an example script of using GMP, please refer to: 
+For an example script of using GMP, please refer to:
 ```
 examples/GMP/GMP_example.py
 ```
 
 #### SingleNN Atomistic Neural Network Structures
-As GMPs encode the information about chemical elements based on reconstructed electronic environments, GMPs work naturally with the atomistic Neural Network Structures SingleNN as published by Liu and Kitchin (*Liu, M., & Kitchin, J. R. (2020). SingleNN: Modified Behler-Parrinello Neural Network with Shared Weights for Atomistic Simulations with Transferability. Journal of Physical Chemistry C, 124(32), 17811–17818. https://doi.org/10.1021/acs.jpcc.0c04225*). 
+As GMPs encode the information about chemical elements based on reconstructed electronic environments, GMPs work naturally with the atomistic Neural Network Structures SingleNN as published by Liu and Kitchin (*Liu, M., & Kitchin, J. R. (2020). SingleNN: Modified Behler-Parrinello Neural Network with Shared Weights for Atomistic Simulations with Transferability. Journal of Physical Chemistry C, 124(32), 17811–17818. https://doi.org/10.1021/acs.jpcc.0c04225*).
 
-To use SingleNN instead of the default Behler-Parrinello High-dimensional Neural Network scheme, in `config` for NN trainer, define: 
+To use SingleNN instead of the default Behler-Parrinello High-dimensional Neural Network scheme, in `config` for NN trainer, define:
 
 ```
 config["model"]["name"] == "singlenn"
@@ -127,7 +127,7 @@ config["model"]["name"] == "singlenn"
 as shown in `examples/GMP/GMP_example.py`
 
 #### lmdb as Database Management Solution for Large Dataset
-For AMPtorch to be compatible to train with large datasets such as [Open Catalyst Project](https://github.com/Open-Catalyst-Project/baselines), we leverage `lmdb`, a Btree-based database management library, to resolve possible memory issues when it comes to loading and training. It can be used in either full- or partial-cache fashion depending on whether the dataset can be fit into RAM altogether. 
+For AmpTorch to be compatible to train with large datasets such as [Open Catalyst Project](https://github.com/Open-Catalyst-Project/baselines), we leverage `lmdb`, a Btree-based database management library, to resolve possible memory issues when it comes to loading and training. It can be used in either full- or partial-cache fashion depending on whether the dataset can be fit into RAM altogether.
 
 Examples can be found in:
 
@@ -139,7 +139,7 @@ examples/train_lmdb_partial_cache_example.py
 
 #### Uncertainty Quantification (UQ) via Conformal Prediction (CP)
 
-AMPtorch implements UQ as an optional feature during the prediction. Here we use conformal prediction method with the distances in neural network's latent space to output the uncertainty associated with the predicted energy. CP method ensures *calibration* while showing advantage of being *sharp* and *scalable* when tested against benchmarking systems such as MD17, QM9 and OC20 with trained models. 
+AmpTorch implements UQ as an optional feature during the prediction. Here we use conformal prediction method with the distances in neural network's latent space to output the uncertainty associated with the predicted energy. CP method ensures *calibration* while showing advantage of being *sharp* and *scalable* when tested against benchmarking systems such as MD17, QM9 and OC20 with trained models.
 
 An example script in Jupyter Notebook can be found in:
 
@@ -147,11 +147,11 @@ An example script in Jupyter Notebook can be found in:
 examples/GMP/UQ_CP_example.ipynb
 ```
 
-#### 
+####
 
 
 ### Acknowledgements
-- This project is being developed at Carnegie Mellon University in the Department of Chemical Engineering, by Muhammed Shuaibi and Zachary Ulissi, in collaboration with Andrew Peterson, Franklin Goldsmith, Brenda Rubenstein, Andrew Medford, and Adam Willard as part of the Department of Energy's *Bridging the time scale in exascale computing of chemical systems* project. AMPtorch developers include Xiangyun Lei, Ben Comer, Rui Qi Chen, Eric Musa, and Matt Adams.
+- This project is being developed at Carnegie Mellon University in the Department of Chemical Engineering, by Muhammed Shuaibi and Zachary Ulissi, in collaboration with Andrew Peterson, Franklin Goldsmith, Brenda Rubenstein, Andrew Medford, and Adam Willard as part of the Department of Energy's *Bridging the time scale in exascale computing of chemical systems* project. AmpTorch developers include Xiangyun Lei, Ben Comer, Rui Qi Chen, Eric Musa, and Matt Adams.
 - Funded by the Department of Energy's Basic Enenergy Science, Computational Chemical Sciences Program Office. Award # DE-SC0019441
 - Engineering ideas have been heavily borrowed from our work on the [Open Catalyst Project](https://github.com/Open-Catalyst-Project/baselines)
 - Gaussian fingerprints have been adapted from [SIMPLE-NN](https://github.com/MDIL-SNU/SIMPLE-NN)

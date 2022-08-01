@@ -1,7 +1,7 @@
 from ase.calculators.calculator import Calculator
 
 
-class AMPtorch(Calculator):
+class AmpTorch(Calculator):
     implemented_properties = ["energy", "forces"]
 
     def __init__(self, trainer):

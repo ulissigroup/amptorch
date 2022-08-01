@@ -4,6 +4,7 @@ import os
 import random
 import warnings
 import json
+import User
 
 import ase.io
 import numpy as np
@@ -34,7 +35,7 @@ from amptorch.utils import (
     InOrderSplit,
 )
 from amptorch.data_parallel import DataParallel, ParallelCollater
-from amptorch.ase_utils import AMPtorch
+from amptorch.ase_utils import AmpTorch
 
 try:
     shell = get_ipython().__class__.__name__
@@ -182,7 +183,9 @@ class AtomsTrainer:
         self.parallel_collater = ParallelCollater(self.gpus, collate_fn)
         if self.gpus > 0:
             self.model = DataParallel(
-                self.model, output_device=self.output_device, num_gpus=self.gpus,
+                self.model,
+                output_device=self.output_device,
+                num_gpus=self.gpus,
             )
 
     def load_extras(self):
@@ -216,7 +219,11 @@ class AtomsTrainer:
             from skorch.callbacks import WandbLogger
 
             callbacks.append(
-                WandbLogger(self.wandb_run, save_model=False, keys_ignored="dur",)
+                WandbLogger(
+                    self.wandb_run,
+                    save_model=False,
+                    keys_ignored="dur",
+                )
             )
 
         # early stopping
@@ -224,8 +231,10 @@ class AtomsTrainer:
             from skorch.callbacks import EarlyStopping
 
             callbacks.append(
-                EarlyStopping(patience=self.config["cmd"].get("early_stoppping_patience", 5))
+                EarlyStopping(
+                    patience=self.config["cmd"].get("early_stoppping_patience", 5)
                 )
+            )
 
         self.callbacks = callbacks
 
@@ -244,7 +253,10 @@ class AtomsTrainer:
         if self.config["cmd"].get("logger", False):
             import wandb
 
-            self.wandb_run = wandb.init(name=self.identifier, config=self.config,)
+            self.wandb_run = wandb.init(
+                name=self.identifier,
+                config=self.config,
+            )
 
     def load_skorch(self):
         skorch.net.to_tensor = to_tensor
@@ -263,7 +275,8 @@ class AtomsTrainer:
                     max_epochs=self.config["optim"].get("epochs", 100),
                     iterator_train__collate_fn=self.parallel_collater,
                     iterator_train__sampler=PartialCacheSampler(
-                        self.train_dataset.get_length_list(), self.val_split,
+                        self.train_dataset.get_length_list(),
+                        self.val_split,
                     ),
                     iterator_train__shuffle=False,
                     iterator_train__pin_memory=True,
@@ -276,7 +289,7 @@ class AtomsTrainer:
                     verbose=self.config["cmd"].get("verbose", True),
                     **self.optimizer,
                 )
-            except:
+            except User.DoesNotExist:
                 self.net = NeuralNetRegressor(
                     module=self.model,
                     criterion=self.criterion,
@@ -335,7 +348,14 @@ class AtomsTrainer:
         elapsed_time = time.time() - stime
         print(f"Training completed in {elapsed_time}s")
 
-    def predict(self, images, disable_tqdm=True, get_latent=None, get_descriptors=False, save_fps=False, get_datalist=False, get_atomic_descriptors=False):
+    def predict(
+        self,
+        images,
+        disable_tqdm=True,
+        get_latent=None,
+        get_descriptor=False,
+        save_fps=False,
+    ):
         if len(images) < 1:
             warnings.warn("No images found!", stacklevel=2)
             return images
@@ -367,6 +387,7 @@ class AtomsTrainer:
         # get the latent layer
         if get_latent is not None:
             predictions["latent"] = []
+
             def hook2get_latent(self, input, output):
                 _latent = output.detach().numpy()
                 _latent_mean = np.mean(_latent, axis=0)
@@ -374,25 +395,17 @@ class AtomsTrainer:
 
             latent_layer = get_latent
 
-            print("latent layer {}".format(latent_layer))
-            self.net.module.model.model_net[latent_layer].register_forward_hook(hook2get_latent)
+            self.net.module.model.model_net[latent_layer].register_forward_hook(
+                hook2get_latent
+            )
 
-        # get descriptor for every image in the trajectory by averaging over atoms.
-        if get_descriptors:
+        # get feature descriptor for every image in the trajectory by averaging over atoms.
+        if get_descriptor:
             predictions["descriptors"] = []
             for data in data_list:
                 _feature = data.fingerprint.cpu().detach().numpy()
                 _feature_mean = np.mean(_feature, axis=0)
                 predictions["descriptors"].append(_feature_mean)
-
-        if get_atomic_descriptors:
-            predictions["descriptors"] = []
-            for data in data_list:
-                _feature = data.fingerprint.cpu().detach().numpy()
-                predictions["descriptors"].append(_feature)
-
-        if get_datalist:
-            predictions["data_list"] = data_list
 
         # for data in data_list:
         for idx, data in tqdm(
@@ -416,10 +429,10 @@ class AtomsTrainer:
             ).numpy()
             t_forwardPass += time.time() - t0
 
-
             predictions["energy"].extend(energy)
             predictions["forces"].append(forces)
-        
+
+        # time fingerprinting and neural network passing
         predictions["t_fingerPrint"] = t_fingerPrint
         predictions["t_forwardPass"] = t_forwardPass
 
@@ -481,4 +494,4 @@ class AtomsTrainer:
             print("Unable to load checkpoint!")
 
     def get_calc(self):
-        return AMPtorch(self)
+        return AmpTorch(self)
