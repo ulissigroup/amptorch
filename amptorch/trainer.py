@@ -4,7 +4,6 @@ import os
 import random
 import warnings
 import json
-import User
 
 import ase.io
 import numpy as np
@@ -262,56 +261,32 @@ class AtomsTrainer:
         skorch.net.to_tensor = to_tensor
 
         if self.config["dataset"].get("cache", None) == "partial":
-            try:
-                self.net = NeuralNetRegressor(
-                    module=self.model,
-                    criterion=self.criterion,
-                    criterion__force_coefficient=self.config["optim"].get(
-                        "force_coefficient", 0
-                    ),
-                    criterion__loss=self.config["optim"].get("loss", "mse"),
-                    lr=self.config["optim"].get("lr", 1e-1),
-                    batch_size=self.config["optim"].get("batch_size", 32),
-                    max_epochs=self.config["optim"].get("epochs", 100),
-                    iterator_train__collate_fn=self.parallel_collater,
-                    iterator_train__sampler=PartialCacheSampler(
-                        self.train_dataset.get_length_list(),
-                        self.val_split,
-                    ),
-                    iterator_train__shuffle=False,
-                    iterator_train__pin_memory=True,
-                    iterator_valid__collate_fn=self.parallel_collater,
-                    iterator_valid__shuffle=False,
-                    iterator_valid__pin_memory=True,
-                    device=self.device,
-                    train_split=self.split,
-                    callbacks=self.callbacks,
-                    verbose=self.config["cmd"].get("verbose", True),
-                    **self.optimizer,
-                )
-            except User.DoesNotExist:
-                self.net = NeuralNetRegressor(
-                    module=self.model,
-                    criterion=self.criterion,
-                    criterion__force_coefficient=self.config["optim"].get(
-                        "force_coefficient", 0
-                    ),
-                    criterion__loss=self.config["optim"].get("loss", "mse"),
-                    lr=self.config["optim"].get("lr", 1e-1),
-                    batch_size=self.config["optim"].get("batch_size", 32),
-                    max_epochs=self.config["optim"].get("epochs", 100),
-                    iterator_train__collate_fn=self.parallel_collater,
-                    iterator_train__shuffle=True,
-                    iterator_train__pin_memory=True,
-                    iterator_valid__collate_fn=self.parallel_collater,
-                    iterator_valid__shuffle=False,
-                    iterator_valid__pin_memory=True,
-                    device=self.device,
-                    train_split=self.split,
-                    callbacks=self.callbacks,
-                    verbose=self.config["cmd"].get("verbose", True),
-                    **self.optimizer,
-                )
+            self.net = NeuralNetRegressor(
+                module=self.model,
+                criterion=self.criterion,
+                criterion__force_coefficient=self.config["optim"].get(
+                    "force_coefficient", 0
+                ),
+                criterion__loss=self.config["optim"].get("loss", "mse"),
+                lr=self.config["optim"].get("lr", 1e-1),
+                batch_size=self.config["optim"].get("batch_size", 32),
+                max_epochs=self.config["optim"].get("epochs", 100),
+                iterator_train__collate_fn=self.parallel_collater,
+                iterator_train__sampler=PartialCacheSampler(
+                    self.train_dataset.get_length_list(),
+                    self.val_split,
+                ),
+                iterator_train__shuffle=False,
+                iterator_train__pin_memory=True,
+                iterator_valid__collate_fn=self.parallel_collater,
+                iterator_valid__shuffle=False,
+                iterator_valid__pin_memory=True,
+                device=self.device,
+                train_split=self.split,
+                callbacks=self.callbacks,
+                verbose=self.config["cmd"].get("verbose", True),
+                **self.optimizer,
+            )
         else:
             self.net = NeuralNetRegressor(
                 module=self.model,
