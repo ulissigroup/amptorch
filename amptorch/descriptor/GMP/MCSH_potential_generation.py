@@ -181,7 +181,7 @@ def normalize_ref_data(r, density, num_elec):
         r_low = r[i]
         r_high = r[i + 1]
         rho_ave = (density[i] + density[i + 1]) / 2
-        integration += (4 / 3) * np.pi * (r_high ** 3 - r_low ** 3) * rho_ave
+        integration += (4 / 3) * np.pi * (r_high**3 - r_low**3) * rho_ave
     print("ref data integration:{}".format(integration))
     factor = num_elec / integration
     #     print("{}\t{}".format(integration, factor))

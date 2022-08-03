@@ -135,7 +135,7 @@ class Gaussian(BaseDescriptor):
             descriptor_setup["G2"].update(
                 [
                     (2, element1, 0, cutoff, eta, rs, 0.0)
-                    for eta in np.array(Gs["G2"]["etas"]) / cutoff ** 2
+                    for eta in np.array(Gs["G2"]["etas"]) / cutoff**2
                     for rs in Gs["G2"]["rs_s"]
                     for element1 in element_indices
                 ]
@@ -153,7 +153,7 @@ class Gaussian(BaseDescriptor):
                         zeta,
                         gamma,
                     )
-                    for eta in (np.array(Gs["G4"]["etas"]) / cutoff ** 2)
+                    for eta in (np.array(Gs["G4"]["etas"]) / cutoff**2)
                     for zeta in Gs["G4"]["zetas"]
                     for gamma in Gs["G4"]["gammas"]
                     for i in range(len(element_indices))

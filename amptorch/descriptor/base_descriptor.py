@@ -293,7 +293,10 @@ class BaseDescriptor(ABC):
                         fp_primes_col,
                         fp_primes_size,
                     ) = self.calculate_fingerprints(
-                        image, element, calc_derivatives=calc_derivatives, log=log,
+                        image,
+                        element,
+                        calc_derivatives=calc_derivatives,
+                        log=log,
                     )
 
                     num_desc_list.append(size_info[2])

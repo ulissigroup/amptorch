@@ -15,7 +15,10 @@ except NameError:
 
 class PCAReducer:
     def __init__(
-        self, data_list, forcetraining, pca_setting,
+        self,
+        data_list,
+        forcetraining,
+        pca_setting,
     ):
 
         self.forcetraining = forcetraining

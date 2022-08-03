@@ -34,7 +34,10 @@ for dist in distances:
 ### Construct parameters
 Gs = {
     "default": {
-        "G2": {"etas": np.logspace(np.log10(0.05), np.log10(5.0), num=4), "rs_s": [0],},
+        "G2": {
+            "etas": np.logspace(np.log10(0.05), np.log10(5.0), num=4),
+            "rs_s": [0],
+        },
         "G4": {"etas": [0.005], "zetas": [1.0, 4.0], "gammas": [1.0, -1.0]},
         "cutoff": 6,
     },
@@ -104,7 +107,10 @@ def construct_lmdb(images, lmdb_path, normaliers_path="./normalizers.pt"):
     data_list = []
     idx = 0
     for image in tqdm(
-        images, desc="calculating fps", total=len(images), unit=" images",
+        images,
+        desc="calculating fps",
+        total=len(images),
+        unit=" images",
     ):
         do = a2d.convert(image, idx=idx)
         data_list.append(do)
@@ -222,5 +228,5 @@ def test_lmdb_pretrained_no_config():
 
 if __name__ == "__main__":
     print("\n\n--------- LMDB Pretrained Test ---------\n")
-    test_pretrained()
-    test_pretrained_no_config()
+    test_lmdb_pretrained()
+    test_lmdb_pretrained_no_config()

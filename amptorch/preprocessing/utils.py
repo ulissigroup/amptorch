@@ -18,7 +18,10 @@ class FeatureScaler:
     """
 
     def __init__(
-        self, data_list, forcetraining, scaling,
+        self,
+        data_list,
+        forcetraining,
+        scaling,
     ):
         self.transform = scaling["type"]
         if self.transform not in ["normalize", "standardize"]:
@@ -232,19 +235,19 @@ class AtomicCorrectionScaler:
     """
 
     def __init__(self, data_list, load_correction_dictionary=None):
-        
+
         atom_list = []
         for data in data_list:
             atom_list.extend(data.atomic_numbers.numpy())
-            
+
         atom_list = np.unique(atom_list)
 
-        atom_dict = {atom:i for i, atom in enumerate(atom_list)}
-        atom_dict_rev = {i:atom for i, atom in enumerate(atom_list)}
+        atom_dict = {atom: i for i, atom in enumerate(atom_list)}
+        atom_dict_rev = {i: atom for i, atom in enumerate(atom_list)}
 
         print("start preparing linear system")
         num_atom_mat = np.zeros((len(data_list), len(atom_list)))
-        energy_vec = np.zeros((len(data_list),)) 
+        energy_vec = np.zeros((len(data_list),))
         for i, data in enumerate(data_list):
             energy_vec[i] = data.energy
             atom_numbers_list = data.atomic_numbers.numpy()
@@ -253,17 +256,18 @@ class AtomicCorrectionScaler:
 
         # print(num_atom_mat)
         # print(energy_vec)
-        lr_result = np.linalg.lstsq(num_atom_mat, energy_vec,rcond=None)
+        lr_result = np.linalg.lstsq(num_atom_mat, energy_vec, rcond=None)
         linear_regression_result = lr_result[0].flatten()
-        self.correction_dict = {atom_dict_rev[i]: correction for i, correction in enumerate(linear_regression_result)}
+        self.correction_dict = {
+            atom_dict_rev[i]: correction
+            for i, correction in enumerate(linear_regression_result)
+        }
         # print(self.correction_dict)
 
     def __eq__(self, other):
         """Overrides the default implementation"""
         if isinstance(other, AtomicCorrectionScaler):
-            return (
-                self.correction_dict == other.correction_dict
-            )
+            return self.correction_dict == other.correction_dict
         return NotImplemented
 
     def norm(self, data_list, disable_tqdm=False):

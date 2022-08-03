@@ -26,7 +26,8 @@ class AtomsLMDBDataset(Dataset):
     """
 
     def __init__(
-        self, db_paths,
+        self,
+        db_paths,
     ):
         if len(db_paths) < 1:
             raise ValueError("Please provide lmdb file paths")
@@ -161,7 +162,8 @@ class AtomsLMDBDatasetPartialCache(Dataset):
     """
 
     def __init__(
-        self, db_paths,
+        self,
+        db_paths,
     ):
         if len(db_paths) < 1:
             raise ValueError("Please provide lmdb file paths")
@@ -304,7 +306,8 @@ class AtomsLMDBDatasetCache(Dataset):
     """
 
     def __init__(
-        self, db_paths,
+        self,
+        db_paths,
     ):
         if len(db_paths) < 1:
             raise ValueError("Please provide lmdb file paths")
