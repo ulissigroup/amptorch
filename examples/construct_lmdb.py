@@ -10,7 +10,7 @@ from amptorch.descriptor.Gaussian import Gaussian
 from ase import Atoms
 from ase.calculators.emt import EMT
 
-from amptorch.ase_utils import AMPtorch
+from amptorch.ase_utils import AmpTorch
 from amptorch.trainer import AtomsTrainer
 
 
@@ -58,7 +58,10 @@ def construct_lmdb(images, lmdb_path="./data.lmdb", normaliers_path="./normalize
     data_list = []
     idx = 0
     for image in tqdm(
-        images, desc="calculating fps", total=len(images), unit=" images",
+        images,
+        desc="calculating fps",
+        total=len(images),
+        unit=" images",
     ):
         do = a2d.convert(image, idx=idx)
         data_list.append(do)

@@ -70,7 +70,11 @@ def mse_forces_score(net, X, y):
 
 
 def evaluator(
-    val_split, metric, identifier, forcetraining, cp_metric,
+    val_split,
+    metric,
+    identifier,
+    forcetraining,
+    cp_metric,
 ):
     # print("evaluator")
     callbacks = []
@@ -89,7 +93,7 @@ def evaluator(
     else:
         raise NotImplementedError(f"{metric} metric not available!")
 
-    if not cp_metric in ["energy", "forces"]:
+    if cp_metric not in ["energy", "forces"]:
         raise NotImplementedError(f"{cp_metric} value not valid!")
 
     callbacks.append(

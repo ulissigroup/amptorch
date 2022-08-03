@@ -35,8 +35,8 @@ class TestMethods(unittest.TestCase):
     def test_training_scenarios(self):
         test_training()
 
-    # def test_training_scenarios_gmp(self):
-    #     test_training_gmp()
+    def test_training_scenarios_gmp(self):
+        test_training_gmp()
 
 
 if __name__ == "__main__":

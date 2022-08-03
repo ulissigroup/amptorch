@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from amptorch.ase_utils import AMPtorch
+from amptorch.ase_utils import AmpTorch
 from amptorch.descriptor.Gaussian import GaussianDescriptorSet
 from amptorch.trainer import AtomsTrainer
 from ase import Atoms
@@ -58,7 +58,12 @@ gds.batch_add_descriptors(4, g4_etas, g4_zetas, g4_gammas)
 # this opens opportunities for creating finely-tuned descriptor sets
 
 config = {
-    "model": {"get_forces": True, "num_layers": 3, "num_nodes": 5, "batchnorm": False,},
+    "model": {
+        "get_forces": True,
+        "num_layers": 3,
+        "num_nodes": 5,
+        "batchnorm": False,
+    },
     "optim": {
         "force_coefficient": 0.04,
         "lr": 1e-2,
@@ -100,5 +105,5 @@ pred_energies = np.array(predictions["energy"])
 print("Energy MSE:", np.mean((true_energies - pred_energies) ** 2))
 print("Energy MAE:", np.mean(np.abs(true_energies - pred_energies)))
 
-image.set_calculator(AMPtorch(trainer))
+image.set_calculator(AmpTorch(trainer))
 image.get_potential_energy()

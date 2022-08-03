@@ -3,7 +3,7 @@ import torch
 from ase import Atoms
 from ase.calculators.emt import EMT
 
-from amptorch.ase_utils import AMPtorch
+from amptorch.ase_utils import AmpTorch
 from amptorch.trainer import AtomsTrainer
 
 distances = np.linspace(2, 5, 100)
@@ -25,14 +25,22 @@ for dist in distances:
 
 Gs = {
     "default": {
-        "G2": {"etas": np.logspace(np.log10(0.05), np.log10(5.0), num=4), "rs_s": [0],},
+        "G2": {
+            "etas": np.logspace(np.log10(0.05), np.log10(5.0), num=4),
+            "rs_s": [0],
+        },
         "G4": {"etas": [0.005], "zetas": [1.0, 4.0], "gammas": [1.0, -1.0]},
         "cutoff": 6,
     },
 }
 
 config = {
-    "model": {"get_forces": True, "num_layers": 3, "num_nodes": 5, "batchnorm": False,},
+    "model": {
+        "get_forces": True,
+        "num_layers": 3,
+        "num_nodes": 5,
+        "batchnorm": False,
+    },
     "optim": {
         "force_coefficient": 0.04,
         "lr": 1e-2,
@@ -70,5 +78,5 @@ pred_energies = np.array(predictions["energy"])
 print("Energy MSE:", np.mean((true_energies - pred_energies) ** 2))
 print("Energy MAE:", np.mean(np.abs(true_energies - pred_energies)))
 
-image.set_calculator(AMPtorch(trainer))
+image.set_calculator(AmpTorch(trainer))
 image.get_potential_energy()

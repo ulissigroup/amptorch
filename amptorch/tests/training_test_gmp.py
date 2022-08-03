@@ -33,42 +33,47 @@ MCSHs = {
         "3": {"groups": [1, 2, 3], "sigmas": sigmas},
     },
     "atom_gaussians": {
-        "C": "./GMP_params/C_pseudodensity_4.g",
-        "O": "./GMP_params/O_pseudodensity_4.g",
-        "Cu": "./GMP_params/Cu_pseudodensity_4.g",
+        "C": "amptorch/tests/GMP_params/C_pseudodensity_4.g",
+        "O": "amptorch/tests/GMP_params/O_pseudodensity_4.g",
+        "Cu": "amptorch/tests/GMP_params/Cu_pseudodensity_4.g",
     },
     "cutoff": 10,
 }
 
 
 elements = ["Cu", "C", "O"]
-config = {
-    "model": {"get_forces": True, "num_layers": 3, "num_nodes": 20},
-    "optim": {
-        "force_coefficient": 0.04,
-        "lr": 1e-3,
-        "batch_size": 10,
-        "epochs": 300,
-        "loss": "mse",
-        "metric": "mae",
-    },
-    "dataset": {
-        "raw_data": images,
-        "val_split": 0,
-        "elements": elements,
-        "fp_scheme": "gmp",
-        "fp_params": MCSHs,
-        "save_fps": False,
-    },
-    "cmd": {
-        "debug": False,
-        "run_dir": "./",
-        "seed": 1,
-        "identifier": "test",
-        "verbose": False,
-        "logger": False,
-    },
-}
+
+
+def get_config():
+    config = {
+        "model": {"get_forces": True, "num_layers": 3, "num_nodes": 20},
+        "optim": {
+            "force_coefficient": 0.04,
+            "lr": 1e-3,
+            "batch_size": 10,
+            "epochs": 300,
+            "loss": "mse",
+            "metric": "mae",
+        },
+        "dataset": {
+            "raw_data": images,
+            "val_split": 0,
+            "elements": elements,
+            "fp_scheme": "gmp",
+            "fp_params": MCSHs,
+            "save_fps": False,
+        },
+        "cmd": {
+            "debug": False,
+            "run_dir": "./",
+            "seed": 1,
+            "identifier": "test",
+            "verbose": False,
+            "logger": False,
+        },
+    }
+    return config
+
 
 true_energies = np.array([image.get_potential_energy() for image in images])
 true_forces = np.concatenate(np.array([image.get_forces() for image in images]))
@@ -101,12 +106,14 @@ def test_training_gmp():
 
     ### train only
     # energy+forces+mse loss
+    config = get_config()
     config["model"]["get_forces"] = True
     config["optim"]["force_coefficient"] = 0.04
     config["optim"]["loss"] = "mse"
     get_force_metrics(config)
     print("Train energy+forces success!")
     # energy+mae loss
+    config = get_config()
     config["model"]["get_forces"] = False
     config["optim"]["force_coefficient"] = 0
     config["optim"]["loss"] = "mae"
@@ -115,6 +122,7 @@ def test_training_gmp():
 
     ### train+val
     # energy only
+    config = get_config()
     config["model"]["get_forces"] = False
     config["optim"]["force_coefficient"] = 0
     config["optim"]["loss"] = "mae"
@@ -123,6 +131,7 @@ def test_training_gmp():
     print("Val energy only success!")
 
     # energy+forces
+    config = get_config()
     config["model"]["get_forces"] = True
     config["optim"]["force_coefficient"] = 0.04
     config["optim"]["loss"] = "mse"
