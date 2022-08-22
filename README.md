@@ -3,6 +3,10 @@
 
 *AmpTorch* is a PyTorch implementation of the [Atomistic Machine-learning Package](https://amp.readthedocs.io/en/latest/) (AMP) code that seeks to provide users with improved performance and flexibility as compared to the original code. The implementation does so by benefiting from state-of-the-art machine learning methods and techniques to be optimized in conjunction with high-throughput supercomputers. *AmpTorch* is built on top of [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/en/latest/) and [Skorch](https://skorch.readthedocs.io/en/stable/).
 
+### Documentation
+
+Go to [AmpTorch Documentation](https://amptorch.readthedocs.io/en/latest/) for installation, usage and example lookup.
+
 ### Installation
 
 Install dependencies:
@@ -139,19 +143,27 @@ examples/train_lmdb_partial_cache_example.py
 
 #### Uncertainty Quantification (UQ) via Conformal Prediction (CP)
 
-AmpTorch implements UQ as an optional feature during the prediction. Here we use conformal prediction method with the distances in neural network's latent space to output the uncertainty associated with the predicted energy. CP method ensures *calibration* while showing advantage of being *sharp* and *scalable* when tested against benchmarking systems such as MD17, QM9 and OC20 with trained models.
+AmpTorch implements UQ as an optional feature during the prediction. Here we use [conformal prediction method](https://arxiv.org/abs/2208.08337) with the distances in neural network's latent space to output the uncertainty associated with the predicted energy. CP method ensures *calibration* while showing advantage of being *sharp* and *scalable* when tested against benchmarking systems such as MD17, QM9 and OC20 with trained models.
 
-An example script in Jupyter Notebook can be found in:
+An example python script can be found in:
 
 ```
-examples/GMP/UQ_CP_example.ipynb
+examples/GMP/GMP_uncertainty_example.py
 ```
 
-####
+### Development notes
+#### Reporting issues
+Regarding bugs, issues or suggested feature improvements related to the software, please use the [issue tracker](https://github.com/ulissigroup/amptorch/issues) of the GitHub project.
 
+#### Contributing
+If you want to contribute to this project, please use the [fork and pull](https://github.com/ulissigroup/amptorch/pulls) following the [guidelines](https://docs.github.com/en/get-started/quickstart/contributing-to-projects) and pertaining to the overall objective of this project as described above.
 
 ### Acknowledgements
 - This project is being developed at Carnegie Mellon University in the Department of Chemical Engineering, by Muhammed Shuaibi and Zachary Ulissi, in collaboration with Andrew Peterson, Franklin Goldsmith, Brenda Rubenstein, Andrew Medford, and Adam Willard as part of the Department of Energy's *Bridging the time scale in exascale computing of chemical systems* project. AmpTorch developers include Xiangyun Lei, Ben Comer, Rui Qi Chen, Eric Musa, and Matt Adams.
 - Funded by the Department of Energy's Basic Enenergy Science, Computational Chemical Sciences Program Office. Award # DE-SC0019441
 - Engineering ideas have been heavily borrowed from our work on the [Open Catalyst Project](https://github.com/Open-Catalyst-Project/baselines)
 - Gaussian fingerprints have been adapted from [SIMPLE-NN](https://github.com/MDIL-SNU/SIMPLE-NN)
+
+
+### License
+This sofware is licensed under the GNU General Public License. See LICENSE.

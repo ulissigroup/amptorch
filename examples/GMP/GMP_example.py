@@ -1,9 +1,12 @@
 import numpy as np
+import os
 from ase import Atoms
 from ase.calculators.emt import EMT
-
+from ase.md.verlet import VelocityVerlet
+import torch
 from amptorch.trainer import AtomsTrainer
 
+### Construct/Load system into a list of ASE atoms object
 distances = np.linspace(2, 5, 10)
 images = []
 for dist in distances:
@@ -21,47 +24,52 @@ for dist in distances:
     images.append(image)
 
 
-sigmas = [0.02, 0.2, 0.4, 0.69, 1.1, 1.66, 2.66, 4.4]
-MCSHs = {
-    "MCSHs": {
-        "0": {"groups": [1], "sigmas": sigmas},
-        "1": {"groups": [1], "sigmas": sigmas},
-        "2": {"groups": [1, 2], "sigmas": sigmas},
-        "3": {"groups": [1, 2, 3], "sigmas": sigmas},
-        # "4": {"groups": [1, 2, 3, 4], "sigmas": sigmas},
-        # "5": {"groups": [1, 2, 3, 4, 5], "sigmas": sigmas},
-        # "6": {"groups": [1, 2, 3, 4, 5, 6, 7], "sigmas": sigmas},
-    },
+### Hyperparameters that needs to be defined
+elements = ["Cu", "C", "O"]
+path_to_psp = "<path>/pseudodensity_psp/"
+# path to the GMP pseudopotential (.g)files
+# please copy the "pseudodensity_psp" folder to somehere and edit the path to it here
+
+nsigmas = 5
+max_MCSH_order = 3
+max_radial_sigma = 2.0
+
+
+### Construct GMP configuration, no need to change once the hyperparameters are specified.
+sigmas = np.linspace(0, max_radial_sigma, nsigmas + 1, endpoint=True)[1:]
+GMPs = {
+    "MCSHs": {"orders": list(range(max_MCSH_order + 1)), "sigmas": sigmas},
     "atom_gaussians": {
-        "C": "./valence_gaussians/C_pseudodensity_4.g",
-        "O": "./valence_gaussians/O_pseudodensity_4.g",
-        "Cu": "./valence_gaussians/Cu_pseudodensity_4.g",
+        x: os.path.join(path_to_psp, "{}_pseudodensity.g".format(x)) for x in elements
     },
-    "cutoff": 8,
+    # "cutoff": 10.0, # don't need to specify, a default value will be provided.
+    "square": False,
+    "solid_harmonics": True,
 }
 
-
-elements = ["Cu", "C", "O"]
 config = {
     "model": {
         "name": "singlenn",
         "get_forces": False,
         "num_layers": 3,
         "num_nodes": 20,
+        # "hidden_layers": [20,20,20], # more flexible way of defining NN
+        "activation": torch.nn.GELU,
+        "batchnorm": True,
     },
     "optim": {
         "device": "cpu",
         "force_coefficient": 0.0,
         "lr": 1e-2,
-        "batch_size": 10,
+        "batch_size": 16,
         "epochs": 100,
     },
     "dataset": {
         "raw_data": images,
         "val_split": 0,
         "elements": elements,
-        "fp_scheme": "gmp",
-        "fp_params": MCSHs,
+        "fp_scheme": "gmpordernorm",
+        "fp_params": GMPs,
         "save_fps": True,
     },
     "cmd": {
