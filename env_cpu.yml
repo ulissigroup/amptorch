@@ -13,6 +13,7 @@ dependencies:
   - tqdm=4.45.*
   - h5py
   - cpuonly
+  - pykdtree
   - pip:
     - cffi
     - wandb

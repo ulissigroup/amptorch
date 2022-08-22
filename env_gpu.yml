@@ -13,6 +13,7 @@ dependencies:
   - tqdm=4.45.*
   - cudatoolkit=11.1
   - h5py
+  - pykdtree
   - pip:
     - cffi
     - wandb

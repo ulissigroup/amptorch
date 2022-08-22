@@ -34,10 +34,13 @@ md_work/*
 
 
 #build/compiled_files
-*build/
+build/
 amptorch/descriptor/Gaussian/_libsymf.abi3.so
 amptorch/descriptor/GMP/_libgmp.abi3.so
 amptorch/descriptor/GMPOrderNorm/_libgmpordernorm.abi3.so
+
+# Sphinx documentation
+docs/_build/
 
 # some jupyter notebook as exceptions
 !examples/GMP/UQ_CP_example.ipynb
