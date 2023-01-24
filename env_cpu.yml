@@ -1,31 +1,28 @@
 name: amptorch
 channels:
   - pytorch
-  - conda-forge
+  - nvidia
   - defaults
 dependencies:
-  - ase=3.21*
-  - matplotlib=3.3*
-  - pip
-  - pre-commit=2.2*
-  - python=3.6.*
-  - pytorch=1.9.0
-  - tqdm=4.45.*
+  - python=3.9.*
+  - pytorch=1.10.*
   - h5py
+  - matplotlib=3.3.*
+  - pip
+  - tqdm=4.45.*
   - cpuonly
-  - pykdtree
   - pip:
+    - ase==3.21.*
     - cffi
-    - wandb
     - lmdb==1.0.0
+    - pre-commit
+    - pykdtree
     - skorch==0.10.*
-    - torch-geometric
-    - -f https://data.pyg.org/whl/torch-1.9.0+cpu.html
-    - torch-scatter
-    - -f https://data.pyg.org/whl/torch-1.9.0+cpu.html
-    - torch-sparse
-    - -f https://data.pyg.org/whl/torch-1.9.0+cpu.html
     - torch-cluster
-    - -f https://data.pyg.org/whl/torch-1.9.0+cpu.html
-    - torch-spline-conv
-    - -f https://data.pyg.org/whl/torch-1.9.0+cpu.html
+    - -f https://data.pyg.org/whl/torch-1.10.0+cpu.html
+    - torch-geometric
+    - -f https://data.pyg.org/whl/torch-1.10.0+cpu.html
+    - torch-scatter
+    - -f https://data.pyg.org/whl/torch-1.10.0+cpu.html
+    - torch-sparse
+    - -f https://data.pyg.org/whl/torch-1.10.0+cpu.html
