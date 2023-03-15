@@ -26,9 +26,9 @@ for dist in distances:
 
 ### Hyperparameters that needs to be defined
 elements = ["Cu", "C", "O"]
-path_to_psp = "<path>/pseudodensity_psp/"
+path_to_psp = "./pseudodensity_psp/"
 # path to the GMP pseudopotential (.g)files
-# please copy the "pseudodensity_psp" folder to somehere and edit the path to it here
+# please copy the "pseudodensity_psp" folder here and edit the path to it here
 
 nsigmas = 5
 max_MCSH_order = 3

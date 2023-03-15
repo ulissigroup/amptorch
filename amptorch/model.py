@@ -194,7 +194,7 @@ class SingleNN(nn.Module):
             fingerprints = batch.fingerprint
             fingerprints.requires_grad = True
             image_idx = batch.batch
-            sorted_image_idx = torch.unique_consecutive(image_idx)
+            # sorted_image_idx = torch.unique_consecutive(image_idx)
             o = torch.sum(self.model(fingerprints), dim=1)
             energy = scatter(o, image_idx, dim=0)
 
@@ -234,7 +234,6 @@ class CustomLoss(nn.Module):
             raise NotImplementedError(f"{self.loss} loss not available!")
 
     def forward(self, prediction, target):
-
         energy_pred = prediction[0]
         energy_target = target[0]
         energy_loss = self.loss(energy_pred, energy_target)

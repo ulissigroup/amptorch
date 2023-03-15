@@ -309,7 +309,6 @@ class BaseDescriptor(ABC):
                     fp_prime_size_dict[element] = fp_primes_size
 
                 else:
-
                     size_info, fps, _, _, _, _ = self.calculate_fingerprints(
                         image, element, calc_derivatives=calc_derivatives, log=log
                     )

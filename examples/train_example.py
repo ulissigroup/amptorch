@@ -23,7 +23,7 @@ for dist in distances:
     images.append(image)
 
 Gs = {
-    "default": {
+    "gaussian": {
         "G2": {
             "etas": np.logspace(np.log10(0.05), np.log10(5.0), num=4),
             "rs_s": [0],

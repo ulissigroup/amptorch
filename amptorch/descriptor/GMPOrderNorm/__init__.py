@@ -230,7 +230,6 @@ class GMPOrderNorm(BaseDescriptor):
                 )
 
     def calculate_fingerprints(self, atoms, element, calc_derivatives, log):
-
         element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
 
         symbols = np.array(atoms.get_chemical_symbols())
@@ -277,7 +276,6 @@ class GMPOrderNorm(BaseDescriptor):
         size_info = np.array([atom_num, cal_num, self.params_set["num"]])
 
         if calc_derivatives:
-
             x = np.zeros([cal_num, self.params_set["num"]], dtype=np.float64, order="C")
             dx = np.zeros(
                 [cal_num * self.params_set["num"], atom_num * 3],

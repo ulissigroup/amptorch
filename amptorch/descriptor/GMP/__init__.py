@@ -204,7 +204,6 @@ class GMP(BaseDescriptor):
                 )
 
     def calculate_fingerprints(self, atoms, element, calc_derivatives, log):
-
         element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
 
         symbols = np.array(atoms.get_chemical_symbols())

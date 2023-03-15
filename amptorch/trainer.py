@@ -67,7 +67,7 @@ class AtomsTrainer:
         dtype = self.config["cmd"].get("dtype", torch.DoubleTensor)
         torch.set_default_tensor_type(dtype)
         self.timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        self.identifier = self.config["cmd"].get("identifier", False)
+        self.identifier = self.config["cmd"].get("identifier", None)
         if self.identifier:
             self.identifier = self.timestamp + "-{}".format(self.identifier)
         else:
