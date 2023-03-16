@@ -23,6 +23,9 @@ class AtomsLMDBDataset(Dataset):
     It does support large amount of data, limited only by disk space, and NOT memory (RAM)
 
     It should be avoid for bad access performance if possible
+
+    Parameter:
+    db_paths [str] : a list of strings pointing to the paths of lmdb files.
     """
 
     def __init__(
@@ -159,6 +162,9 @@ class AtomsLMDBDatasetPartialCache(Dataset):
     as long as each lmdb file can be loaded into RAM entirely.
 
     It has to be used with in-order spliter and randomized dataset.
+
+    Parameter:
+    db_paths [str] : a list of strings pointing to the paths of lmdb files.
     """
 
     def __init__(
@@ -303,6 +309,9 @@ class AtomsLMDBDatasetCache(Dataset):
     It does not large amount of data, as it's limited by RAM size.
 
     It is the fastest way among the three for trianing, ~3x faster than partial caching.
+
+    Parameter:
+    db_paths [str] : a list of strings pointing to the paths of lmdb files.
     """
 
     def __init__(
@@ -426,6 +435,10 @@ class AtomsLMDBDatasetCache(Dataset):
 
 
 class PartialCacheSampler(Sampler):
+    """
+    Sampling strategy for partial cache scheme.
+    """
+
     def __init__(self, length_list, val_frac):
         len_cumulative = np.cumsum(length_list)
         len_dataset = np.sum(length_list)
@@ -454,6 +467,9 @@ class PartialCacheSampler(Sampler):
 
 
 def get_lmdb_dataset(lmdb_paths, cache_type):
+    """
+    A helper function to assign lmdb dataset types.
+    """
     if cache_type == "full":
         return AtomsLMDBDatasetCache(lmdb_paths)
     elif cache_type == "partial":

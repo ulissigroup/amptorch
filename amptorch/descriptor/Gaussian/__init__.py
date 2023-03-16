@@ -14,6 +14,19 @@ GDS = GaussianDescriptorSet  # so Flake8 allows the commit to proceed, also an e
 
 
 class Gaussian(BaseDescriptor):
+    """
+    Fingerprinting calculation for Symmetry Functions.
+
+    Args:
+    Gs [dict] : a dictionary containing the definition of G2 and G4 parameters.
+
+    elements [dict] : a dictionary of string of chemical elements in the system.
+
+    cutoff_func [str] : defines the form of f_c. Default to "cosine".
+
+    gamma [float] : parameter for polynomial cutoff function. Default to None as the default cutoff function is cosine.
+    """
+
     def __init__(self, Gs, elements, cutoff_func="cosine", gamma=None):
         super().__init__()
         self.descriptor_type = "Gaussian"
@@ -71,6 +84,9 @@ class Gaussian(BaseDescriptor):
         return NotImplemented
 
     def prepare_descriptor_parameters(self):
+        """
+        A helper function to prepare the parameters as input to cffi.
+        """
         if isinstance(self.Gs, dict):
             self.descriptor_setup = {}
             for element in self.elements:
@@ -236,6 +252,9 @@ class Gaussian(BaseDescriptor):
                     )
 
     def calculate_fingerprints(self, atoms, element, calc_derivatives, log):
+        """
+        Interfacing with cffi to compute the fingerprints.
+        """
         element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
 
         symbols = np.array(atoms.get_chemical_symbols())

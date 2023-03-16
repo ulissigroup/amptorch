@@ -17,7 +17,6 @@ def _gen_2Darray_for_ffi(arr, ffi, cdata="double"):
 
 
 def get_hash(image):
-
     string = ""
     string += str(image.pbc)
     try:

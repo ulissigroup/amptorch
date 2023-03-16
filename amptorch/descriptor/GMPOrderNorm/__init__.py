@@ -10,6 +10,15 @@ from ._libgmpordernorm import ffi, lib
 
 
 class GMPOrderNorm(BaseDescriptor):
+    """
+    Fingerprinting calculation for GMP with normalization over orders. Should be used with care.
+
+    Args:
+    MCSHs [dict] : a dictionary containing the parameters for MCSH definition.
+
+    elements [dict] : a dictionary of string of chemical elements in the system.
+    """
+
     def __init__(
         self,
         MCSHs,
@@ -63,7 +72,7 @@ class GMPOrderNorm(BaseDescriptor):
     def prepare_descriptor_parameters(self):
         descriptor_setup = []
         cutoff = self.MCSHs["cutoff"]
-        self.solid_harmonic = self.MCSHs.get("solid_harmonics", False)
+        self.solid_harmonic = self.MCSHs.get("solid_harmonics", True)
         solid_harmonic_i = 1 if self.solid_harmonic else 0
         square = self.MCSHs.get("square", True)
         square_i = 1 if square else 0
@@ -230,7 +239,6 @@ class GMPOrderNorm(BaseDescriptor):
                 )
 
     def calculate_fingerprints(self, atoms, element, calc_derivatives, log):
-
         element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
 
         symbols = np.array(atoms.get_chemical_symbols())
@@ -277,7 +285,6 @@ class GMPOrderNorm(BaseDescriptor):
         size_info = np.array([atom_num, cal_num, self.params_set["num"]])
 
         if calc_derivatives:
-
             x = np.zeros([cal_num, self.params_set["num"]], dtype=np.float64, order="C")
             dx = np.zeros(
                 [cal_num * self.params_set["num"], atom_num * 3],

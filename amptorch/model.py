@@ -6,6 +6,23 @@ from torch_scatter import scatter
 
 
 class MLP(nn.Module):
+    """
+    Multi-layer perceptron model modified for atomistic input.
+
+    Args:
+        n_input_nodes (int): Number of input nodes for the network.
+        n_layers (int): Number of hidden layers in the network.
+        n_hidden_size (int): Number of hidden units per layer.
+        activation (torch.nn.Module): Activation function to use in each layer.
+        batchnorm (bool): Whether to use batch normalization after each layer.
+        dropout (bool): Whether to use dropout after each layer.
+        dropout_rate (float): Dropout rate to use if `dropout` is True.
+        hidden_layers (Optional[List[int]]): List of hidden layer sizes. If not None,
+            `n_layers` and `n_hidden_size` will be ignored.
+        n_output_nodes (int): Number of output nodes for the network.
+        initialization (str): Initialization method for the network weights. "xavier" or "zero".
+    """
+
     def __init__(
         self,
         n_input_nodes,
@@ -63,6 +80,13 @@ class MLP(nn.Module):
 
 
 class ElementMask(nn.Module):
+    """
+    Mask for different chemical element types for BPNN.
+
+    Args:
+        elements (List[str]) : a list of strings of unique chemical elements in the system.
+    """
+
     def __init__(self, elements):
         super(ElementMask, self).__init__()
         nelems = len(elements)
@@ -77,6 +101,37 @@ class ElementMask(nn.Module):
 
 
 class BPNN(nn.Module):
+    """
+    Atomistic neural network structure described as 2nd generation or Behler-Parrinello neural network for energy (and force) training.
+
+    Args:
+    elements : list of str
+        List of unique element symbols in the system.
+    input_dim : int
+        Dimensionality of the input. The dimension depends on the atomistic fingerprinting scheme.
+    num_nodes : int, optional (default=20)
+        Number of nodes in each hidden layer.
+    num_layers : int, optional (default=5)
+        Number of hidden layers in the network.
+    hidden_layers : list of int, optional (default=None)
+        A list of integers, where each element corresponds to the number of nodes in a hidden layer. Overrides num_nodes and num_layers. E.g. [10, 10, 10]
+    get_forces : bool, optional (default=True)
+        Whether to train with the forces in addition to the energy.
+    batchnorm : bool, optional (default=False)
+        Whether to se batch normalization in the network.
+    dropout : bool, optional (default=False)
+        Whether to use to apply dropout in the network.
+    dropout_rate : float, optional (default=0.5)
+        The dropout probability in [0, 1].
+    activation : torch.nn.Module, optional (default=Tanh)
+        The activation function to use in the network.
+    name : str, optional (default='bpnn')
+        Name of the network.
+    initialization : str, optional (default='xavier')
+        Initialization method to use for weights in the network.
+
+    """
+
     def __init__(
         self,
         elements,
@@ -156,6 +211,36 @@ class BPNN(nn.Module):
 
 
 class SingleNN(nn.Module):
+    """
+    A modified version of Behler-Parrinello atomistic neural network where all elements shared the same  for energy (and force) training.
+
+    Args:
+    elements : list of str
+        List of unique element symbols in the system.
+    input_dim : int
+        Dimensionality of the input. The dimension depends on the atomistic fingerprinting scheme.
+    num_nodes : int, optional (default=20)
+        Number of nodes in each hidden layer.
+    num_layers : int, optional (default=5)
+        Number of hidden layers in the network.
+    hidden_layers : list of int, optional (default=None)
+        A list of integers, where each element corresponds to the number of nodes in a hidden layer. Overrides num_nodes and num_layers. E.g. [10, 10, 10]
+    get_forces : bool, optional (default=True)
+        Whether to train with the forces in addition to the energy.
+    batchnorm : bool, optional (default=False)
+        Whether to se batch normalization in the network.
+    dropout : bool, optional (default=False)
+        Whether to use to apply dropout in the network.
+    dropout_rate : float, optional (default=0.5)
+        The dropout probability in [0, 1].
+    activation : torch.nn.Module, optional (default=Tanh)
+        The activation function to use in the network.
+    name : str, optional (default='singlenn')
+        Name of the network.
+    initialization : str, optional (default='xavier')
+        Initialization method to use for weights in the network.
+    """
+
     def __init__(
         self,
         elements,
@@ -221,6 +306,10 @@ class SingleNN(nn.Module):
 
 
 class CustomLoss(nn.Module):
+    """
+    Customize the loss function based on Parrinello's publication with alpha as the force coefficient.
+    """
+
     def __init__(self, force_coefficient=0, loss="mae"):
         super(CustomLoss, self).__init__()
         self.alpha = force_coefficient
@@ -234,7 +323,6 @@ class CustomLoss(nn.Module):
             raise NotImplementedError(f"{self.loss} loss not available!")
 
     def forward(self, prediction, target):
-
         energy_pred = prediction[0]
         energy_target = target[0]
         energy_loss = self.loss(energy_pred, energy_target)

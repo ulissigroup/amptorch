@@ -10,6 +10,15 @@ from ._libgmp import ffi, lib
 
 
 class GMP(BaseDescriptor):
+    """
+    Fingerprinting calculation for GMP without normalization over orders. Should be used with care.
+
+    Args:
+    MCSHs [dict] : a dictionary containing the parameters for MCSH definition.
+
+    elements [dict] : a dictionary of string of chemical elements in the system.
+    """
+
     def __init__(
         self,
         MCSHs,
@@ -204,7 +213,6 @@ class GMP(BaseDescriptor):
                 )
 
     def calculate_fingerprints(self, atoms, element, calc_derivatives, log):
-
         element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
 
         symbols = np.array(atoms.get_chemical_symbols())

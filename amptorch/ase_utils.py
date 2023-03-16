@@ -2,6 +2,14 @@ from ase.calculators.calculator import Calculator
 
 
 class AmpTorch(Calculator):
+    """
+    Create an ase.calculators.calculator.Calculator class to compute the energy (and forces) for the given ase.Atoms object.
+
+    Method:
+    ------------
+    calculate : Calculates the corresponding energy (and forces) with loaded parameters in the model.
+    """
+
     implemented_properties = ["energy", "forces"]
 
     def __init__(self, trainer):

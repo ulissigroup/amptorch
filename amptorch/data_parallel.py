@@ -6,6 +6,10 @@ import torch
 
 
 class DataParallel(torch.nn.DataParallel):
+    """
+    Data Parallelization for GPU scheme.
+    """
+
     def __init__(self, module, output_device, num_gpus):
         if num_gpus < 0:
             raise ValueError("# GPUs must be positive.")
@@ -47,6 +51,10 @@ class DataParallel(torch.nn.DataParallel):
 
 
 class ParallelCollater:
+    """
+    Data collater for multi-GPU training.
+    """
+
     def __init__(self, num_gpus, collater):
         self.num_gpus = num_gpus
         self.collater = collater

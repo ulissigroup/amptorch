@@ -7,6 +7,9 @@ from amptorch.utils import target_extractor
 
 
 def mae_energy_score(net, X, y):
+    """
+    Compute the energy MAE of the model.
+    """
     mae_loss = L1Loss()
     energy_pred, _ = net.forward(X)
     if isinstance(X, torch.utils.data.Subset):
@@ -28,6 +31,9 @@ def mae_energy_score(net, X, y):
 
 
 def mae_forces_score(net, X, y):
+    """
+    Compute the force MAE of the model.
+    """
     mae_loss = L1Loss()
     _, force_pred = net.forward(X)
     if isinstance(X, torch.utils.data.Subset):
@@ -42,6 +48,9 @@ def mae_forces_score(net, X, y):
 
 
 def mse_energy_score(net, X, y):
+    """
+    Compute the energy MSE of the model.
+    """
     mse_loss = MSELoss()
     energy_pred, _ = net.forward(X)
     if isinstance(X, torch.utils.data.Subset):
@@ -56,6 +65,9 @@ def mse_energy_score(net, X, y):
 
 
 def mse_forces_score(net, X, y):
+    """
+    Compute the force MSE of the model.
+    """
     mse_loss = MSELoss()
     _, force_pred = net.forward(X)
     if isinstance(X, torch.utils.data.Subset):
@@ -76,6 +88,9 @@ def evaluator(
     forcetraining,
     cp_metric,
 ):
+    """
+    For metric display with callbacks.
+    """
     # print("evaluator")
     callbacks = []
     isval = val_split != 0
@@ -148,12 +163,19 @@ def evaluator(
 
 
 def to_cpu(X):
+    """
+    Detach to cpu.
+    """
     if isinstance(X, (tuple, list)):
         return type(X)(to_cpu(x) for x in X)
     return X.detach().to("cpu")
 
 
 class MemEffEpochScoring(EpochScoring):
+    """
+    Memory-efficient epoch scorer that caches the predictions for all batches during the epoch.
+    """
+
     def __init__(
         self,
         scoring,

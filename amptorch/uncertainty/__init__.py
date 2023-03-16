@@ -136,7 +136,6 @@ class ConformalPredictionFeatureSpace:
         self.per_calib = per_calib
 
     def fit_predict(self, trainer, train_list, full_test_list):
-
         # compute the feature representations and residuals for train and test data
         train_X, train_y = prepare_featureNerror_from_trainer(trainer, train_list)
         full_test_X, full_test_y = prepare_featureNerror_from_trainer(
