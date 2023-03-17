@@ -42,5 +42,5 @@ amptorch/descriptor/GMPOrderNorm/_libgmpordernorm.abi3.so
 # Sphinx documentation
 docs/_build/
 
-# some jupyter notebook as exceptions
-!examples/GMP/UQ_CP_example.ipynb
+# documentation requirments as exceptions
+!docs/requirements.txt
