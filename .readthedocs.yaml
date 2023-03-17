@@ -16,7 +16,6 @@ sphinx:
    configuration: docs/conf.py
 
 
-# Optionally set the version of Python and requirements required to build your docs
-python:
-  install:
-    - requirements: docs/requirements.txt
+# Optionally set the conda virenv
+conda:
+  environment: env_cpu.yml
