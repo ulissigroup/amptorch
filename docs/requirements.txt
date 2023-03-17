@@ -5,6 +5,6 @@ Jinja2<3.1
 ase==3.21.*
 skorch==0.10.*
 torch==1.10.*
-torch-geometric==2.2.0
-torch-scatter
-torch-sparse
+torch-geometric==2.2.0 -f https://data.pyg.org/whl/torch-1.10.0+cpu.html
+torch-scatter==2.1.0 -f https://data.pyg.org/whl/torch-1.10.0+cpu.html
+torch-sparse==0.6.16 -f https://data.pyg.org/whl/torch-1.10.0+cpu.html
