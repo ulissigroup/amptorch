@@ -1,19 +1,8 @@
-amptorch.descriptor.GMPOrderNorm package
+amptorch.descriptor.GMPOrderNorm
 ========================================
 
-Submodules
-----------
-
-amptorch.descriptor.GMPOrderNorm.libgmpordernorm\_builder module
+amptorch.descriptor.GMPOrderNorm
 ----------------------------------------------------------------
-
-.. automodule:: amptorch.descriptor.GMPOrderNorm.libgmpordernorm_builder
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
 
 .. automodule:: amptorch.descriptor.GMPOrderNorm
    :members:

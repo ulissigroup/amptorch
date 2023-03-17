@@ -18,11 +18,17 @@ class AtomsDataset(Dataset):
 
     Args:
         images (list): A list of ase.Atoms objects.
+
         descriptor_setup (dict): A dictionary containing parameters for fingerprint generation.
+
         forcetraining (bool): Whether to train with forces (default is True).
+
         save_fps (bool): Whether to save the fingerprints (default is True).
+
         scaling (dict): A dictionary on how to scale the fingerprints (default is {"type": "normalize", "range": (0, 1), "threshold": 1e-6}).
+
         cores (int): The number of cores to use for parallel processing (default is 1).
+
         process (bool): Whether to process the data during initialization (default is True).
 
     """
@@ -63,8 +69,6 @@ class AtomsDataset(Dataset):
 
         self.target_scaler = TargetScaler(data_list, self.forcetraining)
         self.feature_scaler.norm(data_list)
-        if self.atomic_correction_scaler is not None:
-            self.atomic_correction_scaler.norm(data_list)
         self.target_scaler.norm(data_list)
 
         return data_list

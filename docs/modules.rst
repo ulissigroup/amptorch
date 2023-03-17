@@ -5,4 +5,3 @@ amptorch
    :maxdepth: 2
 
    amptorch
-   setup

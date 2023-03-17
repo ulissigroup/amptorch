@@ -1,8 +1,5 @@
-amptorch.descriptor package
+amptorch.descriptor
 ===========================
-
-Subpackages
------------
 
 .. toctree::
    :maxdepth: 2
@@ -11,10 +8,7 @@ Subpackages
    amptorch.descriptor.GMPOrderNorm
    amptorch.descriptor.Gaussian
 
-Submodules
-----------
-
-amptorch.descriptor.base\_descriptor module
+amptorch.descriptor.base\_descriptor
 -------------------------------------------
 
 .. automodule:: amptorch.descriptor.base_descriptor
@@ -22,7 +16,7 @@ amptorch.descriptor.base\_descriptor module
    :undoc-members:
    :show-inheritance:
 
-amptorch.descriptor.constants module
+amptorch.descriptor.constants
 ------------------------------------
 
 .. automodule:: amptorch.descriptor.constants
@@ -30,7 +24,7 @@ amptorch.descriptor.constants module
    :undoc-members:
    :show-inheritance:
 
-amptorch.descriptor.descriptor\_calculator module
+amptorch.descriptor.descriptor\_calculator
 -------------------------------------------------
 
 .. automodule:: amptorch.descriptor.descriptor_calculator
@@ -38,18 +32,10 @@ amptorch.descriptor.descriptor\_calculator module
    :undoc-members:
    :show-inheritance:
 
-amptorch.descriptor.util module
+amptorch.descriptor.util
 -------------------------------
 
 .. automodule:: amptorch.descriptor.util
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: amptorch.descriptor
    :members:
    :undoc-members:
    :show-inheritance:

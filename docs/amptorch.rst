@@ -1,21 +1,12 @@
-amptorch package
+API
 ================
-
-Subpackages
------------
 
 .. toctree::
    :maxdepth: 2
 
    amptorch.descriptor
-   amptorch.preprocessing
-   amptorch.tests
-   amptorch.uncertainty
 
-Submodules
-----------
-
-amptorch.ase\_utils module
+amptorch.ase\_utils
 --------------------------
 
 .. automodule:: amptorch.ase_utils
@@ -23,7 +14,7 @@ amptorch.ase\_utils module
    :undoc-members:
    :show-inheritance:
 
-amptorch.data\_parallel module
+amptorch.data\_parallel
 ------------------------------
 
 .. automodule:: amptorch.data_parallel
@@ -31,7 +22,7 @@ amptorch.data\_parallel module
    :undoc-members:
    :show-inheritance:
 
-amptorch.dataset module
+amptorch.dataset
 -----------------------
 
 .. automodule:: amptorch.dataset
@@ -39,7 +30,7 @@ amptorch.dataset module
    :undoc-members:
    :show-inheritance:
 
-amptorch.dataset\_lmdb module
+amptorch.dataset\_lmdb
 -----------------------------
 
 .. automodule:: amptorch.dataset_lmdb
@@ -47,7 +38,7 @@ amptorch.dataset\_lmdb module
    :undoc-members:
    :show-inheritance:
 
-amptorch.metrics module
+amptorch.metrics
 -----------------------
 
 .. automodule:: amptorch.metrics
@@ -55,7 +46,7 @@ amptorch.metrics module
    :undoc-members:
    :show-inheritance:
 
-amptorch.model module
+amptorch.model
 ---------------------
 
 .. automodule:: amptorch.model
@@ -63,7 +54,7 @@ amptorch.model module
    :undoc-members:
    :show-inheritance:
 
-amptorch.trainer module
+amptorch.trainer
 -----------------------
 
 .. automodule:: amptorch.trainer
@@ -71,18 +62,10 @@ amptorch.trainer module
    :undoc-members:
    :show-inheritance:
 
-amptorch.utils module
+amptorch.utils
 ---------------------
 
 .. automodule:: amptorch.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: amptorch
    :members:
    :undoc-members:
    :show-inheritance:

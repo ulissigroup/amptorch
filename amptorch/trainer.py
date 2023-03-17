@@ -148,7 +148,9 @@ class AtomsTrainer:
             )
 
             self.forcetraining = self.config["model"].get("get_forces", True)
-            self.fp_scheme = self.config["dataset"].get("fp_scheme", "gaussian").lower()
+            self.fp_scheme = (
+                self.config["dataset"].get("fp_scheme", "gmpordernorm").lower()
+            )
             self.fp_params = self.config["dataset"]["fp_params"]
             self.save_fps = self.config["dataset"].get("save_fps", True)
             self.cutoff_params = self.config["dataset"].get(

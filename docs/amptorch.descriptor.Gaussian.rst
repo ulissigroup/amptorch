@@ -1,27 +1,9 @@
-amptorch.descriptor.Gaussian package
+amptorch.descriptor.Gaussian
 ====================================
 
-Submodules
-----------
 
-amptorch.descriptor.Gaussian.descriptor\_set module
+amptorch.descriptor.Gaussian
 ---------------------------------------------------
-
-.. automodule:: amptorch.descriptor.Gaussian.descriptor_set
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-amptorch.descriptor.Gaussian.libsymf\_builder module
-----------------------------------------------------
-
-.. automodule:: amptorch.descriptor.Gaussian.libsymf_builder
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
 
 .. automodule:: amptorch.descriptor.Gaussian
    :members:

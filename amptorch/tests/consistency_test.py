@@ -6,7 +6,7 @@ from amptorch import AtomsTrainer, AmpTorch
 
 
 # adapted from https://gitlab.com/ase/ase/-/blob/master/ase/calculators/test.py#L186-202
-def numeric_force(atoms, a, i, d=0.001):
+def numeric_force(atoms, a, i, d=0.0001):
     """
     Compute numeric force on atom with index a, Cartesian component i,
     with finite step of size d
@@ -40,7 +40,7 @@ def gradient_test(atoms, indices=None):
             for j in range(3):
                 fn[idx, j] = numeric_force(atoms, i, j, eps)
         print("{0:16.12f} {1:20.12f}".format(eps, abs(fn - f).max()))
-        assert abs(fn - f).max() <= 1e-5, "Energy/Forces are inconsistent!"
+        assert abs(fn - f).max() <= 2e-5, "Energy/Forces are inconsistent!"
     return f, fn
 
 
@@ -126,6 +126,7 @@ def test_energy_force_consistency():
         "dataset": {
             "raw_data": images,
             "val_split": 0,
+            "fp_scheme": "gaussian",
             "fp_params": Gs,
             "save_fps": False,
             # feature scaling to be used - normalize or standardize

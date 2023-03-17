@@ -11,12 +11,12 @@ from ._libgmpordernorm import ffi, lib
 
 class GMPOrderNorm(BaseDescriptor):
     """
-    Fingerprinting calculation for GMP with normalization over orders. Should be used with care.
+    Fingerprinting calculation for GMP with normalization over orders.
 
     Args:
-    MCSHs [dict] : a dictionary containing the parameters for MCSH definition.
+        MCSHs [dict] : a dictionary containing the parameters for MCSH definition.
 
-    elements [dict] : a dictionary of string of chemical elements in the system.
+        elements [dict] : a dictionary of string of chemical elements in the system.
     """
 
     def __init__(
@@ -126,6 +126,11 @@ class GMPOrderNorm(BaseDescriptor):
         self.descriptor_setup = np.array(descriptor_setup)
         # print(self.descriptor_setup)
 
+        # load pseudo-densities if not provided
+
+        if not self.MCSHs.get("atom_gaussians", None):
+            self.load_pseudo_densities(self.elements)
+
         atomic_gaussian_setup = {}
         for element in self.elements:
             params = list()
@@ -212,6 +217,19 @@ class GMPOrderNorm(BaseDescriptor):
         self.params_set["log"] = self.MCSHs.get("log", False)
 
         return
+
+    def load_pseudo_densities(self, elements):
+        import os
+
+        # get absolute path to the package
+        pkg_path = os.path.dirname(__file__)
+        psd_path = os.path.join(pkg_path, "../utils/pseudodensity_psp_v3")
+
+        res = {}
+        for element in elements:
+            res[element] = os.path.join(psd_path, f"{element}_pseudodensity.g")
+
+        self.MCSHs["atom_gaussians"] = res
 
     def get_descriptor_setup_hash(self):
         # set self.descriptor_setup_hash

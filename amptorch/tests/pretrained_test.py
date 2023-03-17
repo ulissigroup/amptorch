@@ -50,6 +50,7 @@ config = {
         "raw_data": images,
         "val_split": 0,
         "elements": elements,
+        "fp_scheme": "gaussian",
         "fp_params": Gs,
     },
     "cmd": {
