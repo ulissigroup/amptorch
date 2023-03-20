@@ -11,17 +11,13 @@ build:
   os: ubuntu-20.04
   tools:
     python: "mambaforge-4.10"
+  commands:
+    - pip install -e .
     # You can also specify other tool versions:
     # nodejs: "16"
     # rust: "1.55"
     # golang: "1.17"
 
-# build package
-python:
-  version: 3.9
-  install:
-    - method: pip
-      path: .
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
