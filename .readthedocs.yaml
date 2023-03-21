@@ -12,8 +12,8 @@ build:
     python: "mambaforge-4.10"
   jobs:
     post_install:
-      - mamba init
-      - mamba activate amptorch
+      - bash
+      - conda activate amptorch
       - pip install -e .
     # You can also specify other tool versions:
     # nodejs: "16"
