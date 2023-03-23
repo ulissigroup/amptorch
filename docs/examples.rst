@@ -23,12 +23,12 @@ details and theorical backgrounds, please refer to *Lei, X., & Medford,
 A. J. (2021). A Universal Framework for Featurization of Atomistic
 Systems. http://arxiv.org/abs/2102.02390*
 
-For an example script of using GMP, please refer to:
+For example scripts of using GMP for structure to energy (and forces),
+please refer to:
 
 ::
 
-   examples/GMP/GMP_example.py
-
+   examples/1_GMP
 
 ------------------------------------------------------
 SingleNN Atomistic Neural Network Structures
@@ -51,7 +51,7 @@ define:
 
    config["model"]["name"] == "singlenn"
 
-as shown in ``examples/GMP/GMP_example.py``
+as shown in ``examples/1_GMP/1_GMP_S2E.py``
 
 ----------------------------------------------------------------
 lmdb as Database Management Solution for Large Dataset
@@ -66,13 +66,11 @@ possible memory issues when it comes to loading and training. It can be
 used in either full- or partial-cache fashion depending on whether the
 dataset can be fit into RAM altogether.
 
-Examples can be found in:
+Examples of using no, full or partial cache can be found in:
 
 ::
 
-   examples/train_lmdb_example.py
-   examples/train_lmdb_full_cache_example.py
-   examples/train_lmdb_partial_cache_example.py
+   examples/3_lmdb
 
 --------------------------------------------------------------------------
 Uncertainty Quantification (UQ) via Conformal Prediction (CP)
@@ -91,4 +89,4 @@ An example python script can be found in:
 
 ::
 
-   examples/GMP/GMP_uncertainty_example.py
+   examples/1_GMP/3_GMP_S2E_w_uncertainty.py

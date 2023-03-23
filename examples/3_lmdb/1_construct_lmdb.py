@@ -6,12 +6,9 @@ import ase.io
 import torch
 from tqdm import tqdm
 from amptorch.preprocessing import AtomsToData, FeatureScaler, TargetScaler
-from amptorch.descriptor.Gaussian import Gaussian
+from amptorch.descriptor.GMPOrderNorm import GMPOrderNorm
 from ase import Atoms
 from ase.calculators.emt import EMT
-
-from amptorch.ase_utils import AmpTorch
-from amptorch.trainer import AtomsTrainer
 
 
 def construct_lmdb(images, lmdb_path="./data.lmdb", normaliers_path="./normalizers.pt"):
@@ -20,6 +17,7 @@ def construct_lmdb(images, lmdb_path="./data.lmdb", normaliers_path="./normalize
     lmdb_path: Path to store LMDB dataset.
     normaliers_path: path of the scalers, create and store them if not exist
     """
+
     db = lmdb.open(
         lmdb_path,
         map_size=1099511627776 * 2,
@@ -28,23 +26,22 @@ def construct_lmdb(images, lmdb_path="./data.lmdb", normaliers_path="./normalize
         map_async=True,
     )
 
-    # Define symmetry functions
-    Gs = {
-        "default": {
-            "G2": {
-                "etas": np.logspace(np.log10(0.05), np.log10(5.0), num=8),
-                "rs_s": [0, 0.1, 1.0],
-            },
-            "G4": {"etas": [0.005], "zetas": [1.0, 4.0], "gammas": [1.0, -1.0]},
-            "cutoff": 6,
-        },
+    # Define GMPs
+    nsigmas = 5  # number of radial probes
+    max_MCSH_order = 3  # order of angular probes
+    max_radial_sigma = 2.0  # the maximal sigma of gaussian in radial coordiantes
+
+    ### Construct GMP configuration, no need to change once the hyperparameters are specified.
+    sigmas = np.linspace(0, max_radial_sigma, nsigmas + 1, endpoint=True)[1:]
+    GMPs = {
+        "MCSHs": {"orders": list(range(max_MCSH_order + 1)), "sigmas": sigmas},
     }
 
     training_atoms = images
     elements = np.array([atom.symbol for atoms in training_atoms for atom in atoms])
     elements = np.unique(elements)
-    descriptor = Gaussian(Gs=Gs, elements=elements, cutoff_func="Cosine")
-    descriptor_setup = ("gaussian", Gs, {"cutoff_func": "Cosine"}, elements)
+    descriptor = GMPOrderNorm(MCSHs=GMPs, elements=elements)
+    descriptor_setup = ("gmpordernorm", GMPs, "NA", elements)
     forcetraining = True
 
     a2d = AtomsToData(
@@ -73,7 +70,7 @@ def construct_lmdb(images, lmdb_path="./data.lmdb", normaliers_path="./normalize
         target_scaler = normalizers["target"]
 
     else:
-        scaling = {"type": "normalize", "range": (0, 1)}
+        scaling = {"type": "normalize", "range": (-1, 1)}
         feature_scaler = FeatureScaler(data_list, forcetraining, scaling)
         target_scaler = TargetScaler(data_list, forcetraining)
         normalizers = {
@@ -84,6 +81,8 @@ def construct_lmdb(images, lmdb_path="./data.lmdb", normaliers_path="./normalize
 
     feature_scaler.norm(data_list)
     target_scaler.norm(data_list)
+
+    print(data_list[0].fingerprint.dtype)
 
     idx = 0
     for do in tqdm(data_list, desc="Writing images to LMDB"):
@@ -119,6 +118,9 @@ def construct_lmdb(images, lmdb_path="./data.lmdb", normaliers_path="./normalize
 
 
 if __name__ == "__main__":
+
+    torch.set_default_tensor_type(torch.DoubleTensor)
+
     images = []
 
     distances = np.linspace(2, 5, 1000)

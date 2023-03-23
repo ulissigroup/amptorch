@@ -6,7 +6,17 @@ from amptorch.trainer import AtomsTrainer
 from amptorch.uncertainty import ConformalPredictionLatentSpace
 from amptorch.uncertainty.utils import calc_uncertainty_metrics
 
-### Construct/Load system into a list of ASE atoms object
+
+# # -----------------------------------------------------------------
+# This example demonstrates the workflow to use Gaussian Multiple fingerprints
+#      with SingleNN atomistic neural network architecture
+#      on S2E (structure2energy) task with uncertainty via CP
+# # -----------------------------------------------------------------
+
+
+# # -----------------------------------------------------------------
+### Step 1:
+###     Construct/Load system into a list of ASE atoms object
 distances = np.linspace(2, 5, 2000)
 train_list = []
 for dist in distances:
@@ -40,28 +50,22 @@ for dist in distances:
     full_test_list.append(image)
 
 
-# set up the trainer
-sigmas = [0.02, 0.2, 0.4, 0.69, 1.1, 1.66, 2.66, 4.4]
+# # -----------------------------------------------------------------
+### Step 2:
+### Hyperparameters for fingerprints that needs to be defined
+
+sigmas = [0.02, 0.2, 0.4, 0.69, 1.1, 1.66, 2.66]
+max_MCSH_order = 3  # order of angular probes
+
 GMP = {
-    "MCSHs": {
-        "0": {"groups": [1], "sigmas": sigmas},
-        "1": {"groups": [1], "sigmas": sigmas},
-        "2": {"groups": [1, 2], "sigmas": sigmas},
-        "3": {"groups": [1, 2, 3], "sigmas": sigmas},
-        # "4": {"groups": [1, 2, 3, 4], "sigmas": sigmas},
-        # "5": {"groups": [1, 2, 3, 4, 5], "sigmas": sigmas},
-        # "6": {"groups": [1, 2, 3, 4, 5, 6, 7], "sigmas": sigmas},
-    },
-    "atom_gaussians": {
-        "C": "./valence_gaussians/C_pseudodensity_4.g",
-        "O": "./valence_gaussians/O_pseudodensity_4.g",
-        "Cu": "./valence_gaussians/Cu_pseudodensity_4.g",
-    },
-    "cutoff": 8,
+    "MCSHs": {"orders": list(range(max_MCSH_order + 1)), "sigmas": sigmas},
 }
 
 
-elements = ["Cu", "C", "O"]
+# # -----------------------------------------------------------------
+### Step 3:
+### Hyperparameters for neural network and optimizers
+
 config = {
     "model": {
         "name": "singlenn",
@@ -79,7 +83,6 @@ config = {
     "dataset": {
         "raw_data": train_list,
         "val_split": 0,
-        "elements": elements,
         "fp_scheme": "gmpordernorm",
         "fp_params": GMP,
         "save_fps": False,
@@ -94,9 +97,16 @@ config = {
     },
 }
 
-# train
+# # -----------------------------------------------------------------
+### Step 4:
+### Training
+
 trainer = AtomsTrainer(config)
 trainer.train()
+
+# # -----------------------------------------------------------------
+### Step 5:
+### Prediction
 
 # uncertainty prediction with CP
 uncertainty_model = ConformalPredictionLatentSpace()

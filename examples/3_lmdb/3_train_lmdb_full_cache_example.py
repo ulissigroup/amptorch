@@ -24,7 +24,7 @@ for dist in distances:
     images.append(image)
 
 Gs = {
-    "default": {
+    "gaussian": {
         "G2": {
             "etas": np.logspace(np.log10(0.05), np.log10(5.0), num=4),
             "rs_s": [0],
@@ -51,14 +51,15 @@ config = {
         "gpus": 0,
     },
     "dataset": {
-        "lmdb_path": ["./data.lmdb", "./data2.lmdb"],
+        # "lmdb_path": ["./data.lmdb", "./data2.lmdb"],
+        "lmdb_path": ["./data.lmdb"],
         "val_split": 0,
-        "val_split_mode": "inorder",  # has to be inorder for partial-cache to work
-        "cache": "partial",
+        "cache": "full",
     },
     "cmd": {
         "debug": False,
         "run_dir": "./",
+        "dtype": torch.DoubleTensor,
         "seed": 1,
         "identifier": "test",
         "verbose": True,

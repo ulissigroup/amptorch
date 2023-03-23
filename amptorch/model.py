@@ -55,6 +55,9 @@ class MLP(nn.Module):
         layers.append(nn.Linear(self.n_neurons[-2], self.n_neurons[-1]))
         self.model_net = nn.Sequential(*layers)
 
+        print(torch.get_default_dtype())
+        if torch.get_default_dtype() == torch.float64:
+            self.double()
         # TODO: identify optimal initialization scheme
         self.reset_parameters(initialization.lower())
         # print(self.model_net)
