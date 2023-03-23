@@ -118,7 +118,6 @@ def construct_lmdb(images, lmdb_path="./data.lmdb", normaliers_path="./normalize
 
 
 if __name__ == "__main__":
-
     torch.set_default_tensor_type(torch.DoubleTensor)
 
     images = []
