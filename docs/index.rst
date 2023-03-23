@@ -26,6 +26,8 @@ Geometric <https://pytorch-geometric.readthedocs.io/en/latest/>`__ and
    installation.rst
    usage.rst
    examples.rst
+   modules.rst
+
 
 
 Development notes

@@ -5,6 +5,7 @@ repository.
 
 import unittest
 
+from .consistency_test import test_energy_force_consistency
 from .cutoff_funcs_test import test_cutoff_funcs
 from .gaussian_descriptor_set_test import test_gaussian_descriptor_set
 from .pretrained_test import test_pretrained, test_pretrained_no_config
@@ -15,6 +16,9 @@ from .cp_uncertainty_calibration_test import test_cp_uncertainty_calibration
 
 
 class TestMethods(unittest.TestCase):
+    def test_energy_force_consistency(self):
+        test_energy_force_consistency()
+
     def test_cosine_and_polynomial_cutoff_funcs(self):
         test_cutoff_funcs()
 

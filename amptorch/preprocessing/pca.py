@@ -20,7 +20,6 @@ class PCAReducer:
         forcetraining,
         pca_setting,
     ):
-
         self.forcetraining = forcetraining
         self.elementwise = pca_setting.get("elementwise", False)
         self.num_pc = pca_setting.get("num_pc", 20)

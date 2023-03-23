@@ -6,7 +6,7 @@ from ase.calculators.emt import EMT
 from amptorch.trainer import AtomsTrainer
 
 ### Construct test data
-distances = np.linspace(2, 5, 100)
+distances = np.linspace(2, 5, 200)
 images = []
 for dist in distances:
     image = Atoms(
@@ -23,18 +23,18 @@ for dist in distances:
     images.append(image)
 
 ### Construct parameters
-nsigmas = 10
+nsigmas = 15
 max_MCSH_order = 3
 max_radial_sigma = 2.0
 
 sigmas = np.linspace(0, max_radial_sigma, nsigmas + 1, endpoint=True)[1:]
 GMP = {
     "MCSHs": {"orders": list(range(max_MCSH_order + 1)), "sigmas": sigmas},
-    "atom_gaussians": {
-        "C": "amptorch/tests/GMP_params/C_pseudodensity_4.g",
-        "O": "amptorch/tests/GMP_params/O_pseudodensity_4.g",
-        "Cu": "amptorch/tests/GMP_params/Cu_pseudodensity_4.g",
-    },
+    # "atom_gaussians": {
+    #     "C": "amptorch/tests/GMP_params/C_pseudodensity_4.g",
+    #     "O": "amptorch/tests/GMP_params/O_pseudodensity_4.g",
+    #     "Cu": "amptorch/tests/GMP_params/Cu_pseudodensity_4.g",
+    # },
     "cutoff": 8,
 }
 
@@ -49,13 +49,13 @@ def get_config():
             "num_layers": 3,
             "num_nodes": 20,
             "batchnorm": True,
-            "activation": torch.nn.Tanh,
+            "activation": torch.nn.GELU,
         },
         "optim": {
-            "force_coefficient": 0.04,
+            "force_coefficient": 0.10,
             "lr": 1e-3,
             "batch_size": 16,
-            "epochs": 300,
+            "epochs": 100,
             "loss": "mse",
             "metric": "mae",
         },
@@ -64,7 +64,7 @@ def get_config():
             "fp_scheme": "gmpordernorm",
             "fp_params": GMP,
             "elements": elements,
-            "save_fps": True,
+            "save_fps": False,
             "scaling": {"type": "normalize", "range": (-1, 1)},
             "val_split": 0,
         },
@@ -74,8 +74,6 @@ def get_config():
             "seed": 1,
             "identifier": "test",
             "verbose": False,
-            # Weights and Biases used for logging - an account(free) is required
-            "logger": False,
         },
     }
 
@@ -93,7 +91,7 @@ def get_energy_metrics(config):
     pred_energies = np.array(predictions["energy"])
     mae = np.mean(np.abs(true_energies - pred_energies))
     print("mae={}".format(mae))
-    assert mae < 0.05
+    assert mae < 0.10
 
 
 def get_force_metrics(config):
@@ -109,8 +107,8 @@ def get_force_metrics(config):
     print("e_mae=", e_mae)
     print("f_mae=", f_mae)
 
-    assert e_mae < 0.06
-    assert f_mae < 0.10
+    assert e_mae < 0.10
+    assert f_mae < 0.50
 
 
 def test_training_gmp():

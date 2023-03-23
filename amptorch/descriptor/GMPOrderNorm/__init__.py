@@ -10,6 +10,15 @@ from ._libgmpordernorm import ffi, lib
 
 
 class GMPOrderNorm(BaseDescriptor):
+    """
+    Fingerprinting calculation for GMP with normalization over orders.
+
+    Args:
+        MCSHs [dict] : a dictionary containing the parameters for MCSH definition.
+
+        elements [dict] : a dictionary of string of chemical elements in the system.
+    """
+
     def __init__(
         self,
         MCSHs,
@@ -63,7 +72,7 @@ class GMPOrderNorm(BaseDescriptor):
     def prepare_descriptor_parameters(self):
         descriptor_setup = []
         cutoff = self.MCSHs["cutoff"]
-        self.solid_harmonic = self.MCSHs.get("solid_harmonics", False)
+        self.solid_harmonic = self.MCSHs.get("solid_harmonics", True)
         solid_harmonic_i = 1 if self.solid_harmonic else 0
         square = self.MCSHs.get("square", True)
         square_i = 1 if square else 0
@@ -116,6 +125,11 @@ class GMPOrderNorm(BaseDescriptor):
 
         self.descriptor_setup = np.array(descriptor_setup)
         # print(self.descriptor_setup)
+
+        # load pseudo-densities if not provided
+
+        if not self.MCSHs.get("atom_gaussians", None):
+            self.load_pseudo_densities(self.elements)
 
         atomic_gaussian_setup = {}
         for element in self.elements:
@@ -204,6 +218,19 @@ class GMPOrderNorm(BaseDescriptor):
 
         return
 
+    def load_pseudo_densities(self, elements):
+        import os
+
+        # get absolute path to the package
+        pkg_path = os.path.dirname(__file__)
+        psd_path = os.path.join(pkg_path, "../utils/pseudodensity_psp_v3")
+
+        res = {}
+        for element in elements:
+            res[element] = os.path.join(psd_path, f"{element}_pseudodensity.g")
+
+        self.MCSHs["atom_gaussians"] = res
+
     def get_descriptor_setup_hash(self):
         # set self.descriptor_setup_hash
         string = ""
@@ -230,7 +257,6 @@ class GMPOrderNorm(BaseDescriptor):
                 )
 
     def calculate_fingerprints(self, atoms, element, calc_derivatives, log):
-
         element_index = ATOM_SYMBOL_TO_INDEX_DICT[element]
 
         symbols = np.array(atoms.get_chemical_symbols())
@@ -277,7 +303,6 @@ class GMPOrderNorm(BaseDescriptor):
         size_info = np.array([atom_num, cal_num, self.params_set["num"]])
 
         if calc_derivatives:
-
             x = np.zeros([cal_num, self.params_set["num"]], dtype=np.float64, order="C")
             dx = np.zeros(
                 [cal_num * self.params_set["num"], atom_num * 3],

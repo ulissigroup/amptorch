@@ -6,22 +6,38 @@ from amptorch.descriptor.GMP import GMP
 from amptorch.descriptor.GMPOrderNorm import GMPOrderNorm
 from amptorch.preprocessing import (
     AtomsToData,
-    PCAReducer,
     FeatureScaler,
     TargetScaler,
-    AtomicCorrectionScaler,
     sparse_block_diag,
 )
 
 
 class AtomsDataset(Dataset):
+    """
+    Dataset class to hold information about the ase.Atoms including element, energy, fingerprint (and forces).
+
+    Args:
+        images (list): A list of ase.Atoms objects.
+
+        descriptor_setup (dict): A dictionary containing parameters for fingerprint generation.
+
+        forcetraining (bool): Whether to train with forces (default is True).
+
+        save_fps (bool): Whether to save the fingerprints (default is True).
+
+        scaling (dict): A dictionary on how to scale the fingerprints (default is {"type": "normalize", "range": (0, 1), "threshold": 1e-6}).
+
+        cores (int): The number of cores to use for parallel processing (default is 1).
+
+        process (bool): Whether to process the data during initialization (default is True).
+
+    """
+
     def __init__(
         self,
         images,
         descriptor_setup,
         forcetraining=True,
-        # pca_reduce=False,
-        # pca_setting={"num_pc": 20, "elementwise": False, "normalize": False},
         save_fps=True,
         scaling={"type": "normalize", "range": (0, 1), "threshold": 1e-6},
         cores=1,
@@ -29,8 +45,6 @@ class AtomsDataset(Dataset):
     ):
         self.images = images
         self.forcetraining = forcetraining
-        # self.pca_reduce = pca_reduce
-        # self.pca_setting = pca_setting
         self.scaling = scaling
         self.descriptor = construct_descriptor(descriptor_setup)
 
@@ -46,22 +60,15 @@ class AtomsDataset(Dataset):
         self.data_list = self.process() if process else None
 
     def process(self):
+        """
+        Compute the fingerprints according to the defined fingerprinting scheme and parameters, scale the feature and targets.
+        """
         data_list = self.a2d.convert_all(self.images)
 
-        # if self.pca_reduce:
-        #     self.pca_reducer = PCAReducer(
-        #         data_list, self.forcetraining, self.pca_setting
-        #     )
-        #     self.pca_reducer.reduce(data_list)
-
         self.feature_scaler = FeatureScaler(data_list, self.forcetraining, self.scaling)
-        # scaling by atomic energy correction
-        # self.atomic_correction_scaler = AtomicCorrectionScaler(data_list)
-        self.atomic_correction_scaler = None
+
         self.target_scaler = TargetScaler(data_list, self.forcetraining)
         self.feature_scaler.norm(data_list)
-        if self.atomic_correction_scaler is not None:
-            self.atomic_correction_scaler.norm(data_list)
         self.target_scaler.norm(data_list)
 
         return data_list
@@ -78,6 +85,10 @@ class AtomsDataset(Dataset):
 
 
 class DataCollater:
+    """
+    Helper function to batch the dataset.
+    """
+
     def __init__(self, train=True, forcetraining=True):
         self.train = train
         self.forcetraining = forcetraining
@@ -108,6 +119,9 @@ class DataCollater:
 
 
 def construct_descriptor(descriptor_setup):
+    """
+    Pass into different fingerprinting classes to obtain the corresponding atomic representations as fingerprints.
+    """
     fp_scheme, fp_params, cutoff_params, elements = descriptor_setup
     if fp_scheme == "gaussian":
         descriptor = Gaussian(Gs=fp_params, elements=elements, **cutoff_params)

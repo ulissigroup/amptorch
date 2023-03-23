@@ -1,0 +1,11 @@
+# docs/requirements.txt
+sphinx==3.2.1
+sphinx_rtd_theme==0.5.0
+Jinja2<3.1
+ase==3.21.*
+skorch==0.10.*
+torch==1.10.*
+-f https://data.pyg.org/whl/torch-1.10.0+cpu.html torch-geometric==2.2.0
+-f https://data.pyg.org/whl/torch-1.10.0+cpu.html torch-sparse==0.6.13
+-f https://data.pyg.org/whl/torch-1.10.0+cpu.html torch-scatter==2.1.0
+-f https://data.pyg.org/whl/torch-1.10.0+cpu.html torch-cluster==1.6.0

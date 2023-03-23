@@ -235,7 +235,6 @@ class AtomicCorrectionScaler:
     """
 
     def __init__(self, data_list, load_correction_dictionary=None):
-
         atom_list = []
         for data in data_list:
             atom_list.extend(data.atomic_numbers.numpy())
