@@ -18,11 +18,11 @@ dependencies:
     - pre-commit
     - pykdtree
     - skorch==0.10.*
-    - torch-cluster
+    - torch-cluster==1.6.0
     - -f https://data.pyg.org/whl/torch-1.10.0+cpu.html
-    - torch-geometric
+    - torch-geometric==2.2.0
     - -f https://data.pyg.org/whl/torch-1.10.0+cpu.html
-    - torch-scatter
+    - torch-scatter==2.1.0
     - -f https://data.pyg.org/whl/torch-1.10.0+cpu.html
-    - torch-sparse
+    - torch-sparse==0.6.13
     - -f https://data.pyg.org/whl/torch-1.10.0+cpu.html
