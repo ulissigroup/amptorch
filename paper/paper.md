@@ -22,19 +22,22 @@ authors:
   - name: Matt Adams
     equal-contrib: false
     affiliation: 1
+  - name: Jacob Paras
+    equal_contrib: false
+    affliation: 3
   - name: Rui Qi Chen
     equal-contrib: false
     affiliation: 2
   - name: Eric Musa
     equal-contrib: false
-    affiliation: 3
+    affiliation: 4
   - name: Joseph Musielewicz
     equal-contrib: false
     affiliation: 1
   - name: Andrew A. Peterson
     orcid: 0000-0003-2855-9482
     corresponding: false
-    affiliation: 4
+    affiliation: 5
   - name:  Andrew J. Medford
     orcid: 0000-0001-8311-9581
     corresponding: false
@@ -48,12 +51,14 @@ affiliations:
    index: 1
  - name: Department of Chemical and Biomolecular Engineering, Georgia Institute of Technology, United States
    index: 2
- - name: Department of Chemical Engineering, University of Michigan, United States
+ - name: School of Physics and School of Computer Science, Georgia Institute of Technology, United States
    index: 3
- - name: School of Engineering, Brown University, United States
+ - name: Department of Chemical Engineering, University of Michigan, United States
    index: 4
+ - name: School of Engineering, Brown University, United States
+   index: 5
 
-date: 19 August 2022
+date: 6 May 2023
 bibliography: paper.bib
 
 doi:
