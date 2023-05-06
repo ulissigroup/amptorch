@@ -1,4 +1,4 @@
-name: amptorch
+name: amptorch_gpupy39
 channels:
   - pytorch
   - nvidia
@@ -11,6 +11,7 @@ dependencies:
   - matplotlib=3.3.*
   - pip
   - tqdm=4.45.*
+  - numpy=1.20.*
   - pip:
     - ase==3.21.*
     - cffi
@@ -18,11 +19,11 @@ dependencies:
     - pre-commit
     - pykdtree
     - skorch==0.10.*
-    - torch-cluster
+    - torch-cluster==1.6.0
     - -f https://data.pyg.org/whl/torch-1.10.0+cu113.html
-    - torch-geometric
+    - torch-geometric==2.2.0
     - -f https://data.pyg.org/whl/torch-1.10.0+cu113.html
-    - torch-scatter
+    - torch-scatter==2.1.0
     - -f https://data.pyg.org/whl/torch-1.10.0+cu113.html
-    - torch-sparse
+    - torch-sparse==0.6.13
     - -f https://data.pyg.org/whl/torch-1.10.0+cu113.html
