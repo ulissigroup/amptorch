@@ -10,10 +10,8 @@ def calc_dist(train_X, calib_X, nearest_neighbors=10):
     Returns the distances of calibration data to training data
     """
     nrows, ncols = train_X.shape
-    if ncols > 127:
-        from sklearn.neighbors import KDTree
-    else:
-        from pykdtree.kdtree import KDTree
+    from sklearn.neighbors import KDTree
+
     std_scaler = StandardScaler().fit(train_X)
     train_X_std_scaled = std_scaler.transform(train_X)
     calib_X_std_scaled = std_scaler.transform(calib_X)
