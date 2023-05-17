@@ -117,10 +117,10 @@ forces = slab.get_forces()
 Regarding bugs, issues or suggested feature improvements related to the software, please use the [issue tracker](https://github.com/ulissigroup/amptorch/issues) of the GitHub project. Refere to [Bug Reports](CONTRIBUTING.md#bug-reports) for any questions related to what to expect when submitting a bug report. 
 
 #### Contributing
-If you want to contribute to this project, please refer to our [contribution guideline](CONTRIBUTING.md#bug-reports).Refere to [Pull Requests](CONTRIBUTING.md#bug-reports) for any questions related to what to expect when submitting a pull request. 
+If you want to contribute to this project, please refer to our [contribution guideline](CONTRIBUTING.md#bug-reports). Refere to [Pull Requests](CONTRIBUTING.md#bug-reports) for any questions related to what to expect when submitting a pull request. 
 
 ### Acknowledgements
-- This project is being developed at Carnegie Mellon University in the Department of Chemical Engineering, by Muhammed Shuaibi and Zachary Ulissi, in collaboration with Andrew Peterson, Franklin Goldsmith, Brenda Rubenstein, Andrew Medford, and Adam Willard as part of the Department of Energy's *Bridging the time scale in exascale computing of chemical systems* project. AmpTorch developers include Xiangyun Lei, Ben Comer, Rui Qi Chen, Eric Musa, and Matt Adams.
+- This project is being developed at Carnegie Mellon University in the Department of Chemical Engineering, by Muhammed Shuaibi and Zachary Ulissi, in collaboration with Andrew Peterson, Franklin Goldsmith, Brenda Rubenstein, Andrew Medford, and Adam Willard as part of the Department of Energy's *Bridging the time scale in exascale computing of chemical systems* project.
 - Funded by the Department of Energy's Basic Enenergy Science, Computational Chemical Sciences Program Office. Award # DE-SC0019441
 - Engineering ideas have been heavily borrowed from our work on the [Open Catalyst Project](https://github.com/Open-Catalyst-Project/baselines)
 - Gaussian fingerprints have been adapted from [SIMPLE-NN](https://github.com/MDIL-SNU/SIMPLE-NN)
