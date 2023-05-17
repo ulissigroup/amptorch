@@ -114,10 +114,10 @@ forces = slab.get_forces()
 
 ### Development notes
 #### Reporting issues
-Regarding bugs, issues or suggested feature improvements related to the software, please use the [issue tracker](https://github.com/ulissigroup/amptorch/issues) of the GitHub project.
+Regarding bugs, issues or suggested feature improvements related to the software, please use the [issue tracker](https://github.com/ulissigroup/amptorch/issues) of the GitHub project. Refere to [Bug Reports](CONTRIBUTING.md#bug-reports) for any questions related to what to expect when submitting a bug report. 
 
 #### Contributing
-If you want to contribute to this project, please use the [fork and pull](https://github.com/ulissigroup/amptorch/pulls) following the [guidelines](https://docs.github.com/en/get-started/quickstart/contributing-to-projects) and pertaining to the overall objective of this project as described above.
+If you want to contribute to this project, please refer to our [contribution guideline](CONTRIBUTING.md#bug-reports).Refere to [Pull Requests](CONTRIBUTING.md#bug-reports) for any questions related to what to expect when submitting a pull request. 
 
 ### Acknowledgements
 - This project is being developed at Carnegie Mellon University in the Department of Chemical Engineering, by Muhammed Shuaibi and Zachary Ulissi, in collaboration with Andrew Peterson, Franklin Goldsmith, Brenda Rubenstein, Andrew Medford, and Adam Willard as part of the Department of Energy's *Bridging the time scale in exascale computing of chemical systems* project. AmpTorch developers include Xiangyun Lei, Ben Comer, Rui Qi Chen, Eric Musa, and Matt Adams.
