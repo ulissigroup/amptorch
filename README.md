@@ -11,15 +11,17 @@ Go to [AmpTorch Documentation](https://amptorch.readthedocs.io/en/latest/) for i
 
 Install dependencies:
 
-1. Ensure conda is up-to-date: ```conda update conda```
+1. Ensure conda is up-to-date: ```conda update conda```. Check the availability of `gcc` compiler on the machine. 
 
 2. Create conda environment
 - CPU machines: ```conda env create -f env_cpu.yml```
 - GPU machines (CUDA 10.2): ```conda env create -f env_gpu.yml```
 
-3. Activate the conda environment `conda activate amptorch` and install the package with `pip install -e .`
+3. Activate the conda environment `conda activate amptorch`. 
 
-4. Install pre-commit hooks: `pre-commit install`
+4. Install the package with `pip install -e .`
+
+5. (Optional) Install pre-commit hooks if you are creating PR: `pre-commit install`
 
 ### Usage
 #### Configs
@@ -112,13 +114,13 @@ forces = slab.get_forces()
 
 ### Development notes
 #### Reporting issues
-Regarding bugs, issues or suggested feature improvements related to the software, please use the [issue tracker](https://github.com/ulissigroup/amptorch/issues) of the GitHub project.
+Regarding bugs, issues or suggested feature improvements related to the software, please use the [issue tracker](https://github.com/ulissigroup/amptorch/issues) of the GitHub project. Refere to [Bug Reports](CONTRIBUTING.md#bug-reports) for any questions related to what to expect when submitting a bug report. 
 
 #### Contributing
-If you want to contribute to this project, please use the [fork and pull](https://github.com/ulissigroup/amptorch/pulls) following the [guidelines](https://docs.github.com/en/get-started/quickstart/contributing-to-projects) and pertaining to the overall objective of this project as described above.
+If you want to contribute to this project, please refer to our [contribution guideline](CONTRIBUTING.md#bug-reports). Refere to [Pull Requests](CONTRIBUTING.md#bug-reports) for any questions related to what to expect when submitting a pull request. 
 
 ### Acknowledgements
-- This project is being developed at Carnegie Mellon University in the Department of Chemical Engineering, by Muhammed Shuaibi and Zachary Ulissi, in collaboration with Andrew Peterson, Franklin Goldsmith, Brenda Rubenstein, Andrew Medford, and Adam Willard as part of the Department of Energy's *Bridging the time scale in exascale computing of chemical systems* project. AmpTorch developers include Xiangyun Lei, Ben Comer, Rui Qi Chen, Eric Musa, and Matt Adams.
+- This project is being developed at Carnegie Mellon University in the Department of Chemical Engineering, by Muhammed Shuaibi and Zachary Ulissi, in collaboration with Andrew Peterson, Franklin Goldsmith, Brenda Rubenstein, Andrew Medford, and Adam Willard as part of the Department of Energy's *Bridging the time scale in exascale computing of chemical systems* project.
 - Funded by the Department of Energy's Basic Enenergy Science, Computational Chemical Sciences Program Office. Award # DE-SC0019441
 - Engineering ideas have been heavily borrowed from our work on the [Open Catalyst Project](https://github.com/Open-Catalyst-Project/baselines)
 - Gaussian fingerprints have been adapted from [SIMPLE-NN](https://github.com/MDIL-SNU/SIMPLE-NN)
