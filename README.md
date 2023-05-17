@@ -11,15 +11,17 @@ Go to [AmpTorch Documentation](https://amptorch.readthedocs.io/en/latest/) for i
 
 Install dependencies:
 
-1. Ensure conda is up-to-date: ```conda update conda```
+1. Ensure conda is up-to-date: ```conda update conda```. Check the availability of `gcc` compiler on the machine. 
 
 2. Create conda environment
 - CPU machines: ```conda env create -f env_cpu.yml```
 - GPU machines (CUDA 10.2): ```conda env create -f env_gpu.yml```
 
-3. Activate the conda environment `conda activate amptorch` and install the package with `pip install -e .`
+3. Activate the conda environment `conda activate amptorch`. 
 
-4. Install pre-commit hooks: `pre-commit install`
+4. Install the package with `pip install -e .`
+
+5. (Optional) Install pre-commit hooks if you are creating PR: `pre-commit install`
 
 ### Usage
 #### Configs
