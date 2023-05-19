@@ -54,12 +54,12 @@ configs = {
       "raw_data": str or list,      # Path to ASE trajectory or database or list of Atoms objects
       "lmdb_path": str,             # Path to LMDB database file for dataset too large to fit in memory
 			            ## Specify either "raw_data" or "lmdb_path"
-				    ## LMDB construction can be found in examples/construct_lmdb.py
+				    ## LMDB construction can be found in examples/3_lmdb/
       "val_split": float,           # Proportion of training set to use for validation
       "elements": list,             # List of unique elements in dataset, optional (default: computes unique elements)
-      "fp_scheme": str,             # Fingerprinting scheme to feature dataset, "gaussian" or "gmp" (default: "gaussian")
-      "fp_params": dict,            # Fingerprint parameters, see examples for correct layout
-      "cutoff_params": dict,        # Cutoff function - polynomial or cosine,
+      "fp_scheme": str,             # Fingerprinting scheme to feature dataset, "gmpordernorm" or "gaussian" (default: "gmpordernorm")
+      "fp_params": dict,            # Fingerprint parameters, see examples for correct layout for either GMP descriptors or SF descriptors
+      "cutoff_params": dict,        # Cutoff function for SF descriptors - polynomial or cosine,
                                     ## Polynomial - {"cutoff_func": "Polynomial", "gamma": 2.0}
                                     ## Cosine     - {"cutoff_func": "Cosine"}
       "save_fps": bool,             # Write calculated fingerprints to disk (default: True)
