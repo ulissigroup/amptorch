@@ -44,3 +44,4 @@ docs/_build/
 
 # documentation requirments as exceptions
 !docs/requirements.txt
+!docs/1D_water_PES.png
