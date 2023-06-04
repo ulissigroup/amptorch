@@ -8,11 +8,13 @@ import torch
 from amptorch.ase_utils import AmpTorch
 from amptorch.trainer import AtomsTrainer
 
-# Step 1: 
+# Step 1:
 # read all images from the trajectory
-images = ase.io.read("./water_2d.traj", index=":") # no train-test/holdout split for demo purpose
+images = ase.io.read(
+    "./water_2d.traj", index=":"
+)  # no train-test/holdout split for demo purpose
 
-# Step 2: 
+# Step 2:
 # define hyperparameters for GMP fingerprinting
 nsigmas = 10  # number of radial probes
 max_MCSH_order = 3  # order of angular probes
@@ -27,7 +29,7 @@ GMPs = {
     # "cutoff": 10.0, # Optional, a default value will be provided.
 }
 
-# Step 3: 
+# Step 3:
 # define the configuration for training with S2EF task template
 config = {
     "model": {
@@ -35,7 +37,11 @@ config = {
         "get_forces": True,
         # "num_layers": 3,
         # "num_nodes": 20,
-        "hidden_layers": [20,20,20], # more flexible way of defining NN, alternative to define both "num_layers" and "num_nodes"
+        "hidden_layers": [
+            20,
+            20,
+            20,
+        ],  # more flexible way of defining NN, alternative to define both "num_layers" and "num_nodes"
         "activation": torch.nn.Tanh,
         "batchnorm": True,
     },
@@ -65,13 +71,13 @@ config = {
     },
 }
 
-# Step 4: 
+# Step 4:
 # train
 torch.set_num_threads(1)
 trainer = AtomsTrainer(config)
 trainer.train()
 
-# Step 5: 
+# Step 5:
 # assess training errors
 predictions = trainer.predict(images)
 
@@ -85,7 +91,7 @@ print("Train Energy MAE:", np.mean(np.abs(true_energies - pred_energies)))
 # images[0].set_calculator(AmpTorch(trainer))
 # images[0].get_potential_energy()
 
-# Step 6: 
+# Step 6:
 # Use the fitted model to predict on an extended range of the 1D PES for change in O-H bond length
 # set up images with one changing bond length
 
@@ -104,9 +110,11 @@ for dist in distances:
 
 predictions = trainer.predict(images)
 
-# get training point 
+# get training point
 
-training_angle100 = [_ for _ in images if np.isclose(_.get_angle(1, 0, 2), 104.210, atol=1e-3)]
+training_angle100 = [
+    _ for _ in images if np.isclose(_.get_angle(1, 0, 2), 104.210, atol=1e-3)
+]
 
 distances_training = [_.get_distance(0, 2) for _ in training_angle100]
 energies_training = [_.get_potential_energy() for _ in training_angle100]
