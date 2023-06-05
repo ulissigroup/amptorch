@@ -45,3 +45,5 @@ docs/_build/
 # documentation requirments as exceptions
 !docs/requirements.txt
 !docs/1D_water_PES.png
+!examples/4_misc/predicted_1D_water_PES.png
+!examples/4_misc/water_2d.traj

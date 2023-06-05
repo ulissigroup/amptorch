@@ -8,6 +8,9 @@ import torch
 from amptorch.ase_utils import AmpTorch
 from amptorch.trainer import AtomsTrainer
 
+#  turn off interactive display
+plt.ioff()
+
 # Step 1:
 # read all images from the trajectory
 images = ase.io.read(
@@ -81,7 +84,7 @@ trainer.train()
 # assess training errors
 predictions = trainer.predict(images)
 
-true_energies = np.array([image.get_potential_energy() for image in training])
+true_energies = np.array([image.get_potential_energy() for image in images])
 pred_energies = np.array(predictions["energy"])
 
 print("Train Energy MSE:", np.mean((true_energies - pred_energies) ** 2))
@@ -97,7 +100,7 @@ print("Train Energy MAE:", np.mean(np.abs(true_energies - pred_energies)))
 
 # generate NNFF predictions
 distances = np.linspace(0.4, 2.0, 100)
-images = []
+images_1d = []
 for dist in distances:
     image = molecule("H2O", vacuum=10.0)
     image.set_cell([10, 10, 10])
@@ -106,9 +109,9 @@ for dist in distances:
     # change bond length
     image.set_distance(0, 2, dist)
     image.set_angle(1, 0, 2, 104.210)
-    images.append(image)
+    images_1d.append(image)
 
-predictions = trainer.predict(images)
+predictions = trainer.predict(images_1d)
 
 # get training point
 
@@ -120,12 +123,12 @@ distances_training = [_.get_distance(0, 2) for _ in training_angle100]
 energies_training = [_.get_potential_energy() for _ in training_angle100]
 
 # predict on arbitrary O-H length
-fig, ax = plt.subplots()
-ax.scatter(distances, predictions["energy"], label="prediction")
-ax.scatter(distances_training, energies_training, label="training")
-ax.set_xlabel("O-H bond length [A]")
-ax.set_ylabel("potential energy [eV]")
-ax.legend()
+plt.scatter(distances, predictions["energy"], label="prediction")
+plt.scatter(distances_training, energies_training, label="training")
+plt.xlabel("O-H bond length [A]")
+plt.ylabel("potential energy [eV]")
+plt.legend()
 
 # save figure
-fig.savefig("predicted_1D_water_PES.png")
+plt.savefig("predicted_1D_water_PES.png")
+plt.close()
