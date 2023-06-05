@@ -36,36 +36,40 @@ Then, we define the hyperparameters of GMP fingerprinting scheme in radial probe
       "MCSHs": {"orders": list(range(max_MCSH_order + 1)), "sigmas": sigmas},
    }
 
-Next, we define the training configuration: 
+Next, we define the training configuration with aspects including choice of model, optimizer and fingerprinting scheme: 
 
 .. code-block:: python
 
    config = {
+      # model choices of neural network force fields
       "model": {
-         "name": "singlenn",
-         "get_forces": True,
+         "name": "singlenn",  # neural network architecture
+         "get_forces": True, # for structure to energy and forces (S2EF) task
          # "num_layers": 3,
          # "num_nodes": 20,
-         "hidden_layers": [20,20,20], # more flexible way of defining NN, alternative to define both "num_layers" and "num_nodes"
+         "hidden_layers": [20,20,20], # setting the dimensions of the 2nd to 4th hidden layers to 20
          "activation": torch.nn.Tanh,
          "batchnorm": True,
       },
+      # optimization schemes associated with training
       "optim": {
-         "device": "cpu",
-         "force_coefficient": 0.01,
-         "lr": 1e-3,
-         "batch_size": 16,
-         "epochs": 500,
-         "loss": "mse",
-         "metric": "mae",
+         "device": "cpu", # device
+         "force_coefficient": 0.01, # adjust the loss of energy vs. forces
+         "lr": 1e-3, # learning rate
+         "batch_size": 16, # batch size in training
+         "epochs": 500, # total number of iterations of optimization
+         "loss": "mse", # loss function evaluation
+         "metric": "mae", # evaluation metrics
       },
+      # dataset processing and fingerprinting
       "dataset": {
-         "raw_data": images,
-         "val_split": 0,
-         "fp_scheme": "gmpordernorm",
-         "fp_params": GMPs,
-         "save_fps": False,
+         "raw_data": images, # list of ase.Atoms objects for training (and validation)
+         "val_split": 0, # validation fraction
+         "fp_scheme": "gmpordernorm", # fingerprinting scheme
+         "fp_params": GMPs, # fingerprinting parameters
+         "save_fps": False, # whether to save fingerprints
       },
+      # other commands
       "cmd": {
          "debug": False,
          "run_dir": "./",
@@ -97,7 +101,7 @@ Finally, we'd like to make predictions on how the potential energy changes with 
 
    # predicted NNFF
    distances = np.linspace(0.4, 2.0, 100)
-   images = []
+   images_new = []
    for dist in distances:
       image = molecule("H2O", vacuum=10.0)
       image.set_cell([10, 10, 10])
@@ -106,9 +110,9 @@ Finally, we'd like to make predictions on how the potential energy changes with 
       # change bond length
       image.set_distance(0, 2, dist)
       image.set_angle(1, 0, 2, 104.210)
-      images.append(image)
+      images_new.append(image)
 
-   predictions = trainer.predict(images)
+   predictions = trainer.predict(images_new)
 
 Finally, we plot the prediction vs. training values of the 1D PES: 
 
@@ -140,15 +144,15 @@ and is contained in:
 
    examples/4_misc/2D_water_example.py
 
-For more information, we recommend consulting with the `example <https://github.com/ulissigroup/amptorch/tree/master/examples>`_ folder that covers major tasks, such as structure to energy (S2E), uncertainty, and different feature and neural network architectures. 
+If you'd like to jumpstart training a NNFF, we recommend consulting with the `example <https://github.com/ulissigroup/amptorch/tree/master/examples>`_ folder that covers major tasks, such as structure to energy (S2E), uncertainty, and different feature and neural network architectures. 
 
+
+In later section of Usage, we listed severl key variables and functions that will be used for NNFF training and evaluation. 
 
 Configs
 ^^^^^^^
 
-To train a model using ``amptorch``, a set of ``configs`` must be
-specified to interact with the trainer. An exhaustive list of all
-possible flags and their descriptions is provided below:
+An exhaustive list of flags and their descriptions for the configuration of AmpTorch trainer is provided below:
 
 .. code-block:: python
 
