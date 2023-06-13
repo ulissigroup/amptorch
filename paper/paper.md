@@ -24,7 +24,7 @@ authors:
     affiliation: 1
   - name: Jacob Paras
     equal_contrib: false
-    affliation: 3
+    affiliation: 3
   - name: Rui Qi Chen
     equal-contrib: false
     affiliation: 2
