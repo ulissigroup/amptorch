@@ -11,7 +11,6 @@ dependencies:
   - matplotlib=3.3.*
   - pip
   - tqdm=4.45.*
-  - numpy=1.20.*
   - pip:
     - ase==3.21.*
     - cffi
@@ -27,3 +26,4 @@ dependencies:
     - -f https://data.pyg.org/whl/torch-1.10.0+cu113.html
     - torch-sparse==0.6.13
     - -f https://data.pyg.org/whl/torch-1.10.0+cu113.html
+    - numpy==1.20.*

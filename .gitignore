@@ -47,3 +47,4 @@ docs/_build/
 !docs/1D_water_PES.png
 !examples/4_misc/predicted_1D_water_PES.png
 !examples/4_misc/water_2d.traj
+!.zenodo.json
