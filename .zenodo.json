@@ -1,10 +1,10 @@
 {
     "description": "<p>This is the stable initial release with key features.</p>\nMajor features:\n<ul>\n<li>GMP fingerprint support</li>\n<li>PyTorch Geometric integration</li>\n<li>Skorch integration</li>\n<li>GPU/Multi-GPU support via DataParallel</li>\n<li>Weights and Biases logger support</li>\n<li>Uncertainty quantification support</li>\n<li>LMDB data storage option</li>\n</ul>", 
     "license": "other-open", 
-    "title": "ulissigroup/amptorch: Initial Release", 
-    "version": "v0.2.0-alpha", 
+    "title": "AmpTorch: A Python package for scalable fingerprint-based neural network training on multi-element systems with integrated uncertainty quantification", 
+    "version": "v1.0.0", 
     "upload_type": "software", 
-    "publication_date": "2023-07-01", 
+    "publication_date": "2023-07-15", 
     "creators": [
         {
             "affiliation": "Department of Chemical Engineering, Carnegie Mellon University", 
@@ -64,7 +64,7 @@
         }, 
         {
             "scheme": "doi", 
-            "identifier": "10.5281/zenodo.8103322", 
+            "identifier": "10.5281/zenodo.8151352", 
             "relation": "isVersionOf"
         }
     ]
