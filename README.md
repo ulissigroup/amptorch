@@ -1,4 +1,4 @@
-[![ulissigroup](https://circleci.com/gh/ulissigroup/amptorch.svg?style=svg)](https://app.circleci.com/pipelines/github/ulissigroup/amptorch) [![DOI](https://zenodo.org/badge/167388058.svg)](https://zenodo.org/badge/latestdoi/167388058)
+[![ulissigroup](https://circleci.com/gh/ulissigroup/amptorch.svg?style=svg)](https://app.circleci.com/pipelines/github/ulissigroup/amptorch)[![DOI](https://zenodo.org/badge/167388058.svg)](https://zenodo.org/badge/latestdoi/167388058)
 
 ## *AmpTorch*: Atomistic Machine-learning Package - PyTorch
 
